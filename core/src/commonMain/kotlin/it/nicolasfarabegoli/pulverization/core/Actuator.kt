@@ -53,7 +53,7 @@ interface ActuatorsContainer<I> {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : ActuatorPayload, A : Actuator<T, I>> getActuators(type: KClass<in A>): Set<A> =
-        actuators.filter { type.isInstance(it) }.toSet() as Set<A>
+        actuators.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? A }.toSet()
 
     companion object {
         /**

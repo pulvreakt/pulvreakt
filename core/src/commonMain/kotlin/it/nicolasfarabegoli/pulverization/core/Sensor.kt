@@ -50,7 +50,7 @@ interface SensorsContainer<I> {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : SensorPayload, S : Sensor<T, I>> getSensors(type: KClass<S>): Set<S> =
-        sensors.filter(type::isInstance).toSet() as Set<S>
+        sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
 
     companion object {
         inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
