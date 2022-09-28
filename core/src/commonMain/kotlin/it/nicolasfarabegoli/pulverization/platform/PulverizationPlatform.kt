@@ -2,6 +2,9 @@ package it.nicolasfarabegoli.pulverization.platform
 
 import it.nicolasfarabegoli.pulverization.core.*
 
+/**
+ * Represent the platform in which a [Device] runs.
+ */
 interface PulverizationPlatform<I, S : State<S>, E, SendType, ReceiveType, Outcome> {
     val repetitions: Int
     val device: Device<I, S, E, SendType, ReceiveType, Outcome>
