@@ -25,14 +25,14 @@ interface Sensor<out T : SensorPayload, I> {
  * Contains a set of [Sensor]s managed by a single [Device].
  * @param I the type of the ID of each [Sensor].
  */
-interface SensorContainer<I> {
+interface SensorsContainer<I> {
     /**
      * The set of [Sensor]s.
      */
     var sensors: Set<Sensor<SensorPayload, I>>
 
     /**
-     * Add a [Sensor] to the [SensorContainer].
+     * Add a [Sensor] to the [SensorsContainer].
      */
     fun addSensor(sensor: Sensor<SensorPayload, I>)
 
@@ -53,10 +53,10 @@ interface SensorContainer<I> {
         sensors.filter(type::isInstance).toSet() as Set<S>
 
     companion object {
-        inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorContainer<I>.getSensor(): S? =
+        inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
             sensors.filterIsInstance<S>().firstOrNull()
 
-        inline fun<I, T : SensorPayload, reified S : Sensor<T, I>> SensorContainer<I>.getSensors(): Set<S> =
+        inline fun<I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
             sensors.filterIsInstance<S>().toSet()
     }
 }
