@@ -9,9 +9,4 @@ interface State<S> {
      * The device state.
      */
     var state: S
-
-    /**
-     * Update the [state] with a [newState].
-     */
-    fun updateState(newState: S)
 }

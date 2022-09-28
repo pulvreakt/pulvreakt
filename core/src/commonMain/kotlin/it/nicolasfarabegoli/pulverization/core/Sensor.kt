@@ -6,7 +6,7 @@ package it.nicolasfarabegoli.pulverization.core
  * @param S the type of the measuring after the [sense] operation.
  * @param I the identifier of the sensor.
  */
-interface Sensor<S, I> {
+interface Sensor<out S, I> {
     /**
      * The identifier of the sensor. The generic type allow to identify the appropriate representation for the [id].
      */
