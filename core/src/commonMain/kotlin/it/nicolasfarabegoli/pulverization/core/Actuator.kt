@@ -13,6 +13,7 @@ interface ActuatorPayload
 
 /**
  * Model the concept of a single [Actuator] in the pulverization context.
+ * An [Actuator] can [actuate] an operation over the environment.
  * @param T the type of the payload to send to the [Actuator]
  */
 interface Actuator<in T : ActuatorPayload, I> {
@@ -22,7 +23,7 @@ interface Actuator<in T : ActuatorPayload, I> {
 
 /**
  * Model the concept of set of [Actuator]s in the pulverization context.
- * Contains a collection of [Actuator] managed by a single [Device].
+ * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
 interface ActuatorsContainer<I> {
