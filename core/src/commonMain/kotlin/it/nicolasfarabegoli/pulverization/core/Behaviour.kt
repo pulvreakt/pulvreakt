@@ -8,8 +8,8 @@ package it.nicolasfarabegoli.pulverization.core
  * @param A the type of the actuation
  * @param O the type of the outcome of the function
  */
-data class BehaviourOutput<S : State<S>, E, A : ActuatorPayload, O>(
-    val newState: S,
+data class BehaviourOutput<S, E, A : ActuatorPayload, O>(
+    val newState: State<S>,
     val newExport: E,
     val actuation: Set<A>,
     val outcome: O
@@ -23,6 +23,6 @@ data class BehaviourOutput<S : State<S>, E, A : ActuatorPayload, O>(
  * @param W the type of the sensed value
  * @param A the type of the actuation to do
  */
-interface Behaviour<S : State<S>, E, W : SensorPayload, A : ActuatorPayload, O> {
-    operator fun invoke(state: S, export: E, sensedValues: Set<W>): BehaviourOutput<S, E, A, O>
+interface Behaviour<S, E, W : SensorPayload, A : ActuatorPayload, O> {
+    operator fun invoke(state: State<S>, export: E, sensedValues: Set<W>): BehaviourOutput<S, E, A, O>
 }
