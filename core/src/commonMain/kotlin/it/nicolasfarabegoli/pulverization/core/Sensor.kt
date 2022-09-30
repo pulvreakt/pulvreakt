@@ -34,7 +34,7 @@ interface SensorsContainer<I> {
     /**
      * Add a [Sensor] to the [SensorsContainer].
      */
-    fun addSensor(sensor: Sensor<SensorPayload, I>)
+    fun <S : Sensor<SensorPayload, I>> addSensor(sensor: S)
 
     /**
      * Returns a single [Sensor] of the given [type]. This method should be called when a single
