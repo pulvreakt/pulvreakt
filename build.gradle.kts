@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.detekt.gradle)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
