@@ -2,7 +2,12 @@ package it.nicolasfarabegoli
 
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.aSocket
-import kotlinx.coroutines.*
+import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
+import it.nicolasfarabegoli.pulverization.core.SensorsContainer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 fun main(): Unit = runBlocking {
     val myPort: Int = System.getenv("MY_PORT")?.toInt() ?: 9000
@@ -21,8 +26,8 @@ fun main(): Unit = runBlocking {
     val behaviour = MyBehaviour()
     val device = MyDevice(
         0,
-        DummySensorsContainer(emptySet()),
-        DummyActuatorContainer(emptySet()),
+        SensorsContainer(),
+        ActuatorsContainer(),
         network,
         state,
         behaviour
