@@ -10,10 +10,10 @@ interface Communication<in S, out R> {
     /**
      * Abstraction of the _sending action_ to other devices.
      */
-    fun send(payload: S)
+    suspend fun send(payload: S)
 
     /**
      * Abstraction of the _receiving action_ from other devices.
      */
-    fun receive(): R
+    suspend fun receive(): R
 }
