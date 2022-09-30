@@ -25,16 +25,18 @@ interface Sensor<out T : SensorPayload, I> {
  * Contains a set of [Sensor]s managed by a single [Device].
  * @param I the type of the ID of each [Sensor].
  */
-interface SensorsContainer<I> {
+class SensorsContainer<I> {
     /**
      * The set of [Sensor]s.
      */
-    var sensors: Set<Sensor<SensorPayload, I>>
+    private var sensors: Set<Sensor<*, I>> = emptySet()
 
     /**
      * Add a [Sensor] to the [SensorsContainer].
      */
-    fun <S : Sensor<SensorPayload, I>> addSensor(sensor: S)
+    fun <P : SensorPayload, S : Sensor<P, I>> addSensor(sensor: S) {
+        sensors = sensors + sensor
+    }
 
     /**
      * Returns a single [Sensor] of the given [type]. This method should be called when a single
@@ -53,10 +55,10 @@ interface SensorsContainer<I> {
         sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
 
     companion object {
-        inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
-            sensors.filterIsInstance<S>().firstOrNull()
-
         inline fun<I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
-            sensors.filterIsInstance<S>().toSet()
+            this.getSensors(S::class)
+
+        inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
+            this.getSensor(S::class)
     }
 }
