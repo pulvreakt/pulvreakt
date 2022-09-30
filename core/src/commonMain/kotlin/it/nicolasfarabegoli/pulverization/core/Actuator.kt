@@ -26,17 +26,19 @@ interface Actuator<in T : ActuatorPayload, I> {
  * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
-interface ActuatorsContainer<I> {
+class ActuatorsContainer<I> {
 
     /**
      * The collection of [Actuator]s.
      */
-    var actuators: Set<Actuator<ActuatorPayload, I>>
+    private var actuators: Set<Actuator<*, I>> = emptySet()
 
     /**
      * Add an [actuator] to the [ActuatorsContainer].
      */
-    fun <A : Actuator<ActuatorPayload, I>> addActuator(actuator: A)
+    fun <P : ActuatorPayload, A : Actuator<P, I>> addActuator(actuator: A) {
+        actuators = actuators + actuator
+    }
 
     /**
      * Returns a single [Actuator] of the given [type].
@@ -60,7 +62,7 @@ interface ActuatorsContainer<I> {
          * Returns a set of [Actuator]s of type [A] with a payload [T].
          */
         inline fun <I, T : ActuatorPayload, reified A : Actuator<T, I>> ActuatorsContainer<I>.getActuators(): Set<A> =
-            actuators.filterIsInstance<A>().toSet()
+            this.getActuators(A::class)
 
         /**
          * Returns a single [Actuator] of the type [A] with payload type [T].
@@ -69,6 +71,6 @@ interface ActuatorsContainer<I> {
          * If no [Actuator] of the given type [A] is available, null is returned.
          */
         inline fun <I, T : ActuatorPayload, reified A : Actuator<T, I>> ActuatorsContainer<I>.getActuator(): A? =
-            actuators.filterIsInstance<A>().firstOrNull()
+            this.getActuator(A::class)
     }
 }
