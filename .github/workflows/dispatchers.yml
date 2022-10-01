@@ -24,6 +24,6 @@ jobs:
     steps:
       - run: 'true'
   ci-cd:
-    needs: [dispatcher]
+    needs: [ dispatcher ]
     uses: ./.github/workflows/build-and-release.yml
     secrets: inherit

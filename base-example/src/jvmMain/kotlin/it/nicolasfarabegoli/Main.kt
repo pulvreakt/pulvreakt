@@ -30,7 +30,7 @@ fun main(): Unit = runBlocking {
         ActuatorsContainer(),
         network,
         state,
-        behaviour
+        behaviour,
     )
     val platform = Platform(10, device)
 

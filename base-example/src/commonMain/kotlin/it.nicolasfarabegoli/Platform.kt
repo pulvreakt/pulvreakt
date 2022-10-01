@@ -5,7 +5,7 @@ import it.nicolasfarabegoli.pulverization.platform.PulverizationPlatform
 
 class Platform(
     override val repetitions: Int,
-    override val device: Device<Int, Int, Unit, NetworkSend, NetworkReceive, Unit>
+    override val device: Device<Int, Int, Unit, NetworkSend, NetworkReceive, Unit>,
 ) : PulverizationPlatform<Int, Int, Unit, NetworkSend, NetworkReceive, Unit> {
 
     override fun actuation(state: State<Int>, actuators: ActuatorsContainer<Int>) {
@@ -19,7 +19,7 @@ class Platform(
 
     override fun computation(
         state: State<Int>,
-        behaviour: Behaviour<Int, Unit, SensorPayload, ActuatorPayload, Unit>
+        behaviour: Behaviour<Int, Unit, SensorPayload, ActuatorPayload, Unit>,
     ) {
         behaviour(state, Unit, emptySet())
     }
@@ -27,7 +27,7 @@ class Platform(
     override suspend fun contextAcquisition(
         state: State<Int>,
         sensors: SensorsContainer<Int>,
-        communication: suspend () -> NetworkReceive
+        communication: suspend () -> NetworkReceive,
     ) {
         val receivedMessages = communication()
         println("Received: ${receivedMessages.payload}")

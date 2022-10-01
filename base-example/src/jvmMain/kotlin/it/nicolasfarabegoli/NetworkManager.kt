@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 actual class NetworkManager(
     private val server: ServerSocket,
-    private val clients: List<Socket>
+    private val clients: List<Socket>,
 ) : Communication<NetworkSend, NetworkReceive> {
 
     private lateinit var socket: Socket

@@ -51,7 +51,7 @@ class SensorsContainer<I> {
         sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
 }
 
-inline fun<I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
+inline fun <I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
     this.getAll(S::class)
 
 inline fun <I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
