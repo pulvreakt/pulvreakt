@@ -2,20 +2,12 @@ package it.nicolasfarabegoli.pulverization.core
 
 import kotlin.reflect.KClass
 
-/**
- * Models the concept of payload given by a [Sensor] after a measuring operation.
- * ```kotlin
- * data class TemperaturePayload(temp: Double): SensorPayload
- * ```
- */
-interface SensorPayload
-
 /** Models the concept of single [Sensor] in the pulverization context.
  * A [Sensor] can [sense] the environment by measuring one of its magnitudes.
  * @param T the type of the measuring after the [sense] operation.
  * @param I the identifier of the sensor.
  */
-interface Sensor<out T : SensorPayload, I> {
+interface Sensor<out T, I> {
     val id: I
     fun sense(): T
 }
@@ -34,8 +26,12 @@ class SensorsContainer<I> {
     /**
      * Add a [Sensor] to the [SensorsContainer].
      */
-    fun <P : SensorPayload, S : Sensor<P, I>> addSensor(sensor: S) {
+    operator fun <P, S : Sensor<P, I>> plusAssign(sensor: S) {
         sensors = sensors + sensor
+    }
+
+    fun <P, S : Sensor<P, I>> addAll(vararg allSensor: S) {
+        sensors = sensors + allSensor.toSet()
     }
 
     /**
@@ -44,21 +40,19 @@ class SensorsContainer<I> {
      * If no [Sensor] of the given [type] is available, null is returned.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : SensorPayload, S : Sensor<T, I>> getSensor(type: KClass<S>): S? =
+    operator fun <T, S : Sensor<T, I>> get(type: KClass<S>): S? =
         sensors.firstOrNull(type::isInstance) as? S
 
     /**
      * Returns a set of [Sensor] of the given [type].
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : SensorPayload, S : Sensor<T, I>> getSensors(type: KClass<S>): Set<S> =
+    fun <T, S : Sensor<T, I>> getAll(type: KClass<S>): Set<S> =
         sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
-
-    companion object {
-        inline fun<I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
-            this.getSensors(S::class)
-
-        inline fun <I, T : SensorPayload, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
-            this.getSensor(S::class)
-    }
 }
+
+inline fun<I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
+    this.getAll(S::class)
+
+inline fun <I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
+    this[S::class]
