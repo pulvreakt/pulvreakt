@@ -12,7 +12,7 @@ data class BehaviourOutput<S, E, A, O>(
     val newState: State<S>,
     val newExport: E,
     val actuation: Set<A>,
-    val outcome: O
+    val outcome: O,
 )
 
 /**

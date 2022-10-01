@@ -17,4 +17,3 @@ interface Device<I, S, E, SC, PC, SendType, ReceiveType, Outcome> {
     val state: State<S>
     val behaviour: Behaviour<S, E, SC, PC, Outcome>
 }
-

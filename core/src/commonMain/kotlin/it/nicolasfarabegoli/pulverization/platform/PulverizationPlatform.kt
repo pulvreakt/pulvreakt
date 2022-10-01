@@ -1,6 +1,10 @@
 package it.nicolasfarabegoli.pulverization.platform
 
-import it.nicolasfarabegoli.pulverization.core.*
+import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
+import it.nicolasfarabegoli.pulverization.core.Behaviour
+import it.nicolasfarabegoli.pulverization.core.Device
+import it.nicolasfarabegoli.pulverization.core.SensorsContainer
+import it.nicolasfarabegoli.pulverization.core.State
 
 /**
  * Represent the platform in which a [Device] runs.
@@ -26,6 +30,8 @@ interface PulverizationPlatform<I, S, E, SC, PC, SendType, ReceiveType, Outcome>
     }
 
     suspend fun infiniteStart() {
-        while (true) { cycle() }
+        while (true) {
+            cycle()
+        }
     }
 }
