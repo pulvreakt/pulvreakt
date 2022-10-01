@@ -4,6 +4,10 @@ on:
   workflow_call:
   workflow_dispatch:
 
+env:
+  JDK_DISTRIUTION: temurin
+  JDK_VERSION: 17.0.4
+
 jobs:
   build:
     strategy:
@@ -16,6 +20,12 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.0.2
+      - name: Setup Java
+        uses: actions/setup-java@v3.5.1
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
       # TODO: complete with other steps
 
   release:
@@ -33,6 +43,12 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.0.2
+      - name: Setup Java
+        uses: actions/setup-java@v3.5.1
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
       # TODO: complete with other steps
 
   success:
