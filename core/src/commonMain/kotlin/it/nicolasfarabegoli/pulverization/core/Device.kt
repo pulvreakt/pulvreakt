@@ -9,12 +9,12 @@ package it.nicolasfarabegoli.pulverization.core
  * @param ReceiveType the type of the message to receive.
  * @param Outcome the type of the outcome of the [Behaviour].
  */
-interface Device<I, S, E, SendType, ReceiveType, Outcome> {
+interface Device<I, S, E, SC, PC, SendType, ReceiveType, Outcome> {
     val id: I
     val sensorsContainer: SensorsContainer<I>
     val actuatorsContainer: ActuatorsContainer<I>
     val communication: Communication<SendType, ReceiveType>
     val state: State<S>
-    val behaviour: Behaviour<S, E, SensorPayload, ActuatorPayload, Outcome>
+    val behaviour: Behaviour<S, E, SC, PC, Outcome>
 }
 

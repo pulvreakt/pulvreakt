@@ -5,12 +5,12 @@ import it.nicolasfarabegoli.pulverization.core.*
 /**
  * Represent the platform in which a [Device] runs.
  */
-interface PulverizationPlatform<I, S, E, SendType, ReceiveType, Outcome> {
+interface PulverizationPlatform<I, S, E, SC, PC, SendType, ReceiveType, Outcome> {
     val repetitions: Int
-    val device: Device<I, S, E, SendType, ReceiveType, Outcome>
+    val device: Device<I, S, E, SC, PC, SendType, ReceiveType, Outcome>
 
     suspend fun contextAcquisition(state: State<S>, sensors: SensorsContainer<I>, communication: suspend () -> ReceiveType)
-    fun computation(state: State<S>, behaviour: Behaviour<S, E, SensorPayload, ActuatorPayload, Outcome>)
+    fun computation(state: State<S>, behaviour: Behaviour<S, E, SC, PC, Outcome>)
     suspend fun dataPropagation(state: State<S>, communication: suspend (payload: SendType) -> Unit)
     fun actuation(state: State<S>, actuators: ActuatorsContainer<I>)
 
