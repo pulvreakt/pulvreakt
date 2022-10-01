@@ -26,6 +26,10 @@ jobs:
           distribution: ${{ env.JDK_DISTRIUTION }}
           java-version: ${{ env.JDK_VERSION }}
           cache: gradle
+      - name: Run assemble and check tasks
+        run: |
+          ./gradlew assemble --parallel
+          ./gradlew check --parallel
       # TODO: complete with other steps
 
   release:
