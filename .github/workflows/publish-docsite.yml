@@ -21,6 +21,7 @@ jobs:
       - name: Build docsite
         run: |
           cd docsite
+          npm install
           npm run build
       - name: Release docsite to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.0
