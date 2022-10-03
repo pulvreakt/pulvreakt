@@ -30,7 +30,6 @@ jobs:
         run: |
           ./gradlew assemble --parallel
           ./gradlew check --parallel
-      # TODO: complete with other steps
 
   release:
     concurrency:
