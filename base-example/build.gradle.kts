@@ -28,7 +28,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-network:2.1.1")
+                implementation("io.ktor:ktor-network:2.1.2")
             }
         }
     }
