@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.detekt.gradle)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    alias(libs.plugins.shadow)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -32,13 +32,26 @@ allprojects {
             }
             testRuns["test"].executionTask.configure {
                 useJUnitPlatform()
+                filter {
+                    isFailOnNoMatchingTests = false
+                }
+                testLogging {
+                    showExceptions = true
+                    events = setOf(
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    )
+                    exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                }
             }
         }
+
         js(IR) {
             browser()
             nodejs()
             binaries.library()
         }
+
         val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()
         val hostArch = System.getProperty("os.arch").trim().toLowerCaseAsciiOnly()
         val nativeTarget: (String, org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.() -> Unit) -> KotlinTarget =
@@ -54,6 +67,7 @@ allprojects {
                 "windows" to "x86" -> ::mingwX86
                 else -> throw GradleException("Host OS '$hostOs' with arch '$hostArch' is not supported in Kotlin/Native.")
             }
+
         nativeTarget("native") {
             binaries {
                 sharedLib()
