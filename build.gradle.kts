@@ -93,11 +93,13 @@ allprojects {
             val commonMain by getting {
                 dependencies {
                     implementation(rootProject.libs.kotlin.stdlib)
+                    implementation(rootProject.libs.koin.core)
                 }
             }
             val commonTest by getting {
                 dependencies {
                     implementation(rootProject.libs.bundles.kotlin.testing.common)
+                    implementation(rootProject.libs.koin.test)
                 }
             }
             val jvmTest by getting {
