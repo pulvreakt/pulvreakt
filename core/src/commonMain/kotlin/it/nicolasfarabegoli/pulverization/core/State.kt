@@ -2,11 +2,16 @@ package it.nicolasfarabegoli.pulverization.core
 
 /**
  * Models the concept of [State] in the pulverization context.
- * @param S the type of the state.
+ * @param S the type of the [State].
  */
 interface State<S> {
     /**
-     * The device state.
+     * Retrive the value of the [State].
      */
-    var state: S
+    fun get(): S
+
+    /**
+     * Update the [State] with a [newState].
+     */
+    fun update(newState: S): S
 }
