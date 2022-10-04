@@ -8,7 +8,6 @@ pull_request_rules:
   - name: Automatic merge renovate PRs
     conditions:
       - author=renovate[bot]
-      - check-success=ci-cd
       - -conflict # No conflict
       - -draft # The PR should not be a 'draft'
     actions:
