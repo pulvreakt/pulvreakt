@@ -7,6 +7,7 @@ import it.nicolasfarabegoli.pulverization.communication.BidirectionalCommunicato
  * [DeviceComponent].
  */
 interface DeviceComponent<Send, Receive, I> : BidirectionalCommunicator<Send, Receive, I> {
+    val deviceID: I
     suspend fun cycle()
 }
 
