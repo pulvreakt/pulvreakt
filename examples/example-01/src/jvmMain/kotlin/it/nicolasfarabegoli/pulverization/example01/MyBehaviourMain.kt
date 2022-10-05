@@ -15,7 +15,7 @@ fun main() = runBlocking {
         modules(appModule)
     }
 
-    val component = MyBehaviourComponent()
+    val component = MyBehaviourComponent("1")
 
     // Smart logic to handle the component lifecycle.
     repeat(5) {

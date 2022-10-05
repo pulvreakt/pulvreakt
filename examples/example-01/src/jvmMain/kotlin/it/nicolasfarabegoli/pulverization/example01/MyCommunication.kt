@@ -15,7 +15,7 @@ class MyCommunication : Communication<String, String> {
     }
 }
 
-class MyCommunicationComponent : DeviceComponent<String, String, String>, KoinComponent {
+class MyCommunicationComponent(override val deviceID: String) : DeviceComponent<String, String, String>, KoinComponent {
     private val myCommunication: MyCommunication by inject()
 
     override fun sendToComponent(payload: String, to: String) {

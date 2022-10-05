@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.example01
+package it.nicolasfarabegoli.pulverization.example01 // ktlint-disable filename
 
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
@@ -13,7 +13,7 @@ fun main() = runBlocking {
         modules(appModule)
     }
 
-    val component = MyCommunicationComponent()
+    val component = MyCommunicationComponent("1")
 
     repeat(5) {
         component.cycle()

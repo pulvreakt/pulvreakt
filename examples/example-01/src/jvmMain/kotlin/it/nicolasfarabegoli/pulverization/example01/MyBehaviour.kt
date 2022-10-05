@@ -29,10 +29,9 @@ sealed class OutgoingMessages {
     data class SendMyState(val state: String) : OutgoingMessages()
 }
 
-class MyBehaviourComponent : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
+class MyBehaviourComponent(override val deviceID: String) : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
     private val state: MyState by inject()
     private val behaviour: MyBehaviour by inject()
-    private val deviceID: String = "???"
 
     override fun sendToComponent(payload: OutgoingMessages, to: String) {
         when (payload) {
