@@ -12,7 +12,6 @@ actual class MyCommunication : Communication<String, String> {
     override fun receive(): String {
         TODO("Not yet implemented")
     }
-
 }
 
 actual class MyCommunicationComponent(override val deviceID: String) : DeviceComponent<String, String, String>, KoinComponent {
