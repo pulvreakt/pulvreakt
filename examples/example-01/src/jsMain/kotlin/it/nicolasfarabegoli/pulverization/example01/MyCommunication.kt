@@ -26,5 +26,4 @@ actual class MyCommunicationComponent(override val deviceID: String) : DeviceCom
     override suspend fun cycle() {
         TODO("Not yet implemented")
     }
-
 }

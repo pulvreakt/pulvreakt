@@ -4,8 +4,7 @@ import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-actual class MyBehaviourComponent(override val deviceID: String) :
-    DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
+actual class MyBehaviourComponent(override val deviceID: String) : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
     private val state: MyState by inject()
     private val behaviour: MyBehaviour by inject()
 
