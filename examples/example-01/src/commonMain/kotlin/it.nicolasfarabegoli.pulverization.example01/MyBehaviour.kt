@@ -12,8 +12,8 @@ class MyBehaviour : Behaviour<String, String, Unit, Unit, Unit> {
     }
 }
 
-class MyState : State<String> {
-    private var state: String = "MyState"
+class MyState(initialState: String) : State<String> {
+    private var state: String = initialState
 
     override fun get(): String = state
 
@@ -25,7 +25,7 @@ class MyState : State<String> {
 }
 
 sealed class OutgoingMessages {
-    data class SendMyState(val state: String) : OutgoingMessages()
+    data class CommunicationMessage(val state: String) : OutgoingMessages()
 }
 
 expect class MyBehaviourComponent : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent

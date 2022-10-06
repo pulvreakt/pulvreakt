@@ -1,0 +1,6 @@
+pulverization:
+  devices:
+    - id: "0"
+      neighbours: [ "1" ]
+    - id: "1"
+      neighbours: [ "0" ]
