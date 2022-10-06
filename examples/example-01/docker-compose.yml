@@ -1,0 +1,64 @@
+version: '3'
+
+x-bhv: &bhv
+  build:
+    dockerfile: behaviour.Dockerfile
+
+x-comm: &comm
+  build:
+    dockerfile: communication.Dockerfile
+
+x-link: &link
+  restart: on-failure
+  depends_on:
+    - rabbitmq
+  links:
+    - rabbitmq
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - proxynet
+
+  behaviour-0:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  behaviour-1:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  communication-0:
+    <<: *comm
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  communication-1:
+    <<: *comm
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+networks:
+  proxynet:
+    external:
+      name: custom_network
+
