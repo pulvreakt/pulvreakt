@@ -1,20 +1,29 @@
 name: Publish docsite
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - docsite
-  pull_request:
-    paths:
-      - docsite
   workflow_call:
   workflow_dispatch:
 
 jobs:
+  dispatcher:
+    runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.changes.outputs.docsite }}
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.1.0
+      - name: Check if docsite files are modified
+        uses: dorny/paths-filter@v2.10.2
+        id: changes
+        with:
+          filters: |
+            docsite:
+              - 'docsite/**'
+
   build-and-publish:
     runs-on: ubuntu-latest
+    needs: [ dispatcher ]
+    if: needs.dispatcher.outputs.changes == 'true'
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.1.0
