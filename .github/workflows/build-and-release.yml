@@ -1,6 +1,9 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    paths-ignore:
+      - docsite
   workflow_call:
   workflow_dispatch:
 
