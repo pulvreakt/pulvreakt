@@ -17,6 +17,8 @@ on:
 jobs:
   dispatcher:
     runs-on: ubuntu-latest
+    # For PRs execute only on commit since the branch protection require the branch to be up-to-date (optimize the workflow).
+    # Triggers the executions if an external PR is opened.
     if: >-
       github.event_name != 'pull_request'
       || github.event.pull_request.head.repo.full_name != github.repository
@@ -29,5 +31,6 @@ jobs:
     secrets: inherit
 
   docsite:
+    needs: [ dispatcher ]
     uses: ./.github/workflows/publish-docsite.yml
     secrets: inherit
