@@ -30,8 +30,10 @@ actual class MyBehaviourComponent(override val deviceID: String) : DeviceCompone
             conn.createChannel().let { channel ->
                 channel.queueDeclare("communication/$deviceID/inbox", false, false, false, null)
                 channel.queueDeclare("communication/$deviceID/outbox", false, false, false, null)
+                channel.queueDeclare("sensors/$deviceID", false, false, false, null)
 
                 channel.basicConsume("communication/$deviceID/outbox", true, "BehaviourConsumer", deliverCallback, cancelCallback)
+                channel.basicConsume("sensors/$deviceID", true, "BehaviourConsumer", deliverCallback, cancelCallback)
                 this.channel = channel
             }
         }
