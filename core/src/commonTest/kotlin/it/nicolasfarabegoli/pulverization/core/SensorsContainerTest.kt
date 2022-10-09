@@ -17,6 +17,14 @@ class SensorsContainerTest : FunSpec(
                     addAll(MySensor2(11), MySensor2(12), mySensor1)
                 }
 
+                container.get<MySensor1> {
+                    this shouldNotBe null
+                    this shouldBeSameInstanceAs mySensor1
+                }
+                container.getAll<MySensor1> {
+                    size shouldBe 1
+                }
+                container.getAll<MySensor1>().size shouldBe 1
                 container[MySensor1::class] shouldNotBe null
                 container[MySensor1::class]?.let { it shouldBeSameInstanceAs mySensor1 }
                 container.getAll(MySensor1::class).size shouldBe 1
@@ -28,7 +36,7 @@ class SensorsContainerTest : FunSpec(
             test("An empty container should return empty set or null") {
                 val container = SensorsContainer<Int>()
 
-                container.getSensor<Int, Int, MySensor1>() shouldBe null
+                container.get<MySensor1>() shouldBe null
                 container.getAll(MySensor2::class).size shouldBe 0
             }
         }
