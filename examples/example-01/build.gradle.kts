@@ -5,6 +5,21 @@ kotlin {
         apply(plugin = "com.github.johnrengelman.shadow")
 
         tasks {
+            register("generateJars") {
+                dependsOn("sensorsJar", "behaviourJar", "communicationJar")
+            }
+            register<ShadowJar>("sensorsJar") {
+                archiveClassifier.set("all")
+                archiveBaseName.set("sensors")
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                manifest {
+                    attributes("Main-Class" to "it.nicolasfarabegoli.pulverization.example01.MySensorsMainKt")
+                }
+                val main by kotlin.jvm().compilations
+                from(main.output)
+                configurations += main.compileDependencyFiles as Configuration
+                configurations += main.runtimeDependencyFiles as Configuration
+            }
             register<ShadowJar>("behaviourJar") {
                 archiveClassifier.set("all")
                 archiveBaseName.set("behaviour")
