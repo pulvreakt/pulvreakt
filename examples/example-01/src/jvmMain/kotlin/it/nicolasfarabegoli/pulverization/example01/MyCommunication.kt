@@ -5,13 +5,15 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
+import com.uchuhimo.konf.Config
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.nio.charset.StandardCharsets
 
-actual class MyCommunication(private val neighboursList: List<String> = emptyList()) : Communication<String, Map<String, String>> {
+actual class MyCommunication(private val neighboursList: List<String> = emptyList()) : Communication<String, Map<String, String>>, KoinComponent {
+    private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
     private val routingKeyExtractor = "neighbours/(.+)/(inbox|outbox)".toRegex()
@@ -30,7 +32,7 @@ actual class MyCommunication(private val neighboursList: List<String> = emptyLis
 
     init {
         println("My neighbours: $neighboursList")
-        val connection = ConnectionFactory().apply { host = "rabbitmq"; port = 5672 }
+        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
@@ -58,6 +60,7 @@ actual class MyCommunication(private val neighboursList: List<String> = emptyLis
 
 actual class MyCommunicationComponent(override val deviceID: String) : DeviceComponent<Map<String, String>, String, String>, KoinComponent {
     private val myCommunication: MyCommunication by inject()
+    private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
     private var lastMessage: String = ""
@@ -70,8 +73,7 @@ actual class MyCommunicationComponent(override val deviceID: String) : DeviceCom
     }
 
     init {
-        println("Connect to: amqp://guest:guest@rabbitmq:5672/")
-        val connection = ConnectionFactory().apply { host = "rabbitmq"; port = 5672 }
+        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
