@@ -1,5 +1,18 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+fun ShadowJar.genericJarConfig(jarName: String, mainClass: String) {
+    archiveClassifier.set("all")
+    archiveBaseName.set(jarName)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes("Main-Class" to mainClass)
+    }
+    val main by kotlin.jvm().compilations
+    from(main.output)
+    configurations += main.compileDependencyFiles as Configuration
+    configurations += main.runtimeDependencyFiles as Configuration
+}
+
 kotlin {
     jvm {
         apply(plugin = "com.github.johnrengelman.shadow")
@@ -8,41 +21,10 @@ kotlin {
             register("generateJars") {
                 dependsOn("sensorsJar", "behaviourJar", "communicationJar")
             }
-            register<ShadowJar>("sensorsJar") {
-                archiveClassifier.set("all")
-                archiveBaseName.set("sensors")
-                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                manifest {
-                    attributes("Main-Class" to "it.nicolasfarabegoli.pulverization.example01.MySensorsMainKt")
-                }
-                val main by kotlin.jvm().compilations
-                from(main.output)
-                configurations += main.compileDependencyFiles as Configuration
-                configurations += main.runtimeDependencyFiles as Configuration
-            }
-            register<ShadowJar>("behaviourJar") {
-                archiveClassifier.set("all")
-                archiveBaseName.set("behaviour")
-                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                manifest {
-                    attributes("Main-Class" to "it.nicolasfarabegoli.pulverization.example01.MyBehaviourMainKt")
-                }
-                val main by kotlin.jvm().compilations
-                from(main.output)
-                configurations += main.compileDependencyFiles as Configuration
-                configurations += main.runtimeDependencyFiles as Configuration
-            }
+            register<ShadowJar>("sensorsJar") { genericJarConfig("sensors", "it.nicolasfarabegoli.pulverization.example01.MySensorsMainKt") }
+            register<ShadowJar>("behaviourJar") { genericJarConfig("behaviour", "it.nicolasfarabegoli.pulverization.example01.MyBehaviourMainKt") }
             register<ShadowJar>("communicationJar") {
-                archiveClassifier.set("all")
-                archiveBaseName.set("communication")
-                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                manifest {
-                    attributes("Main-Class" to "it.nicolasfarabegoli.pulverization.example01.MyCommunicationMainKt")
-                }
-                val main by kotlin.jvm().compilations
-                from(main.output)
-                configurations += main.compileDependencyFiles as Configuration
-                configurations += main.runtimeDependencyFiles as Configuration
+                genericJarConfig("communication", "it.nicolasfarabegoli.pulverization.example01.MyCommunicationMainKt")
             }
         }
     }
