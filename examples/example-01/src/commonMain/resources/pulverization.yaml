@@ -1,4 +1,6 @@
 pulverization:
+  hostname: "localhost"
+  repetitions: 15
   devices:
     - id: "0"
       neighbours: [ "1" ]

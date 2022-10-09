@@ -14,12 +14,13 @@ fun main() = runBlocking {
 
     val devices = config[PulverizationConfig.devices].find { it.id == deviceID } ?: throw IllegalStateException()
 
-    val appModule = module {
-        single { MyCommunication(devices.neighbours.toList()) }
-    }
-
     startKoin {
-        modules(appModule)
+        modules(
+            module {
+                single { MyCommunication(devices.neighbours.toList()) }
+                single { config }
+            },
+        )
     }
 
     val component = MyCommunicationComponent(deviceID)
