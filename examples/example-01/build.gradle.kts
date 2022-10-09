@@ -5,7 +5,7 @@ kotlin {
         apply(plugin = "com.github.johnrengelman.shadow")
 
         tasks {
-            val behaviourJar by creating(ShadowJar::class) {
+            register<ShadowJar>("behaviourJar") {
                 archiveClassifier.set("all")
                 archiveBaseName.set("behaviour")
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -17,7 +17,7 @@ kotlin {
                 configurations += main.compileDependencyFiles as Configuration
                 configurations += main.runtimeDependencyFiles as Configuration
             }
-            val communicationJar by creating(ShadowJar::class) {
+            register<ShadowJar>("communicationJar") {
                 archiveClassifier.set("all")
                 archiveBaseName.set("communication")
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
