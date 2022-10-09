@@ -21,8 +21,12 @@ kotlin {
             register("generateJars") {
                 dependsOn("sensorsJar", "behaviourJar", "communicationJar")
             }
-            register<ShadowJar>("sensorsJar") { genericJarConfig("sensors", "it.nicolasfarabegoli.pulverization.example01.MySensorsMainKt") }
-            register<ShadowJar>("behaviourJar") { genericJarConfig("behaviour", "it.nicolasfarabegoli.pulverization.example01.MyBehaviourMainKt") }
+            register<ShadowJar>("sensorsJar") {
+                genericJarConfig("sensors", "it.nicolasfarabegoli.pulverization.example01.MySensorsMainKt")
+            }
+            register<ShadowJar>("behaviourJar") {
+                genericJarConfig("behaviour", "it.nicolasfarabegoli.pulverization.example01.MyBehaviourMainKt")
+            }
             register<ShadowJar>("communicationJar") {
                 genericJarConfig("communication", "it.nicolasfarabegoli.pulverization.example01.MyCommunicationMainKt")
             }
