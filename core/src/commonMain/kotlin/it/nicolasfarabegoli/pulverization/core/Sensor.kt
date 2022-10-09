@@ -49,10 +49,14 @@ class SensorsContainer<I> {
     @Suppress("UNCHECKED_CAST")
     fun <T, S : Sensor<T, I>> getAll(type: KClass<S>): Set<S> =
         sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
+
+    inline fun <reified S : Sensor<*, I>> get(): S? = this[S::class]
+
+    inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) {
+        get(S::class)?.run()
+    }
+
+    inline fun <reified S : Sensor<*, I>> getAll(): Set<S> = this.getAll(S::class)
+
+    inline fun <reified S : Sensor<*, I>> getAll(run: Set<S>.() -> Unit) = getAll(S::class).run()
 }
-
-inline fun <I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensors(): Set<S> =
-    this.getAll(S::class)
-
-inline fun <I, T, reified S : Sensor<T, I>> SensorsContainer<I>.getSensor(): S? =
-    this[S::class]
