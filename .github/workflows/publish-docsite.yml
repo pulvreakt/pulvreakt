@@ -8,17 +8,16 @@ jobs:
   dispatcher:
     runs-on: ubuntu-latest
     outputs:
-      changes: ${{ steps.changes.outputs.docsite }}
+      changes: ${{ steps.changes.outputs.any_changed }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.1.0
       - name: Check if docsite files are modified
-        uses: dorny/paths-filter@v2.10.2
         id: changes
+        uses: tj-actions/changed-files@v32
         with:
-          filters: |
-            docsite:
-              - 'docsite/**'
+          files: |
+            docsite/**
 
   build-and-publish:
     runs-on: ubuntu-latest
