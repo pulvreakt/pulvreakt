@@ -8,6 +8,9 @@ import com.rabbitmq.client.DeliverCallback
 import com.uchuhimo.konf.Config
 import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.nio.charset.StandardCharsets
@@ -15,18 +18,15 @@ import java.nio.charset.StandardCharsets
 actual class MyCommunication(
     override val id: String,
     private val neighboursList: List<String> = emptyList(),
-) : Communication<String, Map<String, String>, String>, KoinComponent {
+) : Communication<Export, List<Export>, String>, KoinComponent {
     private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
-    private var neighboursMessages: Map<String, String> = emptyMap()
+    private var neighboursMessages: Map<String, Export> = emptyMap()
 
-    private val deliverCallback = DeliverCallback { consumerTag, deliver ->
-        val message = String(deliver.body, StandardCharsets.UTF_8)
-        "(.+) - .+".toRegex().find(message)?.destructured?.let { (neighbourId) ->
-            println("[$consumerTag] Received message from $neighbourId: $message")
-            neighboursMessages = neighboursMessages + (neighbourId to message)
-        }
+    private val deliverCallback = DeliverCallback { _, deliver ->
+        val message = Json.decodeFromString<Export>(String(deliver.body, StandardCharsets.UTF_8))
+        neighboursMessages = neighboursMessages + (message.deviceId to message)
     }
     private val cancelCallback = CancelCallback { consumerTag ->
         println("[$consumerTag] was canceled")
@@ -53,23 +53,23 @@ actual class MyCommunication(
         connection.close()
     }
 
-    override fun send(payload: String) {
-        neighboursList.forEach { channel.basicPublish("", "neighbours/$it", null, payload.toByteArray(StandardCharsets.UTF_8)) }
+    override fun send(payload: Export) {
+        neighboursList.forEach { channel.basicPublish("", "neighbours/$it", null, Json.encodeToString(payload).toByteArray()) }
     }
 
-    override fun receive(): Map<String, String> = neighboursMessages
+    override fun receive(): List<Export> = neighboursMessages.values.toList()
 }
 
-actual class MyCommunicationComponent(override val deviceID: String) :
-    SendReceiveDeviceComponent<Map<String, String>, String, String>, KoinComponent {
+actual class MyCommunicationComponent(override val id: String) :
+    SendReceiveDeviceComponent<List<Export>, Export, String>, KoinComponent {
     private val myCommunication: MyCommunication by inject()
     private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
-    private var lastMessage: String = ""
-    private val deliverCallback = DeliverCallback { consumerTag, deliver ->
-        lastMessage = String(deliver.body, StandardCharsets.UTF_8)
-        println("[$consumerTag] Received message: $lastMessage")
+    private var lastMessage: Export? = null // = Export("", emptyMap())
+    private val deliverCallback = DeliverCallback { _, deliver ->
+        val msg = Json.decodeFromString<BehaviourOutgoingMessages.CommunicationMessage>(String(deliver.body, StandardCharsets.UTF_8))
+        lastMessage = msg.export
     }
     private val cancelCallback = CancelCallback { consumerTag ->
         println("[$consumerTag] was canceled")
@@ -80,9 +80,9 @@ actual class MyCommunicationComponent(override val deviceID: String) :
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
-                channel.queueDeclare("communication/$deviceID/inbox", false, false, false, null)
-                channel.queueDeclare("communication/$deviceID/outbox", false, false, false, null)
-                channel.basicConsume("communication/$deviceID/inbox", true, "CommComponentConsumer", deliverCallback, cancelCallback)
+                channel.queueDeclare("communication/$id/inbox", false, false, false, null)
+                channel.queueDeclare("communication/$id/outbox", false, false, false, null)
+                channel.basicConsume("communication/$id/inbox", true, "CommComponentConsumer", deliverCallback, cancelCallback)
                 this.channel = channel
             }
         }
@@ -94,15 +94,17 @@ actual class MyCommunicationComponent(override val deviceID: String) :
         myCommunication.finalize()
     }
 
-    override fun sendToComponent(payload: Map<String, String>, to: String?) {
-        channel.basicPublish("", "communication/$deviceID/outbox", null, payload.toString().toByteArray())
+    override fun sendToComponent(payload: List<Export>, to: String?) {
+        channel.basicPublish("", "communication/$id/outbox", null, Json.encodeToString(payload).toByteArray())
     }
 
-    override fun receiveFromComponent(from: String?): String = lastMessage
+    override fun receiveFromComponent(from: String?): Export? = lastMessage
 
     override suspend fun cycle() {
-        val exportToSend = receiveFromComponent()
-        myCommunication.send(exportToSend)
+        receiveFromComponent()?.let {
+            myCommunication.send(it)
+            lastMessage = null // Prevent sending the same data multiple times
+        }
         val receivedExports = myCommunication.receive()
         sendToComponent(receivedExports)
     }

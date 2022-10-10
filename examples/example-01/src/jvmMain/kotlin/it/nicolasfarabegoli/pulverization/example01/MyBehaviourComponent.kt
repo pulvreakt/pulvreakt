@@ -7,30 +7,30 @@ import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import com.uchuhimo.konf.Config
 import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.nio.charset.StandardCharsets
 
-actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
+actual class MyBehaviourComponent(override val id: String) :
+    SendReceiveDeviceComponent<BehaviourOutgoingMessages, BehaviourIncomingMessages, String>,
+    KoinComponent {
     private val state: MyState by inject()
     private val behaviour: MyBehaviour by inject()
     private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
-    private var sensorsStatus: Map<String, Double> = emptyMap()
-    private var incomingExport: Map<String, Export> = emptyMap()
-    private val sensorsDeliverCallback = DeliverCallback { consumerTag, deliver ->
-        val messages = String(deliver.body, StandardCharsets.UTF_8)
-        println("[$consumerTag] Received sensors value: $messages")
-        "(.+) - (.+)".toRegex().find(messages)?.destructured?.let { (sensor, value) ->
-            sensorsStatus = sensorsStatus + (sensor to value.toDouble())
-        } ?: println("[$consumerTag] Error decoding message")
+    private var lastSensorRead: Map<String, Double> = emptyMap()
+    private var incomingExport: List<Export> = emptyList()
+    private val sensorsDeliverCallback = DeliverCallback { _, deliver ->
+        val messages = Json.decodeFromString<SensorPayload.SensorResult>(String(deliver.body, StandardCharsets.UTF_8))
+        lastSensorRead = lastSensorRead + (messages.sensorId to messages.value)
     }
     private val deliverCallback = DeliverCallback { consumerTag, deliver ->
-        val message = String(deliver.body, StandardCharsets.UTF_8)
-//        "communication/(.+)/inbox|outbox".toRegex().find(deliver.envelope.routingKey)?.destructured?.let { (deviceId) ->
-//            incomingExport = incomingExport + (deviceId to Export(emptyMap()))
-//        }
+        val message = Json.decodeFromString<List<Export>>(String(deliver.body, StandardCharsets.UTF_8))
+        incomingExport = message
         println("[$consumerTag] Received export: $message")
     }
     private val cancelCallback = CancelCallback { consumerTag -> println("[$consumerTag] was canceled") }
@@ -40,12 +40,12 @@ actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDe
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
-                channel.queueDeclare("communication/$deviceID/inbox", false, false, false, null)
-                channel.queueDeclare("communication/$deviceID/outbox", false, false, false, null)
-                channel.queueDeclare("sensors/$deviceID", false, false, false, null)
+                channel.queueDeclare("communication/$id/inbox", false, false, false, null)
+                channel.queueDeclare("communication/$id/outbox", false, false, false, null)
+                channel.queueDeclare("sensors/$id", false, false, false, null)
 
-                channel.basicConsume("communication/$deviceID/outbox", true, "BehaviourCommunicationConsumer", deliverCallback, cancelCallback)
-                channel.basicConsume("sensors/$deviceID", true, "BehaviourSensorsConsumer", sensorsDeliverCallback, cancelCallback)
+                channel.basicConsume("communication/$id/outbox", true, "BehaviourCommunicationConsumer", deliverCallback, cancelCallback)
+                channel.basicConsume("sensors/$id", true, "BehaviourSensorsConsumer", sensorsDeliverCallback, cancelCallback)
                 this.channel = channel
             }
         }
@@ -56,20 +56,20 @@ actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDe
         connection.close()
     }
 
-    override fun sendToComponent(payload: OutgoingMessages, to: String?) {
+    override fun sendToComponent(payload: BehaviourOutgoingMessages, to: String?) {
         when (payload) {
-            is OutgoingMessages.CommunicationMessage ->
-                channel.basicPublish("", "communication/$deviceID/inbox", null, payload.export.toByteArray())
+            is BehaviourOutgoingMessages.CommunicationMessage ->
+                channel.basicPublish("", "communication/$id/inbox", null, Json.encodeToString(payload).toByteArray())
 
-            is OutgoingMessages.UpdateState -> state.update(payload.newState)
+            is BehaviourOutgoingMessages.UpdateState -> state.update(payload.newState)
         }
     }
 
-    override fun receiveFromComponent(from: String?) {}
+    override fun receiveFromComponent(from: String?): BehaviourIncomingMessages = TODO()
 
     override suspend fun cycle() {
-        val (newState, _, _, _) = behaviour(state.get(), incomingExport, emptySet())
-        sendToComponent(OutgoingMessages.UpdateState(newState))
-        sendToComponent(OutgoingMessages.CommunicationMessage("$deviceID - ${Export(sensorsStatus)}"), "")
+        val (newState, export, _, _) = behaviour(state.get(), incomingExport, lastSensorRead)
+        sendToComponent(BehaviourOutgoingMessages.UpdateState(newState))
+        sendToComponent(BehaviourOutgoingMessages.CommunicationMessage(export))
     }
 }

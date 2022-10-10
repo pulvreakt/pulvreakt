@@ -4,6 +4,6 @@ import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import org.koin.core.component.KoinComponent
 
-expect class MyCommunication : Communication<String, Map<String, String>, String>
+expect class MyCommunication : Communication<Export, List<Export>, String>
 
-expect class MyCommunicationComponent : SendReceiveDeviceComponent<Map<String, String>, String, String>, KoinComponent
+expect class MyCommunicationComponent : SendReceiveDeviceComponent<List<Export>, Export, String>, KoinComponent

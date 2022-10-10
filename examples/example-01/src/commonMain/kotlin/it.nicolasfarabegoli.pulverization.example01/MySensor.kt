@@ -2,6 +2,7 @@ package it.nicolasfarabegoli.pulverization.example01
 
 import it.nicolasfarabegoli.pulverization.component.SendOnlyDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Sensor
+import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import kotlin.random.Random
 
@@ -10,6 +11,7 @@ class MySensor(override val id: String) : Sensor<Double, String> {
 }
 
 sealed class SensorPayload {
+    @Serializable
     data class SensorResult(val sensorId: String, val value: Double) : SensorPayload()
 }
 
