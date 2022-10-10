@@ -30,6 +30,9 @@ class SensorsContainer<I> {
         sensors = sensors + sensor
     }
 
+    /**
+     * Add multiple [Sensor] to the [SensorsContainer].
+     */
     fun <P, S : Sensor<P, I>> addAll(vararg allSensor: S) {
         sensors = sensors + allSensor.toSet()
     }
@@ -52,11 +55,15 @@ class SensorsContainer<I> {
 
     inline fun <reified S : Sensor<*, I>> get(): S? = this[S::class]
 
-    inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) {
-        get(S::class)?.run()
-    }
+    /**
+     * Extract the given [Sensor] and make it available in a lambda with receiver.
+     */
+    inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) = get(S::class)?.run()
 
     inline fun <reified S : Sensor<*, I>> getAll(): Set<S> = this.getAll(S::class)
 
+    /**
+     * Extract the given [Sensor]s and make the set available in a lambda with receiver.
+     */
     inline fun <reified S : Sensor<*, I>> getAll(run: Set<S>.() -> Unit) = getAll(S::class).run()
 }
