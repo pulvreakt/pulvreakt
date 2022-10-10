@@ -94,16 +94,16 @@ actual class MyCommunicationComponent(override val deviceID: String) :
         myCommunication.finalize()
     }
 
-    override fun sendToComponent(payload: Map<String, String>, to: String) {
+    override fun sendToComponent(payload: Map<String, String>, to: String?) {
         channel.basicPublish("", "communication/$deviceID/outbox", null, payload.toString().toByteArray())
     }
 
-    override fun receiveFromComponent(from: String): String = lastMessage
+    override fun receiveFromComponent(from: String?): String = lastMessage
 
     override suspend fun cycle() {
-        val r = receiveFromComponent("")
-        myCommunication.send(r)
-        val rr = myCommunication.receive()
-        sendToComponent(rr, "")
+        val exportToSend = receiveFromComponent()
+        myCommunication.send(exportToSend)
+        val receivedExports = myCommunication.receive()
+        sendToComponent(receivedExports)
     }
 }

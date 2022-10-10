@@ -16,11 +16,11 @@ actual class MyCommunication(override val id: String) : Communication<String, Ma
 
 actual class MyCommunicationComponent(override val deviceID: String) :
     SendReceiveDeviceComponent<Map<String, String>, String, String>, KoinComponent {
-    override fun sendToComponent(payload: Map<String, String>, to: String) {
+    override fun sendToComponent(payload: Map<String, String>, to: String?) {
         TODO("Not yet implemented")
     }
 
-    override fun receiveFromComponent(from: String): String {
+    override fun receiveFromComponent(from: String?): String {
         TODO("Not yet implemented")
     }
 

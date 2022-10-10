@@ -56,7 +56,7 @@ actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDe
         connection.close()
     }
 
-    override fun sendToComponent(payload: OutgoingMessages, to: String) {
+    override fun sendToComponent(payload: OutgoingMessages, to: String?) {
         when (payload) {
             is OutgoingMessages.CommunicationMessage ->
                 channel.basicPublish("", "communication/$deviceID/inbox", null, payload.export.toByteArray())
@@ -65,11 +65,11 @@ actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDe
         }
     }
 
-    override fun receiveFromComponent(from: String) {}
+    override fun receiveFromComponent(from: String?) {}
 
     override suspend fun cycle() {
         val (newState, _, _, _) = behaviour(state.get(), incomingExport, emptySet())
-        sendToComponent(OutgoingMessages.UpdateState(newState), "")
+        sendToComponent(OutgoingMessages.UpdateState(newState))
         sendToComponent(OutgoingMessages.CommunicationMessage("$deviceID - ${Export(sensorsStatus)}"), "")
     }
 }
