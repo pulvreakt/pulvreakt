@@ -6,7 +6,7 @@ import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import com.uchuhimo.konf.Config
-import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -58,7 +58,8 @@ actual class MyCommunication(private val neighboursList: List<String> = emptyLis
     override fun receive(): Map<String, String> = neighboursMessages
 }
 
-actual class MyCommunicationComponent(override val deviceID: String) : DeviceComponent<Map<String, String>, String, String>, KoinComponent {
+actual class MyCommunicationComponent(override val deviceID: String) :
+    SendReceiveDeviceComponent<Map<String, String>, String, String>, KoinComponent {
     private val myCommunication: MyCommunication by inject()
     private val config: Config by inject()
     private val channel: Channel

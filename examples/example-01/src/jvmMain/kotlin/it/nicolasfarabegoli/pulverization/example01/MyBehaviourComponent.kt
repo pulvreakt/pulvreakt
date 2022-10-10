@@ -6,12 +6,12 @@ import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import com.uchuhimo.konf.Config
-import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.nio.charset.StandardCharsets
 
-actual class MyBehaviourComponent(override val deviceID: String) : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
+actual class MyBehaviourComponent(override val deviceID: String) : SendReceiveDeviceComponent<OutgoingMessages, Unit, String>, KoinComponent {
     private val state: MyState by inject()
     private val behaviour: MyBehaviour by inject()
     private val config: Config by inject()
