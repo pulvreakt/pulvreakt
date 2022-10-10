@@ -6,7 +6,9 @@ package it.nicolasfarabegoli.pulverization.core
  * @param S the type of the message to send.
  * @param R the type of the message to receive.
  */
-interface Communication<in S, out R> {
+interface Communication<in S, out R, I> {
+    val id: I
+
     /**
      * Abstraction of the _sending action_ to other devices.
      */
