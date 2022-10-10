@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.docker)
+    alias(libs.plugins.kotlinx.serialization)
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
