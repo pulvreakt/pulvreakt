@@ -23,6 +23,7 @@ data class BehaviourOutput<S, E, A, O>(
  * @param W the type of the sensed values
  * @param A the type of the actuation to do
  */
-interface Behaviour<S, E, W, A, O> {
-    operator fun invoke(state: S, export: E, sensedValues: W): BehaviourOutput<S, E, A, O>
+interface Behaviour<S, E, W, A, O, I> {
+    val id: I
+    operator fun invoke(state: S, export: List<E>, sensedValues: W): BehaviourOutput<S, E, A, O>
 }
