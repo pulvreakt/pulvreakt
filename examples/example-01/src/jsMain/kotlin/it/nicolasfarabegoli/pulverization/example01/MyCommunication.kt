@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.example01
 
-import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import org.koin.core.component.KoinComponent
 
@@ -14,7 +14,8 @@ actual class MyCommunication : Communication<String, Map<String, String>> {
     }
 }
 
-actual class MyCommunicationComponent(override val deviceID: String) : DeviceComponent<Map<String, String>, String, String>, KoinComponent {
+actual class MyCommunicationComponent(override val deviceID: String) :
+    SendReceiveDeviceComponent<Map<String, String>, String, String>, KoinComponent {
     override fun sendToComponent(payload: Map<String, String>, to: String) {
         TODO("Not yet implemented")
     }

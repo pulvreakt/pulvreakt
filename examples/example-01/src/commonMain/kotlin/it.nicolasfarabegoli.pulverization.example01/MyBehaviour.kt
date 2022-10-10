@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.example01
 
-import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.BehaviourOutput
 import it.nicolasfarabegoli.pulverization.core.State
@@ -28,4 +28,4 @@ sealed class OutgoingMessages {
     data class CommunicationMessage(val state: String) : OutgoingMessages()
 }
 
-expect class MyBehaviourComponent : DeviceComponent<OutgoingMessages, Unit, String>, KoinComponent
+expect class MyBehaviourComponent : SendReceiveDeviceComponent<OutgoingMessages, Unit, String>, KoinComponent
