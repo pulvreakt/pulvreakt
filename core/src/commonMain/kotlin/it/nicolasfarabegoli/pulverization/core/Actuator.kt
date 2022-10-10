@@ -31,6 +31,9 @@ class ActuatorsContainer<I> {
         actuators = actuators + actuator
     }
 
+    /**
+     * Add [allActuators] to the [ActuatorsContainer].
+     */
     fun <P, A : Actuator<P, I>> addAll(vararg allActuators: A) {
         actuators = actuators + allActuators.toSet()
     }
@@ -60,6 +63,12 @@ class ActuatorsContainer<I> {
      */
     inline fun <reified A : Actuator<*, I>> get(): A? = this.get(A::class)
 
+    /**
+     * Finds a single [Actuator] of the type [A] and make it available inside the [run] function scope.
+     * This method should be called when a single instance of the specific type [A] is available in the container,
+     * otherwise a single instance is taken.
+     * If no [Actuator] of the given type [A] is available, the [run] function is not executed.
+     */
     inline fun <reified A : Actuator<*, I>> get(run: A.() -> Unit) = this.get(A::class)?.run()
 
     /**
@@ -67,5 +76,8 @@ class ActuatorsContainer<I> {
      */
     inline fun <reified A : Actuator<*, I>> getAll(): Set<A> = this.getAll(A::class)
 
+    /**
+     * Finds all [Actuator]s of the type [A] and make it available as a [Set] inside the [run] function scope.
+     */
     inline fun <reified A : Actuator<*, I>> getAll(run: Set<A>.() -> Unit) = this.getAll(A::class).run()
 }
