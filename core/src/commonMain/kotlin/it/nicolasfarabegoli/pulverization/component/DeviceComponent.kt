@@ -6,10 +6,17 @@ import it.nicolasfarabegoli.pulverization.communication.SenderCommunicator
 
 /**
  * Models the concept of _Component_ belonging to a _Device_.
- * Contains a [deviceID] and a [cycle] method to execute the logic of the component.
+ * Contains a [id] and a [cycle] method to execute the logic of the component.
  */
 interface DeviceComponent<I> {
-    val deviceID: I
+    /**
+     * The [id] of the device.
+     */
+    val id: I
+
+    /**
+     * Execute a single cycle of the device logic.
+     */
     suspend fun cycle()
 }
 
