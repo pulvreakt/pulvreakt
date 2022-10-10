@@ -32,7 +32,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
         connection.close()
     }
 
-    override fun sendToComponent(payload: SensorPayload, to: String) {
+    override fun sendToComponent(payload: SensorPayload, to: String?) {
         when (payload) {
             is SensorPayload.SensorResult ->
                 channel.basicPublish("", "sensors/$deviceID", null, "${payload.sensorId} - ${payload.value}".toByteArray())
@@ -42,7 +42,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
     override suspend fun cycle() {
         sensorsContainer.get<MySensor> {
             val sensedValue = sense()
-            sendToComponent(SensorPayload.SensorResult(id, sensedValue), "")
+            sendToComponent(SensorPayload.SensorResult(id, sensedValue))
         }
     }
 }
