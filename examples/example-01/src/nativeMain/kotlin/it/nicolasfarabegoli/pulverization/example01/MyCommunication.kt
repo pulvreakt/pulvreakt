@@ -4,7 +4,7 @@ import it.nicolasfarabegoli.pulverization.component.SendReceiveDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import org.koin.core.component.KoinComponent
 
-actual class MyCommunication : Communication<String, Map<String, String>> {
+actual class MyCommunication(override val id: String) : Communication<String, Map<String, String>, String> {
     override fun send(payload: String) {
         TODO("Not yet implemented")
     }

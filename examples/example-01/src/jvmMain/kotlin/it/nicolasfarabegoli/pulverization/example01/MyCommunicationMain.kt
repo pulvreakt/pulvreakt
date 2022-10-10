@@ -17,7 +17,7 @@ fun main() = runBlocking {
     startKoin {
         modules(
             module {
-                single { MyCommunication(devices.neighbours.toList()) }
+                single { MyCommunication(deviceID, devices.neighbours.toList()) }
                 single { config }
             },
         )

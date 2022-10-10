@@ -12,19 +12,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.nio.charset.StandardCharsets
 
-actual class MyCommunication(private val neighboursList: List<String> = emptyList()) : Communication<String, Map<String, String>>, KoinComponent {
+actual class MyCommunication(
+    override val id: String,
+    private val neighboursList: List<String> = emptyList(),
+) : Communication<String, Map<String, String>, String>, KoinComponent {
     private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
-    private val routingKeyExtractor = "neighbours/(.+)/(inbox|outbox)".toRegex()
     private var neighboursMessages: Map<String, String> = emptyMap()
 
     private val deliverCallback = DeliverCallback { consumerTag, deliver ->
-        routingKeyExtractor.find(deliver.envelope.routingKey)?.destructured?.let { (neighbourId, _) ->
-            val message = String(deliver.body, StandardCharsets.UTF_8)
+        val message = String(deliver.body, StandardCharsets.UTF_8)
+        "(.+) - .+".toRegex().find(message)?.destructured?.let { (neighbourId) ->
             println("[$consumerTag] Received message from $neighbourId: $message")
             neighboursMessages = neighboursMessages + (neighbourId to message)
-        } ?: println("Invalid routing key: ${deliver.envelope.routingKey}")
+        }
     }
     private val cancelCallback = CancelCallback { consumerTag ->
         println("[$consumerTag] was canceled")
@@ -37,10 +39,10 @@ actual class MyCommunication(private val neighboursList: List<String> = emptyLis
             this.connection = conn
             conn.createChannel().let { channel ->
                 neighboursList.forEach {
-                    channel.queueDeclare("neighbours/$it/inbox", false, false, false, null)
-                    channel.queueDeclare("neighbours/$it/outbox", false, false, false, null)
-                    channel.basicConsume("neighbours/$it/outbox", true, "CommunicationConsumer", deliverCallback, cancelCallback)
+                    channel.queueDeclare("neighbours/$it", false, false, false, null)
                 }
+                channel.queueDeclare("neighbours/$id", false, false, false, null)
+                channel.basicConsume("neighbours/$id", true, "CommunicatorConsumer", deliverCallback, cancelCallback)
                 this.channel = channel
             }
         }
@@ -52,7 +54,7 @@ actual class MyCommunication(private val neighboursList: List<String> = emptyLis
     }
 
     override fun send(payload: String) {
-        neighboursList.forEach { channel.basicPublish("", "neighbour/$it/inbox", null, payload.toByteArray(StandardCharsets.UTF_8)) }
+        neighboursList.forEach { channel.basicPublish("", "neighbours/$it", null, payload.toByteArray(StandardCharsets.UTF_8)) }
     }
 
     override fun receive(): Map<String, String> = neighboursMessages
