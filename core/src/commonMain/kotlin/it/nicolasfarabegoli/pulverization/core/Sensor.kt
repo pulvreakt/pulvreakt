@@ -53,17 +53,29 @@ class SensorsContainer<I> {
     fun <T, S : Sensor<T, I>> getAll(type: KClass<S>): Set<S> =
         sensors.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? S }.toSet()
 
+    /**
+     * Returns a single [Sensor] of the type [S].
+     * This method should be called when a single instance of the specific type [S] is available in the container,
+     * otherwise a single instance is taken.
+     * If no [Actuator] of the given type [S] is available, null is returned.
+     */
     inline fun <reified S : Sensor<*, I>> get(): S? = this[S::class]
 
     /**
-     * Extract the given [Sensor] and make it available in a lambda with receiver.
+     * Finds a single [Sensor] of the type [S] and make it available inside the [run] function scope.
+     * This method should be called when a single instance of the specific type [S] is available in the container,
+     * otherwise a single instance is taken.
+     * If no [Sensor] of the given type [S] is available, the [run] function is not executed.
      */
     inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) = get(S::class)?.run()
 
+    /**
+     * Returns a set of [Sensor]s of type [S].
+     */
     inline fun <reified S : Sensor<*, I>> getAll(): Set<S> = this.getAll(S::class)
 
     /**
-     * Extract the given [Sensor]s and make the set available in a lambda with receiver.
+     * Finds all [Sensor]s of the type [S] and make it available as a [Set] inside the [run] function scope.
      */
     inline fun <reified S : Sensor<*, I>> getAll(run: Set<S>.() -> Unit) = getAll(S::class).run()
 }
