@@ -25,7 +25,7 @@ fun main() = runBlocking {
     val component = MyBehaviourComponent(deviceID)
 
     // Smart logic to handle the component lifecycle.
-    repeat(15) {
+    repeat(config[PulverizationConfig.repetitions]) {
         component.cycle()
         delay(1000)
     }
