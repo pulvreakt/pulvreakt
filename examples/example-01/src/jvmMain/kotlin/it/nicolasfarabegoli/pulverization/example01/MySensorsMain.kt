@@ -13,7 +13,7 @@ fun main() = runBlocking {
     val config = Config { addSpec(PulverizationConfig) }
         .from.yaml.resource("pulverization.yaml")
 
-    val mySensor = MySensor("sensor-1")
+    val mySensor = MySensor("sensor-1-$deviceID")
 
     val module = module {
         single { SensorsContainer<String>().apply { this += mySensor } }

@@ -16,6 +16,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
     private val channel: Channel
 
     init {
+        println("Connect ${config[PulverizationConfig.hostname]} - ${config[PulverizationConfig.port]}")
         val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
@@ -41,7 +42,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
     override suspend fun cycle() {
         sensorsContainer.get<MySensor> {
             val sensedValue = sense()
-            sendToComponent(SensorPayload.SensorResult("", sensedValue), "")
+            sendToComponent(SensorPayload.SensorResult(id, sensedValue), "")
         }
     }
 }

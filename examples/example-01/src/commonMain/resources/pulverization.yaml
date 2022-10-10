@@ -1,5 +1,5 @@
 pulverization:
-  hostname: "localhost"
+  hostname: "rabbitmq"
   repetitions: 15
   devices:
     - id: "0"
