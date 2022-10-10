@@ -11,7 +11,7 @@ interface SenderCommunicator<in Send, in I> {
  * Models the ability to (only) receive messages from other components.
  */
 interface ReceiverCommunicator<out Receive, in I> {
-    fun receiveFromComponent(from: I? = null): Receive
+    fun receiveFromComponent(from: I? = null): Receive?
 }
 
 /**
