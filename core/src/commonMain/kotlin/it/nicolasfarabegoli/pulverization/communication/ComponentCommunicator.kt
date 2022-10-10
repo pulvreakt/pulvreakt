@@ -3,18 +3,18 @@ package it.nicolasfarabegoli.pulverization.communication
 /**
  * Models the ability to (only) send messages to other components.
  */
-interface SenderCommunicator<in P, in I> {
-    fun sendToComponent(payload: P, to: I)
+interface SenderCommunicator<in Send, in I> {
+    fun sendToComponent(payload: Send, to: I? = null)
 }
 
 /**
  * Models the ability to (only) receive messages from other components.
  */
-interface ReceiverCommunicator<out P, in I> {
-    fun receiveFromComponent(from: I): P
+interface ReceiverCommunicator<out Receive, in I> {
+    fun receiveFromComponent(from: I? = null): Receive
 }
 
 /**
  * Models the ability to send and receive messages to and from other components.
  */
-interface BidirectionalCommunicator<in PS, out PR, I> : SenderCommunicator<PS, I>, ReceiverCommunicator<PR, I>
+interface BidirectionalCommunicator<in Send, out Receive, I> : SenderCommunicator<Send, I>, ReceiverCommunicator<Receive, I>
