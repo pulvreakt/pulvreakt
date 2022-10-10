@@ -42,7 +42,7 @@ class ActuatorsContainer<I> {
      * If no [Actuator] of the given [type] is available, null is returned.
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T, A : Actuator<T, I>> get(type: KClass<A>): A? =
+    fun <T, A : Actuator<T, I>> get(type: KClass<A>): A? =
         actuators.firstOrNull { type.isInstance(it) } as? A
 
     /**
@@ -51,19 +51,21 @@ class ActuatorsContainer<I> {
     @Suppress("UNCHECKED_CAST")
     fun <T, A : Actuator<T, I>> getAll(type: KClass<in A>): Set<A> =
         actuators.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? A }.toSet()
+
+    /**
+     * Returns a single [Actuator] of the type [A].
+     * This method should be called when a single instance of the specific type [A] is available in the container,
+     * otherwise a single instance is taken.
+     * If no [Actuator] of the given type [A] is available, null is returned.
+     */
+    inline fun <reified A : Actuator<*, I>> get(): A? = this.get(A::class)
+
+    inline fun <reified A : Actuator<*, I>> get(run: A.() -> Unit) = this.get(A::class)?.run()
+
+    /**
+     * Returns a set of [Actuator]s of type [A].
+     */
+    inline fun <reified A : Actuator<*, I>> getAll(): Set<A> = this.getAll(A::class)
+
+    inline fun <reified A : Actuator<*, I>> getAll(run: Set<A>.() -> Unit) = this.getAll(A::class).run()
 }
-
-/**
- * Returns a set of [Actuator]s of type [A] with a payload [T].
- */
-inline fun <I, T, reified A : Actuator<T, I>> ActuatorsContainer<I>.getActuators(): Set<A> =
-    this.getAll(A::class)
-
-/**
- * Returns a single [Actuator] of the type [A] with payload type [T].
- * This method should be called when a single instance of the specific type [A] is available in the container,
- * otherwise a single instance is taken.
- * If no [Actuator] of the given type [A] is available, null is returned.
- */
-inline fun <I, T, reified A : Actuator<T, I>> ActuatorsContainer<I>.getActuator(): A? =
-    this[A::class]
