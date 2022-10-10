@@ -15,7 +15,7 @@ fun main() = runBlocking {
     val appModule = module {
         single { config }
         single { MyState("state -> $deviceID") }
-        single { MyBehaviour() }
+        single { MyBehaviour(deviceID) }
     }
 
     startKoin {

@@ -6,10 +6,12 @@ import com.rabbitmq.client.ConnectionFactory
 import com.uchuhimo.konf.Config
 import it.nicolasfarabegoli.pulverization.component.SendOnlyDeviceComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceComponent<SensorPayload, String>, KoinComponent {
+actual class MySensorsComponent(override val id: String) : SendOnlyDeviceComponent<SensorPayload, String>, KoinComponent {
     private val sensorsContainer: SensorsContainer<String> by inject()
     private val config: Config by inject()
     private val connection: Connection
@@ -21,7 +23,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
-                channel.queueDeclare("sensors/$deviceID", false, false, false, null)
+                channel.queueDeclare("sensors/$id", false, false, false, null)
                 this.channel = channel
             }
         }
@@ -35,7 +37,7 @@ actual class MySensorsComponent(override val deviceID: String) : SendOnlyDeviceC
     override fun sendToComponent(payload: SensorPayload, to: String?) {
         when (payload) {
             is SensorPayload.SensorResult ->
-                channel.basicPublish("", "sensors/$deviceID", null, "${payload.sensorId} - ${payload.value}".toByteArray())
+                channel.basicPublish("", "sensors/$id", null, Json.encodeToString(payload).toByteArray())
         }
     }
 
