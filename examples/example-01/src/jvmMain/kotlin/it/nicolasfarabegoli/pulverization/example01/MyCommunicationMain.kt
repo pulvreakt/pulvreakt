@@ -25,7 +25,7 @@ fun main() = runBlocking {
 
     val component = MyCommunicationComponent(deviceID)
 
-    repeat(15) {
+    repeat(config[PulverizationConfig.repetitions]) {
         component.cycle()
         delay(1000)
     }
