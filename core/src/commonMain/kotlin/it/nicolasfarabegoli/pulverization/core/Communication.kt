@@ -17,5 +17,5 @@ interface Communication<in S, out R, I> {
     /**
      * Abstraction of the _receiving action_ from other devices.
      */
-    fun receive(): R
+    fun receive(): R?
 }
