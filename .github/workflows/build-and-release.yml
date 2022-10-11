@@ -30,6 +30,15 @@ jobs:
         run: |
           ./gradlew assemble --parallel
           ./gradlew check --parallel
+          ./gradlew koverMergedXmlReport --parallel
+      - name: Upload code coverage result
+        if: ${{ runner.os == 'Linux' }}
+        uses: codecov/codecov-action@v3
+        with:
+          files: build/reports/kover/merged/xml/report.xml
+          flags: unittests
+          fail_ci_if_error: true
+          verbose: true
 
   release:
     concurrency:
