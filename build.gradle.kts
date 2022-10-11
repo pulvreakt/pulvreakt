@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.shadow)
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -18,6 +19,7 @@ allprojects {
         apply(plugin = detekt.gradle.id)
         apply(plugin = ktlint.gradle.id)
         apply(plugin = dokka.id)
+        apply(plugin = "org.jetbrains.kotlinx.kover")
     }
 
     repositories {
@@ -124,4 +126,26 @@ allprojects {
     detekt {
         config = files("detekt.yml")
     }
+
+    koverMerged {
+        enable()
+
+        htmlReport {
+            onCheck.set(true)
+        }
+
+        xmlReport {
+            onCheck.set(true)
+        }
+    }
+
+//    kover {
+//        isDisabled.set(false)
+//        xmlReport {
+//            onCheck.set(true)
+//        }
+//        htmlReport {
+//            onCheck.set(true)
+//        }
+//    }
 }
