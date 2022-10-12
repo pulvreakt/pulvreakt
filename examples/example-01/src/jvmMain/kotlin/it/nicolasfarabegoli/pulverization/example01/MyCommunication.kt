@@ -88,7 +88,7 @@ actual class MyCommunicationComponent(override val id: String) :
         }
     }
 
-    fun finalize() {
+    override fun finalize() {
         channel.close()
         connection.close()
         myCommunication.finalize()

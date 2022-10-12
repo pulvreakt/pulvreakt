@@ -51,7 +51,7 @@ actual class MyBehaviourComponent(override val id: String) :
         }
     }
 
-    fun finalize() {
+    override fun finalize() {
         channel.close()
         connection.close()
     }
