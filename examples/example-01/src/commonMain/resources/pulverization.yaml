@@ -3,6 +3,8 @@ pulverization:
   repetitions: 15
   devices:
     - id: "0"
-      neighbours: [ "1" ]
+      neighbours: [ "1", "2" ]
     - id: "1"
+      neighbours: [ "0" ]
+    - id: "2"
       neighbours: [ "0" ]

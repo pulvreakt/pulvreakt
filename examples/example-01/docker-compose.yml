@@ -45,6 +45,14 @@ services:
       - proxynet
     <<: *link
 
+  behaviour-2:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
   communication-0:
     <<: *comm
     environment:
@@ -61,6 +69,14 @@ services:
       - proxynet
     <<: *link
 
+  communication-2:
+    <<: *comm
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
   sensors-0:
     <<: *sens
     environment:
@@ -73,6 +89,14 @@ services:
     <<: *sens
     environment:
       DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  sensors-2:
+    <<: *sens
+    environment:
+      DEVICE_ID: "2"
     networks:
       - proxynet
     <<: *link
