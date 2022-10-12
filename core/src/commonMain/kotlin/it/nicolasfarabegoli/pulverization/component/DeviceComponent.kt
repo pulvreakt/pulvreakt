@@ -18,6 +18,12 @@ interface DeviceComponent<I> {
      * Execute a single cycle of the device logic.
      */
     suspend fun cycle()
+
+    /**
+     * Used to release the resources used by the [DeviceComponent].
+     * By default no operations are executed.
+     */
+    fun finalize() {}
 }
 
 /**
