@@ -10,7 +10,8 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.docker)
     alias(libs.plugins.kotlinx.serialization)
-    id("org.jetbrains.kotlinx.kover") version "0.6.1"
+    alias(libs.plugins.kover)
+    alias(libs.plugins.taskTree)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -21,7 +22,7 @@ allprojects {
         apply(plugin = detekt.gradle.id)
         apply(plugin = ktlint.gradle.id)
         apply(plugin = dokka.id)
-        apply(plugin = "org.jetbrains.kotlinx.kover")
+        apply(plugin = kover.id)
     }
 
     repositories {
