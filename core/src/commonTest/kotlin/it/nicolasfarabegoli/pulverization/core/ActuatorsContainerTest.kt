@@ -25,7 +25,7 @@ class ActuatorsContainerTest : FunSpec(
             }
             test("The container could be queried using the KClass") {
                 val container = ActuatorsContainer<Int>().apply { addAll(MyActuator1(10), MyActuator2(11)) }
-                container.get(MyActuator1::class) shouldNotBe null
+                container[MyActuator1::class] shouldNotBe null
                 container.getAll(MyActuator2::class).size shouldBe 1
             }
             test("The container, when queried, should return the actuator in the lambda") {
