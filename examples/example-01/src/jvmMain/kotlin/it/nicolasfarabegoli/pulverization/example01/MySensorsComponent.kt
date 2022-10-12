@@ -29,7 +29,7 @@ actual class MySensorsComponent(override val id: String) : SendOnlyDeviceCompone
         }
     }
 
-    fun finalize() {
+    override fun finalize() {
         channel.close()
         connection.close()
     }
