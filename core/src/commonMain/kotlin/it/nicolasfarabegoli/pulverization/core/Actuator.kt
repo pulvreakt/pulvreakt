@@ -34,7 +34,7 @@ class ActuatorsContainer<I> {
     /**
      * Add [allActuators] to the [ActuatorsContainer].
      */
-    fun <P, A : Actuator<P, I>> addAll(vararg allActuators: A) {
+    fun <A : Actuator<*, I>> addAll(vararg allActuators: A) {
         actuators = actuators + allActuators.toSet()
     }
 
