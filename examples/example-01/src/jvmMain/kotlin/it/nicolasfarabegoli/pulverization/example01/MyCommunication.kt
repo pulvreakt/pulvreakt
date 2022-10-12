@@ -13,7 +13,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.nio.charset.StandardCharsets
 
 actual class MyCommunication(
     override val id: String,
@@ -25,7 +24,7 @@ actual class MyCommunication(
     private var neighboursMessages: Map<String, Export> = emptyMap()
 
     private val deliverCallback = DeliverCallback { _, deliver ->
-        val message = Json.decodeFromString<Export>(String(deliver.body, StandardCharsets.UTF_8))
+        val message = Json.decodeFromString<Export>(deliver.body.decodeToString())
         neighboursMessages = neighboursMessages + (message.deviceId to message)
     }
     private val cancelCallback = CancelCallback { consumerTag ->
@@ -66,9 +65,9 @@ actual class MyCommunicationComponent(override val id: String) :
     private val config: Config by inject()
     private val channel: Channel
     private val connection: Connection
-    private var lastMessage: Export? = null // = Export("", emptyMap())
+    private var lastMessage: Export? = null
     private val deliverCallback = DeliverCallback { _, deliver ->
-        val msg = Json.decodeFromString<BehaviourOutgoingMessages.CommunicationMessage>(String(deliver.body, StandardCharsets.UTF_8))
+        val msg = Json.decodeFromString<BehaviourOutgoingMessages.CommunicationMessage>(deliver.body.decodeToString())
         lastMessage = msg.export
     }
     private val cancelCallback = CancelCallback { consumerTag ->

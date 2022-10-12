@@ -12,7 +12,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.nio.charset.StandardCharsets
 
 actual class MyBehaviourComponent(override val id: String) :
     SendReceiveDeviceComponent<BehaviourOutgoingMessages, BehaviourIncomingMessages, String>,
@@ -25,11 +24,11 @@ actual class MyBehaviourComponent(override val id: String) :
     private var lastSensorRead: Map<String, Double> = emptyMap()
     private var incomingExport: List<Export> = emptyList()
     private val sensorsDeliverCallback = DeliverCallback { _, deliver ->
-        val messages = Json.decodeFromString<SensorPayload.SensorResult>(String(deliver.body, StandardCharsets.UTF_8))
+        val messages = Json.decodeFromString<SensorPayload.SensorResult>(deliver.body.decodeToString())
         lastSensorRead = lastSensorRead + (messages.sensorId to messages.value)
     }
     private val deliverCallback = DeliverCallback { consumerTag, deliver ->
-        val message = Json.decodeFromString<List<Export>>(String(deliver.body, StandardCharsets.UTF_8))
+        val message = Json.decodeFromString<List<Export>>(deliver.body.decodeToString())
         incomingExport = message
         println("[$consumerTag] Received export: $message")
     }
