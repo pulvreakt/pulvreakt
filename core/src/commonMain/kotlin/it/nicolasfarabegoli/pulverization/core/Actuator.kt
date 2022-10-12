@@ -45,7 +45,7 @@ class ActuatorsContainer<I> {
      * If no [Actuator] of the given [type] is available, null is returned.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T, A : Actuator<T, I>> get(type: KClass<A>): A? =
+    operator fun <T, A : Actuator<T, I>> get(type: KClass<A>): A? =
         actuators.firstOrNull { type.isInstance(it) } as? A
 
     /**
