@@ -4,6 +4,7 @@ fun ShadowJar.genericJarConfig(jarName: String, mainClass: String) {
     archiveClassifier.set("all")
     archiveBaseName.set(jarName)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude("META-INF/*.SF", "META-INF/*.RSA", "META-INF/*.DSA")
     manifest {
         attributes("Main-Class" to mainClass)
     }
