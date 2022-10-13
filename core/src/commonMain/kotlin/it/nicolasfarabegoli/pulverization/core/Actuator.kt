@@ -61,7 +61,7 @@ class ActuatorsContainer<I> {
      * otherwise a single instance is taken.
      * If no [Actuator] of the given type [A] is available, null is returned.
      */
-    inline fun <reified A : Actuator<*, I>> get(): A? = this.get(A::class)
+    inline fun <reified A : Actuator<*, I>> get(): A? = this[A::class]
 
     /**
      * Finds a single [Actuator] of the type [A] and make it available inside the [run] function scope.
@@ -69,15 +69,15 @@ class ActuatorsContainer<I> {
      * otherwise a single instance is taken.
      * If no [Actuator] of the given type [A] is available, the [run] function is not executed.
      */
-    inline fun <reified A : Actuator<*, I>> get(run: A.() -> Unit) = this.get(A::class)?.run()
+    inline fun <reified A : Actuator<*, I>> get(run: A.() -> Unit) = this[A::class]?.run()
 
     /**
      * Returns a set of [Actuator]s of type [A].
      */
-    inline fun <reified A : Actuator<*, I>> getAll(): Set<A> = this.getAll(A::class)
+    inline fun <reified A : Actuator<*, I>> getAll(): Set<A> = getAll(A::class)
 
     /**
      * Finds all [Actuator]s of the type [A] and make it available as a [Set] inside the [run] function scope.
      */
-    inline fun <reified A : Actuator<*, I>> getAll(run: Set<A>.() -> Unit) = this.getAll(A::class).run()
+    inline fun <reified A : Actuator<*, I>> getAll(run: Set<A>.() -> Unit) = getAll(A::class).run()
 }
