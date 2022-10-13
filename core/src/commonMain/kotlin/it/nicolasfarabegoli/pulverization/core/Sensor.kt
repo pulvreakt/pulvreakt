@@ -67,12 +67,12 @@ class SensorsContainer<I> {
      * otherwise a single instance is taken.
      * If no [Sensor] of the given type [S] is available, the [run] function is not executed.
      */
-    inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) = get(S::class)?.run()
+    inline fun <reified S : Sensor<*, I>> get(run: S.() -> Unit) = this[S::class]?.run()
 
     /**
      * Returns a set of [Sensor]s of type [S].
      */
-    inline fun <reified S : Sensor<*, I>> getAll(): Set<S> = this.getAll(S::class)
+    inline fun <reified S : Sensor<*, I>> getAll(): Set<S> = getAll(S::class)
 
     /**
      * Finds all [Sensor]s of the type [S] and make it available as a [Set] inside the [run] function scope.
