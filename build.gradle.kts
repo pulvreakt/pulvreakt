@@ -77,20 +77,6 @@ allprojects {
             binaries {
                 sharedLib()
                 staticLib()
-                // Remove if it is not executable
-//                "main".let { executable ->
-//                    executable {
-//                        entryPoint = executable
-//                    }
-//                    // Enable wasm32
-//                wasm32 {
-//                    binaries {
-//                        executable {
-//                            entryPoint = executable
-//                        }
-//                    }
-//                }
-//                }
             }
         }
 
@@ -143,14 +129,4 @@ allprojects {
             onCheck.set(true)
         }
     }
-
-//    kover {
-//        isDisabled.set(false)
-//        xmlReport {
-//            onCheck.set(true)
-//        }
-//        htmlReport {
-//            onCheck.set(true)
-//        }
-//    }
 }
