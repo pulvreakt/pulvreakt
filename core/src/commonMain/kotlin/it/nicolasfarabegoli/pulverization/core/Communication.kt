@@ -7,6 +7,9 @@ package it.nicolasfarabegoli.pulverization.core
  * @param R the type of the message to receive.
  */
 interface Communication<in S, out R, I> {
+    /**
+     * The device [id].
+     */
     val id: I
 
     /**

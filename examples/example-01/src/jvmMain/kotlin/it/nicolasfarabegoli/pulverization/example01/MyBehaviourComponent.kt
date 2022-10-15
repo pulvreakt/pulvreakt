@@ -35,7 +35,8 @@ actual class MyBehaviourComponent(override val id: String) :
     private val cancelCallback = CancelCallback { consumerTag -> println("[$consumerTag] was canceled") }
 
     init {
-        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
+        val connection = ConnectionFactory()
+            .apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
@@ -43,8 +44,20 @@ actual class MyBehaviourComponent(override val id: String) :
                 channel.queueDeclare("communication/$id/outbox", false, false, false, null)
                 channel.queueDeclare("sensors/$id", false, false, false, null)
 
-                channel.basicConsume("communication/$id/outbox", true, "BehaviourCommunicationConsumer", deliverCallback, cancelCallback)
-                channel.basicConsume("sensors/$id", true, "BehaviourSensorsConsumer", sensorsDeliverCallback, cancelCallback)
+                channel.basicConsume(
+                    "communication/$id/outbox",
+                    true,
+                    "BehaviourCommunicationConsumer",
+                    deliverCallback,
+                    cancelCallback,
+                )
+                channel.basicConsume(
+                    "sensors/$id",
+                    true,
+                    "BehaviourSensorsConsumer",
+                    sensorsDeliverCallback,
+                    cancelCallback,
+                )
                 this.channel = channel
             }
         }

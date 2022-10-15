@@ -11,7 +11,9 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-actual class MySensorsComponent(override val id: String) : SendOnlyDeviceComponent<SensorPayload, String>, KoinComponent {
+actual class MySensorsComponent(override val id: String) :
+    SendOnlyDeviceComponent<SensorPayload, String>,
+    KoinComponent {
     private val sensorsContainer: SensorsContainer<String> by inject()
     private val config: Config by inject()
     private val connection: Connection
@@ -19,7 +21,8 @@ actual class MySensorsComponent(override val id: String) : SendOnlyDeviceCompone
 
     init {
         println("Connect ${config[PulverizationConfig.hostname]} - ${config[PulverizationConfig.port]}")
-        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
+        val connection = ConnectionFactory()
+            .apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->

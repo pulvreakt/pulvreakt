@@ -41,4 +41,5 @@ interface SendOnlyDeviceComponent<in Send, I> : SenderCommunicator<Send, I>, Dev
 /**
  * Models a [DeviceComponent] with the capability of both sending and receiving messages from other components.
  */
-interface SendReceiveDeviceComponent<in Send, out Receive, I> : BidirectionalCommunicator<Send, Receive, I>, DeviceComponent<I>
+interface SendReceiveDeviceComponent<in Send, out Receive, I> :
+    BidirectionalCommunicator<Send, Receive, I>, DeviceComponent<I>

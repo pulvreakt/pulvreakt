@@ -33,7 +33,8 @@ actual class MyCommunication(
 
     init {
         println("My neighbours: $neighboursList")
-        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
+        val connection = ConnectionFactory()
+            .apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
@@ -53,7 +54,9 @@ actual class MyCommunication(
     }
 
     override fun send(payload: Export) {
-        neighboursList.forEach { channel.basicPublish("", "neighbours/$it", null, Json.encodeToString(payload).toByteArray()) }
+        neighboursList.forEach {
+            channel.basicPublish("", "neighbours/$it", null, Json.encodeToString(payload).toByteArray())
+        }
     }
 
     override fun receive(): List<Export> = neighboursMessages.values.toList()
@@ -75,13 +78,21 @@ actual class MyCommunicationComponent(override val id: String) :
     }
 
     init {
-        val connection = ConnectionFactory().apply { host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port] }
+        val connection = ConnectionFactory().apply {
+            host = config[PulverizationConfig.hostname]; port = config[PulverizationConfig.port]
+        }
         connection.newConnection().let { conn ->
             this.connection = conn
             conn.createChannel().let { channel ->
                 channel.queueDeclare("communication/$id/inbox", false, false, false, null)
                 channel.queueDeclare("communication/$id/outbox", false, false, false, null)
-                channel.basicConsume("communication/$id/inbox", true, "CommComponentConsumer", deliverCallback, cancelCallback)
+                channel.basicConsume(
+                    "communication/$id/inbox",
+                    true,
+                    "CommComponentConsumer",
+                    deliverCallback,
+                    cancelCallback,
+                )
                 this.channel = channel
             }
         }
