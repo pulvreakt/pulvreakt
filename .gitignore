@@ -146,5 +146,7 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+node_modules
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,kotlin,gradle
 
