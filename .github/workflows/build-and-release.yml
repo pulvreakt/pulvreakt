@@ -60,7 +60,13 @@ jobs:
           distribution: ${{ env.JDK_DISTRIUTION }}
           java-version: ${{ env.JDK_VERSION }}
           cache: gradle
-      # TODO: complete with other steps
+#      - name: Release artifacts
+#        run: |
+#          npm install
+#          npx semantic-release
+#        env:
+#          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+#          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
 
   success:
     runs-on: ubuntu-latest
