@@ -10,10 +10,11 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.docker)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kover)
     alias(libs.plugins.taskTree)
+    alias(libs.plugins.conventionalCommits)
+    alias(libs.plugins.publishOnCentral)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -27,6 +28,7 @@ allprojects {
         apply(plugin = ktlint.gradle.id)
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
+        apply(plugin = publishOnCentral.id)
     }
 
     repositories {
@@ -137,6 +139,39 @@ allprojects {
         }
         xmlReport {
             onCheck.set(true)
+        }
+    }
+
+    publishOnCentral {
+        projectLongName.set("Framework enabling pulverization")
+        projectDescription.set("A framework to create a pulverized system")
+        repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
+            user.set("nicolasfara")
+            password.set(System.getenv("GITHUB_TOKEN"))
+        }
+        publishing {
+            publications {
+                withType<MavenPublication> {
+                    pom {
+                        developers {
+                            developer {
+                                name.set("Nicolas Farabegoli")
+                                email.set("nicolas.farabegoli@gmail.com")
+                                url.set("https://www.nicolasfarabegoli.it/")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    publishing {
+        publications {
+            publications.withType<MavenPublication>().configureEach {
+                if ("OSSRH" !in name) {
+                    artifact(tasks.javadocJar)
+                }
+            }
         }
     }
 }
