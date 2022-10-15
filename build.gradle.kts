@@ -1,4 +1,7 @@
+@file:Suppress("UndocumentedPublicFunction", "UnusedPrivateMember")
+
 import io.gitlab.arturbosch.detekt.Detekt
+import org.danilopianini.gradle.mavencentral.JavadocJar
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
@@ -121,8 +124,17 @@ allprojects {
             }
         }
     }
+
+    tasks.dokkaJavadoc {
+        enabled = false
+    }
     tasks.withType<Detekt>().configureEach {
         exclude("**/*Test.kt", "**/*Fixtures.kt")
+    }
+    tasks.withType<JavadocJar>().configureEach {
+        val dokka = tasks.dokkaHtml.get()
+        dependsOn(dokka)
+        from(dokka.outputDirectory)
     }
 
     detekt {
@@ -142,6 +154,13 @@ allprojects {
         }
     }
 
+    signing {
+        if (System.getenv("CI") == "true") {
+            val signingKey: String? by project
+            val signingPassword: String? by project
+            useInMemoryPgpKeys(signingKey, signingPassword)
+        }
+    }
     publishOnCentral {
         projectLongName.set("Framework enabling pulverization")
         projectDescription.set("A framework to create a pulverized system")
