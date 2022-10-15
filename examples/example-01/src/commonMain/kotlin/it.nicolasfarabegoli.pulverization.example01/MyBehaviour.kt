@@ -52,4 +52,6 @@ sealed class BehaviourIncomingMessages {
     data class GetSensedValues(val sensedValues: SensedValues) : BehaviourIncomingMessages()
 }
 
-expect class MyBehaviourComponent : SendReceiveDeviceComponent<BehaviourOutgoingMessages, BehaviourIncomingMessages, String>, KoinComponent
+expect class MyBehaviourComponent :
+    SendReceiveDeviceComponent<BehaviourOutgoingMessages, BehaviourIncomingMessages, String>,
+    KoinComponent

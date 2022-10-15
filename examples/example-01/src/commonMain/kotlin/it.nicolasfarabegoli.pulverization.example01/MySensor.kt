@@ -7,7 +7,7 @@ import org.koin.core.component.KoinComponent
 import kotlin.random.Random
 
 class MySensor(override val id: String) : Sensor<Double, String> {
-    override fun sense(): Double = Random.nextDouble(0.0, 100.0)
+    override fun sense(): Double = Random.nextDouble(0.0, 10.0)
 }
 
 sealed class SensorPayload {

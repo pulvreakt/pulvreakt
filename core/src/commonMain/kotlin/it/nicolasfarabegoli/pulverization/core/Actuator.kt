@@ -8,7 +8,14 @@ import kotlin.reflect.KClass
  * @param T the type of the payload to send to the [Actuator]
  */
 interface Actuator<in T, I> {
+    /**
+     * The device [id].
+     */
     val id: I
+
+    /**
+     * The operation of actuate an action over the environment.
+     */
     fun actuate(payload: T)
 }
 

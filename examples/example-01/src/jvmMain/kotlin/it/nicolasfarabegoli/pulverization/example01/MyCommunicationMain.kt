@@ -12,7 +12,7 @@ fun main() = runBlocking {
     val config = Config { addSpec(PulverizationConfig) }
         .from.yaml.resource("pulverization.yaml")
 
-    val devices = config[PulverizationConfig.devices].find { it.id == deviceID } ?: throw IllegalStateException()
+    val devices = config[PulverizationConfig.devices].find { it.id == deviceID } ?: error("Missing neighbours config")
 
     startKoin {
         modules(

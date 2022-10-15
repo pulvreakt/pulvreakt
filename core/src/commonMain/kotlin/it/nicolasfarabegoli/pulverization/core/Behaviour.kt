@@ -24,6 +24,13 @@ data class BehaviourOutput<S, E, A, O>(
  * @param A the type of the actuation to do
  */
 interface Behaviour<S, E, W, A, O, I> {
+    /**
+     * The device [id].
+     */
     val id: I
+
+    /**
+     * The function used to implement the device logic.
+     */
     operator fun invoke(state: S, export: List<E>, sensedValues: W): BehaviourOutput<S, E, A, O>
 }

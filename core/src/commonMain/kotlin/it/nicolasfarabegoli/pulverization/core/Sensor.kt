@@ -8,7 +8,14 @@ import kotlin.reflect.KClass
  * @param I the identifier of the sensor.
  */
 interface Sensor<out T, I> {
+    /**
+     * The device [id].
+     */
     val id: I
+
+    /**
+     * The operation of sensing a magnitude from the environment.
+     */
     fun sense(): T
 }
 
