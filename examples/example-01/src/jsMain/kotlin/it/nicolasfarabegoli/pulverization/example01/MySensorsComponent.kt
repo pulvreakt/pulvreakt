@@ -3,7 +3,8 @@ package it.nicolasfarabegoli.pulverization.example01
 import it.nicolasfarabegoli.pulverization.component.SendOnlyDeviceComponent
 import org.koin.core.component.KoinComponent
 
-actual class MySensorsComponent(override val id: String) : SendOnlyDeviceComponent<SensorPayload, String>, KoinComponent {
+actual class MySensorsComponent(override val id: String) :
+    SendOnlyDeviceComponent<SensorPayload, String>, KoinComponent {
     override fun sendToComponent(payload: SensorPayload, to: String?) {
         TODO("Not yet implemented")
     }
