@@ -14,7 +14,8 @@ actual class MyCommunication(override val id: String) : Communication<Export, Li
     }
 }
 
-actual class MyCommunicationComponent(override val id: String) : SendReceiveDeviceComponent<List<Export>, Export, String>, KoinComponent {
+actual class MyCommunicationComponent(override val id: String) :
+    SendReceiveDeviceComponent<List<Export>, Export, String>, KoinComponent {
     override fun sendToComponent(payload: List<Export>, to: String?) {
         TODO("Not yet implemented")
     }

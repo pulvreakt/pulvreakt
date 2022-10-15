@@ -1,3 +1,5 @@
+@file:Suppress("UndocumentedPublicFunction", "UnusedPrivateMember")
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 fun ShadowJar.genericJarConfig(jarName: String, mainClass: String) {
@@ -50,5 +52,8 @@ kotlin {
             }
         }
         val jvmTest by getting { }
+    }
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        enabled = false
     }
 }
