@@ -1,4 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -15,6 +17,8 @@ plugins {
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
+
+group = "it.nicolasfarabegoli"
 
 allprojects {
     with(rootProject.libs.plugins) {
@@ -59,7 +63,7 @@ allprojects {
 
         val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()
         val hostArch = System.getProperty("os.arch").trim().toLowerCaseAsciiOnly()
-        val nativeTarget: (String, org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.() -> Unit) -> KotlinTarget =
+        val nativeTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinTarget =
             when (hostOs to hostArch) {
                 "linux" to "aarch64" -> ::linuxArm64
                 "linux" to "amd64" -> ::linuxX64
@@ -70,7 +74,9 @@ allprojects {
                 "mac os x" to "amd64", "mac os x" to "x86_64" -> ::macosX64
                 "windows" to "amd64", "windows server 2022" to "amd64" -> ::mingwX64
                 "windows" to "x86" -> ::mingwX86
-                else -> throw GradleException("Host OS '$hostOs' with arch '$hostArch' is not supported in Kotlin/Native.")
+                else -> throw GradleException(
+                    "Host OS '$hostOs' with arch '$hostArch' is not supported in Kotlin/Native.",
+                )
             }
 
         nativeTarget("native") {
@@ -113,18 +119,22 @@ allprojects {
             }
         }
     }
+    tasks.withType<Detekt>().configureEach {
+        exclude("**/*Test.kt", "**/*Fixtures.kt")
+    }
 
     detekt {
-        config = files("detekt.yml")
+        parallel = true
+        buildUponDefaultConfig = true
+        config = files("${rootDir.path}/detekt.yml")
+        source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
     }
 
     koverMerged {
         enable()
-
         htmlReport {
             onCheck.set(true)
         }
-
         xmlReport {
             onCheck.set(true)
         }

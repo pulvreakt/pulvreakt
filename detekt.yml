@@ -7,6 +7,8 @@ comments:
     active: true
   UndocumentedPublicProperty:
     active: true
+  KDocReferencesNonPublicProperty:
+    active: true
 complexity:
   LongMethod:
     active: false
@@ -39,3 +41,5 @@ style:
     ignoreNumbers: [ '-2', '-1', '0', '0.5', '1', '2', '3', '4', '10', '360.0' ]
   ForbiddenComment:
     allowedPatterns: 'TODO:'
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 5
