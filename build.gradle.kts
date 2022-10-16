@@ -18,11 +18,10 @@ plugins {
     alias(libs.plugins.taskTree)
     alias(libs.plugins.conventionalCommits)
     alias(libs.plugins.publishOnCentral)
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.3.0"
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
-
-group = "it.nicolasfarabegoli"
 
 allprojects {
     with(rootProject.libs.plugins) {
@@ -158,7 +157,7 @@ allprojects {
             }
         }
     }
-
+    group = "it.nicolasfarabegoli"
     signing {
         if (System.getenv("CI") == "true") {
             val signingKey: String? by project
@@ -173,18 +172,14 @@ allprojects {
             user.set("nicolasfara")
             password.set(System.getenv("GITHUB_TOKEN"))
         }
-        publishing {
-            publications {
-                withType<MavenPublication> {
-                    pom {
-                        developers {
-                            developer {
-                                name.set("Nicolas Farabegoli")
-                                email.set("nicolas.farabegoli@gmail.com")
-                                url.set("https://www.nicolasfarabegoli.it/")
-                            }
-                        }
-                    }
+    }
+    publishing.publications.withType<MavenPublication>().configureEach {
+        pom {
+            developers {
+                developer {
+                    name.set("Nicolas Farabegoli")
+                    email.set("nicolas.farabegoli@gmail.com")
+                    url.set("https://www.nicolasfarabegoli.it/")
                 }
             }
         }
@@ -198,4 +193,8 @@ allprojects {
             }
         }
     }
+}
+
+tasks.publish {
+    enabled = false
 }

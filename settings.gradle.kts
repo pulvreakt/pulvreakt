@@ -1,4 +1,4 @@
-rootProject.name = "pulverization-framework"
+rootProject.name = "pulverization"
 
-include(":core")
-include(":examples:example-01")
+include("core")
+include("examples:example-01")
