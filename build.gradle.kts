@@ -152,6 +152,11 @@ allprojects {
         xmlReport {
             onCheck.set(true)
         }
+        filters {
+            classes {
+                excludes += listOf("*.example*") // Exclude from coverage the examples
+            }
+        }
     }
 
     signing {
