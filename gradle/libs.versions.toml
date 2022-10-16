@@ -17,7 +17,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.6.1" }
 taskTree = "com.dorongold.task-tree:2.1.0"
 conventionalCommits = "it.nicolasfarabegoli.conventional-commits:3.0.12"
-publishOnCentral = "org.danilopianini.publish-on-central:2.0.6"
+publishOnCentral = "org.danilopianini.publish-on-central:2.0.8"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
