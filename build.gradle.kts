@@ -23,6 +23,14 @@ plugins {
 
 val Provider<PluginDependency>.id get() = get().pluginId
 
+tasks {
+    create("uploadAll") {
+        description = "Upload all artifacts"
+        group = "publishing"
+        dependsOn("core:uploadAllPublicationsToMavenCentralNexus")
+    }
+}
+
 allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
@@ -158,6 +166,12 @@ allprojects {
         }
     }
     group = "it.nicolasfarabegoli"
+}
+
+subprojects {
+    with(rootProject.libs.plugins) {
+        apply(plugin = publishOnCentral.id)
+    }
     signing {
         if (System.getenv("CI") == "true") {
             val signingKey: String? by project
@@ -193,8 +207,4 @@ allprojects {
             }
         }
     }
-}
-
-tasks.publish {
-    enabled = false
 }
