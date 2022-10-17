@@ -109,6 +109,7 @@ allprojects {
                 dependencies {
                     implementation(rootProject.libs.kotlin.stdlib)
                     implementation(rootProject.libs.koin.core)
+                    implementation(rootProject.libs.kotlinx.coroutines.core)
                 }
             }
             val commonTest by getting {
