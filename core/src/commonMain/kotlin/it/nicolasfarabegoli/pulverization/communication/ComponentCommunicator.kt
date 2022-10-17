@@ -1,12 +1,13 @@
 package it.nicolasfarabegoli.pulverization.communication
 
+import it.nicolasfarabegoli.pulverization.core.DeviceID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Models the ability to (only) send messages to other components.
  */
-interface SenderCommunicator<in Send, in I> {
+interface SenderCommunicator<in Send, in I : DeviceID> {
     /**
      * Send the [payload] [to] another component.
      */
@@ -16,7 +17,7 @@ interface SenderCommunicator<in Send, in I> {
 /**
  * Models the ability to (only) receive messages from other components.
  */
-interface ReceiverCommunicator<out Receive, in I> {
+interface ReceiverCommunicator<out Receive, in I : DeviceID> {
     /**
      * Receive a message [from] a component.
      */
@@ -31,5 +32,5 @@ interface ReceiverCommunicator<out Receive, in I> {
 /**
  * Models the ability to send and receive messages to and from other components.
  */
-interface BidirectionalCommunicator<in Send, out Receive, I> :
+interface BidirectionalCommunicator<in Send, out Receive, I : DeviceID> :
     SenderCommunicator<Send, I>, ReceiverCommunicator<Receive, I>

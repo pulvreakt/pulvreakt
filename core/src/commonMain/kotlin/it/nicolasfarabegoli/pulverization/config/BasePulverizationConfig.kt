@@ -1,23 +1,13 @@
 package it.nicolasfarabegoli.pulverization.config
 
+import it.nicolasfarabegoli.pulverization.core.DeviceID
+import it.nicolasfarabegoli.pulverization.core.LogicalDevice
+
 /**
  * Annotation class used for scoping correctly the DSL.
  */
 @DslMarker
 annotation class PulverizationMarker
-
-/**
- * All the components that a [LogicalDevice] can have.
- */
-enum class ComponentsType {
-    STATE, ACTUATORS, SENSORS, BEHAVIOUR, COMMUNICATION
-}
-
-/**
- * Represents a _logical device_ in the pulverization context.
- * Each device is represented by its own [id] and its [components].
- */
-data class LogicalDevice<I>(val id: I, val components: Set<ComponentsType> = emptySet())
 
 typealias Topology<I> = Map<LogicalDevice<I>, Set<LogicalDevice<I>>>
 
@@ -25,12 +15,12 @@ typealias Topology<I> = Map<LogicalDevice<I>, Set<LogicalDevice<I>>>
  * Base configuration of a pulverized system.
  * In its base version the config hold only the [topology] of the devices' network.
  */
-data class PulverizationConfig<I>(val topology: Topology<I>)
+data class PulverizationConfig<I : DeviceID>(val topology: Topology<I>)
 
 /**
  * A scope to configure the topology.
  */
-interface TopologyScope<I> {
+interface TopologyScope<I : DeviceID> {
     /**
      * Represent the current configured topology.
      */
@@ -42,7 +32,7 @@ interface TopologyScope<I> {
  * This configuration enable the creation of a custom [Topology].
  */
 @PulverizationMarker
-class CustomTopologyScope<I> : TopologyScope<I> {
+class CustomTopologyScope<I : DeviceID> : TopologyScope<I> {
 
     override var topology: Topology<I> = emptyMap()
 
@@ -63,7 +53,7 @@ class CustomTopologyScope<I> : TopologyScope<I> {
  * This scope is responsible for give the abstraction for configuring a topology in the pulverization context.
  */
 @PulverizationMarker
-open class PulverizationScope<I> : TopologyScope<I> {
+open class PulverizationScope<I : DeviceID> : TopologyScope<I> {
 
     override var topology: Topology<I> = emptyMap()
 
@@ -93,7 +83,7 @@ open class PulverizationScope<I> : TopologyScope<I> {
 /**
  * Function for configure the pulverization platform and create a [PulverizationConfig].
  */
-fun <I> pulverizationConfiguration(init: PulverizationScope<I>.() -> Unit): PulverizationConfig<I> {
+fun <I : DeviceID> pulverizationConfiguration(init: PulverizationScope<I>.() -> Unit): PulverizationConfig<I> {
     val config = PulverizationScope<I>().apply(init)
     return PulverizationConfig(config.topology)
 }

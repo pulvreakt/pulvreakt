@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * An [Actuator] can [actuate] an operation over the environment.
  * @param T the type of the payload to send to the [Actuator]
  */
-interface Actuator<in T, I> {
+interface Actuator<in T, I : DeviceID> {
     /**
      * The device [id].
      */
@@ -24,7 +24,7 @@ interface Actuator<in T, I> {
  * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
-class ActuatorsContainer<I> {
+class ActuatorsContainer<I : DeviceID> {
 
     /**
      * The collection of [Actuator]s.
