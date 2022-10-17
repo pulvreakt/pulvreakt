@@ -7,10 +7,17 @@ package it.nicolasfarabegoli.pulverization.config
 annotation class PulverizationMarker
 
 /**
- * Represents a _logical device_ in the pulverization context.
- * Each device is identified by its own [id].
+ * All the components that a [LogicalDevice] can have.
  */
-data class LogicalDevice<I>(val id: I)
+enum class ComponentsType {
+    STATE, ACTUATORS, SENSORS, BEHAVIOUR, COMMUNICATION
+}
+
+/**
+ * Represents a _logical device_ in the pulverization context.
+ * Each device is represented by its own [id] and its [components].
+ */
+data class LogicalDevice<I>(val id: I, val components: Set<ComponentsType> = emptySet())
 
 typealias Topology<I> = Map<LogicalDevice<I>, Set<LogicalDevice<I>>>
 
@@ -56,7 +63,7 @@ class CustomTopologyScope<I> : TopologyScope<I> {
  * This scope is responsible for give the abstraction for configuring a topology in the pulverization context.
  */
 @PulverizationMarker
-class PulverizationScope<I> : TopologyScope<I> {
+open class PulverizationScope<I> : TopologyScope<I> {
 
     override var topology: Topology<I> = emptyMap()
 
