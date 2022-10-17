@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * @param T the type of the measuring after the [sense] operation.
  * @param I the identifier of the sensor.
  */
-interface Sensor<out T, I> {
+interface Sensor<out T, I : DeviceID> {
     /**
      * The device [id].
      */
@@ -24,7 +24,7 @@ interface Sensor<out T, I> {
  * Contains a set of [Sensor]s managed by a single [Device].
  * @param I the type of the ID of each [Sensor].
  */
-class SensorsContainer<I> {
+class SensorsContainer<I : DeviceID> {
     /**
      * The set of [Sensor]s.
      */
