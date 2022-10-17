@@ -111,11 +111,12 @@ actual class MyCommunicationComponent(override val id: String) :
     override fun receiveFromComponent(from: String?): Export? = lastMessage
 
     override suspend fun cycle() {
-        receiveFromComponent()?.let {
-            myCommunication.send(it)
-            lastMessage = null // Prevent sending the same data multiple times
-        }
-        val receivedExports = myCommunication.receive()
-        sendToComponent(receivedExports)
+        TODO("FIX")
+//        receiveFromComponent()?.let {
+//            myCommunication.send(it)
+//            lastMessage = null // Prevent sending the same data multiple times
+//        }
+//        val receivedExports = myCommunication.receive()
+//        sendToComponent(receivedExports)
     }
 }
