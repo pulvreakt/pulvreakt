@@ -150,21 +150,6 @@ allprojects {
         config = files("${rootDir.path}/detekt.yml")
         source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
     }
-
-    koverMerged {
-        enable()
-        htmlReport {
-            onCheck.set(true)
-        }
-        xmlReport {
-            onCheck.set(true)
-        }
-        filters {
-            classes {
-                excludes += listOf("*.example*") // Exclude from coverage the examples
-            }
-        }
-    }
     group = "it.nicolasfarabegoli"
 }
 
@@ -205,6 +190,21 @@ subprojects {
                     artifact(tasks.javadocJar)
                 }
             }
+        }
+    }
+}
+
+koverMerged {
+    enable()
+    htmlReport {
+        onCheck.set(true)
+    }
+    xmlReport {
+        onCheck.set(true)
+    }
+    filters {
+        projects {
+            excludes += listOf("example-01", ":")
         }
     }
 }
