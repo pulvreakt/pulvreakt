@@ -21,4 +21,5 @@ expect class SimpleRabbitmqReceiverCommunicator<out Receive, I : DeviceID> :
  * Simple implementation for communicate with another component using RabbitMQ.
  */
 expect class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : DeviceID> :
-    RabbitmqBidirectionalCommunicator<Send, Receive, I>
+    RabbitmqBidirectionalCommunicator<Send, Receive, I>,
+    KoinComponent
