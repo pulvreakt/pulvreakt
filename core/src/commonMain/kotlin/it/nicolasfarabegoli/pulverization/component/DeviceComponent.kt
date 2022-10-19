@@ -1,8 +1,5 @@
 package it.nicolasfarabegoli.pulverization.component
 
-import it.nicolasfarabegoli.pulverization.communication.BidirectionalCommunicator
-import it.nicolasfarabegoli.pulverization.communication.ReceiverCommunicator
-import it.nicolasfarabegoli.pulverization.communication.SenderCommunicator
 import it.nicolasfarabegoli.pulverization.core.DeviceID
 
 /**
@@ -27,20 +24,20 @@ interface DeviceComponent<I : DeviceID> {
     suspend fun finalize() {}
 }
 
-/**
- * Models a [DeviceComponent] with the capability of receiving only messages from other components.
- * This type of component is _passive_.
- */
-interface ReceiveOnlyDeviceComponent<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I>, DeviceComponent<I>
-
-/**
- * Models a [DeviceComponent] with the capability of only sending messages to other components.
- * This type of component is _proactive_.
- */
-interface SendOnlyDeviceComponent<in Send, I : DeviceID> : SenderCommunicator<Send, I>, DeviceComponent<I>
-
-/**
- * Models a [DeviceComponent] with the capability of both sending and receiving messages from other components.
- */
-interface SendReceiveDeviceComponent<in Send, out Receive, I : DeviceID> :
-    BidirectionalCommunicator<Send, Receive, I>, DeviceComponent<I>
+// /**
+// * Models a [DeviceComponent] with the capability of receiving only messages from other components.
+// * This type of component is _passive_.
+// */
+// interface ReceiveOnlyDeviceComponent<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I>, DeviceComponent<I>
+//
+// /**
+// * Models a [DeviceComponent] with the capability of only sending messages to other components.
+// * This type of component is _proactive_.
+// */
+// interface SendOnlyDeviceComponent<in Send, I : DeviceID> : SenderCommunicator<Send, I>, DeviceComponent<I>
+//
+// /**
+// * Models a [DeviceComponent] with the capability of both sending and receiving messages from other components.
+// */
+// interface SendReceiveDeviceComponent<in Send, out Receive, I : DeviceID> :
+//    BidirectionalCommunicator<Send, Receive, I>, DeviceComponent<I>
