@@ -20,7 +20,7 @@ interface RabbitmqSenderCommunicator<in Send, I : DeviceID> : SenderCommunicator
  * Represents a receiver-only communicator backed by RabbitMQ as a communication technology.
  * The communication is mediated by a [queueName].
  */
-interface RabbitmqReceiveCommunicator<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I> {
+interface RabbitmqReceiverCommunicator<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I> {
     /**
      * The name of the queue in which the communications flows.
      */
