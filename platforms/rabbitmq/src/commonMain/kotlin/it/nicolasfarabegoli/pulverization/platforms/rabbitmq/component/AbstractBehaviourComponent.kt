@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication
+package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component
 
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.core.DeviceID
