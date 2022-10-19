@@ -92,6 +92,9 @@ actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : 
         val receiverOptions = ReceiverOptions().connectionSupplier { connection }
         sender = RabbitFlux.createSender(senderOptions)
         receiver = RabbitFlux.createReceiver(receiverOptions)
+        sender.bindQueue(
+            BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(id.toString()),
+        ).block()
     }
 
     override suspend fun sendToComponent(payload: Send) {
