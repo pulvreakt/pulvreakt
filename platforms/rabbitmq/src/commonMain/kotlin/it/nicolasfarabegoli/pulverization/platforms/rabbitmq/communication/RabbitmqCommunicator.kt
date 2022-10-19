@@ -7,24 +7,24 @@ import it.nicolasfarabegoli.pulverization.core.DeviceID
 
 /**
  * Represents a sender-only communicator backed by RabbitMQ as communication technology.
- * The communication is mediated by a [queueName].
+ * The communication is mediated by a [queue].
  */
 interface RabbitmqSenderCommunicator<in Send, I : DeviceID> : SenderCommunicator<Send, I> {
     /**
      * The name of the queue in which the communications flows.
      */
-    val queueName: String
+    val queue: String
 }
 
 /**
  * Represents a receiver-only communicator backed by RabbitMQ as a communication technology.
- * The communication is mediated by a [queueName].
+ * The communication is mediated by a [queue].
  */
 interface RabbitmqReceiverCommunicator<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I> {
     /**
      * The name of the queue in which the communications flows.
      */
-    val queueName: String
+    val queue: String
 }
 
 /**
