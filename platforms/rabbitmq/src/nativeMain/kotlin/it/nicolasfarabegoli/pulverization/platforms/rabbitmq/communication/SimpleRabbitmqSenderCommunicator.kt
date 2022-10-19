@@ -11,7 +11,7 @@ actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
     override val id: I,
     override val queue: String,
 ) : RabbitmqSenderCommunicator<Send, I>, KoinComponent {
-    override suspend fun sendToComponent(payload: Send, to: I?) {
+    override suspend fun sendToComponent(payload: Send) {
         TODO("Not yet implemented")
     }
 }
@@ -36,7 +36,7 @@ actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : 
     override val queue: String,
 ) :
     RabbitmqBidirectionalCommunicator<Send, Receive, I> {
-    override suspend fun sendToComponent(payload: Send, to: I?) {
+    override suspend fun sendToComponent(payload: Send) {
         TODO("Not yet implemented")
     }
 
