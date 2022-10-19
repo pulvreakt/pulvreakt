@@ -35,7 +35,7 @@ actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
         ).block()
     }
 
-    override suspend fun sendToComponent(payload: Send, to: I?) {
+    override suspend fun sendToComponent(payload: Send) {
         val message = OutboundMessage("", "", Json.encodeToString(serializer, payload).toByteArray())
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }
@@ -60,7 +60,7 @@ actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : 
     override val id: I,
     override val queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive, I> {
-    override suspend fun sendToComponent(payload: Send, to: I?) {
+    override suspend fun sendToComponent(payload: Send) {
         TODO("Not yet implemented")
     }
 
