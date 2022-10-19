@@ -2,7 +2,6 @@ package it.nicolasfarabegoli.pulverization.communication
 
 import it.nicolasfarabegoli.pulverization.core.DeviceID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Models the ability to (only) send messages to other components.
@@ -16,7 +15,7 @@ interface SenderCommunicator<in Send, I : DeviceID> {
     /**
      * Send the [payload] [to] another component.
      */
-    suspend fun sendToComponent(payload: Send, to: I? = null)
+    suspend fun sendToComponent(payload: Send)
 }
 
 /**
@@ -29,14 +28,9 @@ interface ReceiverCommunicator<out Receive, I : DeviceID> {
     val id: I
 
     /**
-     * Receive a message [from] a component.
-     */
-    suspend fun receiveFromComponent(from: I? = null): Receive?
-
-    /**
      * Creates an async flow with all received messages.
      */
-    fun receiveFromComponent(): Flow<Receive> = emptyFlow()
+    fun receiveFromComponent(): Flow<Receive>
 }
 
 /**
