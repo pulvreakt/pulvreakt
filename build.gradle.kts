@@ -44,6 +44,7 @@ allprojects {
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
+        apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
     }
 
     repositories {
@@ -155,7 +156,7 @@ allprojects {
         config = files("${rootDir.path}/detekt.yml")
         source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
     }
-    group = "it.nicolasfarabegoli"
+    group = "it.nicolasfarabegoli.${rootProject.name}"
 }
 
 subprojects {
