@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/nicolasfara/pulverization-framework/compare/0.2.0...0.2.1) (2022-10-20)
+
+
+### Bug Fixes
+
+* apply versioning plugin ([6193918](https://github.com/nicolasfara/pulverization-framework/commit/61939189344b64de1e15acf648a18e9bbaa133a1))
+
 ## [0.2.0](https://github.com/nicolasfara/pulverization-framework/compare/0.1.0...0.2.0) (2022-10-20)
 
 
