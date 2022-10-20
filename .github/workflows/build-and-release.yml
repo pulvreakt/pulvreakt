@@ -71,6 +71,8 @@ jobs:
         run: |
           npm install
           npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   success:
     runs-on: ubuntu-latest
