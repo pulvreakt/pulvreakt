@@ -29,6 +29,11 @@ tasks {
         group = "publishing"
         dependsOn("core:uploadAllPublicationsToMavenCentralNexus")
     }
+    create("uploadAllGithub") {
+        description = "Upload all artifacts to github"
+        group = "publishing"
+        dependsOn("core:publishKotlinMultiplatformPublicationToGithubRepository")
+    }
 }
 
 allprojects {
