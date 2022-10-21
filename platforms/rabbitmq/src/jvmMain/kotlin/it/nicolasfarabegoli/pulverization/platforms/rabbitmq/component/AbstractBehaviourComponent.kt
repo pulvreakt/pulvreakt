@@ -18,6 +18,10 @@ import kotlinx.serialization.SerializationStrategy
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * Abstract behaviour which enable, for a [device], all the communication with the other components.
+ * This class doesn't implement any cycle logic.
+ */
 actual abstract class AbstractBehaviourComponent<S, E, W, A, I>(
     private val device: LogicalDevice<I>,
     private val stateSer: SerializationStrategy<S>? = null,
