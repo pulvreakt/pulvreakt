@@ -34,6 +34,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: build/reports/kover/merged/xml/report.xml
           flags: unittests
           fail_ci_if_error: true
