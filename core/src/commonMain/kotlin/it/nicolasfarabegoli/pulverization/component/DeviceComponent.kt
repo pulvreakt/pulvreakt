@@ -28,7 +28,8 @@ interface DeviceComponent<I : DeviceID> {
 // * Models a [DeviceComponent] with the capability of receiving only messages from other components.
 // * This type of component is _passive_.
 // */
-// interface ReceiveOnlyDeviceComponent<out Receive, I : DeviceID> : ReceiverCommunicator<Receive, I>, DeviceComponent<I>
+// interface ReceiveOnlyDeviceComponent<out Receive, I : DeviceID> :
+// ReceiverCommunicator<Receive, I>, DeviceComponent<I>
 //
 // /**
 // * Models a [DeviceComponent] with the capability of only sending messages to other components.
