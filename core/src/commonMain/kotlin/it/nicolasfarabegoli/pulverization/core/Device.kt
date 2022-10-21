@@ -18,12 +18,27 @@ interface DeviceID
  */
 data class LogicalDevice<I : DeviceID>(val id: I, val components: Set<ComponentsType> = emptySet())
 
+/**
+ * Enrichment for [DeviceID].
+ */
 object DeviceIDOps {
+    /**
+     * A [DeviceID] which models the [id] with a [String].
+     */
     data class StringID(val id: String) : DeviceID
 
+    /**
+     * Utility method for converting a [String] into a [StringID].
+     */
     fun String.toID(): StringID = StringID(this)
 
+    /**
+     * A [DeviceID] which models the [id] with an [Int].
+     */
     data class IntID(val id: Int) : DeviceID
 
+    /**
+     * Utility method for converting an [Int] into an [IntID].
+     */
     fun Int.toID(): IntID = IntID(this)
 }
