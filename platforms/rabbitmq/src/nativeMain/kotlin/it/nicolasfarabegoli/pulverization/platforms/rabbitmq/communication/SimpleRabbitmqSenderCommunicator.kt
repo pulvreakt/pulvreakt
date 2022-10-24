@@ -7,7 +7,7 @@ import org.koin.core.component.KoinComponent
 /**
  * Simple implementation for communicate (send only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
+actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
     override val id: I,
     override val queue: String,
 ) : RabbitmqSenderCommunicator<Send, I>, KoinComponent {
@@ -19,7 +19,7 @@ actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
 /**
  * Simple implementation for communicate (receive only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqReceiverCommunicator<out Receive, I : DeviceID>(
+actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
     override val id: I,
     override val queue: String,
 ) : RabbitmqReceiverCommunicator<Receive, I>, KoinComponent {
