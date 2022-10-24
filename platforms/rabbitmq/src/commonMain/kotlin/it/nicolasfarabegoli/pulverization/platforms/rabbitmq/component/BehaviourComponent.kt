@@ -23,6 +23,6 @@ import org.koin.core.component.KoinComponent
  * This class doesn't implement any cycle logic.
  */
 @Suppress("UnnecessaryAbstractClass") // Detekt fail with KMM
-expect abstract class AbstractBehaviourComponent<S, E, W, A, I> :
+expect class AbstractBehaviourComponent<S, E, W, A, I> :
     DeviceComponent<I>, KoinComponent
-    where S : StateRepresentation, E : Export, I : DeviceID
+    where S : StateRepresentation, E : Export, A : Any, W : Any, I : DeviceID

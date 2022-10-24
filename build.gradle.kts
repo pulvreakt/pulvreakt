@@ -18,7 +18,7 @@ plugins {
     alias(libs.plugins.taskTree)
     alias(libs.plugins.conventionalCommits)
     alias(libs.plugins.publishOnCentral)
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.3.0"
+    alias(libs.plugins.gitSemVer)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -44,7 +44,8 @@ allprojects {
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
-        apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning")
+        apply(plugin = gitSemVer.id)
+        apply(plugin = kotlinx.serialization.id)
     }
 
     repositories {
