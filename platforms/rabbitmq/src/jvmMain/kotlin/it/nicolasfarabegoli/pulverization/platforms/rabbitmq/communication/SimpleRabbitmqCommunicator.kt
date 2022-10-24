@@ -137,7 +137,7 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any,
     override suspend fun sendToComponent(payload: Send) {
         val message = OutboundMessage(
             EXCHANGE,
-            id.toString(),
+            id.show(),
             Json.encodeToString(sendSerializer, payload).toByteArray(),
         )
         sender.send(Mono.just(message)).awaitSingleOrNull()
@@ -146,6 +146,6 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any,
     @Suppress("UNCHECKED_CAST")
     override fun receiveFromComponent(): Flow<Receive> {
         return receiver.consumeAutoAck(queue).asFlow()
-            .map { Json.decodeFromString(receiveDeserializer, it.body.toString()) as Receive }
+            .map { Json.decodeFromString(receiveDeserializer, it.body.decodeToString()) as Receive }
     }
 }
