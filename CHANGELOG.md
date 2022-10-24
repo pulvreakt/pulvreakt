@@ -1,3 +1,15 @@
+## [0.2.2](https://github.com/nicolasfara/pulverization-framework/compare/0.2.1...0.2.2) (2022-10-24)
+
+
+### Bug Fixes
+
+* **deps:** update kotest to v5.5.2 ([64fab27](https://github.com/nicolasfara/pulverization-framework/commit/64fab27165c5401594a72fea82e8b7585b8c7e9c))
+
+
+### Build and continuous integration
+
+* add token to codecov action to prevent intermittent 404 on upload ([9c07091](https://github.com/nicolasfara/pulverization-framework/commit/9c07091a7070910bcc7e79e811265d17a4bc22ed))
+
 ## [0.2.1](https://github.com/nicolasfara/pulverization-framework/compare/0.2.0...0.2.1) (2022-10-20)
 
 
