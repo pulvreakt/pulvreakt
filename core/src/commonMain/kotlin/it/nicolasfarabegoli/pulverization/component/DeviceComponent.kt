@@ -13,6 +13,11 @@ interface DeviceComponent<I : DeviceID> {
     val id: I
 
     /**
+     * Initialize the component.
+     */
+    suspend fun initialize() {}
+
+    /**
      * Execute a single cycle of the device logic.
      */
     suspend fun cycle()
