@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
@@ -101,17 +99,25 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
 /**
  * Simple implementation for communicate with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : DeviceID>(
+actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any, I : DeviceID>(
+    private val kSend: KClass<Send>,
+    private val kReceive: KClass<Receive>,
     override val id: I,
     override val queue: String,
-    private val serializer: SerializationStrategy<Send>,
-    private val deserializer: DeserializationStrategy<Receive>,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive, I>, KoinComponent {
     private val connection: Connection by inject(Connection::class.java)
+    private val sendSerializer = Json.serializersModule.serializer(kSend.createType())
+    private val receiveDeserializer = Json.serializersModule.serializer(kReceive.createType())
     private val sender: Sender
     private val receiver: Receiver
 
     companion object {
+        /**
+         * Creates the communication without the need of passing the KClass.
+         */
+        inline operator fun <reified S : Any, reified R : Any> invoke(id: DeviceID, queue: String) =
+            SimpleRabbitmqBidirectionalCommunication(S::class, R::class, id, queue)
+
         private const val EXCHANGE = "pulverization.exchange"
     }
 
@@ -132,12 +138,14 @@ actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : 
         val message = OutboundMessage(
             EXCHANGE,
             id.toString(),
-            Json.encodeToString(serializer, payload).toByteArray(),
+            Json.encodeToString(sendSerializer, payload).toByteArray(),
         )
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun receiveFromComponent(): Flow<Receive> {
-        return receiver.consumeAutoAck(queue).asFlow().map { Json.decodeFromString(deserializer, it.body.toString()) }
+        return receiver.consumeAutoAck(queue).asFlow()
+            .map { Json.decodeFromString(receiveDeserializer, it.body.toString()) as Receive }
     }
 }

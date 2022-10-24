@@ -31,7 +31,7 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
 /**
  * Simple implementation for communicate with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : DeviceID>(
+actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any, I : DeviceID>(
     override val id: I,
     override val queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive, I>, KoinComponent {
