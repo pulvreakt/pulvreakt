@@ -6,14 +6,14 @@ import org.koin.core.component.KoinComponent
 /**
  * Simple implementation for communicate (send only) with another component using RabbitMQ.
  */
-expect class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID> :
+expect class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID> :
     RabbitmqSenderCommunicator<Send, I>,
     KoinComponent
 
 /**
  * Simple implementation for communicate (receive only) with another component using RabbitMQ.
  */
-expect class SimpleRabbitmqReceiverCommunicator<out Receive, I : DeviceID> :
+expect class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID> :
     RabbitmqReceiverCommunicator<Receive, I>,
     KoinComponent
 
