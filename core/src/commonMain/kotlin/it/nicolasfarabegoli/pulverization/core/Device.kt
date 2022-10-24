@@ -10,7 +10,13 @@ enum class ComponentsType {
 /**
  * Marker interface representing the *ID* of the [LogicalDevice].
  */
-interface DeviceID
+interface DeviceID {
+    /**
+     * The string representation of the [DeviceID].
+     * By default calls the [toString] method. It's recommended to override this behaviour with a proper representation.
+     */
+    fun show(): String = toString()
+}
 
 /**
  * Represents a _logical device_ in the pulverization context.
@@ -25,7 +31,9 @@ object DeviceIDOps {
     /**
      * A [DeviceID] which models the [id] with a [String].
      */
-    data class StringID(val id: String) : DeviceID
+    data class StringID(private val id: String) : DeviceID {
+        override fun show(): String = id
+    }
 
     /**
      * Utility method for converting a [String] into a [StringID].
@@ -35,7 +43,9 @@ object DeviceIDOps {
     /**
      * A [DeviceID] which models the [id] with an [Int].
      */
-    data class IntID(val id: Int) : DeviceID
+    data class IntID(private val id: Int) : DeviceID {
+        override fun show(): String = id.toString()
+    }
 
     /**
      * Utility method for converting an [Int] into an [IntID].
