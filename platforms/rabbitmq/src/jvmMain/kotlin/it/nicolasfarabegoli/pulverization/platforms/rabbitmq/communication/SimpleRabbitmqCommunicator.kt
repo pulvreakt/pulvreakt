@@ -9,6 +9,7 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.inject
 import reactor.core.publisher.Mono
@@ -19,32 +20,48 @@ import reactor.rabbitmq.Receiver
 import reactor.rabbitmq.ReceiverOptions
 import reactor.rabbitmq.Sender
 import reactor.rabbitmq.SenderOptions
+import kotlin.reflect.KClass
+import kotlin.reflect.full.createType
 
 /**
  * Simple implementation for communicate (send only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
+actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
+    private val type: KClass<Send>,
     override val id: I,
     override val queue: String,
-    private val serializer: SerializationStrategy<Send>,
 ) : RabbitmqSenderCommunicator<Send, I>, KoinComponent {
     private val connection: Connection by inject(Connection::class.java)
     private val sender: Sender
+    private val serializer = Json.serializersModule.serializer(type.createType())
 
     companion object {
+        /**
+         * Creates the communication without the need of passing the KClass.
+         */
+        inline operator fun <reified S : Any> invoke(id: DeviceID, queue: String) =
+            SimpleRabbitmqSenderCommunicator(S::class, id, queue)
+
         private const val EXCHANGE = "pulverization.exchange"
     }
 
     init {
         val options = SenderOptions().connectionSupplier { connection }
         sender = RabbitFlux.createSender(options)
+    }
+
+    override suspend fun initialize() {
         sender.bindQueue(
-            BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(id.toString()),
-        ).block()
+            BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(id.show()),
+        ).awaitSingleOrNull() ?: error("Failed to initialize the binding between `$queue` and `$EXCHANGE`")
     }
 
     override suspend fun sendToComponent(payload: Send) {
-        val message = OutboundMessage("pulverization.", "", Json.encodeToString(serializer, payload).toByteArray())
+        val message = OutboundMessage(
+            EXCHANGE,
+            id.show(), // TODO(find a better way to manage the routing key)
+            Json.encodeToString(serializer, payload).toByteArray(),
+        )
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }
 }
@@ -52,21 +69,32 @@ actual class SimpleRabbitmqSenderCommunicator<in Send, I : DeviceID>(
 /**
  * Simple implementation for communicate (receive only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqReceiverCommunicator<out Receive, I : DeviceID>(
+actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
+    private val type: KClass<Receive>,
     override val id: I,
     override val queue: String,
-    private val serializer: DeserializationStrategy<Receive>,
 ) : RabbitmqReceiverCommunicator<Receive, I>, KoinComponent {
     private val connection: Connection by inject(Connection::class.java)
-    private val receiver: Receiver
+    private var receiver: Receiver
+    private val serializer = Json.serializersModule.serializer(type.createType())
+
+    companion object {
+        /**
+         * Creates the communication without the need of passing the KClass.
+         */
+        inline operator fun <reified R : Any> invoke(id: DeviceID, queue: String) =
+            SimpleRabbitmqReceiverCommunicator(R::class, id, queue)
+    }
 
     init {
         val options = ReceiverOptions().connectionSupplier { connection }
         receiver = RabbitFlux.createReceiver(options)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun receiveFromComponent(): Flow<Receive> {
-        return receiver.consumeAutoAck(queue).asFlow().map { Json.decodeFromString(serializer, it.body.toString()) }
+        return receiver.consumeAutoAck(queue).asFlow()
+            .map { Json.decodeFromString(serializer, it.body.decodeToString()) as Receive }
     }
 }
 
@@ -92,9 +120,12 @@ actual class SimpleRabbitmqBidirectionalCommunication<in Send, out Receive, I : 
         val receiverOptions = ReceiverOptions().connectionSupplier { connection }
         sender = RabbitFlux.createSender(senderOptions)
         receiver = RabbitFlux.createReceiver(receiverOptions)
+    }
+
+    override suspend fun initialize() {
         sender.bindQueue(
             BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(id.toString()),
-        ).block()
+        ).awaitSingleOrNull() ?: error("Failed to bind `$queue` with `$EXCHANGE`")
     }
 
     override suspend fun sendToComponent(payload: Send) {

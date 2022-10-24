@@ -7,21 +7,24 @@ import com.rabbitmq.client.Connection
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinExtension
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
-import reactor.rabbitmq.RabbitFlux
-import reactor.rabbitmq.ReceiverOptions
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
+@Serializable
+data class Foo(val i: Int)
+
+class SimpleRabbitmqReceiverCommunicatorTest : KoinTest, FunSpec() {
     private val koinModule = module {
         single<Connection> { MockConnectionFactory().newConnection() }
     }
@@ -38,26 +41,22 @@ class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
     }
 
     init {
-        context("Sender only component that use RabbitMQ") {
-            test("The sender only component should create the queue correctly") {
-                val queue = "test_queue"
-                val exchange = "pulverization.exchange"
-                val routingKey = "1"
-                initQueue(get(), queue, exchange, routingKey)
-                val options = ReceiverOptions().connectionSupplier { get() }
-                val receiver = RabbitFlux.createReceiver(options)
-                val result = async {
-                    withTimeout(2.toDuration(DurationUnit.SECONDS)) {
-                        receiver.consumeAutoAck(queue).asFlow().take(1).collect { payload ->
-                            payload.body shouldNotBe null
-                        }
+        context("Receiver only component that use RabbitMQ") {
+            test("The receiver should receive the message") {
+                val queue = "queue"
+                val exchange = "exc"
+                val routingKey = "r.r"
+                val payload = Foo(12)
+                initQueue(get(), queue, exchange, routingKey).use { channel ->
+                    channel.basicPublish(exchange, routingKey, null, Json.encodeToString(payload).toByteArray())
+                }
+                val receiver = SimpleRabbitmqReceiverCommunicator<Foo>("1".toID(), queue)
+                withTimeout(3.toDuration(DurationUnit.SECONDS)) {
+                    receiver.receiveFromComponent().take(1).collect {
+                        it shouldNotBe null
+                        it.i shouldBe 12
                     }
                 }
-                SimpleRabbitmqSenderCommunicator<String>(
-                    "1".toID(),
-                    queue,
-                ).sendToComponent("")
-                result.await()
             }
         }
     }

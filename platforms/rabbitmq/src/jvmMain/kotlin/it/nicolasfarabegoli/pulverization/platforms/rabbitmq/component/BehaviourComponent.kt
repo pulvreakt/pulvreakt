@@ -10,6 +10,7 @@ import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqBidirectionalCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqSenderCommunicator
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqSenderCommunicator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -19,7 +20,7 @@ import kotlin.reflect.KClass
  * Abstract behaviour which enable, for a [device], all the communication with the other components.
  * This class doesn't implement any cycle logic.
  */
-actual open class AbstractBehaviourComponent<S, E, W, A, I>(
+actual open class BehaviourComponent<S, E, W, A, I>(
     private val kState: KClass<S>,
     private val kExport: KClass<E>,
     private val kActuators: KClass<A>,
@@ -35,9 +36,12 @@ actual open class AbstractBehaviourComponent<S, E, W, A, I>(
     protected var communicationComponent: RabbitmqBidirectionalCommunicator<E, E, I>? = null
 
     companion object {
+        /**
+         * Creates the behaviour component without the need of passing the KClass.
+         */
         inline operator fun <reified S, reified E, reified W, reified A, I : DeviceID> invoke(device: LogicalDevice<I>)
             where S : StateRepresentation, E : Export, A : Any, W : Any =
-            AbstractBehaviourComponent(S::class, E::class, W::class, A::class, device)
+            BehaviourComponent(S::class, E::class, W::class, A::class, device)
     }
 
     init {
@@ -45,11 +49,14 @@ actual open class AbstractBehaviourComponent<S, E, W, A, I>(
             when (it) {
                 ComponentsType.ACTUATORS ->
                     actuatorsComponent =
-                        SimpleRabbitmqSenderCommunicator(kActuators, id, "actuators/$id")
+                        SimpleRabbitmqSenderCommunicator(kActuators, id, "actuators/${id.show()}")
 
                 ComponentsType.BEHAVIOUR -> error("The behaviour must not have a self referencing component")
                 ComponentsType.COMMUNICATION -> TODO()
-                ComponentsType.SENSORS -> TODO()
+                ComponentsType.SENSORS ->
+                    sensorsComponent =
+                        SimpleRabbitmqReceiverCommunicator(kSensors, id, "sensors/${id.show()}")
+
                 ComponentsType.STATE -> TODO()
             }
         }
