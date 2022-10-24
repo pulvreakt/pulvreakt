@@ -10,8 +10,11 @@ import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqBidirectionalCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.RabbitmqSenderCommunicator
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqBidirectionalCommunication
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqSenderCommunicator
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
@@ -52,17 +55,28 @@ actual open class BehaviourComponent<S, E, W, A, I>(
                         SimpleRabbitmqSenderCommunicator(kActuators, id, "actuators/${id.show()}")
 
                 ComponentsType.BEHAVIOUR -> error("The behaviour must not have a self referencing component")
-                ComponentsType.COMMUNICATION -> TODO()
+                ComponentsType.COMMUNICATION ->
+                    communicationComponent =
+                        SimpleRabbitmqBidirectionalCommunication(kExport, kExport, id, "communications/${id.show()}")
+
                 ComponentsType.SENSORS ->
                     sensorsComponent =
                         SimpleRabbitmqReceiverCommunicator(kSensors, id, "sensors/${id.show()}")
 
-                ComponentsType.STATE -> TODO()
+                ComponentsType.STATE ->
+                    stateComponent =
+                        SimpleRabbitmqBidirectionalCommunication(kState, kState, id, "states/${id.show()}")
             }
         }
     }
 
     override val id: I = device.id
+
+    override suspend fun initialize(): Unit = coroutineScope {
+        listOfNotNull(stateComponent, sensorsComponent, communicationComponent, actuatorsComponent)
+            .map { comm -> async { comm.initialize() } }.forEach { it.join() }
+    }
+
     override suspend fun cycle() {
         TODO("Not yet implemented")
     }
