@@ -22,7 +22,6 @@ import org.koin.core.component.KoinComponent
  * Abstract behaviour which enable all the communication with the other components.
  * This class doesn't implement any cycle logic.
  */
-@Suppress("UnnecessaryAbstractClass") // Detekt fail with KMM
-expect class AbstractBehaviourComponent<S, E, W, A, I> :
+expect class BehaviourComponent<S, E, W, A, I> :
     DeviceComponent<I>, KoinComponent
     where S : StateRepresentation, E : Export, A : Any, W : Any, I : DeviceID
