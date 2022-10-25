@@ -24,8 +24,8 @@ import kotlin.reflect.full.createType
 /**
  * Simple implementation for communicate (send only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
-    private val type: KClass<Send>,
+actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID> actual constructor(
+    type: KClass<Send>,
     override val id: I,
     override val queue: String,
 ) : RabbitmqSenderCommunicator<Send, I>, KoinComponent {
@@ -33,11 +33,11 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
     private val sender: Sender
     private val serializer = Json.serializersModule.serializer(type.createType())
 
-    companion object {
+    actual companion object {
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        inline operator fun <reified S : Any> invoke(id: DeviceID, queue: String) =
+        actual inline operator fun <reified S : Any> invoke(id: DeviceID, queue: String) =
             SimpleRabbitmqSenderCommunicator(S::class, id, queue)
 
         private const val EXCHANGE = "pulverization.exchange"
@@ -67,8 +67,8 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
 /**
  * Simple implementation for communicate (receive only) with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
-    private val type: KClass<Receive>,
+actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID> actual constructor(
+    type: KClass<Receive>,
     override val id: I,
     override val queue: String,
 ) : RabbitmqReceiverCommunicator<Receive, I>, KoinComponent {
@@ -76,11 +76,11 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
     private var receiver: Receiver
     private val serializer = Json.serializersModule.serializer(type.createType())
 
-    companion object {
+    actual companion object {
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        inline operator fun <reified R : Any> invoke(id: DeviceID, queue: String) =
+        actual inline operator fun <reified R : Any> invoke(id: DeviceID, queue: String) =
             SimpleRabbitmqReceiverCommunicator(R::class, id, queue)
     }
 
@@ -99,9 +99,9 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
 /**
  * Simple implementation for communicate with another component using RabbitMQ.
  */
-actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any, I : DeviceID>(
-    private val kSend: KClass<Send>,
-    private val kReceive: KClass<Receive>,
+actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any, I : DeviceID> actual constructor(
+    kSend: KClass<Send>,
+    kReceive: KClass<Receive>,
     override val id: I,
     override val queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive, I>, KoinComponent {
@@ -111,11 +111,11 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any,
     private val sender: Sender
     private val receiver: Receiver
 
-    companion object {
+    actual companion object {
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        inline operator fun <reified S : Any, reified R : Any> invoke(id: DeviceID, queue: String) =
+        actual inline operator fun <reified S : Any, reified R : Any> invoke(id: DeviceID, queue: String) =
             SimpleRabbitmqBidirectionalCommunication(S::class, R::class, id, queue)
 
         private const val EXCHANGE = "pulverization.exchange"

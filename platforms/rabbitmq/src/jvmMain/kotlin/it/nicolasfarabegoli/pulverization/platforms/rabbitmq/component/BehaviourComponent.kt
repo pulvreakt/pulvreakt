@@ -15,13 +15,13 @@ import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.Simpl
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqSenderCommunicator
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
 /**
- * Abstract behaviour which enable, for a [device], all the communication with the other components.
- * This class doesn't implement any cycle logic.
+ * Behaviour which enable, for a [device], all the communication with the other components.
  */
 actual open class BehaviourComponent<S, E, W, A, I>(
     private val kState: KClass<S>,
@@ -78,6 +78,6 @@ actual open class BehaviourComponent<S, E, W, A, I>(
     }
 
     override suspend fun cycle() {
-        TODO("Not yet implemented")
+        TODO()
     }
 }
