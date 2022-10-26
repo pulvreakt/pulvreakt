@@ -11,9 +11,7 @@ expect class SimpleRabbitmqSenderCommunicator<Send : Any, I : DeviceID>(
     type: KClass<Send>,
     id: I,
     queue: String,
-) : RabbitmqSenderCommunicator<Send, I>,
-    KoinComponent {
-
+) : RabbitmqSenderCommunicator<Send, I>, KoinComponent {
     companion object {
         inline operator fun <reified S : Any> invoke(
             id: DeviceID,
@@ -29,9 +27,7 @@ expect class SimpleRabbitmqReceiverCommunicator<Receive : Any, I : DeviceID>(
     type: KClass<Receive>,
     id: I,
     queue: String,
-) : RabbitmqReceiverCommunicator<Receive, I>,
-    KoinComponent {
-
+) : RabbitmqReceiverCommunicator<Receive, I>, KoinComponent {
     companion object {
         inline operator fun <reified R : Any> invoke(
             id: DeviceID,
@@ -48,9 +44,7 @@ expect class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any,
     kReceive: KClass<Receive>,
     id: I,
     queue: String,
-) : RabbitmqBidirectionalCommunicator<Send, Receive, I>,
-    KoinComponent {
-
+) : RabbitmqBidirectionalCommunicator<Send, Receive, I>, KoinComponent {
     companion object {
         inline operator fun <reified S : Any, reified R : Any> invoke(
             id: DeviceID,

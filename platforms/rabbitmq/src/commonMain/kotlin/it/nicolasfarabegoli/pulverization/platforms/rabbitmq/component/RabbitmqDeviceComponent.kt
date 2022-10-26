@@ -22,9 +22,12 @@ expect class BehaviourComponent<S, E, W, A, I> :
  * TODO.
  * Explore delegates opportunity.
  */
-abstract class RabbitmqComponent<I : DeviceID>(device: LogicalDevice<I>) : DeviceComponent<I> {
+abstract class RabbitmqDeviceComponent<I : DeviceID>(device: LogicalDevice<I>) : DeviceComponent<I> {
     private var communicationComponents: Map<ComponentsType, RabbitmqCommunicator> = emptyMap()
 
+    /**
+     * TODO.
+     */
     fun addCommunicator(elem: Pair<ComponentsType, RabbitmqCommunicator>) {
         communicationComponents = communicationComponents + elem
     }
@@ -42,9 +45,6 @@ abstract class RabbitmqComponent<I : DeviceID>(device: LogicalDevice<I>) : Devic
     inline fun <reified C : RabbitmqCommunicator> get(componentsType: ComponentsType): C? =
         get(componentsType, C::class)
 
-    /**
-     * TODO.
-     */
     @Suppress("UNCHECKED_CAST")
     fun <C : RabbitmqCommunicator> getValue(componentsType: ComponentsType, type: KClass<C>): C {
         val elem = communicationComponents[componentsType]
@@ -59,4 +59,8 @@ abstract class RabbitmqComponent<I : DeviceID>(device: LogicalDevice<I>) : Devic
         getValue(componentsType, C::class)
 
     override val id: I = device.id
+
+    override suspend fun initialize() {
+        super.initialize()
+    }
 }
