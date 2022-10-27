@@ -57,6 +57,7 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
     override val queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive>, KoinComponent {
     actual override val context: RabbitmqContext by inject()
+
     override suspend fun sendToComponent(payload: Send) {
         TODO("Not yet implemented")
     }

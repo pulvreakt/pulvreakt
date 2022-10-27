@@ -8,7 +8,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinExtension
 import io.kotest.matchers.shouldNotBe
-import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.reactive.asFlow
@@ -53,10 +52,10 @@ class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
                         }
                     }
                 }
-                SimpleRabbitmqSenderCommunicator<String>(
-                    "1".toID(),
-                    queue,
-                ).sendToComponent("")
+//                SimpleRabbitmqSenderCommunicator<String>(
+//                    "1".toID(),
+//                    queue,
+//                ).sendToComponent("")
                 result.await()
             }
         }
