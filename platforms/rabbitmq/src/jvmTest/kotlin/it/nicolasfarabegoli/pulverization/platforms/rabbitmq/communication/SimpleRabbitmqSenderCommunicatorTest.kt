@@ -8,6 +8,8 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinExtension
 import io.kotest.matchers.shouldNotBe
+import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.reactive.asFlow
@@ -23,6 +25,7 @@ import kotlin.time.toDuration
 class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
     private val koinModule = module {
         single<Connection> { MockConnectionFactory().newConnection() }
+        single { RabbitmqContext("1".toID()) }
     }
 
     override fun extensions(): List<Extension> = listOf(KoinExtension(koinModule))
@@ -52,10 +55,7 @@ class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
                         }
                     }
                 }
-//                SimpleRabbitmqSenderCommunicator<String>(
-//                    "1".toID(),
-//                    queue,
-//                ).sendToComponent("")
+                SimpleRabbitmqSenderCommunicator<String>(queue).sendToComponent("")
                 result.await()
             }
         }
