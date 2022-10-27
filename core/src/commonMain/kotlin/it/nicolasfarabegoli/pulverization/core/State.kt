@@ -10,7 +10,7 @@ interface StateRepresentation
  * Models the concept of [State] in the pulverization context.
  * @param S the type of the [State].
  */
-interface State<S : StateRepresentation> {
+interface State<S : StateRepresentation> : PulverizedComponent {
     /**
      * Retrive the value of the [State].
      */
