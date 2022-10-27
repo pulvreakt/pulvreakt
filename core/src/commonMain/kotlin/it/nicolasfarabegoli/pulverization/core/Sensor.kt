@@ -24,7 +24,7 @@ interface Sensor<out T, I : DeviceID> {
  * Contains a set of [Sensor]s managed by a single [Device].
  * @param I the type of the ID of each [Sensor].
  */
-class SensorsContainer<I : DeviceID> {
+class SensorsContainer<I : DeviceID> : PulverizedComponent {
     /**
      * The set of [Sensor]s.
      */

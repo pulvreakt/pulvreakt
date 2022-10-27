@@ -1,16 +1,14 @@
 package it.nicolasfarabegoli.pulverization.component
 
-import it.nicolasfarabegoli.pulverization.core.DeviceID
-
 /**
  * Models the concept of _Component_ belonging to a _Device_.
  * Contains a [id] and a [cycle] method to execute the logic of the component.
  */
-interface DeviceComponent<I : DeviceID> {
+interface DeviceComponent<I : Context> {
     /**
-     * The [id] of the device.
+     * The [context] in which the device run.
      */
-    val id: I
+    val context: I
 
     /**
      * Initialize the component.

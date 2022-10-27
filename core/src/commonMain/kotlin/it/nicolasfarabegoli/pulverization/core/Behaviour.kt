@@ -8,7 +8,7 @@ package it.nicolasfarabegoli.pulverization.core
  * @param A the type of the actuations
  * @param O the type of the outcome of the function
  */
-data class BehaviourOutput<S : StateRepresentation, E : Export, A, O>(
+data class BehaviourOutput<S : StateRepresentation, E : CommunicationPayload, A, O>(
     val newState: S,
     val newExport: E,
     val actuations: A,
@@ -23,11 +23,7 @@ data class BehaviourOutput<S : StateRepresentation, E : Export, A, O>(
  * @param W the type of the sensed values
  * @param A the type of the actuation to do
  */
-interface Behaviour<S, E, W, A, O, I> where S : StateRepresentation, E : Export, I : DeviceID {
-    /**
-     * The device [id].
-     */
-    val id: I
+interface Behaviour<S, E, W, A, O> : PulverizedComponent where S : StateRepresentation, E : CommunicationPayload {
 
     /**
      * The function used to implement the device logic.

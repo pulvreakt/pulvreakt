@@ -24,7 +24,7 @@ interface Actuator<in T, I : DeviceID> {
  * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
-class ActuatorsContainer<I : DeviceID> {
+class ActuatorsContainer<I : DeviceID> : PulverizedComponent {
 
     /**
      * The collection of [Actuator]s.
