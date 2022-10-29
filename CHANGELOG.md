@@ -1,3 +1,18 @@
+## [0.2.3](https://github.com/nicolasfara/pulverization-framework/compare/0.2.2...0.2.3) (2022-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update kotest to v5.5.3 ([664eddf](https://github.com/nicolasfara/pulverization-framework/commit/664eddfe6fea7e4e3c51a94317ee5eee981ad2d8))
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.14 ([49442a3](https://github.com/nicolasfara/pulverization-framework/commit/49442a3bdf5c77e83d9fec6467e4bbbb652c0cd4))
+* **deps:** update node.js to 18.12 ([f04afe5](https://github.com/nicolasfara/pulverization-framework/commit/f04afe5a4d40edac8482d056e839ce2fb7fa4c9d))
+* **deps:** update node.js to v18 ([24e22a8](https://github.com/nicolasfara/pulverization-framework/commit/24e22a8a81bd06eeb89a4c1ae07ba162541b75fb))
+* **deps:** update plugin conventionalcommits to v3.0.13 ([8ee0cf2](https://github.com/nicolasfara/pulverization-framework/commit/8ee0cf2b077cdbb11ebd11e648ca016fae124976))
+
 ## [0.2.2](https://github.com/nicolasfara/pulverization-framework/compare/0.2.1...0.2.2) (2022-10-24)
 
 
