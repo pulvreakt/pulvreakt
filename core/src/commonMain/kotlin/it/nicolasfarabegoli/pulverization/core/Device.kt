@@ -1,13 +1,6 @@
 package it.nicolasfarabegoli.pulverization.core
 
 /**
- * All the components that a [LogicalDevice] can have.
- */
-enum class ComponentsType {
-    STATE, ACTUATORS, SENSORS, BEHAVIOUR, COMMUNICATION
-}
-
-/**
  * Marker interface representing the *ID* of the [LogicalDevice].
  */
 interface DeviceID {
@@ -18,11 +11,25 @@ interface DeviceID {
     fun show(): String = toString()
 }
 
+// /**
+// * Represents a _logical device_ in the pulverization context.
+// * Each device is represented by its own [id] and its [components].
+// */
+// data class LogicalDevice<I : DeviceID>(val id: I, val components: Set<ComponentsType> = emptySet())
 /**
- * Represents a _logical device_ in the pulverization context.
- * Each device is represented by its own [id] and its [components].
+ * Abstraction of a device in a pulverized system.
  */
-data class LogicalDevice<I : DeviceID>(val id: I, val components: Set<ComponentsType> = emptySet())
+interface LogicalDevice {
+    /**
+     * All the components that constitute this specific [LogicalDevice].
+     */
+    val components: Set<PulverizedComponent>
+}
+
+/**
+ * Get the [C] component from a [LogicalDevice], null is returned if no component is found.
+ */
+inline fun <reified C : PulverizedComponent> LogicalDevice.get(): C? = components.filterIsInstance<C>().firstOrNull()
 
 /**
  * Enrichment for [DeviceID].
