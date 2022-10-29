@@ -3,7 +3,13 @@ package it.nicolasfarabegoli.pulverization.communication
 import it.nicolasfarabegoli.pulverization.component.Context
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Abstraction for intra-component communication.
+ */
 interface Communicator<C : Context> {
+    /**
+     * The context used by the communicator.
+     */
     val context: C
 }
 
