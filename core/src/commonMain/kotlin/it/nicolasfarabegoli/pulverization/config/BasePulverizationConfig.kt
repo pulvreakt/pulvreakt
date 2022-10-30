@@ -26,6 +26,18 @@ interface BasePulverizationConfig {
 }
 
 /**
+ * Retrive the [LogicalDevice] matching a given [name], if any.
+ */
+operator fun BasePulverizationConfig.get(name: String): LogicalDevice? = devices[name]
+
+/**
+ * Retrive a specific component belonging to a [LogicalDevice] with the given [name], if any.
+ */
+inline fun <reified C : PulverizedComponent> BasePulverizationConfig.getDeviceComponent(name: String): C? {
+    return devices[name]?.components?.filterIsInstance<C>()?.firstOrNull()
+}
+
+/**
  * Implementation for [BasePulverizationConfig].
  */
 data class BasePulverizationConfigImpl(override val devices: Map<String, LogicalDevice>) : BasePulverizationConfig
