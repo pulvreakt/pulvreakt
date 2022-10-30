@@ -12,6 +12,9 @@ expect class SimpleRabbitmqSenderCommunicator<Send : Any>(
     queue: String,
 ) : RabbitmqSenderCommunicator<Send>, KoinComponent {
     companion object {
+        /**
+         * Creates the class without specifying the KClass of the payload.
+         */
         inline operator fun <reified S : Any> invoke(
             queue: String,
         ): SimpleRabbitmqSenderCommunicator<S>
@@ -28,6 +31,9 @@ expect class SimpleRabbitmqReceiverCommunicator<Receive : Any>(
     queue: String,
 ) : RabbitmqReceiverCommunicator<Receive>, KoinComponent {
     companion object {
+        /**
+         * Creates the class without specifying the KClass of the payload.
+         */
         inline operator fun <reified R : Any> invoke(
             queue: String,
         ): SimpleRabbitmqReceiverCommunicator<R>
@@ -45,6 +51,9 @@ expect class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
     queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive>, KoinComponent {
     companion object {
+        /**
+         * Creates the class without specifying the KClass of the payloads.
+         */
         inline operator fun <reified S : Any, reified R : Any> invoke(
             queue: String,
         ): SimpleRabbitmqBidirectionalCommunication<S, R>
