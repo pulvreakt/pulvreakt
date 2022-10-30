@@ -38,6 +38,9 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any> actual constructo
     actual override val context: RabbitmqContext by inject()
 
     actual companion object {
+        /**
+         * Creates the class without specifying the KClass of the payload.
+         */
         actual inline operator fun <reified R : Any> invoke(
             queue: String,
         ): SimpleRabbitmqReceiverCommunicator<R> = SimpleRabbitmqReceiverCommunicator(R::class, queue)
@@ -67,6 +70,9 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
     }
 
     actual companion object {
+        /**
+         * Creates the class without specifying the KClass of the payload.
+         */
         actual inline operator fun <reified S : Any, reified R : Any> invoke(
             queue: String,
         ): SimpleRabbitmqBidirectionalCommunication<S, R> =
