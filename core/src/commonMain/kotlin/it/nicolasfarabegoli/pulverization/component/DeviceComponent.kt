@@ -1,14 +1,16 @@
 package it.nicolasfarabegoli.pulverization.component
 
+import org.koin.core.component.KoinComponent
+
 /**
  * Models the concept of _Component_ belonging to a _Device_.
  * Contains a [id] and a [cycle] method to execute the logic of the component.
  */
-interface DeviceComponent<I : Context> {
+interface DeviceComponent<C : Context> : KoinComponent {
     /**
      * The [context] in which the device run.
      */
-    val context: I
+    val context: C
 
     /**
      * Initialize the component.
