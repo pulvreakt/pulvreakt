@@ -18,13 +18,33 @@ data class SimpleLogicalDevice(override val components: Set<PulverizedComponent>
  * Base configuration for the pulverized system.
  * The configuration stores all the [devices] expressed as a map "device nam -> [LogicalDevice]".
  */
-data class BasePulverizationConfig(val devices: Map<String, LogicalDevice>)
+interface BasePulverizationConfig {
+    /**
+     * All the devices in the configuration.
+     */
+    val devices: Map<String, LogicalDevice>
+}
+
+/**
+ * Implementation for [BasePulverizationConfig].
+ */
+data class BasePulverizationConfigImpl(override val devices: Map<String, LogicalDevice>) : BasePulverizationConfig
+
+/**
+ * Scope for building DSL.
+ */
+interface Scope<S> {
+    /**
+     * Build the object configured by the DSL.
+     */
+    fun build(): S
+}
 
 /**
  * Scope for configuring a specific [LogicalDevice].
  */
 @PulverizationMarker
-class LogicalDeviceScope {
+class LogicalDeviceScope : Scope<LogicalDevice> {
     private val components: MutableSet<PulverizedComponent> = mutableSetOf()
 
     /**
@@ -37,14 +57,14 @@ class LogicalDeviceScope {
     /**
      * Creates a new [LogicalDevice].
      */
-    fun build(): LogicalDevice = SimpleLogicalDevice(components)
+    override fun build(): LogicalDevice = SimpleLogicalDevice(components)
 }
 
 /**
  * Scope for creating [LogicalDevice]s.
  */
 @PulverizationMarker
-class PulverizationConfigScope {
+open class PulverizationConfigScope : Scope<BasePulverizationConfig> {
     private val logicalDevices: MutableMap<String, LogicalDevice> = mutableMapOf()
 
     /**
@@ -59,7 +79,7 @@ class PulverizationConfigScope {
     /**
      * Creates a new [BasePulverizationConfig].
      */
-    fun build(): BasePulverizationConfig = BasePulverizationConfig(logicalDevices)
+    override fun build(): BasePulverizationConfig = BasePulverizationConfigImpl(logicalDevices)
 }
 
 /**
