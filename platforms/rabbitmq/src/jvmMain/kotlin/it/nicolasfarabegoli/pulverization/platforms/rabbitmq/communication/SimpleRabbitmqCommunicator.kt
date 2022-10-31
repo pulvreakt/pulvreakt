@@ -13,7 +13,9 @@ import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent.inject
 import reactor.core.publisher.Mono
 import reactor.rabbitmq.BindingSpecification
+import reactor.rabbitmq.ExchangeSpecification
 import reactor.rabbitmq.OutboundMessage
+import reactor.rabbitmq.QueueSpecification
 import reactor.rabbitmq.RabbitFlux
 import reactor.rabbitmq.Receiver
 import reactor.rabbitmq.ReceiverOptions
@@ -27,6 +29,7 @@ import kotlin.reflect.full.createType
  */
 actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
     type: KClass<Send>,
+    override val exchange: String,
     override val queue: String,
 ) : RabbitmqSenderCommunicator<Send>, KoinComponent {
     actual override val context: RabbitmqContext by inject()
@@ -38,10 +41,8 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        actual inline operator fun <reified S : Any> invoke(queue: String) =
-            SimpleRabbitmqSenderCommunicator(S::class, queue)
-
-        private const val EXCHANGE = "pulverization.exchange"
+        actual inline operator fun <reified S : Any> invoke(exchange: String, queue: String) =
+            SimpleRabbitmqSenderCommunicator(S::class, exchange, queue)
     }
 
     init {
@@ -50,14 +51,17 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
     }
 
     override suspend fun initialize() {
+        sender.declareExchange(ExchangeSpecification.exchange(exchange).type("topic").durable(false))
+            .awaitSingleOrNull()
+        sender.declareQueue(QueueSpecification.queue(queue)).awaitSingleOrNull()
         sender.bindQueue(
-            BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(context.id.show()),
-        ).awaitSingleOrNull() ?: error("Failed to initialize the binding between `$queue` and `$EXCHANGE`")
+            BindingSpecification().queue(queue).exchange(exchange).routingKey(context.id.show()),
+        ).awaitSingleOrNull() ?: error("Failed to initialize the binding between `$queue` and `$exchange`")
     }
 
     override suspend fun sendToComponent(payload: Send) {
         val message = OutboundMessage(
-            EXCHANGE,
+            exchange,
             context.id.show(), // TODO(find a better way to manage the routing key)
             Json.encodeToString(serializer, payload).toByteArray(),
         )
@@ -70,6 +74,7 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
  */
 actual class SimpleRabbitmqReceiverCommunicator<Receive : Any> actual constructor(
     type: KClass<Receive>,
+    override val exchange: String,
     override val queue: String,
 ) : RabbitmqReceiverCommunicator<Receive>, KoinComponent {
     actual override val context: RabbitmqContext by inject()
@@ -81,8 +86,8 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any> actual constructo
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        actual inline operator fun <reified R : Any> invoke(queue: String) =
-            SimpleRabbitmqReceiverCommunicator(R::class, queue)
+        actual inline operator fun <reified R : Any> invoke(exchange: String, queue: String) =
+            SimpleRabbitmqReceiverCommunicator(R::class, exchange, queue)
     }
 
     init {
@@ -103,6 +108,7 @@ actual class SimpleRabbitmqReceiverCommunicator<Receive : Any> actual constructo
 actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any> actual constructor(
     kSend: KClass<Send>,
     kReceive: KClass<Receive>,
+    override val exchange: String,
     override val queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive>, KoinComponent {
     actual override val context: RabbitmqContext by inject()
@@ -116,10 +122,8 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
         /**
          * Creates the communication without the need of passing the KClass.
          */
-        actual inline operator fun <reified S : Any, reified R : Any> invoke(queue: String) =
-            SimpleRabbitmqBidirectionalCommunication(S::class, R::class, queue)
-
-        private const val EXCHANGE = "pulverization.exchange"
+        actual inline operator fun <reified S : Any, reified R : Any> invoke(exchange: String, queue: String) =
+            SimpleRabbitmqBidirectionalCommunication(S::class, R::class, exchange, queue)
     }
 
     init {
@@ -130,14 +134,17 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
     }
 
     override suspend fun initialize() {
+        sender.declareExchange(ExchangeSpecification.exchange(exchange).type("topic").durable(false))
+            .awaitSingleOrNull()
+        sender.declareQueue(QueueSpecification.queue(queue)).awaitSingleOrNull()
         sender.bindQueue(
-            BindingSpecification().queue(queue).exchange(EXCHANGE).routingKey(context.id.toString()),
-        ).awaitSingleOrNull() ?: error("Failed to bind `$queue` with `$EXCHANGE`")
+            BindingSpecification().queue(queue).exchange(exchange).routingKey(context.id.show()),
+        ).awaitSingleOrNull() ?: error("Failed to bind `$queue` with `$exchange`")
     }
 
     override suspend fun sendToComponent(payload: Send) {
         val message = OutboundMessage(
-            EXCHANGE,
+            exchange,
             context.id.show(),
             Json.encodeToString(sendSerializer, payload).toByteArray(),
         )
@@ -146,6 +153,7 @@ actual class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
 
     @Suppress("UNCHECKED_CAST")
     override fun receiveFromComponent(): Flow<Receive> {
+        println("Setup!")
         return receiver.consumeAutoAck(queue).asFlow()
             .map { Json.decodeFromString(receiveDeserializer, it.body.decodeToString()) as Receive }
     }

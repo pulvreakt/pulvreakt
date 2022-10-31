@@ -9,6 +9,7 @@ import kotlin.reflect.KClass
  */
 expect class SimpleRabbitmqSenderCommunicator<Send : Any>(
     type: KClass<Send>,
+    exchange: String,
     queue: String,
 ) : RabbitmqSenderCommunicator<Send>, KoinComponent {
     companion object {
@@ -16,6 +17,7 @@ expect class SimpleRabbitmqSenderCommunicator<Send : Any>(
          * Creates the class without specifying the KClass of the payload.
          */
         inline operator fun <reified S : Any> invoke(
+            exchange: String,
             queue: String,
         ): SimpleRabbitmqSenderCommunicator<S>
     }
@@ -28,6 +30,7 @@ expect class SimpleRabbitmqSenderCommunicator<Send : Any>(
  */
 expect class SimpleRabbitmqReceiverCommunicator<Receive : Any>(
     type: KClass<Receive>,
+    exchange: String,
     queue: String,
 ) : RabbitmqReceiverCommunicator<Receive>, KoinComponent {
     companion object {
@@ -35,6 +38,7 @@ expect class SimpleRabbitmqReceiverCommunicator<Receive : Any>(
          * Creates the class without specifying the KClass of the payload.
          */
         inline operator fun <reified R : Any> invoke(
+            exchange: String,
             queue: String,
         ): SimpleRabbitmqReceiverCommunicator<R>
     }
@@ -48,6 +52,7 @@ expect class SimpleRabbitmqReceiverCommunicator<Receive : Any>(
 expect class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>(
     kSend: KClass<Send>,
     kReceive: KClass<Receive>,
+    exchange: String,
     queue: String,
 ) : RabbitmqBidirectionalCommunicator<Send, Receive>, KoinComponent {
     companion object {
@@ -55,6 +60,7 @@ expect class SimpleRabbitmqBidirectionalCommunication<Send : Any, Receive : Any>
          * Creates the class without specifying the KClass of the payloads.
          */
         inline operator fun <reified S : Any, reified R : Any> invoke(
+            exchange: String,
             queue: String,
         ): SimpleRabbitmqBidirectionalCommunication<S, R>
     }
