@@ -1,22 +1,20 @@
 package it.nicolasfarabegoli.pulverization.core
 
-import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.IntID
-
 object SensorsFixtures {
-    class MySensor1(override val id: IntID) : Sensor<Int, IntID> {
+    class MySensor1 : Sensor<Int> {
         override fun sense(): Int {
             TODO("Not yet implemented")
         }
     }
 
-    class MySensor2(override val id: IntID) : Sensor<Int, IntID> {
+    class MySensor2 : Sensor<Int> {
         override fun sense(): Int {
             TODO("Not yet implemented")
         }
     }
 
     data class MyPayload(val p: Double)
-    class DummySensor(override val id: IntID) : Sensor<MyPayload, IntID> {
+    class DummySensor : Sensor<MyPayload> {
         override fun sense(): MyPayload {
             TODO("Not yet implemented")
         }

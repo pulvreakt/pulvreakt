@@ -7,12 +7,7 @@ import kotlin.reflect.KClass
  * An [Actuator] can [actuate] an operation over the environment.
  * @param T the type of the payload to send to the [Actuator]
  */
-interface Actuator<in T, I : DeviceID> {
-    /**
-     * The device [id].
-     */
-    val id: I
-
+interface Actuator<in T> {
     /**
      * The operation of actuate an action over the environment.
      */
@@ -24,24 +19,24 @@ interface Actuator<in T, I : DeviceID> {
  * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
-class ActuatorsContainer<I : DeviceID> : PulverizedComponent {
+abstract class ActuatorsContainer : PulverizedComponent {
 
     /**
      * The collection of [Actuator]s.
      */
-    private var actuators: Set<Actuator<*, I>> = emptySet()
+    private var actuators: Set<Actuator<*>> = emptySet()
 
     /**
      * Add an [actuator] to the [ActuatorsContainer].
      */
-    operator fun <P, A : Actuator<P, I>> plusAssign(actuator: A) {
+    operator fun <P, A : Actuator<P>> plusAssign(actuator: A) {
         actuators = actuators + actuator
     }
 
     /**
      * Add [allActuators] to the [ActuatorsContainer].
      */
-    fun <A : Actuator<*, I>> addAll(vararg allActuators: A) {
+    fun <A : Actuator<*>> addAll(vararg allActuators: A) {
         actuators = actuators + allActuators.toSet()
     }
 
@@ -52,14 +47,14 @@ class ActuatorsContainer<I : DeviceID> : PulverizedComponent {
      * If no [Actuator] of the given [type] is available, null is returned.
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T, A : Actuator<T, I>> get(type: KClass<A>): A? =
+    operator fun <T, A : Actuator<T>> get(type: KClass<A>): A? =
         actuators.firstOrNull { type.isInstance(it) } as? A
 
     /**
      * Returns a set of [Actuator]s of a certain [type].
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T, A : Actuator<T, I>> getAll(type: KClass<in A>): Set<A> =
+    fun <T, A : Actuator<T>> getAll(type: KClass<in A>): Set<A> =
         actuators.mapNotNull { e -> e.takeIf { type.isInstance(it) } as? A }.toSet()
 
     /**
@@ -68,7 +63,7 @@ class ActuatorsContainer<I : DeviceID> : PulverizedComponent {
      * otherwise a single instance is taken.
      * If no [Actuator] of the given type [A] is available, null is returned.
      */
-    inline fun <reified A : Actuator<*, I>> get(): A? = this[A::class]
+    inline fun <reified A : Actuator<*>> get(): A? = this[A::class]
 
     /**
      * Finds a single [Actuator] of the type [A] and make it available inside the [run] function scope.
@@ -76,15 +71,15 @@ class ActuatorsContainer<I : DeviceID> : PulverizedComponent {
      * otherwise a single instance is taken.
      * If no [Actuator] of the given type [A] is available, the [run] function is not executed.
      */
-    inline fun <reified A : Actuator<*, I>> get(run: A.() -> Unit) = this[A::class]?.run()
+    inline fun <reified A : Actuator<*>> get(run: A.() -> Unit) = this[A::class]?.run()
 
     /**
      * Returns a set of [Actuator]s of type [A].
      */
-    inline fun <reified A : Actuator<*, I>> getAll(): Set<A> = getAll(A::class)
+    inline fun <reified A : Actuator<*>> getAll(): Set<A> = getAll(A::class)
 
     /**
      * Finds all [Actuator]s of the type [A] and make it available as a [Set] inside the [run] function scope.
      */
-    inline fun <reified A : Actuator<*, I>> getAll(run: Set<A>.() -> Unit) = getAll(A::class).run()
+    inline fun <reified A : Actuator<*>> getAll(run: Set<A>.() -> Unit) = getAll(A::class).run()
 }
