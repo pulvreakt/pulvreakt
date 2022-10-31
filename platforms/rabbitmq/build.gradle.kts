@@ -12,7 +12,7 @@ kotlin {
                 implementation(rootProject.libs.kotlinx.coroutines.reactive)
                 implementation(rootProject.libs.kotlinx.coroutines.reactor)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                implementation("io.projectreactor.rabbitmq:reactor-rabbitmq:1.5.5")
+                api("io.projectreactor.rabbitmq:reactor-rabbitmq:1.5.5")
             }
         }
         jvmTest {
