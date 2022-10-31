@@ -52,7 +52,7 @@ class SimpleRabbitmqReceiverCommunicatorTest : KoinTest, FunSpec() {
                 initQueue(get(), queue, exchange, routingKey).use { channel ->
                     channel.basicPublish(exchange, routingKey, null, Json.encodeToString(payload).toByteArray())
                 }
-                val receiver = SimpleRabbitmqReceiverCommunicator<Foo>(queue)
+                val receiver = SimpleRabbitmqReceiverCommunicator<Foo>(exchange, queue)
                 withTimeout(3.toDuration(DurationUnit.SECONDS)) {
                     receiver.receiveFromComponent().take(1).collect {
                         it shouldNotBe null

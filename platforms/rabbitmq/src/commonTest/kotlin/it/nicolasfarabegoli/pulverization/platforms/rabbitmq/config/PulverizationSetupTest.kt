@@ -2,9 +2,12 @@ package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.config.get
+import it.nicolasfarabegoli.pulverization.core.DeviceID
 import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
@@ -14,6 +17,10 @@ import org.koin.core.component.inject
 
 data class StateRepr(val i: Int) : StateRepresentation
 class MyState : State<StateRepr> {
+    override val context: Context = object : Context {
+        override val id: DeviceID = "1".toID()
+    }
+
     override fun get(): StateRepr = StateRepr(1)
 
     override fun update(newState: StateRepr): StateRepr {
@@ -31,16 +38,17 @@ class StateComponent : DeviceComponent<RabbitmqContext> {
     }
 }
 
+@OptIn(ExperimentalKotest::class)
 class PulverizationSetupTest : FunSpec(
     {
-        context("Testing the component setup") {
+        context("Testing the component setup").config(enabled = false) {
             test("Basic component creation") {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
                         component(MyState())
                     }
                 }
-                pulverizationSetup("device-instance-1".toID()) {
+                pulverizationSetup("device-instance-1".toID(), config) {
                     registerComponent<MyState>(config["device-1"])
                 }
 
@@ -53,7 +61,7 @@ class PulverizationSetupTest : FunSpec(
                     }
                 }
                 shouldThrow<IllegalStateException> {
-                    pulverizationSetup("device-instance-1".toID()) {
+                    pulverizationSetup("device-instance-1".toID(), config) {
                         registerComponent<MyState>(config["no-device"])
                     }
                 }

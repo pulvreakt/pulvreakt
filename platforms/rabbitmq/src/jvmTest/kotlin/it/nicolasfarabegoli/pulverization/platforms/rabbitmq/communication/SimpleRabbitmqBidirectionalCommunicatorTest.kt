@@ -68,7 +68,7 @@ class SimpleRabbitmqBidirectionalCommunicatorTest : KoinTest, FunSpec() {
                         }
                     }
                 }
-                val component = SimpleRabbitmqBidirectionalCommunication<Send, Receive>(queue)
+                val component = SimpleRabbitmqBidirectionalCommunication<Send, Receive>(exchange, queue)
                 component.sendToComponent(Send("hello, world"))
 
                 result.await()
@@ -80,7 +80,7 @@ class SimpleRabbitmqBidirectionalCommunicatorTest : KoinTest, FunSpec() {
                 initQueue(get(), queue, exchange, routingKey).use {
                     it.basicPublish(exchange, routingKey, null, Json.encodeToString(Receive("hello")).toByteArray())
                 }
-                val component = SimpleRabbitmqBidirectionalCommunication<Send, Receive>(queue)
+                val component = SimpleRabbitmqBidirectionalCommunication<Send, Receive>(exchange, queue)
                 withContext(Dispatchers.Default) {
                     withTimeout(2.toDuration(DurationUnit.SECONDS)) {
                         component.receiveFromComponent().take(1).collect {

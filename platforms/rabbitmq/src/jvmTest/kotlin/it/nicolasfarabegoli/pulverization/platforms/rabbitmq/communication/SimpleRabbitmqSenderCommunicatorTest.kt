@@ -55,7 +55,7 @@ class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
                         }
                     }
                 }
-                SimpleRabbitmqSenderCommunicator<String>(queue).sendToComponent("")
+                SimpleRabbitmqSenderCommunicator<String>(exchange, queue).sendToComponent("")
                 result.await()
             }
         }
