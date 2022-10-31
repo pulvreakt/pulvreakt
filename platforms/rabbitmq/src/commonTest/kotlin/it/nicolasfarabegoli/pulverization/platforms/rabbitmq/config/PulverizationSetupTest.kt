@@ -41,7 +41,7 @@ class PulverizationSetupTest : FunSpec(
                     }
                 }
                 pulverizationSetup("device-instance-1".toID()) {
-                    registerComponent(config["device-1"]?.get<MyState>())
+                    registerComponent<MyState>(config["device-1"])
                 }
 
                 shouldNotThrow<Exception> { StateComponent().cycle() }
@@ -54,7 +54,7 @@ class PulverizationSetupTest : FunSpec(
                 }
                 shouldThrow<IllegalStateException> {
                     pulverizationSetup("device-instance-1".toID()) {
-                        registerComponent(config["no-device"]?.get<MyState>())
+                        registerComponent<MyState>(config["no-device"])
                     }
                 }
             }
