@@ -15,6 +15,11 @@ interface RabbitmqCommunicator {
     val queue: String
 
     /**
+     * The exchange name.
+     */
+    val exchange: String
+
+    /**
      * Initialize the communicator component.
      */
     suspend fun initialize() {}
