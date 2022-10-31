@@ -4,8 +4,6 @@ import it.nicolasfarabegoli.pulverization.core.DeviceID
 import it.nicolasfarabegoli.pulverization.core.LogicalDevice
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
 import it.nicolasfarabegoli.pulverization.core.get
-import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
-import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 
 /**
@@ -36,10 +34,8 @@ class RabbitmqPulverizationSetup {
 /**
  * TODO.
  */
-fun <I : DeviceID> pulverizationSetup(deviceName: I, init: RabbitmqPulverizationSetup.() -> Unit) {
-    val setup = RabbitmqPulverizationSetup().apply(init)
-    setup.koinModule.single { RabbitmqContext(deviceName) }
-    startKoin {
-        modules(setup.koinModule)
-    }
-}
+expect fun <I : DeviceID> pulverizationSetup(
+    deviceName: I,
+    config: RabbitmqPulverizationConfig,
+    init: RabbitmqPulverizationSetup.() -> Unit,
+)
