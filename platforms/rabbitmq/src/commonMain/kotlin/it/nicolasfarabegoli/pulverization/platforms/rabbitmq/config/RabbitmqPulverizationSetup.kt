@@ -1,7 +1,9 @@
 package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config
 
 import it.nicolasfarabegoli.pulverization.core.DeviceID
+import it.nicolasfarabegoli.pulverization.core.LogicalDevice
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
+import it.nicolasfarabegoli.pulverization.core.get
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -21,6 +23,13 @@ class RabbitmqPulverizationSetup {
     inline fun <reified C : PulverizedComponent> registerComponent(component: C?) {
         if (component == null) error("A concrete component should be pass, but null is given")
         koinModule.factory { component }
+    }
+
+    /**
+     * TODO.
+     */
+    inline fun <reified C : PulverizedComponent> registerComponent(logicalDevice: LogicalDevice?) {
+        registerComponent(logicalDevice?.get<C>())
     }
 }
 
