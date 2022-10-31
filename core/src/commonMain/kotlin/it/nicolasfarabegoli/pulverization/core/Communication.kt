@@ -13,12 +13,7 @@ interface CommunicationPayload
  * @param S the type of the message to send.
  * @param R the type of the message to receive.
  */
-interface Communication<P : CommunicationPayload, I : DeviceID> : PulverizedComponent {
-    /**
-     * The device [id].
-     */
-    val id: I
-
+interface Communication<P : CommunicationPayload> : PulverizedComponent {
     /**
      * Abstraction of the _sending action_ to other devices.
      */
