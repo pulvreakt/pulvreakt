@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.config.get
+import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.core.get
@@ -39,7 +40,7 @@ class PulverizationSetupTest : FunSpec(
                         component(MyState())
                     }
                 }
-                pulverizationSetup {
+                pulverizationSetup("device-instance-1".toID()) {
                     registerComponent(config["device-1"]?.get<MyState>())
                 }
 
@@ -52,7 +53,7 @@ class PulverizationSetupTest : FunSpec(
                     }
                 }
                 shouldThrow<IllegalStateException> {
-                    pulverizationSetup {
+                    pulverizationSetup("device-instance-1".toID()) {
                         registerComponent(config["no-device"]?.get<MyState>())
                     }
                 }
