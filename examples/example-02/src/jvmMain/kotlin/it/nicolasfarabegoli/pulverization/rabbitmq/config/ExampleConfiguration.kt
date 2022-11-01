@@ -4,14 +4,16 @@ import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config.pulverizatio
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceBehaviour
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceCommunication
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceSensorsContainer
+import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceState
 
 val configuration = pulverizationConfig {
     logicalDevice("device") {
         component(DeviceBehaviour())
         component(DeviceCommunication())
         component(DeviceSensorsContainer())
+        component(DeviceState())
     }
     rabbitmq {
-        setHostname("localhost")
+        setHostname(System.getenv("RABBITMQ_HOST") ?: "rabbitmq")
     }
 }

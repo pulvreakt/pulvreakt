@@ -26,8 +26,11 @@ class CommunicationComponent : DeviceComponent<RabbitmqContext> {
 
     override suspend fun initialize(): Unit = coroutineScope {
         deviceCommunication.initialize()
+        componentCommunicator.initialize()
         val deferComp = async {
-            componentCommunicator.receiveFromComponent().collect { deviceCommunication.send(it) }
+            componentCommunicator.receiveFromComponent().collect {
+                deviceCommunication.send(it)
+            }
         }
         val deferComm = async {
             deviceCommunication.receive().collect { componentCommunicator.sendToComponent(it) }

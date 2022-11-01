@@ -1,10 +1,12 @@
 package it.nicolasfarabegoli.pulverization.rabbitmq.pure
 
 import com.rabbitmq.client.Connection
+import com.rabbitmq.client.Delivery
 import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.withContext
@@ -45,13 +47,14 @@ class DeviceCommunication : Communication<CommPayload> {
     }
 
     override fun send(payload: CommPayload) {
+        println("${DeviceCommunication::class.simpleName}: broadcast $payload")
         val message = OutboundMessage("amq.fanout", "", Json.encodeToString(payload).toByteArray())
         sender.send(Mono.just(message)).block()
     }
 
     override fun receive(): Flow<CommPayload> {
-        return receiver.consumeAutoAck("communication/${context.id.show()}").asFlow().map {
+        return receiver.consumeAutoAck("communication/${context.id.show()}").asFlow().map<Delivery, CommPayload> {
             Json.decodeFromString(it.body.decodeToString())
-        }
+        }.filter { it.deviceID != context.id.show() }
     }
 }
