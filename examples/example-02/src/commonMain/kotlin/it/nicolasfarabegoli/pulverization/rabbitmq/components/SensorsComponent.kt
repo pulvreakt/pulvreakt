@@ -26,7 +26,6 @@ class SensorsComponent : DeviceComponent<RabbitmqContext> {
 
     override suspend fun cycle() {
         sensor.get<DeviceSensor> {
-            println("CODIO")
             val payload = AllSensorsPayload(this.sense())
             sensorCommunicator.sendToComponent(payload)
         }

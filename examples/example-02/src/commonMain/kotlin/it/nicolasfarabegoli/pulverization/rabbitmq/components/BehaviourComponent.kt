@@ -2,14 +2,17 @@ package it.nicolasfarabegoli.pulverization.rabbitmq.components
 
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqBidirectionalCommunication
-import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.AllSensorsPayload
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.CommPayload
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceBehaviour
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceState
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 class BehaviourComponent : DeviceComponent<RabbitmqContext> {
@@ -18,7 +21,10 @@ class BehaviourComponent : DeviceComponent<RabbitmqContext> {
     private val state: DeviceState by inject()
 
     private val sensorsCommunicator =
-        SimpleRabbitmqReceiverCommunicator<AllSensorsPayload>("sensors.exchange", "sensors/${context.id.show()}")
+        SimpleRabbitmqBidirectionalCommunication<Unit, AllSensorsPayload>(
+            "sensors.exchange",
+            "sensors/${context.id.show()}",
+        )
     private val communication =
         SimpleRabbitmqBidirectionalCommunication<CommPayload, CommPayload>(
             "communication.exchange",
@@ -26,25 +32,30 @@ class BehaviourComponent : DeviceComponent<RabbitmqContext> {
         )
 
     private var lastNeighboursComm = emptyList<CommPayload>()
+    private lateinit var deferred: Job
 
+    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun initialize() {
         sensorsCommunicator.initialize()
         communication.initialize()
+        deferred = GlobalScope.launch {
+            communication.receiveFromComponent().collect {
+                lastNeighboursComm = lastNeighboursComm.filter { c -> c.deviceID != it.deviceID } + it
+                lastNeighboursComm
+            }
+        }
+    }
+
+    override suspend fun finalize() {
+        deferred.cancelAndJoin()
     }
 
     override suspend fun cycle() {
-        val commFlow = communication.receiveFromComponent().map {
-            lastNeighboursComm = lastNeighboursComm.filter { c -> c.deviceID == it.deviceID } + it
-            lastNeighboursComm
+        sensorsCommunicator.receiveFromComponent().collect { sensedValues ->
+            println("Device ${context.id.show()} received from neighbours: $lastNeighboursComm")
+            val (newState, newComm, _, _) = behaviour(state.get(), lastNeighboursComm, sensedValues)
+            state.update(newState)
+            communication.sendToComponent(newComm)
         }
-
-        sensorsCommunicator.receiveFromComponent()
-            .combine(commFlow) { sensedValues, comm -> comm to sensedValues }
-            .collect { (comm, sensedValues) ->
-                println("Device ${context.id.show()} received from neighbours: $comm")
-                val (newState, newComm, _, _) = behaviour(state.get(), comm, sensedValues)
-                state.update(newState)
-                communication.sendToComponent(newComm)
-            }
     }
 }
