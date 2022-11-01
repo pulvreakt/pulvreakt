@@ -3,6 +3,7 @@ package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config
 import com.rabbitmq.client.Address
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.DeviceID
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import org.koin.core.context.startKoin
@@ -21,6 +22,7 @@ actual fun <I : DeviceID> pulverizationSetup(
     val connection = cf.newConnection { listOf(Address(config.hostname, config.port)) }
     setup.koinModule.single<Connection> { connection }
     setup.koinModule.single { RabbitmqContext(deviceName) }
+    setup.koinModule.single<Context> { RabbitmqContext(deviceName) }
     startKoin {
         modules(setup.koinModule)
     }
