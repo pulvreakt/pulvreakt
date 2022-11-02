@@ -3,7 +3,7 @@ package it.nicolasfarabegoli.pulverization.rabbitmq
 import it.nicolasfarabegoli.pulverization.config.get
 import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config.pulverizationSetup
-import it.nicolasfarabegoli.pulverization.rabbitmq.components.SensorsComponent
+import it.nicolasfarabegoli.pulverization.rabbitmq.components.DeviceSensorsComponent
 import it.nicolasfarabegoli.pulverization.rabbitmq.config.configuration
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceSensorsContainer
 import kotlinx.coroutines.delay
@@ -15,10 +15,10 @@ fun main() = runBlocking {
         registerComponent<DeviceSensorsContainer>(configuration["device"])
     }
 
-    val sensors = SensorsComponent()
+    val sensors = DeviceSensorsComponent()
     sensors.initialize()
     while (true) {
         sensors.cycle()
-        delay(1000)
+        delay(5000)
     }
 }
