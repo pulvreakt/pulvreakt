@@ -51,8 +51,7 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
          */
         actual inline operator fun <reified S : Any> invoke(
             communicationType: Pair<PulverizedComponentType, PulverizedComponentType>,
-        ) =
-            SimpleRabbitmqSenderCommunicator(S::class, communicationType)
+        ) = SimpleRabbitmqSenderCommunicator(S::class, communicationType)
     }
 
     init {
@@ -71,6 +70,10 @@ actual class SimpleRabbitmqSenderCommunicator<Send : Any> actual constructor(
         sender.bindQueue(
             BindingSpecification().queue(queue).exchange(exchange).routingKey(context.id.show()),
         ).awaitSingleOrNull() ?: error("Failed to initialize the binding between `$queue` and `$exchange`")
+    }
+
+    override suspend fun finalize() {
+        sender.close()
     }
 
     override suspend fun sendToComponent(payload: Send) {
