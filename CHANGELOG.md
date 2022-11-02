@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/nicolasfara/pulverization-framework/compare/0.3.1...0.3.2) (2022-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update docusaurus monorepo to v2.2.0 ([6279683](https://github.com/nicolasfara/pulverization-framework/commit/6279683ef2ce294a426ec27ab82e12b767941b3c))
+
 ## [0.3.1](https://github.com/nicolasfara/pulverization-framework/compare/0.3.0...0.3.1) (2022-11-02)
 
 
