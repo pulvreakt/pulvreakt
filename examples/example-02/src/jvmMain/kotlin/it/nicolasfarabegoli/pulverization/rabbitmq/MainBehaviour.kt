@@ -3,7 +3,7 @@ package it.nicolasfarabegoli.pulverization.rabbitmq
 import it.nicolasfarabegoli.pulverization.config.get
 import it.nicolasfarabegoli.pulverization.core.DeviceIDOps.toID
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.config.pulverizationSetup
-import it.nicolasfarabegoli.pulverization.rabbitmq.components.BehaviourComponent
+import it.nicolasfarabegoli.pulverization.rabbitmq.components.DeviceBehaviourComponent
 import it.nicolasfarabegoli.pulverization.rabbitmq.config.configuration
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceBehaviour
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.DeviceState
@@ -16,7 +16,7 @@ fun main() = runBlocking {
         registerComponent<DeviceState>(configuration["device"])
     }
 
-    val behaviour = BehaviourComponent()
+    val behaviour = DeviceBehaviourComponent()
     behaviour.initialize()
     behaviour.cycle()
 }

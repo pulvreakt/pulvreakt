@@ -28,32 +28,32 @@ class DeviceCommunication : Communication<CommPayload> {
     override val context: RabbitmqContext by inject()
 
     private val connection: Connection by inject()
-    private val sender: Sender
-    private val receiver: Receiver
+    private lateinit var sender: Sender
+    private lateinit var receiver: Receiver
 
-    init {
+    private lateinit var queue: String
+
+    suspend fun initialize() {
+        queue = "neighbours/${context.id.show()}"
         val senderOption = SenderOptions().connectionSupplier { connection }
         val receiverOption = ReceiverOptions().connectionSupplier { connection }
         sender = RabbitFlux.createSender(senderOption)
         receiver = RabbitFlux.createReceiver(receiverOption)
-    }
 
-    suspend fun initialize() {
         withContext(Dispatchers.IO) {
-            sender.declare(QueueSpecification.queue("communication/${context.id.show()}"))
-                .then(sender.bind(BindingSpecification.binding("amq.fanout", "", "communication/${context.id.show()}")))
+            sender.declare(QueueSpecification.queue(queue).durable(false))
+                .then(sender.bind(BindingSpecification.binding("amq.fanout", "", queue)))
                 .block()
         } ?: error("Unable to create the exchange")
     }
 
     override fun send(payload: CommPayload) {
-        println("${DeviceCommunication::class.simpleName}: broadcast $payload")
         val message = OutboundMessage("amq.fanout", "", Json.encodeToString(payload).toByteArray())
         sender.send(Mono.just(message)).block()
     }
 
     override fun receive(): Flow<CommPayload> {
-        return receiver.consumeAutoAck("communication/${context.id.show()}").asFlow().map<Delivery, CommPayload> {
+        return receiver.consumeAutoAck(queue).asFlow().map<Delivery, CommPayload> {
             Json.decodeFromString(it.body.decodeToString())
         }.filter { it.deviceID != context.id.show() }
     }

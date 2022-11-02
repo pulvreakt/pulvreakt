@@ -1,7 +1,11 @@
 package it.nicolasfarabegoli.pulverization.rabbitmq.components
 
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
+import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
+import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqBidirectionalCommunication
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.AllSensorsPayload
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.CommPayload
@@ -11,24 +15,20 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
-class BehaviourComponent : DeviceComponent<RabbitmqContext> {
+class DeviceBehaviourComponent : DeviceComponent<RabbitmqContext> {
     override val context: RabbitmqContext by inject()
     private val behaviour: DeviceBehaviour by inject()
     private val state: DeviceState by inject()
 
-    private val sensorsCommunicator =
-        SimpleRabbitmqBidirectionalCommunication<Unit, AllSensorsPayload>(
-            "sensors.exchange",
-            "sensors/${context.id.show()}",
-        )
+    private val sensorsCommunicator = SimpleRabbitmqReceiverCommunicator<AllSensorsPayload>(
+        SensorsComponent to BehaviourComponent,
+    )
     private val communication =
         SimpleRabbitmqBidirectionalCommunication<CommPayload, CommPayload>(
-            "communication.exchange",
-            "communication/${context.id.show()}",
+            BehaviourComponent to CommunicationComponent,
         )
 
     private var lastNeighboursComm = emptyList<CommPayload>()

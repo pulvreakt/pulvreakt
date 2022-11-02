@@ -2,6 +2,7 @@ package it.nicolasfarabegoli.pulverization.rabbitmq.components
 
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
+import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqBidirectionalCommunication
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.CommPayload
@@ -12,7 +13,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.inject
 
-class CommunicationComponent : DeviceComponent<RabbitmqContext> {
+class DeviceCommunicationComponent : DeviceComponent<RabbitmqContext> {
     override val context: RabbitmqContext by inject()
 
     private val deviceCommunication: DeviceCommunication by inject()
