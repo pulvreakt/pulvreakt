@@ -13,9 +13,32 @@ interface PulverizedComponent : KoinComponent {
     val context: Context
 }
 
+/**
+ * ADT representing all the components type in a pulverized device.
+ */
 sealed interface PulverizedComponentType
-object BehaviourComponent : PulverizedComponentType
-object StateComponent : PulverizedComponentType
-object SensorsComponent : PulverizedComponentType
-object ActuatorsComponent : PulverizedComponentType
+
+/**
+ * The [Communication] component.
+ */
 object CommunicationComponent : PulverizedComponentType
+
+/**
+ * The [Behaviour] component.
+ */
+object BehaviourComponent : PulverizedComponentType
+
+/**
+ * The [Actuator] component.
+ */
+object ActuatorsComponent : PulverizedComponentType
+
+/**
+ * The [Sensor] component.
+ */
+object SensorsComponent : PulverizedComponentType
+
+/**
+ * The [State] component.
+ */
+object StateComponent : PulverizedComponentType
