@@ -1,6 +1,7 @@
 package it.nicolasfarabegoli.pulverization.rabbitmq.components
 
 import it.nicolasfarabegoli.pulverization.component.DeviceComponent
+import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication.SimpleRabbitmqBidirectionalCommunication
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 import it.nicolasfarabegoli.pulverization.rabbitmq.pure.CommPayload
@@ -18,8 +19,7 @@ class CommunicationComponent : DeviceComponent<RabbitmqContext> {
 
     private val componentCommunicator =
         SimpleRabbitmqBidirectionalCommunication<CommPayload, CommPayload>(
-            "communication.exchange",
-            "communication/${context.id.show()}",
+            CommunicationComponent to BehaviourComponent,
         )
 
     private val deferredReferences: MutableSet<Deferred<Unit>> = mutableSetOf()
