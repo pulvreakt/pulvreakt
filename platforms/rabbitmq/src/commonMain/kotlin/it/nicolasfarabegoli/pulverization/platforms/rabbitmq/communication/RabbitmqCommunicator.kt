@@ -3,6 +3,7 @@ package it.nicolasfarabegoli.pulverization.platforms.rabbitmq.communication
 import it.nicolasfarabegoli.pulverization.communication.BidirectionalCommunicator
 import it.nicolasfarabegoli.pulverization.communication.ReceiverCommunicator
 import it.nicolasfarabegoli.pulverization.communication.SenderCommunicator
+import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqContext
 
 /**
@@ -10,14 +11,9 @@ import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.component.RabbitmqC
  */
 interface RabbitmqCommunicator {
     /**
-     * The name of the queue in which the communications flows.
+     * The pulverized component with which the communication is made.
      */
-    val queue: String
-
-    /**
-     * The exchange name.
-     */
-    val exchange: String
+    val communicationType: Pair<PulverizedComponentType, PulverizedComponentType>
 
     /**
      * Initialize the communicator component.
