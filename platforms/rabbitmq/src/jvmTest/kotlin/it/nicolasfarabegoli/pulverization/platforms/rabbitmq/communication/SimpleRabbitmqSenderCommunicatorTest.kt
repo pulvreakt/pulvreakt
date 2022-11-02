@@ -49,7 +49,7 @@ class SimpleRabbitmqSenderCommunicatorTest : KoinTest, FunSpec() {
 
     init {
         context("Sender only component that use RabbitMQ") {
-            test("The sender only component should create the queue correctly") {
+            test("The sender only component should create the queue correctly").config(enabled = false) {
                 val options = ReceiverOptions().connectionSupplier { get() }
                 val receiver = RabbitFlux.createReceiver(options)
 
