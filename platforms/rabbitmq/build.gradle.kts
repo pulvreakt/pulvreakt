@@ -21,7 +21,7 @@ kotlin {
                 implementation(rootProject.libs.kotlinx.coroutines.reactor)
                 implementation(rootProject.libs.kotest.extensions.koin)
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
-                implementation("com.github.fridujo:rabbitmq-mock:1.1.1")
+                implementation("com.github.fridujo:rabbitmq-mock:1.2.0")
             }
         }
     }
