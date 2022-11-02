@@ -3,7 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
                 implementation("org.jetbrains.kotlin:kotlin-reflect")
             }
         }
@@ -20,7 +20,7 @@ kotlin {
                 implementation(rootProject.libs.kotlinx.coroutines.reactive)
                 implementation(rootProject.libs.kotlinx.coroutines.reactor)
                 implementation(rootProject.libs.kotest.extensions.koin)
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
                 implementation("com.github.fridujo:rabbitmq-mock:1.2.0")
             }
         }
