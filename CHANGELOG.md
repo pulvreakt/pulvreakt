@@ -1,3 +1,17 @@
+## [0.3.1](https://github.com/nicolasfara/pulverization-framework/compare/0.3.0...0.3.1) (2022-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.fridujo:rabbitmq-mock to v1.2.0 ([8eb8552](https://github.com/nicolasfara/pulverization-framework/commit/8eb8552e33295f97982fd54cfb22abdbf5cc551e))
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-serialization-json to v1.4.1 ([c2ffcaa](https://github.com/nicolasfara/pulverization-framework/commit/c2ffcaaca62153e5b9f4f8e60414800ec6212d01))
+
+
+### General maintenance
+
+* improve style ([00abb2e](https://github.com/nicolasfara/pulverization-framework/commit/00abb2ef3066237a71831672f60dd158d8b364c0))
+* update links and css ([494835c](https://github.com/nicolasfara/pulverization-framework/commit/494835c363d18d7e1de9752024df073a00bf889e))
+
 ## [0.3.0](https://github.com/nicolasfara/pulverization-framework/compare/0.2.3...0.3.0) (2022-11-02)
 
 
