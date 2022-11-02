@@ -12,3 +12,10 @@ interface PulverizedComponent : KoinComponent {
      */
     val context: Context
 }
+
+sealed interface PulverizedComponentType
+object BehaviourComponent : PulverizedComponentType
+object StateComponent : PulverizedComponentType
+object SensorsComponent : PulverizedComponentType
+object ActuatorsComponent : PulverizedComponentType
+object CommunicationComponent : PulverizedComponentType
