@@ -1,3 +1,10 @@
+## [0.3.6](https://github.com/nicolasfara/pulverization-framework/compare/0.3.5...0.3.6) (2022-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency remark-math to v4 ([18d304f](https://github.com/nicolasfara/pulverization-framework/commit/18d304f2bd18ae31750f262e62788bfdeabd3c9b))
+
 ## [0.3.5](https://github.com/nicolasfara/pulverization-framework/compare/0.3.4...0.3.5) (2022-11-03)
 
 
