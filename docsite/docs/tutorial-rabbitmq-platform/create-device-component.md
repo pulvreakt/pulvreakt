@@ -4,10 +4,10 @@ sidebar_position: 4
 
 # Create Device Component
 
-The `DeviceComponent` represents the deployable unit of a pulverized component. Generally, a device component define the
-bindings between the "pure" components and the communicator needed to interact with the other device's component.
+The `DeviceComponent` represents the deployable unit of a pulverized component. Generally, a device component defines
+the bindings between the "pure" components and the communicator needed to interact with the other device's components.
 Moreover, the `DeviceComponent` specifies the lifecycle of the component defining three methods `initialize()`
-, `cycle()` and `finalize()` which initialize the component, handle a single cycle of the component's logic and release
+, `cycle()` and `finalize()` that initialize the component, handle a single cycle of the component's logic, and release
 all the resources of the component, respectively.
 
 ## Behaviour Device Component
@@ -48,12 +48,12 @@ class DeviceBehaviourComponent : DeviceComponent<RabbitmqContext> {
 }
 ```
 
-The `DeviceBehaviourComponent` is the most rich device component in this example.  
-It hold the `Behaviour` and the `State` in the same deployable unit. Moreover, since the behaviour manages the
+The `DeviceBehaviourComponent` is the richest device component in this example.  
+It holds the `Behaviour` and the `State` in the same deployable unit. Moreover, since the behaviour manages the
 communications with the other pulverized components, we defined a communicator to interact with the sensors and a
 communicator to interact with the communication component.
 
-In the `cycle()` method is implemented the logic of the component. In this case we wait for a new sensor read and after
+In the `cycle()` method is implemented the logic of the component. In this case, we wait for a new sensor read and after
 receiving the result we compute the behaviour function. Later, we update the state with the computed state and foreword
 the message to the neighbours.
 
@@ -92,7 +92,7 @@ class DeviceSensorsComponent : DeviceComponent<RabbitmqContext> {
 
 The `DeviceSensorsComponent` manages the sensors (with the help of the `SensorsContainer`) and the communication with
 the behaviour.
-The logic implemented in the `cycle()` method is quite simple: on each cycle we read the value from the sensor and send
+The logic implemented in the `cycle()` method is quite simple: on each cycle, we read the value from the sensor and send
 it to the behaviour, that's it.
 
 ## Device Communication Component
@@ -130,9 +130,9 @@ class DeviceCommunicationComponent : DeviceComponent<RabbitmqContext> {
 }
 ```
 
-Also the `DeviceCommunicationComponent` is quite simple: receives the messages from the neighbours thanks to
-the `deviceCommunication` and forward that messages to the behaviour through the `componentCommunicator`.
+Also, the `DeviceCommunicationComponent` is quite simple: receives messages from the neighbours thanks to
+the `deviceCommunication` and forward those messages to the behaviour through the `componentCommunicator`.
 
-In this class we exploit the power of the Kotlin coroutines to react asynchronously to the receiving of the messages.
-So, all the logic for the messages' handling is implemented in the `initialize()` method, which suspend forever in this
+In this class, we exploit the power of the Kotlin coroutines to react asynchronously to the receiving of the messages.
+So, all the logic for the messages' handling is implemented in the `initialize()` method, which suspends forever in this
 case.
