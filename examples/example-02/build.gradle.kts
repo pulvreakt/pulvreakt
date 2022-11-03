@@ -40,7 +40,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":core"))
-                implementation(project(":platforms:rabbitmq"))
+                implementation(project(":rabbitmq-platform"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
             }
         }
