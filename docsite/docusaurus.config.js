@@ -32,7 +32,7 @@ const config = {
   markdown: {
     mermaid: true,
   },
-  plugins: ['@docusaurus/theme-mermaid'],
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [
