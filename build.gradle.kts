@@ -29,7 +29,7 @@ tasks {
         group = "publishing"
         dependsOn(
             "core:uploadAllPublicationsToMavenCentralNexus",
-            "platforms:uploadAllPublicationsToMavenCentralNexus",
+            "rabbitmq-platforms:uploadAllPublicationsToMavenCentralNexus",
         )
     }
     create("uploadAllGithub") {
@@ -37,7 +37,7 @@ tasks {
         group = "publishing"
         dependsOn(
             "core:publishKotlinMultiplatformPublicationToGithubRepository",
-            "platforms:publishKotlinMultiplatformPublicationToGithubRepository",
+            "rabbitmq-platform:publishKotlinMultiplatformPublicationToGithubRepository",
         )
     }
 }
