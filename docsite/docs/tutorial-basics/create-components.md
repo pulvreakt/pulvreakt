@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Create Components
+# Create Pulverized Components
 
 In this tutorial we are going to create a simple pulverized application consisting of a device made up of the following
 components:
