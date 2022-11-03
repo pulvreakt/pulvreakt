@@ -1,3 +1,19 @@
+## [0.3.4](https://github.com/nicolasfara/pulverization-framework/compare/0.3.3...0.3.4) (2022-11-03)
+
+
+### General maintenance
+
+* enable latex formulas ([1c86171](https://github.com/nicolasfara/pulverization-framework/commit/1c86171e7352b463ca64e9b94c691618bc73830a))
+* some docsite config ([47280b7](https://github.com/nicolasfara/pulverization-framework/commit/47280b7646c4fc4204de457e704a30230bbc971e))
+
+
+### Documentation
+
+* add behaviour description ([827f671](https://github.com/nicolasfara/pulverization-framework/commit/827f671f449712478c3dd5d308a94f11d9b0283a))
+* complete components creation ([a93aab0](https://github.com/nicolasfara/pulverization-framework/commit/a93aab0ca281f168f1c6881f3280bd28909dabf7))
+* complete documentation for rabbitmq platform ([b7c0241](https://github.com/nicolasfara/pulverization-framework/commit/b7c02417eb8244865e8fa4df28d246d3000519c6))
+* remove uneeded files ([dd2dc07](https://github.com/nicolasfara/pulverization-framework/commit/dd2dc072e4f85f123e61522dfc5830db5b3daded))
+
 ## [0.3.3](https://github.com/nicolasfara/pulverization-framework/compare/0.3.2...0.3.3) (2022-11-03)
 
 
