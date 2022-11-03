@@ -16,7 +16,7 @@ the `Behaviour`component and send the output via the `Communication` component t
 
 In this scenario we assume a "fully-connected topology" so that all the devices are connected to each other.
 
-## Behaviour Component
+## Behaviour
 
 In this scenario the `Behaviour` do nothing especial; it compute an identity function of the form:
 
@@ -90,4 +90,83 @@ class DeviceState : State<StateRepr> {
 }
 ```
 
-The ``
+The `DeviceState` implements the `State` interface with requires a `StateRepresentation` and we give the data class
+already created.
+
+Only two methods are to be implemented `get()` and `update()` which respectively return the current state and update the
+state with a new one.
+
+## Communication
+
+The `Communication` component is one of the most important component in a pulverized system: it manage all the
+communications with the neighbours' devices.
+
+```kotlin
+class DeviceCommunication : Communication<CommPayload> {
+  override val context: RabbitmqContext by inject()
+
+  private val connection: Connection by inject()
+
+  suspend fun initialize() {
+    // Initializations
+  }
+
+  override fun send(payload: CommPayload) {
+    val message = OutboundMessage("amq.fanout", "", Json.encodeToString(payload).toByteArray())
+    sender.send(Mono.just(message)).block()
+  }
+
+  override fun receive(): Flow<CommPayload> {
+    return receiver.consumeAutoAck(queue).asFlow().map<Delivery, CommPayload> {
+      Json.decodeFromString(it.body.decodeToString())
+    }.filter { it.deviceID != context.id.show() }
+  }
+}
+```
+
+The `DeviceComunication` implements the `Communication` interface which requires a type variable representing the type
+of the message the component should send and receive from the neighbours.
+
+The `Communication` interface define two methods `send()` and `receive()` which represents the operation of send a
+message to the neighbours and the operation of receiving messages from the neighbours, respectively.
+
+:::caution
+Is responsibility of the `Communication` component hold information about the topology of the network and how to reach
+the neighbours.
+:::
+
+In this example we assume a "fully-connected topology" and since we use the `rabbitmq-platform` package we rely on _
+RabbitMQ_ to reach all the neighbours using the pre-defined _exchange_ `amq.fanout` which send the messages to all the
+bind queues. In this way we obtain a fully-connected network topology.
+
+## Sensors
+
+In this demo we use only one sensors, but of course, the framework give you the ability of define how many sensors you
+need. First of all, we start to define how the sensor's information are represented.
+
+```kotlin
+typealias SensorPayload = Double
+
+@Serializable
+data class AllSensorsPayload(val deviceSensor: SensorPayload)
+```
+
+:::tip
+The class representing the sensors' values **MUST** be annotated with the `@Serializable` annotation since that class
+should be reached by the `Behaviour` component.
+:::
+
+Next, we define a sensor. The implementation requires to implement the `Sensor` interface which requires information
+about the values read by the sensor.
+
+```kotlin
+class DeviceSensor : Sensor<SensorPayload> {
+  override fun sense(): SensorPayload = Random.nextDouble(0.0, 100.0)
+}
+```
+
+In this demo we simulate a sensor with a random number between `0-100`. The only method to implement is `sense()` which
+return the sensed value from the sensor.
+
+Now, we completed the step of writing all the pulverized components. Next, we will show ho to bind those components to
+the "communicators" in order to make the system working.
