@@ -27,12 +27,18 @@ tasks {
     create("uploadAll") {
         description = "Upload all artifacts"
         group = "publishing"
-        dependsOn("core:uploadAllPublicationsToMavenCentralNexus")
+        dependsOn(
+            "core:uploadAllPublicationsToMavenCentralNexus",
+            "platforms:uploadAllPublicationsToMavenCentralNexus",
+        )
     }
     create("uploadAllGithub") {
         description = "Upload all artifacts to github"
         group = "publishing"
-        dependsOn("core:publishKotlinMultiplatformPublicationToGithubRepository")
+        dependsOn(
+            "core:publishKotlinMultiplatformPublicationToGithubRepository",
+            "platforms:publishKotlinMultiplatformPublicationToGithubRepository",
+        )
     }
 }
 
