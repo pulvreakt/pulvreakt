@@ -27,6 +27,11 @@ const config = {
     locales: ['en'],
   },
 
+  markdown: {
+    mermaid: true,
+  },
+  plugins: ['@docusaurus/theme-mermaid'],
+
   presets: [
     [
       'classic',
@@ -54,7 +59,7 @@ const config = {
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
         title: 'Pulverization',
@@ -107,6 +112,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
       },
       prism: {
+        additionalLanguages: ['kotlin', 'groovy'],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
