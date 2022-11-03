@@ -52,7 +52,7 @@ $Sensor \xleftarrow{\text{receive}} Behaviour$.
 The semantic change if we create the same communicator bu with the pair inverted
 
 ```kotlin
-SimpleRabbitmqBidirectionalCommunicator<String>(BehaviourComponent to SensorsComponent)
+SimpleRabbitmqBidirectionalCommunicator<String, String>(BehaviourComponent to SensorsComponent)
 ```
 
 in this case the communication is  
@@ -60,6 +60,5 @@ $Behaviour \xrightarrow{\text{send}} Sensors$ and
 $Behaviour \xleftarrow{\text{receive}} Sensor$.
 
 :::caution
-Please, be careful when specifying the type of the communication between the components because the semantic is relevant
-in the communication between them.
+Please, pay attention when specify the communication type.
 :::
