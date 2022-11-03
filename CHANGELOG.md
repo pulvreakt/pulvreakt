@@ -1,3 +1,16 @@
+## [0.3.5](https://github.com/nicolasfara/pulverization-framework/compare/0.3.4...0.3.5) (2022-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency hast-util-is-element to v2 ([c881851](https://github.com/nicolasfara/pulverization-framework/commit/c8818519e73e898214b901fd8adf2f699d76cd87))
+* **deps:** update dependency rehype-katex to v6 ([5026d8b](https://github.com/nicolasfara/pulverization-framework/commit/5026d8b2a852c6a687ba2be86aea8a51ded04bd0))
+
+
+### General maintenance
+
+* **docsite:** fix senteces and typos ([8943c45](https://github.com/nicolasfara/pulverization-framework/commit/8943c45dfcbb77baff88190dc8d91ef48a222651))
+
 ## [0.3.4](https://github.com/nicolasfara/pulverization-framework/compare/0.3.3...0.3.4) (2022-11-03)
 
 
