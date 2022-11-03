@@ -1,3 +1,16 @@
+## [0.3.3](https://github.com/nicolasfara/pulverization-framework/compare/0.3.2...0.3.3) (2022-11-03)
+
+
+### Bug Fixes
+
+* add all platform to release tasks ([a48788b](https://github.com/nicolasfara/pulverization-framework/commit/a48788b480dc077e9ec5cc33594a8fdc70a67df2))
+
+
+### General maintenance
+
+* **build:** fix typo in task name ([9822940](https://github.com/nicolasfara/pulverization-framework/commit/9822940a328ea9036d5296971a9970bd90f21429))
+* **build:** remove platforms subprojects and make it flat ([ffeb548](https://github.com/nicolasfara/pulverization-framework/commit/ffeb5484d31acbd0e566b5a56b42c1355539656f))
+
 ## [0.3.2](https://github.com/nicolasfara/pulverization-framework/compare/0.3.1...0.3.2) (2022-11-02)
 
 
