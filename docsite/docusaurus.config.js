@@ -67,10 +67,10 @@ const config = {
     ({
       navbar: {
         title: 'Pulverization',
-        logo: {
-          alt: 'Pulverization logo',
-          src: 'img/logo.svg',
-        },
+        // logo: {
+        //   alt: 'Pulverization logo',
+        //   src: 'img/logo.svg',
+        // },
         items: [
           {
             type: 'doc',
@@ -119,6 +119,9 @@ const config = {
         additionalLanguages: ['kotlin', 'groovy'],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+      },
+      mermaid: {
+        theme: {light: 'base', dark: 'dark'},
       },
     }),
   stylesheets: [
