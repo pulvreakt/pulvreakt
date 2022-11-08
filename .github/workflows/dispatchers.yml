@@ -29,8 +29,3 @@ jobs:
     needs: [ dispatcher ]
     uses: ./.github/workflows/build-and-release.yml
     secrets: inherit
-
-  docsite:
-    needs: [ dispatcher ]
-    uses: ./.github/workflows/publish-docsite.yml
-    secrets: inherit

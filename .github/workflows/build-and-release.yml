@@ -40,10 +40,32 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
+  docsite:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: docsite
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.1.0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
+      - name: Build docsite
+        run: |
+          cd docsite
+          yarn install
+          yarn run build
+      - name: Release docsite to Github Pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          BRANCH: gh-pages
+          FOLDER: docsite/build
+
   release:
     concurrency:
       group: release
-    needs: [ build ]
+    needs: [ build, docsite ]
     runs-on: ubuntu-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
