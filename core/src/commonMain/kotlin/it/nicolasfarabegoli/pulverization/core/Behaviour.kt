@@ -24,6 +24,8 @@ data class BehaviourOutput<S : StateRepresentation, E : CommunicationPayload, A,
  * @param A the type of the actuation to do
  */
 interface Behaviour<S, E, W, A, O> : PulverizedComponent where S : StateRepresentation, E : CommunicationPayload {
+    override val componentType: PulverizedComponentType
+        get() = BehaviourComponent
 
     /**
      * The function used to implement the device logic.

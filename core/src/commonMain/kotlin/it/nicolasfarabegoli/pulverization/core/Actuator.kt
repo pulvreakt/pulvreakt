@@ -21,6 +21,8 @@ interface Actuator<in T> {
  */
 abstract class ActuatorsContainer : PulverizedComponent {
 
+    override val componentType: PulverizedComponentType = ActuatorsComponent
+
     /**
      * The collection of [Actuator]s.
      */

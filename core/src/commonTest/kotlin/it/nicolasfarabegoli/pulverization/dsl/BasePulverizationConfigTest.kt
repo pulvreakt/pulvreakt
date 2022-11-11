@@ -3,22 +3,19 @@ package it.nicolasfarabegoli.pulverization.config
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import it.nicolasfarabegoli.pulverization.core.get
 
 class BasePulverizationConfigTest : FunSpec(
     {
-        context("Test the configuration DSL") {
-            test("TODO: name test") {
+        context("The configuration DSL") {
+            test("should configure a logical device") {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
-                        component(DSLFixtures.MyState())
+                        DSLFixtures.MyState() deployableOn Cloud
                     }
                 }
-                (config.devices["device-1"]?.get<DSLFixtures.MyState>() ?: error("")) shouldNotBe null
-                (config.devices["device-1"]?.get<DSLFixtures.MyState2>() shouldBe null) shouldNotBe null
+                config.changeTheName("device-1") { _: DSLFixtures.MyState -> }
             }
             test("An exception should occur when try to configure a logical device with the same name") {
                 val exc = shouldThrow<Exception> {

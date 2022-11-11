@@ -11,6 +11,11 @@ interface PulverizedComponent : KoinComponent {
      * The context in which the component live.
      */
     val context: Context
+
+    /**
+     * The type of the component.
+     */
+    val componentType: PulverizedComponentType
 }
 
 /**
