@@ -1,10 +1,11 @@
-package it.nicolasfarabegoli.pulverization.config
+package it.nicolasfarabegoli.pulverization.dsl
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.nicolasfarabegoli.pulverization.core.get
 
 class BasePulverizationConfigTest : FunSpec(
     {
@@ -12,10 +13,17 @@ class BasePulverizationConfigTest : FunSpec(
             test("should configure a logical device") {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
-                        DSLFixtures.MyState() deployableOn Cloud
+                        component<DSLFixtures.MyState>() deployableOn Cloud
+                        component<DSLFixtures.MyBehaviour>() deployableOn Edge
                     }
+                    logicalDevice("device-2") { }
                 }
-                config.changeTheName("device-1") { _: DSLFixtures.MyState -> }
+                config.devicesConfig.size shouldBe 2
+                config.getDeviceConfiguration("device-1")?.let { logicalDevice ->
+                    logicalDevice.deviceName shouldBe "device-1"
+                    logicalDevice.components.size shouldBe 2
+                    logicalDevice.deploymentUnits.size shouldBe 2
+                }
             }
             test("An exception should occur when try to configure a logical device with the same name") {
                 val exc = shouldThrow<Exception> {
@@ -31,6 +39,28 @@ class BasePulverizationConfigTest : FunSpec(
                     pulverizationConfig {
                         logicalDevice("device-1") { }
                         logicalDevice("device-2") { }
+                    }
+                }
+            }
+            test("An exception should be thrown if the same component appear in multiple deployment units") {
+                val exc = shouldThrow<IllegalStateException> {
+                    pulverizationConfig {
+                        logicalDevice("device-1") {
+                            component<DSLFixtures.MyState>() deployableOn Cloud
+                            component<DSLFixtures.MyBehaviour>() and component<DSLFixtures.MyState>() deployableOn Edge
+                        }
+                    }
+                }
+                exc.message shouldContain "A component appear in more than one deployment unit"
+            }
+            test("An exception should be thrown when the same component is in the deployment unit") {
+                shouldThrow<IllegalStateException> {
+                    pulverizationConfig {
+                        logicalDevice("device-1") {
+                            component<DSLFixtures.MyBehaviour>() and
+                                component<DSLFixtures.MyState>() and
+                                component<DSLFixtures.MyState>() deployableOn Cloud
+                        }
                     }
                 }
             }
