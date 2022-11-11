@@ -6,9 +6,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.config.DSLFixtures
 import it.nicolasfarabegoli.pulverization.core.ActuatorsFixtures.MyActuator1
 import it.nicolasfarabegoli.pulverization.core.ActuatorsFixtures.MyActuator2
+import it.nicolasfarabegoli.pulverization.dsl.DSLFixtures
 
 class ActuatorsContainerTest : FunSpec(
     {

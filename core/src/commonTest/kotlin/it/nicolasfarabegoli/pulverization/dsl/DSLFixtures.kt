@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.config
+package it.nicolasfarabegoli.pulverization.dsl
 
 import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.Behaviour
@@ -15,8 +15,7 @@ interface DSLFixtures {
         override val id: DeviceID = "1".toID()
     }
 
-    class MyState : State<StateRepr> {
-        override val context: Context = FuzzyContext
+    data class MyState(override val context: Context = FuzzyContext) : State<StateRepr> {
         override fun get(): StateRepr {
             TODO("Not yet implemented")
         }
