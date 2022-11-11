@@ -19,6 +19,8 @@ interface Sensor<out T> {
  * Contains a set of [Sensor]s managed by a single [LogicalDevice].
  */
 abstract class SensorsContainer : PulverizedComponent {
+    override val componentType: PulverizedComponentType = SensorsComponent
+
     /**
      * The set of [Sensor]s.
      */

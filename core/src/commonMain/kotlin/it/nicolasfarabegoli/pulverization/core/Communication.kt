@@ -14,6 +14,9 @@ interface CommunicationPayload
  * @param R the type of the message to receive.
  */
 interface Communication<P : CommunicationPayload> : PulverizedComponent {
+    override val componentType: PulverizedComponentType
+        get() = CommunicationComponent
+
     /**
      * Abstraction of the _sending action_ to other devices.
      */

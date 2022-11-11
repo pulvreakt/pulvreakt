@@ -11,6 +11,9 @@ interface StateRepresentation
  * @param S the type of the [State].
  */
 interface State<S : StateRepresentation> : PulverizedComponent {
+    override val componentType: PulverizedComponentType
+        get() = StateComponent
+
     /**
      * Retrive the value of the [State].
      */
