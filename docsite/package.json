@@ -14,7 +14,7 @@
     "write-heading-ids": "docusaurus write-heading-ids"
   },
   "resolutions": {
-    "mermaid": "9.2.1"
+    "mermaid": "9.2.2"
   },
   "dependencies": {
     "@docusaurus/core": "2.2.0",
