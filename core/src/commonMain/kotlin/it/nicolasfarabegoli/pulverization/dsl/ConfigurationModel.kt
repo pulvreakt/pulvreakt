@@ -29,3 +29,6 @@ data class PulverizationConfiguration(
 
 fun PulverizationConfiguration.getDeviceConfiguration(name: String): LogicalDeviceConfiguration? =
     devicesConfig.firstOrNull { it.deviceName == name }
+
+inline fun <reified C : PulverizedComponent> LogicalDeviceConfiguration.getDeploymentUnit(): DeploymentUnit? =
+    deploymentUnits.firstOrNull { it.deployableComponents.contains(C::class) }
