@@ -3,6 +3,7 @@ package it.nicolasfarabegoli.pulverization.runtime.dsl
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.Communication
+import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
@@ -32,15 +33,21 @@ class RuntimeDSL(
             }
         }
 
-    fun <C : ActuatorsContainer> withActuatorsLogic(init: suspend (C, BehaviourRef) -> Unit): Nothing = TODO()
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <C : ActuatorsContainer> withActuatorsLogic(init: suspend (C, BehaviourRef) -> Unit) = coroutineScope {
+        pureComponents.actuators?.let {
+            val job = launch { init(it as C, componentsReferences.behaviourRef) }
+        }
+    }
 
-    suspend fun withBehaviourLogic(
-        init: suspend (Behaviour<*, *, *, *, *>, SensorsRef?, ActuatorRef?, StateRef?, CommunicationRef?) -> Unit,
-    ) = coroutineScope {
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <SR, C, W, A, O, B : Behaviour<SR, C, W, A, O>> withBehaviourLogic(
+        init: suspend (B, SensorsRef?, ActuatorRef?, StateRef?, CommunicationRef?) -> Unit,
+    ) where SR : StateRepresentation, C : CommunicationPayload = coroutineScope {
         pureComponents.behaviour?.let {
             val job = launch {
                 init(
-                    it,
+                    it as B,
                     componentsReferences.sensorsRef,
                     componentsReferences.actuatorRef,
                     componentsReferences.stateRef,
@@ -60,9 +67,12 @@ class RuntimeDSL(
             }
         }
 
-    suspend fun withCommunicationLogic(init: suspend (Communication<*>, BehaviourRef) -> Unit) = coroutineScope {
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <P, C : Communication<P>> withCommunicationLogic(
+        init: suspend (C, BehaviourRef) -> Unit,
+    ) = coroutineScope {
         pureComponents.communication?.let {
-            val job = launch { init(it, componentsReferences.behaviourRef) }
+            val job = launch { init(it as C, componentsReferences.behaviourRef) }
             jobsRef += job
         }
     }
