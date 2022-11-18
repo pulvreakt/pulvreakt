@@ -1,8 +1,7 @@
 package it.nicolasfarabegoli.pulverization.dsl
 
 import it.nicolasfarabegoli.pulverization.core.LogicalDevice
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
-import kotlin.reflect.KClass
+import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 
 /**
  * Annotation class used for scoping correctly the DSL.
@@ -28,28 +27,23 @@ class LogicalDeviceScope : Scope<Set<DeploymentUnit>> {
     private val deploymentUnits: MutableSet<DeploymentUnit> = mutableSetOf()
 
     /**
-     * Retrive the component type.
-     */
-    inline fun <reified C : PulverizedComponent> component(): KClass<out C> = C::class
-
-    /**
      * Define where the deployment unit should be deployed.
      */
-    infix fun <C : PulverizedComponent> Set<KClass<out C>>.deployableOn(tier: Tier) {
+    infix fun Set<PulverizedComponentType>.deployableOn(tier: Tier) {
         deploymentUnits += DeploymentUnit(this, tier)
     }
 
     /**
      * Define where the deployment unit should be deployed.
      */
-    infix fun <C : PulverizedComponent> KClass<out C>.deployableOn(tier: Tier) {
+    infix fun PulverizedComponentType.deployableOn(tier: Tier) {
         deploymentUnits += DeploymentUnit(setOf(this), tier)
     }
 
     /**
      * Set the current component in the same deployment unit with [other] component.
      */
-    infix fun <C : PulverizedComponent> KClass<out C>.and(other: KClass<out C>): Set<KClass<out C>> {
+    infix fun PulverizedComponentType.and(other: PulverizedComponentType): Set<PulverizedComponentType> {
         if (this == other) error("The same component should not appear in the same deployment unit")
         return setOf(this, other)
     }
@@ -57,7 +51,7 @@ class LogicalDeviceScope : Scope<Set<DeploymentUnit>> {
     /**
      * Set the current components in the same deployment unit with [other] component.
      */
-    infix fun <C : PulverizedComponent> Set<KClass<out C>>.and(other: KClass<out C>): Set<KClass<out C>> {
+    infix fun Set<PulverizedComponentType>.and(other: PulverizedComponentType): Set<PulverizedComponentType> {
         if (this.contains(other)) error("The same component should not appear in the same deployment unit")
         return this + other
     }
