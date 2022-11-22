@@ -107,6 +107,7 @@ jobs:
     needs:
       - release
       - build
+      - docsite
     if: >-
       always() && (
         contains(join(needs.*.result, ','), 'failure')
