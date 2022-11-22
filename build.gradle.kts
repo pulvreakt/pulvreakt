@@ -8,8 +8,8 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.ktlint.gradle)
-    alias(libs.plugins.detekt.gradle)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
     alias(libs.plugins.shadow)
@@ -45,8 +45,8 @@ tasks {
 allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
-        apply(plugin = detekt.gradle.id)
-        apply(plugin = ktlint.gradle.id)
+        apply(plugin = detekt.id)
+        apply(plugin = ktlint.id)
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
