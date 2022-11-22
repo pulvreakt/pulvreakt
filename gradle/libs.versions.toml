@@ -1,5 +1,6 @@
 [versions]
 kotlin = "1.7.20"
+dokka = "1.7.20"
 detekt = "1.22.0"
 ktlint-plugin = "11.0.0"
 kotest = "5.5.4"
@@ -8,8 +9,7 @@ koin = "3.2.2"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt-gradle = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint-gradle = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
