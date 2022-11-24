@@ -8,7 +8,7 @@ import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
@@ -22,7 +22,7 @@ typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>
 typealias SensorsLogicType<SS> = suspend (SensorsContainer, BehaviourRef<SS>) -> Unit
 typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>) -> Unit
 typealias BehaviourLogicType<S, C, SS, AS, R> =
-    suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorRef<AS>) -> Unit
+    suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
 fun <S, C, SS, AS, R> pulverizationPlatform(init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit): Nothing
     where S : StateRepresentation, C : CommunicationPayload = TODO()
@@ -31,50 +31,80 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
     private val deviceConfig: LogicalDeviceConfiguration,
 ) where S : StateRepresentation, C : CommunicationPayload {
 
-    var stateLogic: StateLogicType<S>? = null
+    var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
+    var communicationLogic: CommunicationLogicType<C>? = null
     var actuatorsLogic: ActuatorsLogicType<AS>? = null
     var sensorsLogic: SensorsLogicType<SS>? = null
-    var communicationLogic: CommunicationLogicType<C>? = null
-    var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
+    var stateLogic: StateLogicType<S>? = null
+
+    var behaviourComponent: Behaviour<S, C, SS, AS, R>? = null
+    var communicationComponent: Communication<C>? = null
+    var actuatorsComponent: ActuatorsContainer? = null
+    var sensorsComponent: SensorsContainer? = null
+    var stateComponent: State<S>? = null
 
     suspend fun start(): Set<Job> = coroutineScope {
-        val stateJob = stateLogic?.let { f -> launch { f(TODO(), TODO()) } }
-        val behaviourJob = behaviourLogic?.let { f -> launch { f(TODO(), TODO(), TODO(), TODO(), TODO()) } }
-        val actuatorsJob = actuatorsLogic?.let { f -> launch { f(TODO(), TODO()) } }
-        val sensorsJob = sensorsLogic?.let { f -> launch { f(TODO(), TODO()) } }
-        val commJob = communicationLogic?.let { f -> launch { f(TODO(), TODO()) } }
-        return@coroutineScope setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, commJob).mapNotNull { it }.toSet()
+        // TODO: get all ComponentRef instances and all relative PulverizedComponent instance
+        val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, TODO(), TODO(), TODO(), TODO()) }
+        }
+        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, TODO()) }
+        }
+        val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, TODO()) }
+        }
+        val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, TODO()) }
+        }
+        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, TODO()) }
+        }
+        setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
 
     companion object {
-        fun <S> PulverizationPlatformScope<S, Nothing, Nothing, Nothing, Nothing>.stateLogic(
-            logic: StateLogicType<S>,
-        ) where S : StateRepresentation {
-            stateLogic = logic
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
+            behaviour: Behaviour<S, C, SS, AS, R>,
+            logic: BehaviourLogicType<S, C, SS, AS, R>,
+        ) where S : StateRepresentation, C : CommunicationPayload {
+            behaviourComponent = behaviour
+            behaviourLogic = logic
+        }
+
+        fun <C> PulverizationPlatformScope<Nothing, C, Nothing, Nothing, Nothing>.communicationLogic(
+            communication: Communication<C>,
+            logic: CommunicationLogicType<C>,
+        ) where C : CommunicationPayload {
+            communicationComponent = communication
+            communicationLogic = logic
         }
 
         fun <AS> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
+            actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
         ) {
+            actuatorsComponent = actuators
             actuatorsLogic = logic
         }
 
         fun <SS> PulverizationPlatformScope<Nothing, Nothing, SS, Nothing, Nothing>.sensorsLogic(
+            sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
         ) {
+            sensorsComponent = sensors
             sensorsLogic = logic
         }
 
-        fun <C> PulverizationPlatformScope<Nothing, C, Nothing, Nothing, Nothing>.communicationLogic(
-            logic: CommunicationLogicType<C>,
-        ) where C : CommunicationPayload {
-            communicationLogic = logic
-        }
-
-        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
-            logic: BehaviourLogicType<S, C, SS, AS, R>,
-        ) where S : StateRepresentation, C : CommunicationPayload {
-            behaviourLogic = logic
+        fun <S> PulverizationPlatformScope<S, Nothing, Nothing, Nothing, Nothing>.stateLogic(
+            state: State<S>,
+            logic: StateLogicType<S>,
+        ) where S : StateRepresentation {
+            stateComponent = state
+            stateLogic = logic
         }
     }
 }
+
+internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? =
+    if (first != null && second != null) body(first!!, second!!) else null
