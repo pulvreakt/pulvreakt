@@ -16,6 +16,10 @@ interface PulverizedComponent : KoinComponent {
      * The type of the component.
      */
     val componentType: PulverizedComponentType
+
+    suspend fun initialize() {}
+
+    suspend fun finalize() {}
 }
 
 /**
