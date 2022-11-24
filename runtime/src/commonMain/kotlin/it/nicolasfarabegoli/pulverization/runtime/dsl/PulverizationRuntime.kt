@@ -44,21 +44,20 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
     var stateComponent: State<S>? = null
 
     suspend fun start(): Set<Job> = coroutineScope {
-        // TODO: get all ComponentRef instances and all relative PulverizedComponent instance
         val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO(), TODO(), TODO(), TODO()) }
+            launch { logic(comp, StateRef(), CommunicationRef(), SensorsRef(), ActuatorsRef()) }
         }
         val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
+            launch { logic(comp, BehaviourRef(comp.componentType)) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
+            launch { logic(comp, BehaviourRef(comp.componentType)) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
+            launch { logic(comp, BehaviourRef(comp.componentType)) }
         }
         val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
+            launch { logic(comp, BehaviourRef(comp.componentType)) }
         }
         setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
