@@ -16,6 +16,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.KSerializer
 
 typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
 typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
@@ -24,10 +25,15 @@ typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>
 typealias BehaviourLogicType<S, C, SS, AS, R> =
     suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
-fun <S, C, SS, AS, R> pulverizationPlatform(init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit): Nothing
-    where S : StateRepresentation, C : CommunicationPayload = TODO()
+inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizationPlatform(
+    init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit,
+): Nothing where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any = TODO()
 
-class PulverizationPlatformScope<S, C, SS, AS, R>(
+class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
+    private val stateType: KSerializer<S>,
+    private val commType: KSerializer<C>,
+    private val sensorsType: KSerializer<SS>,
+    private val actuatorsType: KSerializer<AS>,
     private val deviceConfig: LogicalDeviceConfiguration,
 ) where S : StateRepresentation, C : CommunicationPayload {
 
@@ -44,20 +50,21 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
     var stateComponent: State<S>? = null
 
     suspend fun start(): Set<Job> = coroutineScope {
+        // TODO: create dynamically all the ComponentRef
         val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, StateRef(), CommunicationRef(), SensorsRef(), ActuatorsRef()) }
+            launch { logic(comp, TODO(), TODO(), TODO(), TODO()) }
         }
         val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, BehaviourRef(comp.componentType)) }
+            launch { logic(comp, TODO()) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, BehaviourRef(comp.componentType)) }
+            launch { logic(comp, TODO()) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, BehaviourRef(comp.componentType)) }
+            launch { logic(comp, TODO()) }
         }
         val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, BehaviourRef(comp.componentType)) }
+            launch { logic(comp, TODO()) }
         }
         setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
@@ -66,7 +73,7 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
         fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
             behaviour: Behaviour<S, C, SS, AS, R>,
             logic: BehaviourLogicType<S, C, SS, AS, R>,
-        ) where S : StateRepresentation, C : CommunicationPayload {
+        ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any {
             behaviourComponent = behaviour
             behaviourLogic = logic
         }
@@ -79,7 +86,7 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
             communicationLogic = logic
         }
 
-        fun <AS> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
+        fun <AS : Any> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
             actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
         ) {
@@ -87,7 +94,7 @@ class PulverizationPlatformScope<S, C, SS, AS, R>(
             actuatorsLogic = logic
         }
 
-        fun <SS> PulverizationPlatformScope<Nothing, Nothing, SS, Nothing, Nothing>.sensorsLogic(
+        fun <SS : Any> PulverizationPlatformScope<Nothing, Nothing, SS, Nothing, Nothing>.sensorsLogic(
             sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
         ) {
