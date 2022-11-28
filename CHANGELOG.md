@@ -1,3 +1,47 @@
+## [0.3.7](https://github.com/nicolasfara/pulverization-framework/compare/0.3.6...0.3.7) (2022-11-28)
+
+
+### Build and continuous integration
+
+* make the release step dependent also on the docsite job ([77e0fa7](https://github.com/nicolasfara/pulverization-framework/commit/77e0fa7e655d823b919272afc8bec36e0b5e9eec))
+* remove cache ([78290e4](https://github.com/nicolasfara/pulverization-framework/commit/78290e46c819d21732ba7c9eb44a09897eaa1021))
+* setup node for docsite ([0d0ed72](https://github.com/nicolasfara/pulverization-framework/commit/0d0ed72070e146d62b613a22d0ba0fa52252a64e))
+* success job should depends also on docsite job ([19837ab](https://github.com/nicolasfara/pulverization-framework/commit/19837ab8345cd6703f8bb424d1480b6caf710990))
+* use consistent node version for semantic release ([5648de2](https://github.com/nicolasfara/pulverization-framework/commit/5648de2fd0e326c26d5569b976d4006ed5fda5a7))
+* use node 19 ([91ce1c6](https://github.com/nicolasfara/pulverization-framework/commit/91ce1c6936a797c42ee6f746e561fc49088bd8fd))
+
+
+### General maintenance
+
+* **build:** isolate dokka version from kotlin version ([c87691a](https://github.com/nicolasfara/pulverization-framework/commit/c87691a8440f054b0e8aca9ca1a175b03cc71262))
+* **build:** remove gradle in the detekt and ktlint names ([61827a7](https://github.com/nicolasfara/pulverization-framework/commit/61827a7e71eb0edd86661386ef76f0aee8061783))
+* **docsite:** add architecture diagrams ([7c5e880](https://github.com/nicolasfara/pulverization-framework/commit/7c5e880cee02e72395432aa825f864bc12b4a1f5))
+* **docsite:** update to latest rehype-katex ([9031e26](https://github.com/nicolasfara/pulverization-framework/commit/9031e262f9d901476a9c5246ed589381daae5dd4))
+* fix docusaurus specific dependencies ([11eb27f](https://github.com/nicolasfara/pulverization-framework/commit/11eb27f6c5cfc77800167501c840f42bcbc36bee))
+* remove logo ([f99d6c7](https://github.com/nicolasfara/pulverization-framework/commit/f99d6c7bda39f5f7c36278b75906282e56c831f9))
+* **renovate:** prevent update of remark-math library [skip ci] ([d3af1c9](https://github.com/nicolasfara/pulverization-framework/commit/d3af1c9821574514fbdca824f66580728b42a92a))
+* workaround for enabling mermaid ([1951e47](https://github.com/nicolasfara/pulverization-framework/commit/1951e47277cd0ab2fd313b13d856777af400f773))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.multiplatform to v1.7.22 ([23c2468](https://github.com/nicolasfara/pulverization-framework/commit/23c2468511efaf073a84b9374b07773143bf4364))
+* **deps:** update dependency @mdx-js/react to v2 ([a98c4e6](https://github.com/nicolasfara/pulverization-framework/commit/a98c4e64572727d7e283f73cb734adc87fc2cc7f))
+* **deps:** update dependency gradle to v7.6 ([051a763](https://github.com/nicolasfara/pulverization-framework/commit/051a76336233178d24a544c06da9caec7d1ba277))
+* **deps:** update dependency io.gitlab.arturbosch.detekt to v1.22.0 ([4bcf66e](https://github.com/nicolasfara/pulverization-framework/commit/4bcf66ef2069d8176fe79ee2cca55f7868df4a3a))
+* **deps:** update dependency mermaid to v9.2.1 ([77a1bf3](https://github.com/nicolasfara/pulverization-framework/commit/77a1bf37041c413e7ed8eab4c2622b38398f7791))
+* **deps:** update dependency mermaid to v9.2.2 ([7c95ecc](https://github.com/nicolasfara/pulverization-framework/commit/7c95ecc710256085b0ba70fa583f7210b091839e))
+* **deps:** update dependency rehype-katex to v6 ([8f9fe61](https://github.com/nicolasfara/pulverization-framework/commit/8f9fe61f9b5dc940e42bfeb8dcd7157fc1018fe1))
+* **deps:** update dependency rehype-katex to v6 ([b13ca26](https://github.com/nicolasfara/pulverization-framework/commit/b13ca2672abf90bbc7bfa728c4e205ac10af05b1))
+* **deps:** update dependency remark-math to v4 ([cbc25e6](https://github.com/nicolasfara/pulverization-framework/commit/cbc25e60655f117f1fa1bb8785d7bd69783d9e58))
+* **deps:** update dependency remark-math to v5 ([11eb413](https://github.com/nicolasfara/pulverization-framework/commit/11eb4131e91ba57f15c790fc34741efef0e42d10))
+* **deps:** update dependency remark-math to v5 ([21b5d1d](https://github.com/nicolasfara/pulverization-framework/commit/21b5d1df8bb2e6c94298d24397ee789616fbffe2))
+* **deps:** update kotest to v5.5.4 ([8491b5e](https://github.com/nicolasfara/pulverization-framework/commit/8491b5e4c4745e34a944a3bf1200a3bbd19be4eb))
+* **deps:** update kotlin monorepo to v1.7.21 ([60e7a93](https://github.com/nicolasfara/pulverization-framework/commit/60e7a9361d1e3a407153084b62b7676e3ac45a53))
+* **deps:** update plugin conventionalcommits to v3.0.14 ([db86f1a](https://github.com/nicolasfara/pulverization-framework/commit/db86f1a73dd1c806572292e43b9942945222a9a8))
+* **deps:** update plugin publishoncentral to v2.0.9 ([5841fc2](https://github.com/nicolasfara/pulverization-framework/commit/5841fc2b5da0ae01bf9e467bf888f75f1b950683))
+* **deps:** update react monorepo to v18 ([32b60a6](https://github.com/nicolasfara/pulverization-framework/commit/32b60a6ba03178454afe8f639cc184530868278c))
+
 ## [0.3.6](https://github.com/nicolasfara/pulverization-framework/compare/0.3.5...0.3.6) (2022-11-03)
 
 
