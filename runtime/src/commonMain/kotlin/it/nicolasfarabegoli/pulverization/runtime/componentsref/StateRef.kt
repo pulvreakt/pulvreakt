@@ -7,14 +7,10 @@ import kotlinx.serialization.KSerializer
 
 interface StateRef<S : Any> : ComponentRef<S> {
     companion object {
-        fun <S : Any> create(
-            serializer: KSerializer<S>,
-            communicator: Communicator,
-            exists: Boolean = true,
-        ): StateRef<S> {
-            return if (!exists) NoOpStateRef()
-            else StateRefImpl(serializer, communicator)
-        }
+        fun <S : Any> create(serializer: KSerializer<S>, communicator: Communicator): StateRef<S> =
+            StateRefImpl(serializer, communicator)
+
+        fun <S : Any> createDummy(): StateRef<S> = NoOpStateRef()
     }
 }
 
