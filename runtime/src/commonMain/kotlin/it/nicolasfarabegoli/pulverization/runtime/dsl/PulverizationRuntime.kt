@@ -15,8 +15,8 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
 typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
@@ -26,8 +26,11 @@ typealias BehaviourLogicType<S, C, SS, AS, R> =
     suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
 inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizationPlatform(
+    config: LogicalDeviceConfiguration,
     init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit,
-): Nothing where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any = TODO()
+) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any =
+    PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), config)
+        .apply(init)
 
 class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val stateType: KSerializer<S>,
@@ -50,23 +53,28 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     var stateComponent: State<S>? = null
 
     suspend fun start(): Set<Job> = coroutineScope {
-        // TODO: create dynamically all the ComponentRef
-        val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO(), TODO(), TODO(), TODO()) }
-        }
-        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
-        }
-        val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
-        }
-        val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
-        }
-        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, TODO()) }
-        }
-        setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
+        TODO()
+//        val (sr, cm, ss, act) =
+//            setupComponentsRef(stateType, commType, sensorsType, actuatorsType, emptySet(), emptySet()) {
+//                TODO()
+//            }
+//
+//        val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
+//            launch { logic(comp, sr, cm, ss, act) }
+//        }
+//        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
+//            launch { logic(comp, TODO()) }
+//        }
+//        val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
+//            launch { logic(comp, TODO()) }
+//        }
+//        val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
+//            launch { logic(comp, TODO()) }
+//        }
+//        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
+//            launch { logic(comp, TODO()) }
+//        }
+//        setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
 
     companion object {
