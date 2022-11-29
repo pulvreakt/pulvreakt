@@ -7,14 +7,10 @@ import kotlinx.serialization.KSerializer
 
 interface SensorsRef<S : Any> : ComponentRef<S> {
     companion object {
-        fun <S : Any> create(
-            serializer: KSerializer<S>,
-            communicator: Communicator,
-            exists: Boolean = true,
-        ): SensorsRef<S> {
-            return if (!exists) NoOpSensorsRef()
-            else SensorsRefImpl(serializer, communicator)
-        }
+        fun <S : Any> create(serializer: KSerializer<S>, communicator: Communicator): SensorsRef<S> =
+            SensorsRefImpl(serializer, communicator)
+
+        fun <S : Any> createDummy(): SensorsRef<S> = NoOpSensorsRef()
     }
 }
 
