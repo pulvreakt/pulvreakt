@@ -7,20 +7,20 @@ class LocalCommunicatorManagerTest : ShouldSpec(
     {
         context("The local communicator manager") {
             should("return the same instance for the same communication type") {
-                val stateInstance1 = LocalCommunicatorManager.stateInstance
-                val stateInstance2 = LocalCommunicatorManager.stateInstance
+                val stateInstance1 = CommManager.stateInstance
+                val stateInstance2 = CommManager.stateInstance
                 stateInstance1 shouldBeSameInstanceAs stateInstance2
 
-                val actuatorsInstance1 = LocalCommunicatorManager.actuatorsInstance
-                val actuatorsInstance2 = LocalCommunicatorManager.actuatorsInstance
+                val actuatorsInstance1 = CommManager.actuatorsInstance
+                val actuatorsInstance2 = CommManager.actuatorsInstance
                 actuatorsInstance1 shouldBeSameInstanceAs actuatorsInstance2
 
-                val communicationInstance1 = LocalCommunicatorManager.communicationInstance
-                val communicationInstance2 = LocalCommunicatorManager.communicationInstance
+                val communicationInstance1 = CommManager.communicationInstance
+                val communicationInstance2 = CommManager.communicationInstance
                 communicationInstance1 shouldBeSameInstanceAs communicationInstance2
 
-                val sensorsInstance1 = LocalCommunicatorManager.sensorsInstance
-                val sensorsInstance2 = LocalCommunicatorManager.sensorsInstance
+                val sensorsInstance1 = CommManager.sensorsInstance
+                val sensorsInstance2 = CommManager.sensorsInstance
                 sensorsInstance1 shouldBeSameInstanceAs sensorsInstance2
             }
         }

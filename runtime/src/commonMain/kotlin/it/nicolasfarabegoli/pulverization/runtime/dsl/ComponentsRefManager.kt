@@ -1,15 +1,11 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
-import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
-import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
@@ -25,7 +21,7 @@ internal fun <S : StateRepresentation> createStateRef(
     if (!allComponents.contains(StateComponent)) return StateRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit)) {
         Remote -> StateRef.create(serializer, communicatorSupplier())
-        Local -> StateRef.create(serializer, LocalCommunicator(StateComponent to BehaviourComponent))
+        Local -> TODO()
     }
 }
 
@@ -38,7 +34,7 @@ internal fun <C : CommunicationPayload> createCommunicationRef(
     if (!allComponents.contains(CommunicationComponent)) return CommunicationRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit)) {
         Remote -> CommunicationRef.create(serializer, communicatorSupplier())
-        Local -> CommunicationRef.create(serializer, LocalCommunicator(CommunicationComponent to BehaviourComponent))
+        Local -> TODO()
     }
 }
 
@@ -51,7 +47,7 @@ internal fun <SS : Any> createSensorsRef(
     if (!allComponents.contains(CommunicationComponent)) return SensorsRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit)) {
         Remote -> SensorsRef.create(serializer, communicatorSupplier())
-        Local -> SensorsRef.create(serializer, LocalCommunicator(SensorsComponent to BehaviourComponent))
+        Local -> TODO()
     }
 }
 
@@ -64,7 +60,7 @@ internal fun <AS : Any> createActuatorsRef(
     if (!allComponents.contains(CommunicationComponent)) return ActuatorsRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit)) {
         Remote -> ActuatorsRef.create(serializer, communicatorSupplier())
-        Local -> ActuatorsRef.create(serializer, LocalCommunicator(ActuatorsComponent to BehaviourComponent))
+        Local -> TODO()
     }
 }
 

@@ -10,70 +10,45 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-internal class LocalCommunicator(override val binding: Binding) : Communicator {
+internal class LocalCommunicator : Communicator {
 
-    private lateinit var receiver: MutableSharedFlow<ByteArray>
-    private lateinit var sender: MutableSharedFlow<ByteArray>
+    private lateinit var inbox: MutableSharedFlow<ByteArray>
+    private lateinit var outbox: MutableSharedFlow<ByteArray>
 
-    init {
-        initialize(binding)
-    }
+    override suspend fun setup(binding: Binding) {
+        if (binding.first == binding.second) error("The binding '$binding' is an invalid configuration")
+        val (receiver, sender) = when (binding) {
+            StateComponent to BehaviourComponent ->
+                CommManager.stateInstance to CommManager.behaviourStateInstance
 
-    private fun initialize(binding: Binding) {
-        when (binding.first) {
-            StateComponent -> {
-                if (binding.second == StateComponent) error("The binding could not have a self-reference")
-                sender = LocalCommunicatorManager.behaviourStateInstance
-                receiver = LocalCommunicatorManager.stateInstance
-            }
+            CommunicationComponent to BehaviourComponent ->
+                CommManager.communicationInstance to CommManager.behaviourCommunicationInstance
 
-            CommunicationComponent -> {
-                if (binding.second == CommunicationComponent) error("The binding could not have a self-reference")
-                sender = LocalCommunicatorManager.behaviourCommunicationInstance
-                receiver = LocalCommunicatorManager.communicationInstance
-            }
+            SensorsComponent to BehaviourComponent ->
+                CommManager.sensorsInstance to CommManager.behaviourSensorsInstance
 
-            SensorsComponent -> {
-                if (binding.second == SensorsComponent) error("The binding could not have a self-reference")
-                sender = LocalCommunicatorManager.behaviourSensorsInstance
-                receiver = LocalCommunicatorManager.sensorsInstance
-            }
+            ActuatorsComponent to BehaviourComponent ->
+                CommManager.actuatorsInstance to CommManager.behaviourActuatorsInstance
 
-            ActuatorsComponent -> {
-                if (binding.second == ActuatorsComponent) error("The binding could not have a self-reference")
-                sender = LocalCommunicatorManager.behaviourActuatorsInstance
-                receiver = LocalCommunicatorManager.actuatorsInstance
-            }
+            BehaviourComponent to StateComponent ->
+                CommManager.behaviourStateInstance to CommManager.stateInstance
 
-            BehaviourComponent -> {
-                when (binding.second) {
-                    StateComponent -> {
-                        sender = LocalCommunicatorManager.stateInstance
-                        receiver = LocalCommunicatorManager.behaviourStateInstance
-                    }
+            BehaviourComponent to CommunicationComponent ->
+                CommManager.behaviourCommunicationInstance to CommManager.communicationInstance
 
-                    CommunicationComponent -> {
-                        sender = LocalCommunicatorManager.communicationInstance
-                        receiver = LocalCommunicatorManager.behaviourCommunicationInstance
-                    }
+            BehaviourComponent to SensorsComponent ->
+                CommManager.behaviourSensorsInstance to CommManager.sensorsInstance
 
-                    SensorsComponent -> {
-                        sender = LocalCommunicatorManager.sensorsInstance
-                        receiver = LocalCommunicatorManager.behaviourSensorsInstance
-                    }
+            BehaviourComponent to ActuatorsComponent ->
+                CommManager.behaviourActuatorsInstance to CommManager.actuatorsInstance
 
-                    ActuatorsComponent -> {
-                        sender = LocalCommunicatorManager.actuatorsInstance
-                        receiver = LocalCommunicatorManager.behaviourActuatorsInstance
-                    }
-
-                    BehaviourComponent -> error("The behaviour could not have a self reference")
-                }
-            }
+            else -> error("The binding: $binding is an invalid configuration")
         }
+        outbox = sender
+        inbox = receiver
     }
 
-    override suspend fun fireMessage(message: ByteArray) = coroutineScope { sender.emit(message) }
+    override suspend fun fireMessage(message: ByteArray) = coroutineScope { outbox.emit(message) }
 
-    override fun receiveMessage(): SharedFlow<ByteArray> = receiver.asSharedFlow()
+    override fun receiveMessage(): SharedFlow<ByteArray> = inbox.asSharedFlow()
 }
