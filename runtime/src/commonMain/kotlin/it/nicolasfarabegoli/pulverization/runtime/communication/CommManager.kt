@@ -2,7 +2,7 @@ package it.nicolasfarabegoli.pulverization.runtime.communication
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-internal object LocalCommunicatorManager {
+internal object CommManager {
     val stateInstance: MutableSharedFlow<ByteArray> by lazy(LazyThreadSafetyMode.PUBLICATION) { MutableSharedFlow(1) }
     val actuatorsInstance: MutableSharedFlow<ByteArray> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         MutableSharedFlow()
