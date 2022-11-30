@@ -16,10 +16,14 @@ class LocalCommunicatorTest : FreeSpec(
         "The local communicator" - {
             "could not have a self reference" {
                 shouldThrow<IllegalStateException> {
-                    LocalCommunicator(BehaviourComponent to BehaviourComponent)
+                    LocalCommunicator().apply {
+                        setup(BehaviourComponent to BehaviourComponent)
+                    }
                 }
                 shouldThrow<IllegalStateException> {
-                    LocalCommunicator(StateComponent to StateComponent)
+                    LocalCommunicator().apply {
+                        setup(StateComponent to StateComponent)
+                    }
                 }
             }
             "when used" - {
@@ -27,35 +31,43 @@ class LocalCommunicatorTest : FreeSpec(
                     "should use the right channels".config(invocationTimeout = 500.milliseconds) {
                         // In this test we simulate two different "process" spawning two separate coroutines
                         val jb1 = launch {
-                            val localComm = LocalCommunicator(BehaviourComponent to StateComponent)
+                            val localComm = LocalCommunicator().apply {
+                                setup(BehaviourComponent to StateComponent)
+                            }
                             localComm.fireMessage("hello".encodeToByteArray())
                         }
                         val jb2 = launch {
-                            val stateComm = LocalCommunicator(StateComponent to BehaviourComponent)
+                            val stateComm = LocalCommunicator().apply {
+                                setup(StateComponent to BehaviourComponent)
+                            }
                             stateComm.receiveMessage().first().let {
                                 it.decodeToString() shouldBe "hello"
                             }
                         }
-                        listOf(jb1, jb2).forEach { it.join() }
+                        setOf(jb1, jb2).forEach { it.join() }
                     }
                 }
             }
             "when the producer send more messages than the consumer can receive" - {
                 "only the last message should be received" {
                     val jb1 = launch {
-                        val sensorsComm = LocalCommunicator(SensorsComponent to BehaviourComponent)
+                        val sensorsComm = LocalCommunicator().apply {
+                            setup(SensorsComponent to BehaviourComponent)
+                        }
                         sensorsComm.fireMessage("message-1".encodeToByteArray())
                         sensorsComm.fireMessage("message-1".encodeToByteArray())
                         sensorsComm.fireMessage("message-3".encodeToByteArray())
                     }
                     val jb2 = launch {
-                        val behaviourComm = LocalCommunicator(BehaviourComponent to SensorsComponent)
+                        val behaviourComm = LocalCommunicator().apply {
+                            setup(BehaviourComponent to SensorsComponent)
+                        }
                         delay(100) // Simulate a blocking work
                         behaviourComm.receiveMessage().first().let {
                             it.decodeToString() shouldBe "message-3"
                         }
                     }
-                    listOf(jb1, jb2).forEach { it.join() }
+                    setOf(jb1, jb2).forEach { it.join() }
                 }
             }
         }
