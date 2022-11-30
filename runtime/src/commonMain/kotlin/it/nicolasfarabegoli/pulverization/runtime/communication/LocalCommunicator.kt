@@ -5,15 +5,15 @@ import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 internal class LocalCommunicator(override val binding: Binding) : Communicator {
 
-    private lateinit var receiver: ReceiveChannel<ByteArray>
-    private lateinit var sender: SendChannel<ByteArray>
+    private lateinit var receiver: MutableSharedFlow<ByteArray>
+    private lateinit var sender: MutableSharedFlow<ByteArray>
 
     init {
         initialize(binding)
@@ -22,21 +22,25 @@ internal class LocalCommunicator(override val binding: Binding) : Communicator {
     private fun initialize(binding: Binding) {
         when (binding.first) {
             StateComponent -> {
+                if (binding.second == StateComponent) error("The binding could not have a self-reference")
                 sender = LocalCommunicatorManager.behaviourStateInstance
                 receiver = LocalCommunicatorManager.stateInstance
             }
 
             CommunicationComponent -> {
+                if (binding.second == CommunicationComponent) error("The binding could not have a self-reference")
                 sender = LocalCommunicatorManager.behaviourCommunicationInstance
                 receiver = LocalCommunicatorManager.communicationInstance
             }
 
             SensorsComponent -> {
+                if (binding.second == SensorsComponent) error("The binding could not have a self-reference")
                 sender = LocalCommunicatorManager.behaviourSensorsInstance
                 receiver = LocalCommunicatorManager.sensorsInstance
             }
 
             ActuatorsComponent -> {
+                if (binding.second == ActuatorsComponent) error("The binding could not have a self-reference")
                 sender = LocalCommunicatorManager.behaviourActuatorsInstance
                 receiver = LocalCommunicatorManager.actuatorsInstance
             }
@@ -69,11 +73,7 @@ internal class LocalCommunicator(override val binding: Binding) : Communicator {
         }
     }
 
-    override suspend fun fireMessage(message: ByteArray) {
-        sender.send(message)
-    }
+    override suspend fun fireMessage(message: ByteArray) = coroutineScope { sender.emit(message) }
 
-    override fun receiveMessage(): Flow<ByteArray> {
-        return receiver.consumeAsFlow()
-    }
+    override fun receiveMessage(): SharedFlow<ByteArray> = receiver.asSharedFlow()
 }
