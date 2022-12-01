@@ -5,11 +5,15 @@ import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 interface CommunicationRef<S : CommunicationPayload> : ComponentRef<S> {
     companion object {
         fun <S : CommunicationPayload> create(serializer: KSerializer<S>, communicator: Communicator):
             CommunicationRef<S> = CommunicationRefImpl(serializer, communicator)
+
+        inline fun <reified S : CommunicationPayload> create(communicator: Communicator): CommunicationRef<S> =
+            create(serializer(), communicator)
 
         fun <S : CommunicationPayload> createDummy(): CommunicationRef<S> = NoOpCommunicationRef()
     }
