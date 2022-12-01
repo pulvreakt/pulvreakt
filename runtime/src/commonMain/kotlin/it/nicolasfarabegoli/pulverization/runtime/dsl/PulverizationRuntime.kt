@@ -1,13 +1,20 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
+import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
+import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
+import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
+import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
+import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
+import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
+import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
@@ -53,29 +60,35 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     var sensorsComponent: SensorsContainer? = null
     var stateComponent: State<S>? = null
 
+    val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf() // TODO: make it private
+
     suspend fun start(): Set<Job> = coroutineScope {
-        val (sr, cm, ss, act) =
-            setupComponentsRef(stateType, commType, sensorsType, actuatorsType, emptySet(), emptySet())
-        // Initialize all Component(s)Ref
-        setOf(sr, cm, ss, act).forEach { it.setup() }
+        val allComponents = deviceConfig.components
+        val deploymentUnit = deviceConfig.getDeploymentUnit(configuredComponents)?.deployableComponents
+            ?: error("The configured components doesn't match the configuration")
 
         val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            launch { logic(comp, sr, cm, ss, act) }
+            val (sr, cm, ss, act) =
+                setupComponentsRef(stateType, commType, sensorsType, actuatorsType, allComponents, deploymentUnit)
+            launch { setOf(sr, cm, ss, act).forEach { it.setup() }; logic(comp, sr, cm, ss, act) }
         }
-        TODO()
-//        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
-//            launch { logic(comp, TODO()) }
-//        }
-//        val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
-//            launch { logic(comp, TODO()) }
-//        }
-//        val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
-//            launch { logic(comp, TODO()) }
-//        }
-//        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
-//            launch { logic(comp, TODO()) }
-//        }
-//        setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
+        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
+            val behaviourRef = setupBehaviourRef(commType, CommunicationComponent, allComponents, deploymentUnit)
+            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+        }
+        val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
+            val behaviourRef = setupBehaviourRef(actuatorsType, ActuatorsComponent, allComponents, deploymentUnit)
+            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+        }
+        val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
+            val behaviourRef = setupBehaviourRef(sensorsType, SensorsComponent, allComponents, deploymentUnit)
+            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+        }
+        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
+            val behaviourRef = setupBehaviourRef(stateType, StateComponent, allComponents, deploymentUnit)
+            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+        }
+        setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
 
     companion object {
@@ -83,6 +96,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             behaviour: Behaviour<S, C, SS, AS, R>,
             logic: BehaviourLogicType<S, C, SS, AS, R>,
         ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any {
+            configuredComponents += BehaviourComponent
             behaviourComponent = behaviour
             behaviourLogic = logic
         }
@@ -91,6 +105,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             communication: Communication<C>,
             logic: CommunicationLogicType<C>,
         ) where C : CommunicationPayload {
+            configuredComponents += CommunicationComponent
             communicationComponent = communication
             communicationLogic = logic
         }
@@ -99,6 +114,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
         ) {
+            configuredComponents += ActuatorsComponent
             actuatorsComponent = actuators
             actuatorsLogic = logic
         }
@@ -107,6 +123,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
         ) {
+            configuredComponents += SensorsComponent
             sensorsComponent = sensors
             sensorsLogic = logic
         }
@@ -115,6 +132,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             state: State<S>,
             logic: StateLogicType<S>,
         ) where S : StateRepresentation {
+            configuredComponents += StateComponent
             stateComponent = state
             stateLogic = logic
         }

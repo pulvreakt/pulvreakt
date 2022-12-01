@@ -1,6 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
+import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
@@ -10,6 +11,7 @@ import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
@@ -100,6 +102,22 @@ internal fun <S, C, SS, AS> setupComponentsRef(
     val sensorsRef = createSensorsRef(senseSer, allComponents, deploymentUnit, communicatorSupplier)
     val actuatorsRef = createActuatorsRef(actSer, allComponents, deploymentUnit, communicatorSupplier)
     return ComponentsRefInstances(stateRef, commRef, sensorsRef, actuatorsRef)
+}
+
+internal fun <S : Any> setupBehaviourRef(
+    serializer: KSerializer<S>,
+    component: PulverizedComponentType,
+    allComponents: Set<PulverizedComponentType>,
+    deploymentUnit: Set<PulverizedComponentType>,
+    communicatorSupplier: () -> Communicator = { error("No communicator given") },
+): BehaviourRef<S> {
+    if (!allComponents.contains(BehaviourComponent)) error("The Behavior must be defined!")
+    return if (deploymentUnit.contains(BehaviourComponent)) BehaviourRef.create(
+        serializer,
+        component,
+        LocalCommunicator(),
+    )
+    else BehaviourRef.create(serializer, component, communicatorSupplier())
 }
 
 internal data class ComponentsRefInstances<S, C, SS, AS>(
