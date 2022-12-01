@@ -26,12 +26,20 @@ class PulverizationRuntimeTest : FreeSpec(
         }
         "The platform DSL" - {
             "when not respect the configuration" - {
-                "should throw an exception" {
+                "were more components are registered, should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                             behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                             stateLogic(StateFixture()) { _, _ -> }
                             communicationLogic(CommunicationFixture()) { _, _ -> }
+                        }.start()
+                    }
+                    exception.message shouldContain "The configured components doesn't match the configuration"
+                }
+                "were less components are registered, should throw an exception" {
+                    val exception = shouldThrowUnit<IllegalStateException> {
+                        pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                            behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                         }.start()
                     }
                     exception.message shouldContain "The configured components doesn't match the configuration"
