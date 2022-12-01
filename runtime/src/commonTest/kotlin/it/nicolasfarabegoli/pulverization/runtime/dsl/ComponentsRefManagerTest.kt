@@ -5,31 +5,13 @@ import io.kotest.core.spec.style.FreeSpec
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
-import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
-import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
-import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
-import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class StatePayload(val i: Int) : StateRepresentation
-
-@Serializable
-data class CommPayload(val i: Int) : CommunicationPayload
-
-class RemoteCommunicator : Communicator {
-    override suspend fun setup(binding: Binding) = TODO("Not yet implemented")
-    override suspend fun fireMessage(message: ByteArray) = TODO("Not yet implemented")
-    override fun receiveMessage(): Flow<ByteArray> = TODO("Not yet implemented")
-}
 
 class ComponentsRefManagerTest : FreeSpec(
     {
@@ -61,6 +43,7 @@ class ComponentsRefManagerTest : FreeSpec(
                         val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
                             deviceConfig.components,
                             deploymentUnit,
+                            null,
                         )
                         // TODO(check if communicator is local or not, I don't know how)
                     }
@@ -73,7 +56,8 @@ class ComponentsRefManagerTest : FreeSpec(
                         val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
                             deviceConfig.components,
                             deploymentUnit,
-                        ) { RemoteCommunicator() }
+                            RemoteCommunicator(),
+                        )
                         // TODO(check if communication ref is remote, I don't know how)
                     }
                 }
@@ -84,7 +68,11 @@ class ComponentsRefManagerTest : FreeSpec(
                     val deploymentUnit =
                         deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
                     val (_, _, _, _) =
-                        setupComponentsRef<StatePayload, CommPayload, Int, Int>(deviceConfig.components, deploymentUnit)
+                        setupComponentsRef<StatePayload, CommPayload, Int, Int>(
+                            deviceConfig.components,
+                            deploymentUnit,
+                            null,
+                        )
                 }
             }
         }
