@@ -28,7 +28,9 @@ fun PulverizationConfiguration.getDeviceConfiguration(name: String): LogicalDevi
     devicesConfig.firstOrNull { it.deviceName == name }
 
 fun LogicalDeviceConfiguration.getDeploymentUnit(components: Set<PulverizedComponentType>): DeploymentUnit? =
-    deploymentUnits.firstOrNull { it.deployableComponents.containsAll(components) }
+    deploymentUnits.firstOrNull {
+        it.deployableComponents.containsAll(components) && it.deployableComponents.size == components.size
+    }
 
 fun LogicalDeviceConfiguration.getDeploymentUnit(vararg components: PulverizedComponentType): DeploymentUnit? =
     getDeploymentUnit(components.toSet())
