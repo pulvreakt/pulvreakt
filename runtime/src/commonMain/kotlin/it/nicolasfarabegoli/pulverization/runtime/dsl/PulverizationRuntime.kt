@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
@@ -53,15 +54,15 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     var stateComponent: State<S>? = null
 
     suspend fun start(): Set<Job> = coroutineScope {
+        val (sr, cm, ss, act) =
+            setupComponentsRef(stateType, commType, sensorsType, actuatorsType, emptySet(), emptySet())
+        // Initialize all Component(s)Ref
+        setOf(sr, cm, ss, act).forEach { it.setup() }
+
+        val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
+            launch { logic(comp, sr, cm, ss, act) }
+        }
         TODO()
-//        val (sr, cm, ss, act) =
-//            setupComponentsRef(stateType, commType, sensorsType, actuatorsType, emptySet(), emptySet()) {
-//                TODO()
-//            }
-//
-//        val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-//            launch { logic(comp, sr, cm, ss, act) }
-//        }
 //        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
 //            launch { logic(comp, TODO()) }
 //        }
