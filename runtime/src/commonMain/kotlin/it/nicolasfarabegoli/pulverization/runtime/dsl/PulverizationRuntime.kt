@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
+import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
@@ -48,11 +49,13 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val deviceConfig: LogicalDeviceConfiguration,
 ) where S : StateRepresentation, C : CommunicationPayload {
 
+    private var communicator: Communicator? = null
+
     var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
-    var communicationLogic: CommunicationLogicType<C>? = null
+    var communicationLogicR: CommunicationLogicType<C>? = null
     var actuatorsLogic: ActuatorsLogicType<AS>? = null
     var sensorsLogic: SensorsLogicType<SS>? = null
-    var stateLogic: StateLogicType<S>? = null
+    var stateLogicR: StateLogicType<S>? = null
 
     var behaviourComponent: Behaviour<S, C, SS, AS, R>? = null
     var communicationComponent: Communication<C>? = null
@@ -62,30 +65,45 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
 
     val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf() // TODO: make it private
 
+    fun withPlatform(provider: () -> Communicator) {
+        communicator = provider()
+    }
+
     suspend fun start(): Set<Job> = coroutineScope {
         val allComponents = deviceConfig.components
         val deploymentUnit = deviceConfig.getDeploymentUnit(configuredComponents)?.deployableComponents
             ?: error("The configured components doesn't match the configuration")
 
         val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            val (sr, cm, ss, act) =
-                setupComponentsRef(stateType, commType, sensorsType, actuatorsType, allComponents, deploymentUnit)
+            val (sr, cm, ss, act) = setupComponentsRef(
+                stateType,
+                commType,
+                sensorsType,
+                actuatorsType,
+                allComponents,
+                deploymentUnit,
+                communicator,
+            )
             launch { setOf(sr, cm, ss, act).forEach { it.setup() }; logic(comp, sr, cm, ss, act) }
         }
-        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
-            val behaviourRef = setupBehaviourRef(commType, CommunicationComponent, allComponents, deploymentUnit)
+        val communicationJob = communicationLogicR to communicationComponent takeAllNotNull { logic, comp ->
+            val behaviourRef =
+                setupBehaviourRef(commType, CommunicationComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
-            val behaviourRef = setupBehaviourRef(actuatorsType, ActuatorsComponent, allComponents, deploymentUnit)
+            val behaviourRef =
+                setupBehaviourRef(actuatorsType, ActuatorsComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
-            val behaviourRef = setupBehaviourRef(sensorsType, SensorsComponent, allComponents, deploymentUnit)
+            val behaviourRef =
+                setupBehaviourRef(sensorsType, SensorsComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
-        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
-            val behaviourRef = setupBehaviourRef(stateType, StateComponent, allComponents, deploymentUnit)
+        val stateJob = stateLogicR to stateComponent takeAllNotNull { logic, comp ->
+            val behaviourRef =
+                setupBehaviourRef(stateType, StateComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
@@ -107,7 +125,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         ) where C : CommunicationPayload {
             configuredComponents += CommunicationComponent
             communicationComponent = communication
-            communicationLogic = logic
+            communicationLogicR = logic
         }
 
         fun <AS : Any> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
@@ -134,7 +152,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         ) where S : StateRepresentation {
             configuredComponents += StateComponent
             stateComponent = state
-            stateLogic = logic
+            stateLogicR = logic
         }
     }
 }
