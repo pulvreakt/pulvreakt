@@ -4,11 +4,15 @@ import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 interface SensorsRef<S : Any> : ComponentRef<S> {
     companion object {
         fun <S : Any> create(serializer: KSerializer<S>, communicator: Communicator): SensorsRef<S> =
             SensorsRefImpl(serializer, communicator)
+
+        inline fun <reified S : Any> create(communicator: Communicator): SensorsRef<S> =
+            create(serializer(), communicator)
 
         fun <S : Any> createDummy(): SensorsRef<S> = NoOpSensorsRef()
     }

@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
 interface ComponentRef<S : Any> {
+    suspend fun setup() {}
     suspend fun sendToComponent(message: S)
     suspend fun receiveFromComponent(): Flow<S>
     suspend fun receiveLastFromComponent(): S?
@@ -34,6 +35,10 @@ internal class ComponentRefImpl<S : Any>(
             binding: Pair<PulverizedComponentType, PulverizedComponentType>,
             communicator: Communicator,
         ): ComponentRefImpl<S> = ComponentRefImpl(serializer(), binding, communicator)
+    }
+
+    override suspend fun setup() {
+        communicator.setup(binding)
     }
 
     override suspend fun sendToComponent(message: S) {
