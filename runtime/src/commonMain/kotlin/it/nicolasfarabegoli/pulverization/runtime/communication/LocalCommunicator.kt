@@ -5,13 +5,20 @@ import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import org.koin.core.Koin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-internal class LocalCommunicator : Communicator {
+internal class LocalCommunicator : Communicator, KoinComponent {
 
+    override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
+
+    private val commManager: CommManager by inject()
     private lateinit var inbox: MutableSharedFlow<ByteArray>
     private lateinit var outbox: MutableSharedFlow<ByteArray>
 
@@ -19,28 +26,28 @@ internal class LocalCommunicator : Communicator {
         if (binding.first == binding.second) error("The binding '$binding' is an invalid configuration")
         val (receiver, sender) = when (binding) {
             StateComponent to BehaviourComponent ->
-                CommManager.stateInstance to CommManager.behaviourStateInstance
+                commManager.stateInstance to commManager.behaviourStateInstance
 
             CommunicationComponent to BehaviourComponent ->
-                CommManager.communicationInstance to CommManager.behaviourCommunicationInstance
+                commManager.communicationInstance to commManager.behaviourCommunicationInstance
 
             SensorsComponent to BehaviourComponent ->
-                CommManager.sensorsInstance to CommManager.behaviourSensorsInstance
+                commManager.sensorsInstance to commManager.behaviourSensorsInstance
 
             ActuatorsComponent to BehaviourComponent ->
-                CommManager.actuatorsInstance to CommManager.behaviourActuatorsInstance
+                commManager.actuatorsInstance to commManager.behaviourActuatorsInstance
 
             BehaviourComponent to StateComponent ->
-                CommManager.behaviourStateInstance to CommManager.stateInstance
+                commManager.behaviourStateInstance to commManager.stateInstance
 
             BehaviourComponent to CommunicationComponent ->
-                CommManager.behaviourCommunicationInstance to CommManager.communicationInstance
+                commManager.behaviourCommunicationInstance to commManager.communicationInstance
 
             BehaviourComponent to SensorsComponent ->
-                CommManager.behaviourSensorsInstance to CommManager.sensorsInstance
+                commManager.behaviourSensorsInstance to commManager.sensorsInstance
 
             BehaviourComponent to ActuatorsComponent ->
-                CommManager.behaviourActuatorsInstance to CommManager.actuatorsInstance
+                commManager.behaviourActuatorsInstance to commManager.actuatorsInstance
 
             else -> error("The binding: $binding is an invalid configuration")
         }
