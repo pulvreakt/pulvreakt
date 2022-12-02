@@ -104,6 +104,13 @@ internal fun <S, C, SS, AS> setupComponentsRef(
     return ComponentsRefInstances(stateRef, commRef, sensorsRef, actuatorsRef)
 }
 
+internal inline fun <reified S : Any> setupBehaviourRef(
+    component: PulverizedComponentType,
+    allComponents: Set<PulverizedComponentType>,
+    deploymentUnit: Set<PulverizedComponentType>,
+    communicator: Communicator?,
+): BehaviourRef<S> = setupBehaviourRef(serializer(), component, allComponents, deploymentUnit, communicator)
+
 internal fun <S : Any> setupBehaviourRef(
     serializer: KSerializer<S>,
     component: PulverizedComponentType,
@@ -111,13 +118,19 @@ internal fun <S : Any> setupBehaviourRef(
     deploymentUnit: Set<PulverizedComponentType>,
     communicator: Communicator?,
 ): BehaviourRef<S> {
-    if (!allComponents.contains(BehaviourComponent)) error("The Behavior must be defined!")
-    return if (deploymentUnit.contains(BehaviourComponent)) BehaviourRef.create(
-        serializer,
-        component,
-        LocalCommunicator(),
-    )
-    else BehaviourRef.create(serializer, component, communicator ?: error("No communicator given"))
+    if (!allComponents.contains(BehaviourComponent)) error("The Behaviour must be defined!")
+    if (!allComponents.contains(component)) {
+        error("Trying to create a BehaviourRef with $component but this component doesn't appear on the configuration")
+    }
+    return if (deploymentUnit.contains(BehaviourComponent)) {
+        BehaviourRef.create(
+            serializer,
+            component,
+            LocalCommunicator(),
+        )
+    } else {
+        BehaviourRef.create(serializer, component, communicator ?: error("No communicator given"))
+    }
 }
 
 internal data class ComponentsRefInstances<S, C, SS, AS>(
@@ -138,6 +151,9 @@ internal fun determinePlace(
     component: PulverizedComponentType,
 ): Placement {
     if (!allComponents.contains(component)) return NoExists
-    return if (deploymentUnit.contains(component)) Local
-    else Remote
+    return if (deploymentUnit.contains(component)) {
+        Local
+    } else {
+        Remote
+    }
 }
