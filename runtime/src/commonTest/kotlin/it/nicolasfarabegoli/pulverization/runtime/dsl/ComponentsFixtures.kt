@@ -30,23 +30,29 @@ class FixtureBehaviour : Behaviour<StatePayload, CommPayload, NoPayload, NoPaylo
         state: StatePayload,
         export: List<CommPayload>,
         sensedValues: NoPayload,
-    ): BehaviourOutput<StatePayload, CommPayload, NoPayload, Unit> = TODO("Not yet implemented")
+    ): BehaviourOutput<StatePayload, CommPayload, NoPayload, Unit> =
+        BehaviourOutput(state, CommPayload(2), NoPayload, Unit)
 }
 
 class StateFixture : State<StatePayload> {
+    private var state = StatePayload(0)
     override val context: Context
         get() = TODO("Not yet implemented")
 
-    override fun get(): StatePayload = TODO("Not yet implemented")
-    override fun update(newState: StatePayload): StatePayload = TODO("Not yet implemented")
+    override fun get(): StatePayload = state
+    override fun update(newState: StatePayload): StatePayload {
+        val tmp = state
+        state = newState
+        return tmp
+    }
 }
 
 class CommunicationFixture : Communication<CommPayload> {
     override val context: Context
         get() = TODO("Not yet implemented")
 
-    override fun send(payload: CommPayload) = TODO("Not yet implemented")
-    override fun receive(): Flow<CommPayload> = TODO("Not yet implemented")
+    override fun send(payload: CommPayload) {}
+    override fun receive(): Flow<CommPayload> = emptyFlow()
 }
 
 class RemoteCommunicator : Communicator {
