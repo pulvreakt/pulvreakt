@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
+import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
@@ -26,6 +27,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
+import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
+import kotlin.native.concurrent.ThreadLocal
 
 typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
 typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
@@ -40,6 +47,11 @@ inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizati
 ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any =
     PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), config)
         .apply(init)
+
+@ThreadLocal
+internal object PulverizationKoinModule {
+    var koinApp: KoinApplication? = null
+}
 
 class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val stateType: KSerializer<S>,
@@ -69,7 +81,20 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         communicator = provider()
     }
 
+    private fun setupKoinModule() {
+        val module = module { single { CommManager() } }
+        PulverizationKoinModule.koinApp = koinApplication {
+            modules(module)
+        }
+    }
+
+    fun stop() {
+        stopKoin()
+    }
+
     suspend fun start(): Set<Job> = coroutineScope {
+        setupKoinModule()
+
         val allComponents = deviceConfig.components
         val deploymentUnit = deviceConfig.getDeploymentUnit(configuredComponents)?.deployableComponents
             ?: error("The configured components doesn't match the configuration")
