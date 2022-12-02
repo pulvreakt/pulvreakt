@@ -1,7 +1,9 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
+import io.kotest.assertions.throwables.shouldNotThrowUnit
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.string.shouldContain
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
@@ -71,8 +73,52 @@ class ComponentsRefManagerTest : FreeSpec(
                         setupComponentsRef<StatePayload, CommPayload, Int, Int>(
                             deviceConfig.components,
                             deploymentUnit,
+                            null, // In this test the communicator should be provided
+                        )
+                }
+            }
+            "when creating the behaviour ref" - {
+                "should throw an exception if no behaviour is present in the config" {
+                    val exception = shouldThrowUnit<IllegalStateException> {
+                        setupBehaviourRef<StatePayload>(StateComponent, emptySet(), emptySet(), null)
+                    }
+                    exception.message shouldContain "The Behaviour must be defined!"
+                }
+                "it should be created remote" {
+                    shouldNotThrowUnit<Exception> {
+                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        setupBehaviourRef<StatePayload>(
+                            StateComponent,
+                            allComponents,
+                            setOf(StateComponent),
+                            RemoteCommunicator(),
+                        )
+                        // TODO: check if the communicator is remote...
+                    }
+                }
+                "it should throw an exception if we try to create a behaviour ref linked to a non-existing component" {
+                    val exception = shouldThrowUnit<IllegalStateException> {
+                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        setupBehaviourRef<CommPayload>(
+                            CommunicationComponent,
+                            allComponents,
+                            setOf(StateComponent),
+                            RemoteCommunicator(),
+                        )
+                    }
+                    exception.message shouldContain "this component doesn't appear on the configuration"
+                }
+                "an exception should be thrown if no communicator is given" {
+                    val exception = shouldThrowUnit<IllegalStateException> {
+                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        setupBehaviourRef<StatePayload>(
+                            StateComponent,
+                            allComponents,
+                            setOf(StateComponent),
                             null,
                         )
+                    }
+                    exception.message shouldContain "No communicator given"
                 }
             }
         }

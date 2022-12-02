@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
 import kotlinx.coroutines.cancelAndJoin
+import org.koin.core.context.stopKoin
 
 class PulverizationRuntimeTest : FreeSpec(
     {
@@ -35,6 +36,7 @@ class PulverizationRuntimeTest : FreeSpec(
                         }.start()
                     }
                     exception.message shouldContain "The configured components doesn't match the configuration"
+                    stopKoin()
                 }
                 "were less components are registered, should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
@@ -43,6 +45,7 @@ class PulverizationRuntimeTest : FreeSpec(
                         }.start()
                     }
                     exception.message shouldContain "The configured components doesn't match the configuration"
+                    stopKoin()
                 }
             }
             "when a communicator is required but not given" - {
@@ -54,6 +57,7 @@ class PulverizationRuntimeTest : FreeSpec(
                         }.start()
                     }
                     exception.message shouldContain "No communicator given"
+                    stopKoin()
                 }
             }
             "when configured properly should spawn a coroutine for each defined logic" {
@@ -64,6 +68,7 @@ class PulverizationRuntimeTest : FreeSpec(
                         withPlatform { RemoteCommunicator() }
                     }.start()
                     jobs.forEach { it.cancelAndJoin() }
+                    stopKoin()
                 }
             }
         }
