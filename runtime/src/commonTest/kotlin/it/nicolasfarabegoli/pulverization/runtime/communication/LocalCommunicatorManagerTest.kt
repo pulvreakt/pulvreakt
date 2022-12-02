@@ -2,27 +2,37 @@ package it.nicolasfarabegoli.pulverization.runtime.communication
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
+import org.koin.test.KoinTest
 
-class LocalCommunicatorManagerTest : ShouldSpec(
-    {
+class LocalCommunicatorManagerTest : ShouldSpec(), KoinTest {
+    private val module = module { single { CommManager() } }
+
+    init {
         context("The local communicator manager") {
             should("return the same instance for the same communication type") {
-                val stateInstance1 = CommManager.stateInstance
-                val stateInstance2 = CommManager.stateInstance
+                PulverizationKoinModule.koinApp = koinApplication { modules(module) }
+                val commManager: CommManager = PulverizationKoinModule.koinApp?.koin?.get()!!
+
+                val stateInstance1 = commManager.stateInstance
+                val stateInstance2 = commManager.stateInstance
                 stateInstance1 shouldBeSameInstanceAs stateInstance2
 
-                val actuatorsInstance1 = CommManager.actuatorsInstance
-                val actuatorsInstance2 = CommManager.actuatorsInstance
+                val actuatorsInstance1 = commManager.actuatorsInstance
+                val actuatorsInstance2 = commManager.actuatorsInstance
                 actuatorsInstance1 shouldBeSameInstanceAs actuatorsInstance2
 
-                val communicationInstance1 = CommManager.communicationInstance
-                val communicationInstance2 = CommManager.communicationInstance
+                val communicationInstance1 = commManager.communicationInstance
+                val communicationInstance2 = commManager.communicationInstance
                 communicationInstance1 shouldBeSameInstanceAs communicationInstance2
 
-                val sensorsInstance1 = CommManager.sensorsInstance
-                val sensorsInstance2 = CommManager.sensorsInstance
+                val sensorsInstance1 = commManager.sensorsInstance
+                val sensorsInstance2 = commManager.sensorsInstance
                 sensorsInstance1 shouldBeSameInstanceAs sensorsInstance2
             }
         }
-    },
-)
+    }
+}
+

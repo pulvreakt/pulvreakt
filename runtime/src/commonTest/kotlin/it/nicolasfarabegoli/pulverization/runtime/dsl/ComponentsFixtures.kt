@@ -30,9 +30,7 @@ class FixtureBehaviour : Behaviour<StatePayload, CommPayload, NoPayload, NoPaylo
         state: StatePayload,
         export: List<CommPayload>,
         sensedValues: NoPayload,
-    ): BehaviourOutput<StatePayload, CommPayload, NoPayload, Unit> {
-        TODO("Not yet implemented")
-    }
+    ): BehaviourOutput<StatePayload, CommPayload, NoPayload, Unit> = TODO("Not yet implemented")
 }
 
 class StateFixture : State<StatePayload> {
