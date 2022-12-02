@@ -88,10 +88,6 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         }
     }
 
-    fun stop() {
-        stopKoin()
-    }
-
     suspend fun start(): Set<Job> = coroutineScope {
         setupKoinModule()
 
