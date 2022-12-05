@@ -218,7 +218,7 @@ koverMerged {
     }
     filters {
         projects {
-            excludes += listOf(":", ":examples:example-02")
+            excludes += listOf(":")
         }
     }
 }
