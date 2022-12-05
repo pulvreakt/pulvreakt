@@ -9,10 +9,29 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
+/**
+ * Models the concept of local/remote reference to another component in a pulverized context.
+ */
 interface ComponentRef<S : Any> {
+    /**
+     * Method used to setup the component reference.
+     * By default, this method no nothing.
+     */
     suspend fun setup() {}
+
+    /**
+     * Send a [message] to the component.
+     */
     suspend fun sendToComponent(message: S)
+
+    /**
+     * Receive a message from the component as a [Flow] of messages.
+     */
     suspend fun receiveFromComponent(): Flow<S>
+
+    /**
+     * Receive the last published message (if any) from the component.
+     */
     suspend fun receiveLastFromComponent(): S?
 }
 

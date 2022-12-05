@@ -17,8 +17,16 @@ interface PulverizedComponent : KoinComponent {
      */
     val componentType: PulverizedComponentType
 
+    /**
+     * Use this method for setup the component.
+     * By default, this method do nothing.
+     */
     suspend fun initialize() {}
 
+    /**
+     * This method is used to release resources or make any other action when the component is no longer needed.
+     * By default, this method do nothing.
+     */
     suspend fun finalize() {}
 }
 
