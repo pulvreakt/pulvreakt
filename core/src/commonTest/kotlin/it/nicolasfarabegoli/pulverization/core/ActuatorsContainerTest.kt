@@ -8,14 +8,30 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.ActuatorsFixtures.MyActuator1
 import it.nicolasfarabegoli.pulverization.core.ActuatorsFixtures.MyActuator2
-import it.nicolasfarabegoli.pulverization.dsl.FuzzyContext
+import org.koin.core.Koin
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
+import org.koin.test.KoinTest
+import org.koin.test.inject
 
-class ActuatorsContainerTest : FunSpec(
-    {
+class ActuatorsContainerTest : FunSpec(), KoinTest {
+    override fun getKoin(): Koin = koinApplication {
+        module {
+            single {
+                object : Context {
+                    override val id: DeviceID = object : DeviceID {
+                        override fun show(): String = "test"
+                    }
+                }
+            }
+        }
+    }.koin
+
+    init {
         context("ActuatorsContainer tests") {
             test("To the container can be added multiple actuators at once") {
                 val container = object : ActuatorsContainer() {
-                    override val context: Context = FuzzyContext
+                    override val context: Context by inject()
                 }
                 container.addAll(MyActuator1(), MyActuator1(), MyActuator2())
                 container.getAll<MyActuator1>().size shouldBe 2
@@ -23,7 +39,7 @@ class ActuatorsContainerTest : FunSpec(
             }
             test("To the container can be added a single actuator") {
                 val container = object : ActuatorsContainer() {
-                    override val context: Context = FuzzyContext
+                    override val context: Context by inject()
                 }
                 container += MyActuator1()
                 container.get<MyActuator1>() shouldNotBe null
@@ -31,7 +47,7 @@ class ActuatorsContainerTest : FunSpec(
             }
             test("The container could be queried using the KClass") {
                 val container = object : ActuatorsContainer() {
-                    override val context: Context = FuzzyContext
+                    override val context: Context by inject()
                 }.apply { addAll(MyActuator1(), MyActuator2()) }
                 container[MyActuator1::class] shouldNotBe null
                 container.getAll(MyActuator2::class).size shouldBe 1
@@ -39,7 +55,7 @@ class ActuatorsContainerTest : FunSpec(
             test("The container, when queried, should return the actuator in the lambda") {
                 val actuator2 = MyActuator2()
                 val container = object : ActuatorsContainer() {
-                    override val context: Context = FuzzyContext
+                    override val context: Context by inject()
                 }.apply {
                     addAll(
                         MyActuator1(),
@@ -52,12 +68,12 @@ class ActuatorsContainerTest : FunSpec(
             }
             test("The container, when queried with an invalid class, should not execute the lambda") {
                 val container = object : ActuatorsContainer() {
-                    override val context: Context = FuzzyContext
+                    override val context: Context by inject()
                 }
                 container.get<MyActuator1> {
                     failure("This lambda should not be executed since no ${MyActuator1::class} is available")
                 }
             }
         }
-    },
-)
+    }
+}
