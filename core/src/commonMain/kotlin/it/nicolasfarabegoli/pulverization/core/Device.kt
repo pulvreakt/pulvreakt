@@ -25,37 +25,3 @@ interface LogicalDevice {
      */
     val components: Set<PulverizedComponent>
 }
-
-/**
- * Get the [C] component from a [LogicalDevice], null is returned if no component is found.
- */
-inline fun <reified C : PulverizedComponent> LogicalDevice.get(): C? = components.filterIsInstance<C>().firstOrNull()
-
-/**
- * Enrichment for [DeviceID].
- */
-object DeviceIDOps {
-    /**
-     * A [DeviceID] which models the [id] with a [String].
-     */
-    data class StringID(private val id: String) : DeviceID {
-        override fun show(): String = id
-    }
-
-    /**
-     * Utility method for converting a [String] into a [StringID].
-     */
-    fun String.toID(): StringID = StringID(this)
-
-    /**
-     * A [DeviceID] which models the [id] with an [Int].
-     */
-    data class IntID(private val id: Int) : DeviceID {
-        override fun show(): String = id.toString()
-    }
-
-    /**
-     * Utility method for converting an [Int] into an [IntID].
-     */
-    fun Int.toID(): IntID = IntID(this)
-}
