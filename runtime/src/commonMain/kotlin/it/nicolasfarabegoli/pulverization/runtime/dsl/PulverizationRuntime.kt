@@ -39,11 +39,14 @@ typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>
 typealias BehaviourLogicType<S, C, SS, AS, R> =
     suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
+/**
+ * Configure the platform based on the [configuration] of a logical device.
+ */
 inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizationPlatform(
-    config: LogicalDeviceConfiguration,
+    configuration: LogicalDeviceConfiguration,
     init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit,
 ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any =
-    PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), config)
+    PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), configuration)
         .apply(init)
 
 @ThreadLocal
@@ -51,6 +54,9 @@ internal object PulverizationKoinModule {
     var koinApp: KoinApplication? = null
 }
 
+/**
+ * DSL scope for configure the platform with all components logic and the type of communicator.
+ */
 class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val stateType: KSerializer<S>,
     private val commType: KSerializer<C>,
@@ -61,20 +67,24 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
 
     private var communicator: Communicator? = null
 
-    var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
-    var communicationLogicR: CommunicationLogicType<C>? = null
-    var actuatorsLogic: ActuatorsLogicType<AS>? = null
-    var sensorsLogic: SensorsLogicType<SS>? = null
-    var stateLogicR: StateLogicType<S>? = null
+    private var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
+    private var communicationLogic: CommunicationLogicType<C>? = null
+    private var actuatorsLogic: ActuatorsLogicType<AS>? = null
+    private var sensorsLogic: SensorsLogicType<SS>? = null
+    private var stateLogic: StateLogicType<S>? = null
 
-    var behaviourComponent: Behaviour<S, C, SS, AS, R>? = null
-    var communicationComponent: Communication<C>? = null
-    var actuatorsComponent: ActuatorsContainer? = null
-    var sensorsComponent: SensorsContainer? = null
-    var stateComponent: State<S>? = null
+    private var behaviourComponent: Behaviour<S, C, SS, AS, R>? = null
+    private var communicationComponent: Communication<C>? = null
+    private var actuatorsComponent: ActuatorsContainer? = null
+    private var sensorsComponent: SensorsContainer? = null
+    private var stateComponent: State<S>? = null
 
-    val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf() // TODO: make it private
+    private val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf()
 
+    /**
+     * Setup the [Communication] which will be used to enable the intra-component-communication.
+     * The [Communication] is given through the [provider].
+     */
     fun withPlatform(provider: () -> Communicator) {
         communicator = provider()
     }
@@ -86,6 +96,9 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         }
     }
 
+    /**
+     * This method start the platform spawning a coroutine for each active component.
+     */
     suspend fun start(): Set<Job> = coroutineScope {
         setupKoinModule()
 
@@ -105,7 +118,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             )
             launch { setOf(sr, cm, ss, act).forEach { it.setup() }; logic(comp, sr, cm, ss, act) }
         }
-        val communicationJob = communicationLogicR to communicationComponent takeAllNotNull { logic, comp ->
+        val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(commType, CommunicationComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
@@ -120,7 +133,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
                 setupBehaviourRef(sensorsType, SensorsComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
-        val stateJob = stateLogicR to stateComponent takeAllNotNull { logic, comp ->
+        val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(stateType, StateComponent, allComponents, deploymentUnit, communicator)
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
@@ -129,6 +142,9 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     }
 
     companion object {
+        /**
+         * This method configure the [behaviour] to be used and the corresponding [logic].
+         */
         fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
             behaviour: Behaviour<S, C, SS, AS, R>,
             logic: BehaviourLogicType<S, C, SS, AS, R>,
@@ -138,15 +154,21 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             behaviourLogic = logic
         }
 
+        /**
+         * This method configure the [communication] to be used and the corresponding [logic].
+         */
         fun <C> PulverizationPlatformScope<Nothing, C, Nothing, Nothing, Nothing>.communicationLogic(
             communication: Communication<C>,
             logic: CommunicationLogicType<C>,
         ) where C : CommunicationPayload {
             configuredComponents += CommunicationComponent
             communicationComponent = communication
-            communicationLogicR = logic
+            communicationLogic = logic
         }
 
+        /**
+         * This method configure the [actuators] to be used and the corresponding [logic].
+         */
         fun <AS : Any> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
             actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
@@ -156,6 +178,9 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             actuatorsLogic = logic
         }
 
+        /**
+         * This method configure the [sensors] to be used and the corresponding [logic].
+         */
         fun <SS : Any> PulverizationPlatformScope<Nothing, Nothing, SS, Nothing, Nothing>.sensorsLogic(
             sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
@@ -165,16 +190,23 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             sensorsLogic = logic
         }
 
+        /**
+         * This method configure the [state] to be used and the corresponding [logic].
+         */
         fun <S> PulverizationPlatformScope<S, Nothing, Nothing, Nothing, Nothing>.stateLogic(
             state: State<S>,
             logic: StateLogicType<S>,
         ) where S : StateRepresentation {
             configuredComponents += StateComponent
             stateComponent = state
-            stateLogicR = logic
+            stateLogic = logic
         }
     }
 }
 
-internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? =
-    if (first != null && second != null) body(first!!, second!!) else null
+internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? {
+    // The local assignment is necessary because a problem with smart cast in Kotlin
+    val f = first
+    val s = second
+    return if (f != null && s != null) body(f, s) else null
+}
