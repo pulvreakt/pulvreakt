@@ -7,7 +7,7 @@ internal class CommManager {
         MutableSharedFlow(1)
     }
     val actuatorsInstance: MutableSharedFlow<ByteArray> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        MutableSharedFlow()
+        MutableSharedFlow(1)
     }
     val sensorsInstance: MutableSharedFlow<ByteArray> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         MutableSharedFlow(1)
