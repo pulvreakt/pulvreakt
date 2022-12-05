@@ -6,14 +6,25 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
+/**
+ * Represent a reference to the _behaviour_ component in a pulverized system.
+ */
 interface BehaviourRef<S : Any> : ComponentRef<S> {
     companion object {
+        /**
+         * Create a new [BehaviourRef] specifying a [serializer], the other [toComponent] to communicate with and a
+         * [communicator] to be used to communicate with.
+         */
         fun <S : Any> create(
-            ser: KSerializer<S>,
+            serializer: KSerializer<S>,
             toComponent: PulverizedComponentType,
             communicator: Communicator,
-        ): BehaviourRef<S> = BehaviourRefImpl(ser, toComponent, communicator)
+        ): BehaviourRef<S> = BehaviourRefImpl(serializer, toComponent, communicator)
 
+        /**
+         * Create a new [BehaviourRef] specifying the other [toComponent] to communicate with and a
+         * [communicator] to be used to communicate with.
+         */
         inline fun <reified S : Any> create(
             toComponent: PulverizedComponentType,
             communicator: Communicator,
