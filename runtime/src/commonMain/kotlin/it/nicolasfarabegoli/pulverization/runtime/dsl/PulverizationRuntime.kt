@@ -17,6 +17,8 @@ import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
@@ -66,6 +68,11 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
 ) where S : StateRepresentation, C : CommunicationPayload {
 
     private var communicator: Communicator? = null
+    private var remotePlaceProvider: () -> RemotePlaceProvider = {
+        object : RemotePlaceProvider {
+            override fun get(type: PulverizedComponentType): RemotePlace? = null
+        }
+    }
 
     private var behaviourLogic: BehaviourLogicType<S, C, SS, AS, R>? = null
     private var communicationLogic: CommunicationLogicType<C>? = null
@@ -81,6 +88,16 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
 
     private val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf()
 
+    private fun setupKoinModule() {
+        val module = module {
+            single { CommManager() }
+            factory { remotePlaceProvider() }
+        }
+        PulverizationKoinModule.koinApp = koinApplication {
+            modules(module)
+        }
+    }
+
     /**
      * Setup the [Communication] which will be used to enable the intra-component-communication.
      * The [Communication] is given through the [provider].
@@ -89,11 +106,11 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         communicator = provider()
     }
 
-    private fun setupKoinModule() {
-        val module = module { single { CommManager() } }
-        PulverizationKoinModule.koinApp = koinApplication {
-            modules(module)
-        }
+    /**
+     * Setup the [RemotePlaceProvider].
+     */
+    fun withRemotePlace(provider: () -> RemotePlaceProvider) {
+        remotePlaceProvider = provider
     }
 
     /**
