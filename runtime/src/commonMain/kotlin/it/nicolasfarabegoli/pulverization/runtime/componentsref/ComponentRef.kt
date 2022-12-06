@@ -2,12 +2,17 @@ package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import org.koin.core.Koin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Models the concept of local/remote reference to another component in a pulverized context.
@@ -45,8 +50,11 @@ internal class ComponentRefImpl<S : Any>(
     private val serializer: KSerializer<S>,
     private val binding: Pair<PulverizedComponentType, PulverizedComponentType>,
     private val communicator: Communicator,
-) : ComponentRef<S> {
+) : ComponentRef<S>, KoinComponent {
 
+    override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
+
+    private val remotePlaceProvider: RemotePlaceProvider by inject()
     private var last: S? = null
 
     companion object {
@@ -57,7 +65,7 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun setup() {
-        communicator.setup(binding)
+        communicator.setup(binding, remotePlaceProvider[binding.second])
     }
 
     override suspend fun sendToComponent(message: S) {
