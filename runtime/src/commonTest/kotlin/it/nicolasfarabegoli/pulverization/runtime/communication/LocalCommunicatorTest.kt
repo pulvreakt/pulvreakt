@@ -24,12 +24,12 @@ class LocalCommunicatorTest : FreeSpec(), KoinTest {
                 PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                 shouldThrow<IllegalStateException> {
                     LocalCommunicator().apply {
-                        setup(BehaviourComponent to BehaviourComponent)
+                        setup(BehaviourComponent to BehaviourComponent, null)
                     }
                 }
                 shouldThrow<IllegalStateException> {
                     LocalCommunicator().apply {
-                        setup(StateComponent to StateComponent)
+                        setup(StateComponent to StateComponent, null)
                     }
                 }
             }
@@ -40,13 +40,13 @@ class LocalCommunicatorTest : FreeSpec(), KoinTest {
                         // In this test we simulate two different "process" spawning two separate coroutines
                         val jb1 = launch {
                             val localComm = LocalCommunicator().apply {
-                                setup(BehaviourComponent to StateComponent)
+                                setup(BehaviourComponent to StateComponent, null)
                             }
                             localComm.fireMessage("hello".encodeToByteArray())
                         }
                         val jb2 = launch {
                             val stateComm = LocalCommunicator().apply {
-                                setup(StateComponent to BehaviourComponent)
+                                setup(StateComponent to BehaviourComponent, null)
                             }
                             stateComm.receiveMessage().first().let {
                                 it.decodeToString() shouldBe "hello"
@@ -61,7 +61,7 @@ class LocalCommunicatorTest : FreeSpec(), KoinTest {
                     PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                     val jb1 = launch {
                         val sensorsComm = LocalCommunicator().apply {
-                            setup(SensorsComponent to BehaviourComponent)
+                            setup(SensorsComponent to BehaviourComponent, null)
                         }
                         sensorsComm.fireMessage("message-1".encodeToByteArray())
                         sensorsComm.fireMessage("message-1".encodeToByteArray())
@@ -69,7 +69,7 @@ class LocalCommunicatorTest : FreeSpec(), KoinTest {
                     }
                     val jb2 = launch {
                         val behaviourComm = LocalCommunicator().apply {
-                            setup(BehaviourComponent to SensorsComponent)
+                            setup(BehaviourComponent to SensorsComponent, null)
                         }
                         delay(100) // Simulate a blocking work
                         behaviourComm.receiveMessage().first().let {

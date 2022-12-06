@@ -9,6 +9,7 @@ import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.Serializable
@@ -56,7 +57,7 @@ class CommunicationFixture : Communication<CommPayload> {
 }
 
 class RemoteCommunicator : Communicator {
-    override suspend fun setup(binding: Binding) {}
+    override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
     override suspend fun fireMessage(message: ByteArray) {}
     override fun receiveMessage(): Flow<ByteArray> = emptyFlow()
 }
