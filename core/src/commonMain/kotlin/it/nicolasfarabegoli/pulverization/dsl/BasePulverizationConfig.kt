@@ -1,6 +1,5 @@
 package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.core.LogicalDevice
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 
 /**
