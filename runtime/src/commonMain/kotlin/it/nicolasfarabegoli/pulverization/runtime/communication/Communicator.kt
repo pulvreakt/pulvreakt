@@ -11,7 +11,7 @@ interface Communicator {
     /**
      * Setup the communication with a given [binding].
      */
-    suspend fun setup(binding: Binding)
+    suspend fun setup(binding: Binding, remotePlace: RemotePlace?)
 
     /**
      * This method send a [message] to a destination component.
