@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-//                implementation(project(":core"))
+                implementation(project(":core"))
                 implementation(project(":runtime"))
 //                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 //                implementation("org.jetbrains.kotlin:kotlin-reflect")
