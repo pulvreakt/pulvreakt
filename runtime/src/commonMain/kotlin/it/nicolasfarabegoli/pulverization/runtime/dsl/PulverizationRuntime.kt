@@ -55,7 +55,7 @@ inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizati
         .apply(init)
 
 @ThreadLocal
-internal object PulverizationKoinModule {
+object PulverizationKoinModule {
     var koinApp: KoinApplication? = null
 }
 
