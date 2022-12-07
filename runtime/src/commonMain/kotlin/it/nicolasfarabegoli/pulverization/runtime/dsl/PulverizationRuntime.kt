@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
@@ -30,6 +31,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import org.koin.core.KoinApplication
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.native.concurrent.ThreadLocal
@@ -69,7 +72,8 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
 
     private var communicator: Communicator? = null
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
-        object : RemotePlaceProvider {
+        object : RemotePlaceProvider, KoinComponent {
+            override val context: Context by inject()
             override fun get(type: PulverizedComponentType): RemotePlace? = null
         }
     }

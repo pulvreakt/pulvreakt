@@ -2,6 +2,7 @@ package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.core.StateComponent
@@ -22,6 +23,7 @@ class ComponentRefTest : FreeSpec(), KoinTest {
         single { CommManager() }
         factory<RemotePlaceProvider> {
             return@factory object : RemotePlaceProvider {
+                override val context: Context by inject()
                 override fun get(type: PulverizedComponentType): RemotePlace? = null
             }
         }
