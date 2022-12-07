@@ -54,8 +54,15 @@ inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizati
     PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), configuration)
         .apply(init)
 
+/**
+ * Module to load all the dependencies in the framework.
+ * Relying on Koin as dependency injection framework.
+ */
 @ThreadLocal
 object PulverizationKoinModule {
+    /**
+     * The koin app.
+     */
     var koinApp: KoinApplication? = null
 }
 
