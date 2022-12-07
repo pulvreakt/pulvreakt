@@ -6,6 +6,8 @@ import it.nicolasfarabegoli.pulverization.core.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -13,17 +15,18 @@ import org.koin.core.component.inject
  * TODO.
  */
 expect class RabbitmqCommunicator(
-    hostname: String,
-    port: Int,
-    username: String,
-    password: String,
-    virtualHost: String,
+    hostname: String = "localhost",
+    port: Int = 5672,
+    username: String = "guest",
+    password: String = "guest",
+    virtualHost: String = "/",
 ) : Communicator
 
 /**
  * TODO.
  */
 fun defaultRabbitMQRemotePlace(): RemotePlaceProvider = object : RemotePlaceProvider, KoinComponent {
+    override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
     override val context: Context by inject()
 
     override fun get(type: PulverizedComponentType): RemotePlace {
