@@ -20,6 +20,10 @@ actual class RabbitmqCommunicator actual constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun finalize() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun fireMessage(message: ByteArray) {
         TODO("Not yet implemented")
     }

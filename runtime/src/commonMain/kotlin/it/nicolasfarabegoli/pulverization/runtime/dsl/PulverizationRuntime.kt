@@ -23,6 +23,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvi
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.coroutines.Job
@@ -98,6 +99,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private var stateComponent: State<S>? = null
 
     private val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf()
+    private val allComponentsRef: MutableSet<ComponentRef<*>> = mutableSetOf()
 
     private fun setupKoinModule() {
         val module = module {
@@ -144,29 +146,41 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
                 deploymentUnit,
                 communicator,
             )
+            allComponentsRef.addAll(setOf(sr, cm, ss, act))
             launch { setOf(sr, cm, ss, act).forEach { it.setup() }; logic(comp, sr, cm, ss, act) }
         }
         val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(commType, CommunicationComponent, allComponents, deploymentUnit, communicator)
+            allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(actuatorsType, ActuatorsComponent, allComponents, deploymentUnit, communicator)
+            allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(sensorsType, SensorsComponent, allComponents, deploymentUnit, communicator)
+            allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
                 setupBehaviourRef(stateType, StateComponent, allComponents, deploymentUnit, communicator)
+            allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); logic(comp, behaviourRef) }
         }
         setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
+    }
+
+    /**
+     * Stop the platform and release all the resources allocated.
+     */
+    suspend fun stop() {
+        allComponentsRef.forEach { it.finalize() }
     }
 
     companion object {

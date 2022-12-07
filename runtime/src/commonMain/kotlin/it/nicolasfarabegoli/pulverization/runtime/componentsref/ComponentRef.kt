@@ -25,6 +25,11 @@ interface ComponentRef<S : Any> {
     suspend fun setup() {}
 
     /**
+     * Method used to release resource created by the component, if any.
+     */
+    suspend fun finalize() {}
+
+    /**
      * Send a [message] to the component.
      */
     suspend fun sendToComponent(message: S)

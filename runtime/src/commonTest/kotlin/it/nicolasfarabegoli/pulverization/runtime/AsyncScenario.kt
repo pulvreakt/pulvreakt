@@ -30,7 +30,7 @@ class AsyncScenario : FreeSpec(
                         BehaviourComponent and StateComponent and CommunicationComponent deployableOn Device
                     }
                 }
-                val jobs = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                val platform = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                     behaviourLogic(FixtureBehaviour()) { b, sr, cr, _, _ ->
                         val stateDefer = async { sr.receiveFromComponent().first() }
                         val commDefer = async { cr.receiveFromComponent().first() }
@@ -54,9 +54,11 @@ class AsyncScenario : FreeSpec(
                         c.send(br.receiveFromComponent().first())
                         return@communicationLogic
                     }
-                }.start()
+                }
+                val jobs = platform.start()
                 jobs.size shouldBe 3
                 jobs.forEach { it.join() }
+                platform.stop()
             }
         }
     },

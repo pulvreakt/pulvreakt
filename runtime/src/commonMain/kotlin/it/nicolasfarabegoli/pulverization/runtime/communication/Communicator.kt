@@ -14,6 +14,11 @@ interface Communicator {
     suspend fun setup(binding: Binding, remotePlace: RemotePlace?)
 
     /**
+     * Release all the communicator's resources, if any.
+     */
+    suspend fun finalize()
+
+    /**
      * This method send a [message] to a destination component.
      */
     suspend fun fireMessage(message: ByteArray)
