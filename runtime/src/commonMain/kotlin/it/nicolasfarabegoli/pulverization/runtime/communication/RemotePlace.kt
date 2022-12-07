@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 
 /**
@@ -12,6 +13,11 @@ data class RemotePlace(val who: String, val where: String)
  * TODO.
  */
 interface RemotePlaceProvider {
+    /**
+     * TODO.
+     */
+    val context: Context
+
     /**
      * TODO.
      */
