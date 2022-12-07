@@ -19,7 +19,7 @@ class SensorsContainerTest : FunSpec(), KoinTest {
         module {
             single {
                 object : Context {
-                    override val id: String = "test"
+                    override val deviceID: String = "test"
                 }
             }
         }
