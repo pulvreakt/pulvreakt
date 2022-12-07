@@ -7,5 +7,5 @@ interface Context {
     /**
      * TODO.
      */
-    val id: String // TODO change it
+    val deviceID: String // TODO change it
 }
