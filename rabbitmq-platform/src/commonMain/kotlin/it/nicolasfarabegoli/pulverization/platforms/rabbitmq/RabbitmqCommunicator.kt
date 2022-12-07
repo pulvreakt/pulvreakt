@@ -13,11 +13,11 @@ import org.koin.core.component.inject
  * TODO.
  */
 expect class RabbitmqCommunicator(
-    hostname: String = "localhost",
-    port: Int = 5672,
-    username: String = "guest",
-    password: String = "guest",
-    virtualHost: String = "/",
+    hostname: String,
+    port: Int,
+    username: String,
+    password: String,
+    virtualHost: String,
 ) : Communicator
 
 /**

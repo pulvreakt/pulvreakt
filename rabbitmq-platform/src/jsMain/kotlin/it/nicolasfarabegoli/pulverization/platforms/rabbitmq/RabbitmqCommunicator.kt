@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * TODO.
  */
+@Suppress("UnusedPrivateMember")
 actual class RabbitmqCommunicator actual constructor(
     private val hostname: String,
     private val port: Int,
