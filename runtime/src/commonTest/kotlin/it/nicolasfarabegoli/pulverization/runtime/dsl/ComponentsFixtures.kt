@@ -58,6 +58,7 @@ class CommunicationFixture : Communication<CommPayload> {
 
 class RemoteCommunicator : Communicator {
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
+    override suspend fun finalize() {}
     override suspend fun fireMessage(message: ByteArray) {}
     override fun receiveMessage(): Flow<ByteArray> = emptyFlow()
 }

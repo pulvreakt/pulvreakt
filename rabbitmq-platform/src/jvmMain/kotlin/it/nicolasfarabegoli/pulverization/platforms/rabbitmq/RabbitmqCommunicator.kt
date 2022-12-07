@@ -80,6 +80,11 @@ actual class RabbitmqCommunicator actual constructor(
         }
     }
 
+    override suspend fun finalize() {
+        sender.close()
+        receiver.close()
+    }
+
     override suspend fun fireMessage(message: ByteArray) {
         val payload = OutboundMessage(EXCHANGE, sendRoutingKey, message)
         sender.send(Mono.just(payload)).awaitSingleOrNull()

@@ -55,6 +55,10 @@ internal class LocalCommunicator : Communicator, KoinComponent {
         inbox = receiver
     }
 
+    override suspend fun finalize() {
+        // Do nothing here.
+    }
+
     override suspend fun fireMessage(message: ByteArray) = coroutineScope { outbox.emit(message) }
 
     override fun receiveMessage(): SharedFlow<ByteArray> = inbox.asSharedFlow()
