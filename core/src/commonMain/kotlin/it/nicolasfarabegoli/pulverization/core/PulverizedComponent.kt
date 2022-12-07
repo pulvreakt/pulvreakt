@@ -59,3 +59,15 @@ object SensorsComponent : PulverizedComponentType
  * The [State] component.
  */
 object StateComponent : PulverizedComponentType
+
+/**
+ * TODO.
+ */
+fun PulverizedComponentType.show(): String =
+    when (this) {
+        ActuatorsComponent -> "actuators"
+        BehaviourComponent -> "behaviour"
+        CommunicationComponent -> "communication"
+        SensorsComponent -> "sensors"
+        StateComponent -> "state"
+    }
