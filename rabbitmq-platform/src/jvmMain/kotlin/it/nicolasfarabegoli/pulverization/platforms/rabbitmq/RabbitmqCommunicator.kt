@@ -82,7 +82,7 @@ actual class RabbitmqCommunicator actual constructor(
 
     override suspend fun fireMessage(message: ByteArray) {
         val payload = OutboundMessage(EXCHANGE, sendRoutingKey, message)
-        sender.send(Mono.just(payload)).awaitSingleOrNull() ?: error("Failed to send message")
+        sender.send(Mono.just(payload)).awaitSingleOrNull()
     }
 
     override fun receiveMessage(): Flow<ByteArray> =
