@@ -26,6 +26,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
+import it.nicolasfarabegoli.pulverization.runtime.context.createContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -101,8 +102,10 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf()
     private val allComponentsRef: MutableSet<ComponentRef<*>> = mutableSetOf()
 
-    private fun setupKoinModule() {
+    private suspend fun setupKoinModule() {
+        val context = createContext()
         val module = module {
+            single { context }
             single { CommManager() }
             factory { remotePlaceProvider() }
         }
