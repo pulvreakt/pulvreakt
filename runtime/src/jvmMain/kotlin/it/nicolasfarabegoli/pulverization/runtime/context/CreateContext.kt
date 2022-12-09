@@ -6,17 +6,17 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.io.File
 
-internal actual suspend fun createContext(): Context {
-    val deviceID = getIDFromFile() ?: getIDFromEnv() ?: error("Unable to find the device ID")
+internal actual suspend fun createContext(configFilePath: String): Context {
+    val deviceID = getIDFromFile(configFilePath) ?: getIDFromEnv() ?: error("Unable to find the device ID")
     return object : Context {
         override val deviceID: String = deviceID
     }
 }
 
 internal fun getIDFromEnv(): String? = System.getProperty("DEVICE_ID")
-internal suspend fun getIDFromFile(): String? = coroutineScope {
+internal suspend fun getIDFromFile(file: String): String? = coroutineScope {
     withContext(Dispatchers.IO) {
-        val configFile = File(".pulverization.env")
+        val configFile = File(file)
         if (!configFile.exists()) {
             null
         } else {
