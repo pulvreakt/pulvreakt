@@ -30,6 +30,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 "were more components are registered, should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                            withContext { deviceID("1") }
                             behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                             stateLogic(StateFixture()) { _, _ -> }
                             communicationLogic(CommunicationFixture()) { _, _ -> }
@@ -41,6 +42,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 "were less components are registered, should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                            withContext { deviceID("1") }
                             behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                         }.start()
                     }
@@ -52,6 +54,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 "should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                            withContext { deviceID("1") }
                             behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                             stateLogic(StateFixture()) { _, _ -> }
                         }.start()
@@ -63,6 +66,7 @@ class PulverizationRuntimeTest : FreeSpec(
             "when configured properly should spawn a coroutine for each defined logic" {
                 shouldNotThrowUnit<IllegalStateException> {
                     val jobs = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                        withContext { deviceID("1") }
                         behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                         stateLogic(StateFixture()) { _, _ -> }
                         withPlatform { RemoteCommunicator() }

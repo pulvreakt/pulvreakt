@@ -31,6 +31,9 @@ class AsyncScenario : FreeSpec(
                     }
                 }
                 val platform = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                    withContext {
+                        deviceID("1")
+                    }
                     behaviourLogic(FixtureBehaviour()) { b, sr, cr, _, _ ->
                         val stateDefer = async { sr.receiveFromComponent().first() }
                         val commDefer = async { cr.receiveFromComponent().first() }
