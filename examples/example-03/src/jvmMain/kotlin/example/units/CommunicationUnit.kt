@@ -1,18 +1,15 @@
 package example.units
 
-import example.components.LocalizationSensor
-import example.components.mySensorsLogic
+import example.components.CommunicationComp
+import example.components.communicationLogic
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.sensorsLogic
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
 import kotlinx.coroutines.runBlocking
 
-/**
- * State-Behaviour entrypoint.
- */
 fun main() = runBlocking {
     val platform = pulverizationPlatform(config.getDeviceConfiguration("gps")!!) {
-        sensorsLogic(LocalizationSensor(), ::mySensorsLogic)
+        communicationLogic(CommunicationComp(), ::communicationLogic)
     }
     val jobs = platform.start()
     jobs.forEach { it.join() }
