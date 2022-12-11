@@ -74,12 +74,27 @@ object PulverizationKoinModule {
     var koinApp: KoinApplication? = null
 }
 
+/**
+ * Represent the absence of value.
+ * This specific type aim to replace the 'Nothing' type which is not serializable.
+ * Use this type in all the place where a serializable type is required but no concrete type is necessarily.
+ */
 @Serializable
 object NoVal
 
+/**
+ * Represent the absence of value.
+ * This specific type aim to replace the 'Nothing' type which is not serializable.
+ * Use this type in all the place where a [StateRepresentation] is required but no concrete type is necessarily.
+ */
 @Serializable
 object NoState : StateRepresentation
 
+/**
+ * Represent the absence of value.
+ * This specific type aim to replace the 'Nothing' type which is not serializable.
+ * Use this type in all the place where a [CommunicationPayload] is required but no concrete type is necessarily.
+ */
 @Serializable
 object NoComm : CommunicationPayload
 
