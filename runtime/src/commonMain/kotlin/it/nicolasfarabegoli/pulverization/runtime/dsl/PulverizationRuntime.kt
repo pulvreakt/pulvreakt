@@ -31,6 +31,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 import org.koin.core.KoinApplication
 import org.koin.core.component.KoinComponent
@@ -53,8 +54,13 @@ inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizati
     configuration: LogicalDeviceConfiguration,
     init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit,
 ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any =
-    PulverizationPlatformScope<S, C, SS, AS, R>(serializer(), serializer(), serializer(), serializer(), configuration)
-        .apply(init)
+    PulverizationPlatformScope<S, C, SS, AS, R>(
+        serializer(),
+        serializer(),
+        serializer(),
+        serializer(),
+        configuration,
+    ).apply(init)
 
 /**
  * Module to load all the dependencies in the framework.
@@ -67,6 +73,15 @@ object PulverizationKoinModule {
      */
     var koinApp: KoinApplication? = null
 }
+
+@Serializable
+object NoVal
+
+@Serializable
+object NoState : StateRepresentation
+
+@Serializable
+object NoComm : CommunicationPayload
 
 /**
  * DSL scope for configure the platform with all components logic and the type of communicator.
@@ -204,7 +219,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         /**
          * This method configure the [communication] to be used and the corresponding [logic].
          */
-        fun <C> PulverizationPlatformScope<Nothing, C, Nothing, Nothing, Nothing>.communicationLogic(
+        fun <C> PulverizationPlatformScope<NoState, C, NoVal, NoVal, NoVal>.communicationLogic(
             communication: Communication<C>,
             logic: CommunicationLogicType<C>,
         ) where C : CommunicationPayload {
@@ -216,7 +231,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         /**
          * This method configure the [actuators] to be used and the corresponding [logic].
          */
-        fun <AS : Any> PulverizationPlatformScope<Nothing, Nothing, Nothing, AS, Nothing>.actuatorsLogic(
+        fun <AS : Any> PulverizationPlatformScope<NoState, NoComm, NoVal, AS, NoVal>.actuatorsLogic(
             actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
         ) {
@@ -228,7 +243,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         /**
          * This method configure the [sensors] to be used and the corresponding [logic].
          */
-        fun <SS : Any> PulverizationPlatformScope<Nothing, Nothing, SS, Nothing, Nothing>.sensorsLogic(
+        fun <SS : Any> PulverizationPlatformScope<NoState, NoComm, SS, NoVal, NoVal>.sensorsLogic(
             sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
         ) {
@@ -240,7 +255,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         /**
          * This method configure the [state] to be used and the corresponding [logic].
          */
-        fun <S> PulverizationPlatformScope<S, Nothing, Nothing, Nothing, Nothing>.stateLogic(
+        fun <S> PulverizationPlatformScope<S, NoComm, NoVal, NoVal, NoVal>.stateLogic(
             state: State<S>,
             logic: StateLogicType<S>,
         ) where S : StateRepresentation {

@@ -20,19 +20,16 @@ data class StatePayload(val i: Int) : StateRepresentation
 @Serializable
 data class CommPayload(val i: Int) : CommunicationPayload
 
-@Serializable
-object NoPayload
-
-class FixtureBehaviour : Behaviour<StatePayload, CommPayload, NoPayload, NoPayload, Unit> {
+class FixtureBehaviour : Behaviour<StatePayload, CommPayload, NoVal, NoVal, Unit> {
     override val context: Context
         get() = TODO("Not yet implemented")
 
     override fun invoke(
         state: StatePayload,
         export: List<CommPayload>,
-        sensedValues: NoPayload,
-    ): BehaviourOutput<StatePayload, CommPayload, NoPayload, Unit> =
-        BehaviourOutput(state, CommPayload(2), NoPayload, Unit)
+        sensedValues: NoVal,
+    ): BehaviourOutput<StatePayload, CommPayload, NoVal, Unit> =
+        BehaviourOutput(state, CommPayload(2), NoVal, Unit)
 }
 
 class StateFixture : State<StatePayload> {
