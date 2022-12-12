@@ -13,7 +13,7 @@ internal actual suspend fun createContext(configFilePath: String): Context {
     }
 }
 
-internal fun getIDFromEnv(): String? = System.getProperty("DEVICE_ID")
+internal fun getIDFromEnv(): String? = System.getenv("DEVICE_ID")
 internal suspend fun getIDFromFile(file: String): String? = coroutineScope {
     withContext(Dispatchers.IO) {
         val configFile = File(file)
