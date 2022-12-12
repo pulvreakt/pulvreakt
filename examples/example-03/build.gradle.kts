@@ -24,16 +24,16 @@ kotlin {
                 dependsOn("sensorsJar", "behaviourJar", "communicationJar", "stateJar")
             }
             register<ShadowJar>("stateJar") {
-                genericJarConfig("state", "example.unit.StateUnitKt")
+                genericJarConfig("state", "example.units.StateUnitKt")
             }
             register<ShadowJar>("behaviourJar") {
-                genericJarConfig("behaviour", "example.unit.BehaviourUnitKt")
+                genericJarConfig("behaviour", "example.units.BehaviourUnitKt")
             }
             register<ShadowJar>("communicationJar") {
-                genericJarConfig("communication", "example.unit.CommunicationUnitKt")
+                genericJarConfig("communication", "example.units.CommunicationUnitKt")
             }
             register<ShadowJar>("sensorsJar") {
-                genericJarConfig("sensors", "example.unit.SensorsUnitKt")
+                genericJarConfig("sensors", "example.units.SensorsUnitKt")
             }
         }
     }
