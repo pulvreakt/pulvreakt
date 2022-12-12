@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NeighboursMessage(val deviceId: String, val location: Gps) : CommunicationPayload
+data class NeighboursMessage(val device: String, val location: Gps) : CommunicationPayload
 
 expect class CommunicationComp : Communication<NeighboursMessage>
 
