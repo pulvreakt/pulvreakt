@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-if (($# < 1)) then
+if [[ $# -lt 1 ]]
+then
   echo "No executable name found!"
-  return 255
+  exit 255
 fi
 
 until nc -z "${RABBITMQ_HOST:-rabbitmq}" "${RABBITMQ_PORT:-5672}"; do

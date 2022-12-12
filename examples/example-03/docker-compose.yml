@@ -1,0 +1,138 @@
+version: '3'
+
+x-state: &state
+  build:
+    context: ./
+  command: "state-all.jar"
+
+x-bhv: &bhv
+  build:
+    context: ./
+  command: "behaviour-all.jar"
+
+x-comm: &comm
+  build:
+    context: ./
+  command: "communication-all.jar"
+
+x-sens: &sens
+  build:
+    context: ./
+  command: "sensors-all.jar"
+
+x-link: &link
+  restart: on-failure
+  depends_on:
+    - rabbitmq
+  links:
+    - rabbitmq
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - proxynet
+
+  state-0:
+    <<: *state
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  state-1:
+    <<: *state
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  state-2:
+    <<: *state
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
+  behaviour-0:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  behaviour-1:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  behaviour-2:
+    <<: *bhv
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
+  communication-0:
+    <<: *comm
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  communication-1:
+    <<: *comm
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  communication-2:
+    <<: *comm
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
+  sensors-0:
+    <<: *sens
+    environment:
+      DEVICE_ID: "0"
+    networks:
+      - proxynet
+    <<: *link
+
+  sensors-1:
+    <<: *sens
+    environment:
+      DEVICE_ID: "1"
+    networks:
+      - proxynet
+    <<: *link
+
+  sensors-2:
+    <<: *sens
+    environment:
+      DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
+networks:
+  proxynet:
+    name: custom_network
