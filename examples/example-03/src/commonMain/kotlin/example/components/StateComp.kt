@@ -11,7 +11,7 @@ import org.koin.core.component.inject
 sealed interface StateOps : StateRepresentation
 
 @Serializable
-data class Coordinate(val latitude: Double, val longitude: Double) : StateOps
+data class Distances(val distances: List<Pair<String, Double>>) : StateOps
 
 @Serializable
 data class Query(val query: String) : StateOps
@@ -31,7 +31,7 @@ class StateComp : State<StateOps> {
 suspend fun stateLogic(state: State<StateOps>, behaviour: BehaviourRef<StateOps>) {
     behaviour.receiveFromComponent().collect {
         when (it) {
-            is Coordinate -> state.update(it)
+            is Distances -> state.update(it)
             is Query -> {
                 val queryContent = it.query
                 println("Query: $queryContent")
