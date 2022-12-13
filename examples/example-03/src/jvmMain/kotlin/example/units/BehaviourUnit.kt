@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 fun main() = runBlocking {
     val platform = pulverizationPlatform(config.getDeviceConfiguration("gps")!!) {
         behaviourLogic(BehaviourComp(), ::behaviourLogics)
+        // stateLogic(StateComp(), ::stateLogic)
         withPlatform { RabbitmqCommunicator(hostname = "rabbitmq") }
         withRemotePlace { defaultRabbitMQRemotePlace() }
     }
