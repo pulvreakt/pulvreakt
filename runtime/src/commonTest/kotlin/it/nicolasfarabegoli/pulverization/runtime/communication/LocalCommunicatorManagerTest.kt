@@ -2,7 +2,7 @@ package it.nicolasfarabegoli.pulverization.runtime.communication
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest

@@ -74,37 +74,6 @@ internal fun <AS : Any> createActuatorsRef(
     }
 }
 
-internal inline fun <reified S, reified C, reified SS, reified AS> setupComponentsRef(
-    allComponents: Set<PulverizedComponentType>,
-    deploymentUnit: Set<PulverizedComponentType>,
-    noinline communicator: () -> Communicator?,
-): ComponentsRefInstances<S, C, SS, AS> where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any =
-    setupComponentsRef(
-        serializer(),
-        serializer(),
-        serializer(),
-        serializer(),
-        allComponents,
-        deploymentUnit,
-        communicator,
-    )
-
-internal fun <S, C, SS, AS> setupComponentsRef(
-    stateSer: KSerializer<S>,
-    commSer: KSerializer<C>,
-    senseSer: KSerializer<SS>,
-    actSer: KSerializer<AS>,
-    allComponents: Set<PulverizedComponentType>,
-    deploymentUnit: Set<PulverizedComponentType>,
-    communicator: () -> Communicator?,
-): ComponentsRefInstances<S, C, SS, AS> where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any {
-    val stateRef = createStateRef(stateSer, allComponents, deploymentUnit, communicator())
-    val commRef = createCommunicationRef(commSer, allComponents, deploymentUnit, communicator())
-    val sensorsRef = createSensorsRef(senseSer, allComponents, deploymentUnit, communicator())
-    val actuatorsRef = createActuatorsRef(actSer, allComponents, deploymentUnit, communicator())
-    return ComponentsRefInstances(stateRef, commRef, sensorsRef, actuatorsRef)
-}
-
 internal inline fun <reified S : Any> setupBehaviourRef(
     component: PulverizedComponentType,
     allComponents: Set<PulverizedComponentType>,

@@ -35,31 +35,31 @@ class ComponentsRefManagerTest : FreeSpec(
                 "with all local device" - {
                     "should create all components ref with a local communicator" {
                         val deviceConfig = config.getDeviceConfiguration("device-1")!!
-                        val deploymentUnit = deviceConfig.getDeploymentUnit(
+                        /*val deploymentUnit =*/ deviceConfig.getDeploymentUnit(
                             StateComponent,
                             BehaviourComponent,
                             SensorsComponent,
                             ActuatorsComponent,
                             CommunicationComponent,
                         )!!.deployableComponents
-                        val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
-                            deviceConfig.components,
-                            deploymentUnit,
-                            null,
-                        )
+//                        val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
+//                            deviceConfig.components,
+//                            deploymentUnit,
+//                            null,
+//                        )
                         // TODO(check if communicator is local or not, I don't know how)
                     }
                 }
                 "with a partial pulverization" - {
                     "should create all remote components with the given communicator" {
                         val deviceConfig = config.getDeviceConfiguration("device-2")!!
-                        val deploymentUnit =
-                            deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
-                        val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
-                            deviceConfig.components,
-                            deploymentUnit,
-                            RemoteCommunicator(),
-                        )
+//                        val deploymentUnit =
+                        deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
+//                        val (_, _, _, _) = setupComponentsRef<StatePayload, CommPayload, Int, Int>(
+//                            deviceConfig.components,
+//                            deploymentUnit,
+//                            RemoteCommunicator(),
+//                        )
                         // TODO(check if communication ref is remote, I don't know how)
                     }
                 }
@@ -67,14 +67,14 @@ class ComponentsRefManagerTest : FreeSpec(
             "should throw an exception if no communicator is given when needed" {
                 shouldThrowUnit<IllegalStateException> {
                     val deviceConfig = config.getDeviceConfiguration("device-2")!!
-                    val deploymentUnit =
-                        deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
-                    val (_, _, _, _) =
-                        setupComponentsRef<StatePayload, CommPayload, Int, Int>(
-                            deviceConfig.components,
-                            deploymentUnit,
-                            null, // In this test the communicator should be provided
-                        )
+//                    val deploymentUnit =
+                    deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
+//                    val (_, _, _, _) =
+//                        setupComponentsRef<StatePayload, CommPayload, Int, Int>(
+//                            deviceConfig.components,
+//                            deploymentUnit,
+//                            null, // In this test the communicator should be provided
+//                        )
                 }
             }
             "when creating the behaviour ref" - {
