@@ -10,16 +10,16 @@ import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 data class RemotePlace(val who: String, val where: String)
 
 /**
- * TODO.
+ * Provider of [RemotePlace] using a [context].
  */
 interface RemotePlaceProvider {
     /**
-     * TODO.
+     * The execution context.
      */
     val context: Context
 
     /**
-     * TODO.
+     * Return a [RemotePlace] (if any) of a given [type].
      */
     operator fun get(type: PulverizedComponentType): RemotePlace?
 }

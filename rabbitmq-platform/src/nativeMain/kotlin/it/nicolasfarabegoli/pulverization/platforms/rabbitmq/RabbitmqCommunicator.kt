@@ -6,7 +6,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import kotlinx.coroutines.flow.Flow
 
 /**
- * TODO.
+ * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
  */
 @Suppress("UnusedPrivateMember")
 actual class RabbitmqCommunicator actual constructor(

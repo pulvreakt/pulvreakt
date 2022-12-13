@@ -21,7 +21,7 @@ import reactor.rabbitmq.Sender
 import reactor.rabbitmq.SenderOptions
 
 /**
- * TODO.
+ * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
  */
 actual class RabbitmqCommunicator actual constructor(
     private val hostname: String,
