@@ -22,7 +22,7 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
     override val context: Context by inject()
 
     companion object {
-        private const val R = 6371e3
+        private const val R = 6371
         private const val ANGLE = 180.0
     }
 
@@ -33,14 +33,12 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
     ): BehaviourOutput<StateOps, NeighboursMessage, NoVal, Unit> {
         val (myLat, myLong) = sensedValues.gps
         val distances = export.map { (device, location) ->
-            val phi1 = myLat * PI / ANGLE
-            val phi2 = location.lat * PI / ANGLE
-            val deltaLat = (phi2 - phi1) * PI / ANGLE
-            val deltaLong = (location.long - myLong) * PI / ANGLE
+            val dLat = (location.lat - myLat) * PI / ANGLE
+            val dLon = (location.long - myLong) * PI / ANGLE
+            val myLatRand = myLat * PI / ANGLE
+            val otherLatRand = location.lat * PI / ANGLE
 
-            val a = sin(deltaLat / 2) * sin(deltaLat / 2) +
-                cos(phi1) * cos(phi2) *
-                sin(deltaLong / 2) * sin(deltaLong / 2)
+            val a = sin(dLat / 2) * sin(dLat / 2) + sin(dLon / 2) * sin(dLon / 2) * cos(myLatRand) * cos(otherLatRand)
             val c = 2 * atan2(sqrt(a), sqrt(1 - a))
             device to R * c
         }
@@ -68,7 +66,8 @@ suspend fun behaviourLogics(
             when (val lastState = state.receiveFromComponent().first()) {
                 is Distances -> {
                     println("${behaviour.context.deviceID}: ${lastState.distances}")
-                    val (newState, newComm, _, _) = behaviour(lastState, neighboursComm, it)
+                    val (newState, newComm, _, _) =
+                        behaviour(lastState, neighboursComm.filter { e -> e.device != behaviour.context.deviceID }, it)
                     state.sendToComponent(newState)
                     comm.sendToComponent(newComm)
                 }

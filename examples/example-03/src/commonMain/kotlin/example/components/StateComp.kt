@@ -38,8 +38,8 @@ suspend fun stateLogic(state: State<StateOps>, behaviour: BehaviourRef<StateOps>
         when (it) {
             is Distances -> state.update(it)
             is Query -> {
-                val queryContent = it.query
-                println("Query: $queryContent")
+                // val queryContent = it.query
+                // println("Query: $queryContent")
                 behaviour.sendToComponent(state.get())
             }
         }
