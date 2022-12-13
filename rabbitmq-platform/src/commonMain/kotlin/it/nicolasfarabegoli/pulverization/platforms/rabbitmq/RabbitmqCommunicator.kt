@@ -6,7 +6,7 @@ import it.nicolasfarabegoli.pulverization.core.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

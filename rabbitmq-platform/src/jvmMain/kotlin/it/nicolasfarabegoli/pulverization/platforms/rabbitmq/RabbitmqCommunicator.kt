@@ -67,8 +67,8 @@ actual class RabbitmqCommunicator actual constructor(
                 .awaitSingleOrNull() ?: error("Unable to declare exchange")
             sendQueue = "${binding.first.show()}/${remotePlace.where}/${remotePlace.who}"
             receiveQueue = "${remotePlace.where}/${binding.first.show()}/${remotePlace.who}"
-            sendRoutingKey = "${remotePlace.who}.${remotePlace.where}"
-            receiveRoutingKey = "${remotePlace.who}.${binding.first.show()}"
+            sendRoutingKey = "${remotePlace.who}.${remotePlace.where}.${binding.first.show()}"
+            receiveRoutingKey = "${remotePlace.who}.${binding.first.show()}.${remotePlace.where}"
             declareQueue(QueueSpecification.queue(sendQueue).durable(false))
                 .awaitSingleOrNull() ?: error("Unable to create the queue $sendQueue")
             declareQueue(QueueSpecification.queue(receiveQueue).durable(false))

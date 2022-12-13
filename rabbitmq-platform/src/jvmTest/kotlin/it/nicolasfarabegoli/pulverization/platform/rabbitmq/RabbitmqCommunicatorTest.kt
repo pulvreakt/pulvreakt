@@ -8,7 +8,7 @@ import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.RabbitmqCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.defaultRabbitMQRemotePlace
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.dsl.koinApplication
