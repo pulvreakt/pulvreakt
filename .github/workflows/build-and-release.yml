@@ -19,7 +19,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.2.0
       - name: Setup Java
         uses: actions/setup-java@v3.8.0
         with:
@@ -46,7 +46,7 @@ jobs:
       group: docsite
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.2.0
       - uses: actions/setup-node@v3
         with:
           node-version: 18.12
@@ -76,7 +76,7 @@ jobs:
       && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.2.0
         with:
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_TOKEN }}
