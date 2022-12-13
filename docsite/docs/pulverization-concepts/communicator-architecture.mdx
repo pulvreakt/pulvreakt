@@ -8,28 +8,52 @@ sidebar_position: 2
 
 ```mermaid
 classDiagram
+direction LR
+  class ComponentRef~A~ {
+    +setup()
+    +finalize()
+    +sendToComponent()
+    +receiveFromComponent()
+    +receiveLastFromComponent()
+  }
+  <<interface>> ComponentRef
+
+  class StateRef~A~
+  <<interface>> StateRef
+  class CommunicationRef~A~
+  <<interface>> CommunicationRef
+  class SensorsRef~A~
+  <<interface>> SensorsRef
+  class ActuatorsRef~A~
+  <<interface>> ActuatorsRef
+  class BehaviourRef~A~
+  <<interface>> BehaviourRef
+
   class Communicator {
     +context
+    +setup(binding: Binding, remotePlace: RemotePlace?)
+    +finalize()
+    +fireMessage(message: ByteArray)
+    +receiveMessage()
   }
   <<interface>> Communicator
 
-  class SenderCommunicator~S~ {
-    +sendToComponent()
+  class RemotePlace {
+    +who: String
+    +where: String
   }
-  <<interface>> SenderCommunicator
 
-  class ReceiverCommunicator~R~ {
-    +receiveFromComponent()
-  }
-  <<interface>> ReceiverCommunicator
+  class Binding
+  <<typealias>> Binding
 
-  class BidirectionalCommunicator~S, R~
-  <<interface>> BidirectionalCommunicator
-
-  Communicator <|-- SenderCommunicator
-  Communicator <|-- ReceiverCommunicator
-  SenderCommunicator <|-- BidirectionalCommunicator
-  ReceiverCommunicator <|-- BidirectionalCommunicator
+  ComponentRef o-- "" Communicator
+  StateRef --|> ComponentRef
+  CommunicationRef --|> ComponentRef
+  SensorsRef --|> ComponentRef
+  ActuatorsRef --|> ComponentRef
+  BehaviourRef --|> ComponentRef
+  Communicator -- RemotePlace : "uses"
+  Communicator -- Binding : "uses"
 ```
 
 </div>

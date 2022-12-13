@@ -7,39 +7,56 @@ sidebar_position: 1
 In this tutorial, we are going to create a simple pulverized application consisting of a device made up of the following
 components:
 
-- **Behaviour**
 - **Communication**
+- **Behaviour**
 - **Sensors**
+- **State**
 
-The objective of the device is to read a value through the `Sensors` component, elaborate that value through
-the `Behaviour`component and send the output via the `Communication` component to all the neighbours.
+The objective of the device is to read the _GPS_ position through the `Sensors` component, elaborate the distance
+between all neighbours through the `Behaviour`component and send his position via the `Communication` component to all
+the neighbours.
 
 In this scenario, we assume a "fully-connected topology" so that all the devices are connected.
 
 ## Behaviour
 
-In this scenario, the `Behaviour` do nothing special; it compute an identity function of the form:
-
-```
-(state, neighboursComm, sensedValues) -> (state, communication)
-```
-
-In this way, we take the `State`, all the messages coming from the neighbours, and generate a new communication to
-propagate to all the neighbours. The function returns the same state and the message generated.
-The generated message contains the sensor value read from the `Sensors` component.
+In this scenario, the `Behaviour` take the _GPS_ position given by the **sensors** component, take the positions of all
+his neighbours and calculate the distance between all of them and save in the **state** the nearest device and his
+distance.
 
 ```kotlin
-class DeviceBehaviour : Behaviour<StateRepr, CommPayload, AllSensorsPayload, Unit, Unit> {
+class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVal, Unit> {
   override val context: Context by inject()
 
+  companion object {
+    private const val R = 6371
+    private const val ANGLE = 180.0
+  }
+
   override fun invoke(
-    state: StateRepr,
-    export: List<CommPayload>,
-    sensedValues: AllSensorsPayload,
-  ): BehaviourOutput<StateRepr, CommPayload, Unit, Unit> {
-    println("Neighbours info: $export")
-    val payload = CommPayload(context.id.show(), sensedValues.deviceSensor)
-    return BehaviourOutput(state, payload, Unit, Unit)
+    state: StateOps,
+    export: List<NeighboursMessage>,
+    sensedValues: DeviceSensors,
+  ): BehaviourOutput<StateOps, NeighboursMessage, NoVal, Unit> {
+    val (myLat, myLong) = sensedValues.gps
+    val distances = export.map { (device, location) ->
+      val dLat = (location.lat - myLat) * PI / ANGLE
+      val dLon = (location.long - myLong) * PI / ANGLE
+      val myLatRand = myLat * PI / ANGLE
+      val otherLatRand = location.lat * PI / ANGLE
+
+      val a = sin(dLat / 2) * sin(dLat / 2) +
+        sin(dLon / 2) * sin(dLon / 2) * cos(myLatRand) * cos(otherLatRand)
+      val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+      device to R * c
+    }
+    val min = distances.minByOrNull { it.second }
+    return BehaviourOutput(
+      Distances(distances, min),
+      NeighboursMessage(context.deviceID, sensedValues.gps),
+      NoVal,
+      Unit,
+    )
   }
 }
 ```
@@ -56,42 +73,63 @@ The behaviour logic is implemented in the `invoke()` method. This method should 
 of: a new state, the communication for the neighbours, prescriptive actions, and an outcome.
 
 :::info
-Each `PulverizedComponent` holds a `Context` that contains some information about the specific instance
-of `LogicalDevice` that the component belongs to. Different platforms enrich the context with platform-specific
-information that could be exploited by the component or by the layers below.
+Each `PulverizedComponent` holds a `Context` that contains some information about the specific environment in which the
+component is executed. At the time of writing the `Context` only holds the `deviceID`.
+:::
+
+:::caution
+Since the Kotlin serialization doesn't allow the serialization of the type `Nothing`, a special object is available to
+overcome this issue. The object is `NoVal` which represents the absence of value. Similarly, `NoState` and `NoComm` are
+object which represents the absence of a state and the absence of communication, respectively.
 :::
 
 ## State
 
-The `State` in this scenario is used as a demonstration only: it does not provide any contribution to the demo.
+The `State` in this scenario holds information about the distances from all the neighbours and the nearest neighbour
+with his distance.
 
 To define a new state we should, first of all, define how the state is composed. To do that is useful to define the
 representation of the state through a `data class` which implements the `StateRepresentation` interface.
 
 ```kotlin
-data class StateRepr(val counter: Int) : StateRepresentation
+@Serializable
+sealed interface StateOps : StateRepresentation
+
+@Serializable
+data class Distances(
+  val distances: List<Pair<String, Double>>,
+  val nearest: Pair<String, Double>?
+) : StateOps
+
+@Serializable
+data class Query(val query: String) : StateOps
 ```
+
+:::tip
+The representation above as an ADT (Algebraic Data Type) enable to define a custom behaviour based on the received
+message. For example in this case `Dinstance` represents the effective state, but with `Query` we can "query" the state.
+:::
 
 Once the state representation is defined we need to create the state component.
 
 ```kotlin
-class DeviceState : State<StateRepr> {
+class StateComp : State<StateOps> {
   override val context: Context by inject()
 
-  private var internalState: StateRepr = StateRepr(0)
+  private var state = Distances(emptyList(), null)
 
-  override fun get(): StateRepr = internalState
+  override fun get(): StateOps = state
 
-  override fun update(newState: StateRepr): StateRepr {
-    val tmp = internalState
-    internalState = newState
+  override fun update(newState: StateOps): StateOps {
+    val tmp = state
+    when (newState) {
+      is Distances -> state = newState
+      is Query -> println("Query received: ${newState.query}")
+    }
     return tmp
   }
 }
 ```
-
-The `DeviceState` implements the `State` interface with requires a `StateRepresentation` and we give the data class
-already created.
 
 Only two methods are to be implemented `get()` and `update()` which respectively return the current state and update the
 state with a new one.
@@ -102,29 +140,37 @@ The `Communication` component is one of the most important components in a pulve
 communications with the neighbours' devices.
 
 ```kotlin
-class DeviceCommunication : Communication<CommPayload> {
-  override val context: RabbitmqContext by inject()
+class CommunicationComp : Communication<NeighboursMessage> {
+  override val context: Context by inject()
 
-  private val connection: Connection by inject()
+  private lateinit var sender: Sender
+  private lateinit var receiver: Receiver
 
-  suspend fun initialize() {
-    // Initializations
+  private val exchange = "amq.fanout"
+  private lateinit var queue: String
+
+  override suspend fun initialize() {
+    // Initialization
   }
 
-  override fun send(payload: CommPayload) {
-    val message = OutboundMessage("amq.fanout", "", Json.encodeToString(payload).toByteArray())
-    sender.send(Mono.just(message)).block()
+  override suspend fun send(payload: NeighboursMessage) {
+    val message = OutboundMessage(exchange, "", Json.encodeToString(payload).toByteArray())
+    sender.send(Mono.just(message)).awaitSingleOrNull()
   }
 
-  override fun receive(): Flow<CommPayload> {
-    return receiver.consumeAutoAck(queue).asFlow().map<Delivery, CommPayload> {
-      Json.decodeFromString(it.body.decodeToString())
-    }.filter { it.deviceID != context.id.show() }
+  override fun receive(): Flow<NeighboursMessage> =
+    receiver.consumeAutoAck(queue)
+      .asFlow()
+      .map { Json.decodeFromString(it.body.decodeToString()) }
+
+  override suspend fun finalize() {
+    sender.close()
+    receiver.close()
   }
 }
 ```
 
-The `DeviceComunication` implements the `Communication` interface that requires a type variable representing the type
+The `CommunicationComp` implements the `Communication` interface that requires a type variable representing the type
 of the message, the component should send and receive from the neighbours.
 
 The `Communication` interface define two methods `send()` and `receive()` which represents the operation of send a
@@ -141,14 +187,15 @@ bind queues. In this way, we obtain a fully-connected network topology.
 
 ## Sensors
 
-In this demo we use only one sensor, but of course, the framework give you the ability of define how many sensors you
+In this demo we use only one sensor, but of course, the framework give you the ability to define how many sensors you
 need. First of all, we start to define how the sensor's information are represented.
 
 ```kotlin
-typealias SensorPayload = Double
+@Serializable
+data class Gps(val long: Double, val lat: Double)
 
 @Serializable
-data class AllSensorsPayload(val deviceSensor: SensorPayload)
+data class DeviceSensors(val gps: Gps)
 ```
 
 :::tip
@@ -160,13 +207,24 @@ Next, we define a sensor. The implementation requires implementing the `Sensor` 
 about the values read by the sensor.
 
 ```kotlin
-class DeviceSensor : Sensor<SensorPayload> {
-  override fun sense(): SensorPayload = Random.nextDouble(0.0, 100.0)
+class GpsSensor : Sensor<Gps> {
+  override fun sense(): Gps = Gps(Random.nextDouble(-180.0, 180.0), Random.nextDouble(-90.0, 90.0))
 }
 ```
 
-In this demo, we simulate a sensor with a random number between `0-100`. The only method to implement is `sense()` which
-return the sensed value from the sensor.
+In this demo, we simulate a _GPS_ sensor. The only method to implement is `sense()` which return the sensed value from
+the sensor.
 
-Now, we completed the step of writing all the pulverized components. Next, we will show how to bind those components to
-the "communicators" in order to make the system work.
+In the end is necessarily to create the `SensorsContainer` a class which hold all the sensors of a device.
+
+```kotlin
+class LocalizationSensor : SensorsContainer() {
+  override val context: Context by inject()
+
+  override suspend fun initialize() {
+    this += GpsSensor()
+  }
+}
+```
+
+Now, we completed the step of writing all the pulverized components.

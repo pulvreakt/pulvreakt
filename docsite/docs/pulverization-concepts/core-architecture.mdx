@@ -9,11 +9,13 @@ sidebar_position: 1
 ```mermaid
 classDiagram
   class Context{
-    +id
+    +deviceID
   }
   <<interface>> Context
   class PulverizedComponent {
     +Context context
+    +initialize()
+    +finalize()
   }
   <<interface>> PulverizedComponent
   class State{
