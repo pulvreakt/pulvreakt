@@ -109,7 +109,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val deviceConfig: LogicalDeviceConfiguration,
 ) where S : StateRepresentation, C : CommunicationPayload {
 
-    private var communicator: Communicator? = null
+    private lateinit var communicator: () -> Communicator
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
         object : RemotePlaceProvider, KoinComponent {
             override val context: Context by inject()
@@ -158,7 +158,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
      * The [Communication] is given through the [provider].
      */
     fun withPlatform(provider: () -> Communicator) {
-        communicator = provider()
+        communicator = provider
     }
 
     /**
@@ -173,6 +173,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
      */
     suspend fun start(): Set<Job> = coroutineScope {
         setupKoinModule()
+        if (::communicator.isInitialized) error("No communicator given")
 
         val allComponents = deviceConfig.components
         val deploymentUnit = deviceConfig.getDeploymentUnit(configuredComponents)?.deployableComponents
@@ -182,31 +183,31 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
             val (sr, cm, ss, act) =
                 setupComponentsRef(stateSer, commSer, senseSer, actSer, allComponents, deploymentUnit, communicator)
             allComponentsRef.addAll(setOf(sr, cm, ss, act))
-            launch { setOf(sr, cm, ss, act).forEach { it.setup() }; logic(comp, sr, cm, ss, act) }
+            launch { setOf(sr, cm, ss, act).forEach { it.setup() }; comp.initialize(); logic(comp, sr, cm, ss, act) }
         }
         val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(commSer, CommunicationComponent, allComponents, deploymentUnit, communicator)
+                setupBehaviourRef(commSer, CommunicationComponent, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
-            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+            launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(actSer, ActuatorsComponent, allComponents, deploymentUnit, communicator)
+                setupBehaviourRef(actSer, ActuatorsComponent, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
-            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+            launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(senseSer, SensorsComponent, allComponents, deploymentUnit, communicator)
+                setupBehaviourRef(senseSer, SensorsComponent, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
-            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+            launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(stateSer, StateComponent, allComponents, deploymentUnit, communicator)
+                setupBehaviourRef(stateSer, StateComponent, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
-            launch { behaviourRef.setup(); logic(comp, behaviourRef) }
+            launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         setOf(stateJob, behaviourJob, actuatorsJob, sensorsJob, communicationJob).filterNotNull().toSet()
     }
@@ -215,6 +216,8 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
      * Stop the platform and release all the resources allocated.
      */
     suspend fun stop() {
+        setOf(behaviourComponent, stateComponent, communicationComponent, sensorsComponent, actuatorsComponent)
+            .filterNotNull().forEach { it.finalize() }
         allComponentsRef.forEach { it.finalize() }
     }
 

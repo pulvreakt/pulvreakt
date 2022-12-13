@@ -19,12 +19,17 @@ data class Query(val query: String) : StateOps
 class StateComp : State<StateOps> {
     override val context: Context by inject()
 
-    override fun get(): StateOps {
-        TODO("Not yet implemented")
-    }
+    private var state = Distances(emptyList())
+
+    override fun get(): StateOps = state
 
     override fun update(newState: StateOps): StateOps {
-        TODO("Not yet implemented")
+        val tmp = state
+        when (newState) {
+            is Distances -> state = newState
+            is Query -> println("Query received: ${newState.query}")
+        }
+        return tmp
     }
 }
 

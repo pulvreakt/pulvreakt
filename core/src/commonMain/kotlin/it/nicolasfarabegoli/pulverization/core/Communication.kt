@@ -20,7 +20,7 @@ interface Communication<P : CommunicationPayload> : PulverizedComponent {
     /**
      * Abstraction of the _sending action_ to other devices.
      */
-    fun send(payload: P)
+    suspend fun send(payload: P)
 
     /**
      * Abstraction of the _receiving action_ from other devices.

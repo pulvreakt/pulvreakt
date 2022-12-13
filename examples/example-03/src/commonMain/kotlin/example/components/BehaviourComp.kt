@@ -8,15 +8,15 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.dsl.NoVal
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import kotlin.math.PI
-import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.time.Duration.Companion.seconds
 
 class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVal, Unit> {
     override val context: Context by inject()
@@ -55,8 +55,28 @@ suspend fun behaviourLogics(
     comm: CommunicationRef<NeighboursMessage>,
     sensors: SensorsRef<DeviceSensors>,
     actuators: ActuatorsRef<NoVal>,
-) {
-    repeat(10) {
-        delay(2.seconds)
+) = coroutineScope {
+    var neighboursComm = listOf<NeighboursMessage>()
+    val jobComm = launch {
+        comm.receiveFromComponent().collect {
+            neighboursComm = neighboursComm.filter { e -> e.device != it.device } + it
+        }
     }
+    val jobSensor = launch {
+        sensors.receiveFromComponent().collect {
+            state.sendToComponent(Query("query selector")) // This is an example of query: do nothing.
+            when (val lastState = state.receiveFromComponent().first()) {
+                is Distances -> {
+                    println("${behaviour.context.deviceID}: ${lastState.distances}")
+                    val (newState, newComm, _, _) = behaviour(lastState, neighboursComm, it)
+                    state.sendToComponent(newState)
+                    comm.sendToComponent(newComm)
+                }
+
+                is Query -> error("The State should not respond with a query")
+            }
+        }
+    }
+    jobComm.join()
+    jobSensor.join()
 }

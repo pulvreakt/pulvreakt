@@ -44,6 +44,12 @@ kotlin {
                 implementation(project(":rabbitmq-platform"))
             }
         }
+        jvmMain {
+            dependencies {
+                implementation("io.projectreactor.rabbitmq:reactor-rabbitmq:1.5.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+            }
+        }
     }
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         enabled = false
