@@ -27,18 +27,17 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.context.createContext
+import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
-import org.koin.core.KoinApplication
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.native.concurrent.ThreadLocal
 
 typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
 typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
@@ -61,18 +60,6 @@ inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizati
         serializer(),
         configuration,
     ).apply(init)
-
-/**
- * Module to load all the dependencies in the framework.
- * Relying on Koin as dependency injection framework.
- */
-@ThreadLocal
-object PulverizationKoinModule {
-    /**
-     * The koin app.
-     */
-    var koinApp: KoinApplication? = null
-}
 
 /**
  * Represent the absence of value.
@@ -109,7 +96,7 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
     private val deviceConfig: LogicalDeviceConfiguration,
 ) where S : StateRepresentation, C : CommunicationPayload {
 
-    private lateinit var communicator: () -> Communicator
+    private var communicator: () -> Communicator? = { null }
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
         object : RemotePlaceProvider, KoinComponent {
             override val context: Context by inject()
@@ -173,15 +160,16 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
      */
     suspend fun start(): Set<Job> = coroutineScope {
         setupKoinModule()
-        if (::communicator.isInitialized) error("No communicator given")
 
         val allComponents = deviceConfig.components
         val deploymentUnit = deviceConfig.getDeploymentUnit(configuredComponents)?.deployableComponents
             ?: error("The configured components doesn't match the configuration")
 
         val behaviourJob = behaviourLogic to behaviourComponent takeAllNotNull { logic, comp ->
-            val (sr, cm, ss, act) =
-                setupComponentsRef(stateSer, commSer, senseSer, actSer, allComponents, deploymentUnit, communicator)
+            val sr = createStateRef(stateSer, allComponents, deploymentUnit, communicator())
+            val cm = createCommunicationRef(commSer, allComponents, deploymentUnit, communicator())
+            val ss = createSensorsRef(senseSer, allComponents, deploymentUnit, communicator())
+            val act = createActuatorsRef(actSer, allComponents, deploymentUnit, communicator())
             allComponentsRef.addAll(setOf(sr, cm, ss, act))
             launch { setOf(sr, cm, ss, act).forEach { it.setup() }; comp.initialize(); logic(comp, sr, cm, ss, act) }
         }

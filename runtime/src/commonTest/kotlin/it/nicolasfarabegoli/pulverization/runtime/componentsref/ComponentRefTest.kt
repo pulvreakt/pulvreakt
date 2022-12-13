@@ -10,7 +10,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationKoinModule
+import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StatePayload
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
