@@ -49,7 +49,7 @@ class CommunicationFixture : Communication<CommPayload> {
     override val context: Context
         get() = TODO("Not yet implemented")
 
-    override fun send(payload: CommPayload) {}
+    override suspend fun send(payload: CommPayload) {}
     override fun receive(): Flow<CommPayload> = emptyFlow()
 }
 

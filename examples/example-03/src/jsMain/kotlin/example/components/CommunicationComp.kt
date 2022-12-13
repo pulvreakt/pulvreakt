@@ -8,7 +8,7 @@ import org.koin.core.component.inject
 actual class CommunicationComp : Communication<NeighboursMessage> {
     override val context: Context by inject()
 
-    override fun send(payload: NeighboursMessage) {
+    override suspend fun send(payload: NeighboursMessage) {
         TODO("Not yet implemented")
     }
 

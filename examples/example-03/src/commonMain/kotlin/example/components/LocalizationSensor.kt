@@ -7,6 +7,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.koin.core.component.inject
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -16,9 +17,7 @@ data class Gps(val long: Double, val lat: Double)
 data class DeviceSensors(val gps: Gps)
 
 class GpsSensor : Sensor<Gps> {
-    override fun sense(): Gps {
-        TODO("Not yet implemented")
-    }
+    override fun sense(): Gps = Gps(Random.nextDouble(-180.0, 180.0), Random.nextDouble(-90.0, 90.0))
 }
 
 class LocalizationSensor : SensorsContainer() {

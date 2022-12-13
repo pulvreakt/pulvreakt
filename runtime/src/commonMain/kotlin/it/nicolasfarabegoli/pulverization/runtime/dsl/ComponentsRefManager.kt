@@ -24,6 +24,7 @@ internal fun <S : StateRepresentation> createStateRef(
     deploymentUnit: Set<PulverizedComponentType>,
     communicator: Communicator?,
 ): StateRef<S> {
+    if (!allComponents.contains(StateComponent)) return StateRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit, StateComponent)) {
         Remote -> StateRef.create(serializer, communicator ?: error("No communicator given"))
         Local -> StateRef.create(serializer, LocalCommunicator())
@@ -51,7 +52,7 @@ internal fun <SS : Any> createSensorsRef(
     deploymentUnit: Set<PulverizedComponentType>,
     communicator: Communicator?,
 ): SensorsRef<SS> {
-    if (!allComponents.contains(CommunicationComponent)) return SensorsRef.createDummy()
+    if (!allComponents.contains(SensorsComponent)) return SensorsRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit, SensorsComponent)) {
         Remote -> SensorsRef.create(serializer, communicator ?: error("No communicator given"))
         Local -> SensorsRef.create(serializer, LocalCommunicator())
@@ -65,7 +66,7 @@ internal fun <AS : Any> createActuatorsRef(
     deploymentUnit: Set<PulverizedComponentType>,
     communicator: Communicator?,
 ): ActuatorsRef<AS> {
-    if (!allComponents.contains(CommunicationComponent)) return ActuatorsRef.createDummy()
+    if (!allComponents.contains(ActuatorsComponent)) return ActuatorsRef.createDummy()
     return when (determinePlace(allComponents, deploymentUnit, ActuatorsComponent)) {
         Remote -> ActuatorsRef.create(serializer, communicator ?: error("No communicator given"))
         Local -> ActuatorsRef.create(serializer, LocalCommunicator())
@@ -76,7 +77,7 @@ internal fun <AS : Any> createActuatorsRef(
 internal inline fun <reified S, reified C, reified SS, reified AS> setupComponentsRef(
     allComponents: Set<PulverizedComponentType>,
     deploymentUnit: Set<PulverizedComponentType>,
-    communicator: Communicator?,
+    noinline communicator: () -> Communicator?,
 ): ComponentsRefInstances<S, C, SS, AS> where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any =
     setupComponentsRef(
         serializer(),
@@ -95,12 +96,12 @@ internal fun <S, C, SS, AS> setupComponentsRef(
     actSer: KSerializer<AS>,
     allComponents: Set<PulverizedComponentType>,
     deploymentUnit: Set<PulverizedComponentType>,
-    communicator: Communicator?,
+    communicator: () -> Communicator?,
 ): ComponentsRefInstances<S, C, SS, AS> where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any {
-    val stateRef = createStateRef(stateSer, allComponents, deploymentUnit, communicator)
-    val commRef = createCommunicationRef(commSer, allComponents, deploymentUnit, communicator)
-    val sensorsRef = createSensorsRef(senseSer, allComponents, deploymentUnit, communicator)
-    val actuatorsRef = createActuatorsRef(actSer, allComponents, deploymentUnit, communicator)
+    val stateRef = createStateRef(stateSer, allComponents, deploymentUnit, communicator())
+    val commRef = createCommunicationRef(commSer, allComponents, deploymentUnit, communicator())
+    val sensorsRef = createSensorsRef(senseSer, allComponents, deploymentUnit, communicator())
+    val actuatorsRef = createActuatorsRef(actSer, allComponents, deploymentUnit, communicator())
     return ComponentsRefInstances(stateRef, commRef, sensorsRef, actuatorsRef)
 }
 
