@@ -12,7 +12,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * TODO.
+ * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
  */
 expect class RabbitmqCommunicator(
     hostname: String = "localhost",
@@ -23,7 +23,7 @@ expect class RabbitmqCommunicator(
 ) : Communicator
 
 /**
- * TODO.
+ * Default representation for a [RemotePlaceProvider] used by the [RabbitmqCommunicator].
  */
 fun defaultRabbitMQRemotePlace(): RemotePlaceProvider = object : RemotePlaceProvider, KoinComponent {
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
