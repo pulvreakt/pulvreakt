@@ -11,7 +11,7 @@ import org.koin.core.component.inject
 sealed interface StateOps : StateRepresentation
 
 @Serializable
-data class Distances(val distances: List<Pair<String, Double>>) : StateOps
+data class Distances(val distances: List<Pair<String, Double>>, val nearest: Pair<String, Double>?) : StateOps
 
 @Serializable
 data class Query(val query: String) : StateOps
@@ -19,7 +19,7 @@ data class Query(val query: String) : StateOps
 class StateComp : State<StateOps> {
     override val context: Context by inject()
 
-    private var state = Distances(emptyList())
+    private var state = Distances(emptyList(), "" to 0.0)
 
     override fun get(): StateOps = state
 

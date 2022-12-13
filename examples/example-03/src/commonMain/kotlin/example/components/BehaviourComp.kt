@@ -42,7 +42,13 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
             val c = 2 * atan2(sqrt(a), sqrt(1 - a))
             device to R * c
         }
-        return BehaviourOutput(Distances(distances), NeighboursMessage(context.deviceID, sensedValues.gps), NoVal, Unit)
+        val min = distances.minByOrNull { it.second }
+        return BehaviourOutput(
+            Distances(distances, min),
+            NeighboursMessage(context.deviceID, sensedValues.gps),
+            NoVal,
+            Unit,
+        )
     }
 }
 
@@ -66,6 +72,9 @@ suspend fun behaviourLogics(
             when (val lastState = state.receiveFromComponent().first()) {
                 is Distances -> {
                     println("${behaviour.context.deviceID}: ${lastState.distances}")
+                    lastState.nearest?.let {
+                        println("Device '${lastState.nearest.first}' is the nearest (${lastState.nearest.second})")
+                    } ?: println("No information about the nearest")
                     val (newState, newComm, _, _) =
                         behaviour(lastState, neighboursComm.filter { e -> e.device != behaviour.context.deviceID }, it)
                     state.sendToComponent(newState)
