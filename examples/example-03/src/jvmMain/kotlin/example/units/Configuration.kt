@@ -11,6 +11,7 @@ import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
 val config = pulverizationConfig {
     logicalDevice("gps") {
+        // BehaviourComponent and StateComponent deployableOn Cloud
         BehaviourComponent deployableOn Cloud
         StateComponent deployableOn Cloud
         CommunicationComponent deployableOn Edge

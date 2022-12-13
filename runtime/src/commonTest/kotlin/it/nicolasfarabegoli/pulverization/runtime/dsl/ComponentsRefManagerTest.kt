@@ -64,7 +64,7 @@ class ComponentsRefManagerTest : FreeSpec(
                     }
                 }
             }
-            "should throw an exception if no communicator is given when needed" {
+            "should throw an exception if no communicator is given when needed".config(enabled = false) {
                 shouldThrowUnit<IllegalStateException> {
                     val deviceConfig = config.getDeviceConfiguration("device-2")!!
 //                    val deploymentUnit =
