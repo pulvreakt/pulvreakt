@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.context.stopKoin
 
 class PulverizationRuntimeTest : FreeSpec(
@@ -69,7 +70,7 @@ class PulverizationRuntimeTest : FreeSpec(
                         withContext { deviceID("1") }
                         behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
                         stateLogic(StateFixture()) { _, _ -> }
-                        withPlatform { RemoteCommunicator() }
+                        withPlatform { RemoteCommunicator(MutableSharedFlow(1)) }
                     }.start()
                     jobs.forEach { it.cancelAndJoin() }
                     stopKoin()

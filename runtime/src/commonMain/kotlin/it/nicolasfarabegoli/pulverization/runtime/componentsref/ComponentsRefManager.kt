@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl
+package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
@@ -10,11 +10,6 @@ import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
