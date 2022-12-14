@@ -11,6 +11,8 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.Serializable
 
@@ -53,9 +55,9 @@ class CommunicationFixture : Communication<CommPayload> {
     override fun receive(): Flow<CommPayload> = emptyFlow()
 }
 
-class RemoteCommunicator : Communicator {
+class RemoteCommunicator(private val comm: MutableSharedFlow<ByteArray>) : Communicator {
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
     override suspend fun finalize() {}
-    override suspend fun fireMessage(message: ByteArray) {}
-    override fun receiveMessage(): Flow<ByteArray> = emptyFlow()
+    override suspend fun fireMessage(message: ByteArray) = comm.emit(message)
+    override fun receiveMessage(): Flow<ByteArray> = comm.asSharedFlow()
 }

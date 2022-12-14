@@ -26,6 +26,11 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.createActuatorsRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.createCommunicationRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.createSensorsRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.createStateRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.setupBehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.context.createContext
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.Job
