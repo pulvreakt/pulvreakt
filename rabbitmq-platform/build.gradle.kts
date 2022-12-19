@@ -3,7 +3,7 @@ kotlin {
         commonMain {
             dependencies {
 //                implementation(project(":core"))
-                implementation(project(":runtime"))
+                implementation(project(":platform"))
 //                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 //                implementation("org.jetbrains.kotlin:kotlin-reflect")
             }

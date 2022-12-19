@@ -40,7 +40,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":runtime"))
+                implementation(project(":platform"))
                 implementation(project(":rabbitmq-platform"))
             }
         }
