@@ -181,6 +181,7 @@ subprojects {
         }
     }
     publishOnCentral {
+        projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
         projectLongName.set("Framework enabling pulverization")
         projectDescription.set("A framework to create a pulverized system")
         repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
@@ -190,6 +191,11 @@ subprojects {
     }
     publishing.publications.withType<MavenPublication>().configureEach {
         pom {
+            scm {
+                connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                url.set("https://github.com/nicolasfara/rabbitmq-platform")
+            }
             developers {
                 developer {
                     name.set("Nicolas Farabegoli")
