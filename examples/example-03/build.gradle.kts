@@ -42,12 +42,13 @@ kotlin {
             dependencies {
                 implementation(project(":platform"))
                 implementation(project(":rabbitmq-platform"))
+                implementation(rootProject.libs.kotlinx.serialization.json)
             }
         }
         jvmMain {
             dependencies {
-                implementation("io.projectreactor.rabbitmq:reactor-rabbitmq:1.5.5")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+                implementation(rootProject.libs.rabbitmq.reactor)
+                implementation(rootProject.libs.kotlinx.coroutines.reactor)
             }
         }
     }
