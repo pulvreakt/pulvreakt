@@ -11,7 +11,7 @@ interface Actuator<in T> : Initializable {
     /**
      * The operation of actuate an action over the environment.
      */
-    fun actuate(payload: T)
+    suspend fun actuate(payload: T)
 }
 
 /**

@@ -17,7 +17,7 @@ data class Gps(val long: Double, val lat: Double)
 data class DeviceSensors(val gps: Gps)
 
 class GpsSensor : Sensor<Gps> {
-    override fun sense(): Gps = Gps(Random.nextDouble(-180.0, 180.0), Random.nextDouble(-90.0, 90.0))
+    override suspend fun sense(): Gps = Gps(Random.nextDouble(-180.0, 180.0), Random.nextDouble(-90.0, 90.0))
 }
 
 class LocalizationSensor : SensorsContainer() {
