@@ -11,7 +11,7 @@ interface Sensor<out T> : Initializable {
     /**
      * The operation of sensing a magnitude from the environment.
      */
-    fun sense(): T
+    suspend fun sense(): T
 }
 
 /**
