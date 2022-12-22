@@ -9,12 +9,13 @@ koin = "3.3.0"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.6.1" }
+kover = "org.jetbrains.kotlinx.kover:0.6.1"
 taskTree = "com.dorongold.task-tree:2.1.0"
 conventionalCommits = "it.nicolasfarabegoli.conventional-commits:3.0.14"
 publishOnCentral = "org.danilopianini.publish-on-central:2.0.11"
@@ -22,26 +23,19 @@ gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:0.3.0"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotest-extensions-koin = { module = "io.kotest.extensions:kotest-extensions-koin", version = "1.1.0" }
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
-kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.6.4" }
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version = "1.6.4" }
-kotlinx-coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive", version = "1.6.4" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.4.1" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.5" }
 
 [bundles]
-kotlin-testing-common = [
+kotest-common = [
   "kotest-assertions-core",
   "kotest-framework-engine",
   "kotest-framework-datatest",
-  "kotlin-test-common",
-  "kotlin-test-annotations-common",
 ]
-kotlin-testing-jvm = ["kotest-assertions-core-jvm", "kotest-runner-junit5-jvm"]
