@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * An [Actuator] can [actuate] an operation over the environment.
  * @param T the type of the payload to send to the [Actuator]
  */
-interface Actuator<in T> {
+interface Actuator<in T> : Initializable {
     /**
      * The operation of actuate an action over the environment.
      */
