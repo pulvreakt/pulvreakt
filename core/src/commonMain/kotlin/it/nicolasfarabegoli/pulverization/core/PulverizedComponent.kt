@@ -8,7 +8,7 @@ import org.koin.core.component.KoinComponent
 /**
  * High level concept of pulverized component.
  */
-interface PulverizedComponent : KoinComponent {
+interface PulverizedComponent : Initializable, KoinComponent {
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
 
     /**
@@ -20,18 +20,6 @@ interface PulverizedComponent : KoinComponent {
      * The type of the component.
      */
     val componentType: PulverizedComponentType
-
-    /**
-     * Use this method for setup the component.
-     * By default, this method do nothing.
-     */
-    suspend fun initialize() {}
-
-    /**
-     * This method is used to release resources or make any other action when the component is no longer needed.
-     * By default, this method do nothing.
-     */
-    suspend fun finalize() {}
 }
 
 /**

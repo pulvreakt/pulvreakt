@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * @param T the type of the measuring after the [sense] operation.
  * @param I the identifier of the sensor.
  */
-interface Sensor<out T> {
+interface Sensor<out T> : Initializable {
     /**
      * The operation of sensing a magnitude from the environment.
      */
