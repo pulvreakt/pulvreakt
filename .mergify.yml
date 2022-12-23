@@ -1,16 +1,9 @@
 pull_request_rules:
-  - name: Automatic merge on approval
-    conditions:
-      - "#approved-reviews-by>=1"
-    actions:
-      merge:
-        method: rebase
   - name: Automatic merge renovate PRs
     conditions:
       - author=renovate[bot]
       - -conflict # No conflict
       - -draft # The PR should not be a 'draft'
-      - check-success=ci-cd / success
     actions:
       merge:
         method: rebase
