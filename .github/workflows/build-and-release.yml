@@ -6,7 +6,7 @@ on:
 
 env:
   JDK_DISTRIUTION: temurin
-  JDK_VERSION: 17.0.4
+  JDK_VERSION: 17.0.5
 
 jobs:
   build:
