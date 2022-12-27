@@ -2,7 +2,9 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -41,6 +43,42 @@ tasks {
             "rabbitmq-platform:publishKotlinMultiplatformPublicationToGithubRepository",
         )
     }
+}
+
+val nativeSetup: KotlinNativeTarget.() -> Unit = {
+    compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
+    compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
+    binaries {
+        sharedLib()
+        staticLib()
+    }
+}
+
+fun KotlinMultiplatformExtension.configureDarwinPlatforms() {
+    macosX64(nativeSetup)
+    macosArm64(nativeSetup)
+
+    ios(nativeSetup)
+    iosSimulatorArm64(nativeSetup)
+    tvos(nativeSetup)
+    tvosSimulatorArm64(nativeSetup)
+    // Disabled due to https://youtrack.jetbrains.com/issue/KT-54814
+    // watchos(nativeSetup)
+    // watchosSimulatorArm64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureWindowsPlatforms() {
+    mingwX64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureLinuxPlatforms() {
+    linuxX64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureAllPlatforms() {
+    configureLinuxPlatforms()
+    configureWindowsPlatforms()
+    configureDarwinPlatforms()
 }
 
 allprojects {
@@ -116,31 +154,23 @@ allprojects {
             }
         }
 
-        val nativeSetup: KotlinNativeTarget.() -> Unit = {
-            compilations["main"].defaultSourceSet.dependsOn(sourceSets["nativeMain"])
-            compilations["test"].defaultSourceSet.dependsOn(sourceSets["nativeTest"])
-            binaries {
-                sharedLib()
-                staticLib()
-            }
-        }
+        val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()
+        val releaseMultiplatform: String? by project
 
         js { nodejs() }
 
-        linuxX64(nativeSetup)
-
-        mingwX64(nativeSetup)
-
-        macosX64(nativeSetup)
-        macosArm64(nativeSetup)
-
-        ios(nativeSetup)
-        iosSimulatorArm64(nativeSetup)
-        tvos(nativeSetup)
-        tvosSimulatorArm64(nativeSetup)
-//        Disabled due to https://youtrack.jetbrains.com/issue/KT-54814
-//        watchos(nativeSetup)
-//        watchosSimulatorArm64(nativeSetup)
+        if (!releaseMultiplatform.toBoolean()) {
+            when (hostOs) {
+                "linux" -> configureLinuxPlatforms()
+                "windows" -> configureWindowsPlatforms()
+                "mac os x" -> configureDarwinPlatforms()
+            }
+        } else {
+            if (hostOs != "mac os x") {
+                throw GradleException("To cross-compile for all the platforms ma `macos` runner is required")
+            }
+            configureAllPlatforms()
+        }
     }
 
     tasks.dokkaJavadoc {
