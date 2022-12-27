@@ -30,6 +30,22 @@ jobs:
         run: |
           ./gradlew assemble --parallel
           ./gradlew check --parallel
+      - name: Test upload artifacts
+        if: >-
+          ${{
+            runner.os == 'macOS'
+            && !github.event.repository.fork
+            && (
+              github.event_name != 'pull_request'
+              || github.event.pull_request.head.repo.full_name == github.repository
+            )
+          }}
+        run: ./gradlew uploadAll close --parallel
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
       - name: Upload code coverage result
         if: ${{ runner.os == 'Linux' }}
         uses: codecov/codecov-action@v3
@@ -66,7 +82,7 @@ jobs:
     concurrency:
       group: release
     needs: [ build, docsite ]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
       !github.event.repository.fork
