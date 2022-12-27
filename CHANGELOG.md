@@ -1,3 +1,31 @@
+## [0.4.1](https://github.com/nicolasfara/pulverization-framework/compare/0.4.0...0.4.1) (2022-12-27)
+
+
+### Bug Fixes
+
+* make sense and actuate all suspensive function ([411762b](https://github.com/nicolasfara/pulverization-framework/commit/411762b23ce85f92e9a8c667400a6c45bf9791ac))
+
+
+### Dependency updates
+
+* **deps:** cleanup dependencies ([77ab46d](https://github.com/nicolasfara/pulverization-framework/commit/77ab46daa76bc295c10cd8cfca35e5c1b5ed75b3))
+
+
+### Refactoring
+
+* make all pulverized component initializable ([9ac2e23](https://github.com/nicolasfara/pulverization-framework/commit/9ac2e233284c910f0916b5db34797d577ce8bc3d))
+
+
+### General maintenance
+
+* **codecov:** create codecov config file to allow a 5% drop in coverage without failing status check ([18170cc](https://github.com/nicolasfara/pulverization-framework/commit/18170cc8298969bb4aa119490d8055db5c3af79a))
+* **mergify:** delete auto-merge on PR approve ([571d26d](https://github.com/nicolasfara/pulverization-framework/commit/571d26ddac0541b2644b9d59a8d1cb8b27419098))
+
+
+### Build and continuous integration
+
+* update java version ([a6d94c3](https://github.com/nicolasfara/pulverization-framework/commit/a6d94c32d7d54ff3ccdfd91421ede3861b81fc87))
+
 ## [0.4.0](https://github.com/nicolasfara/pulverization-framework/compare/0.3.7...0.4.0) (2022-12-19)
 
 
