@@ -128,7 +128,20 @@ allprojects {
         js { nodejs() }
 
         linuxX64(nativeSetup)
+
         mingwX64(nativeSetup)
+
+        macosX64(nativeSetup)
+        macosArm64(nativeSetup)
+
+        ios(nativeSetup)
+        iosArm32(nativeSetup)
+        iosSimulatorArm64(nativeSetup)
+        tvos(nativeSetup)
+        tvosSimulatorArm64(nativeSetup)
+        watchos(nativeSetup)
+        watchosX86(nativeSetup)
+        watchosSimulatorArm64(nativeSetup)
     }
 
     tasks.dokkaJavadoc {
