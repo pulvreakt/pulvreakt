@@ -138,8 +138,9 @@ allprojects {
         iosSimulatorArm64(nativeSetup)
         tvos(nativeSetup)
         tvosSimulatorArm64(nativeSetup)
-        watchos(nativeSetup)
-        watchosSimulatorArm64(nativeSetup)
+//        Disabled due to https://youtrack.jetbrains.com/issue/KT-54814
+//        watchos(nativeSetup)
+//        watchosSimulatorArm64(nativeSetup)
     }
 
     tasks.dokkaJavadoc {
