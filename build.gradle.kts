@@ -2,6 +2,8 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
+import org.gradle.internal.os.OperatingSystem
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -41,6 +43,33 @@ tasks {
             "rabbitmq-platform:publishKotlinMultiplatformPublicationToGithubRepository",
         )
     }
+}
+
+fun KotlinMultiplatformExtension.configureDarwinCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
+    macosX64(nativeSetup)
+    macosArm64(nativeSetup)
+
+    ios(nativeSetup)
+    iosSimulatorArm64(nativeSetup)
+    tvos(nativeSetup)
+    tvosSimulatorArm64(nativeSetup)
+    // Disabled due to https://youtrack.jetbrains.com/issue/KT-54814
+    // watchos(nativeSetup)
+    // watchosSimulatorArm64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureWindowsCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
+    mingwX64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureLinuxCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
+    linuxX64(nativeSetup)
+}
+
+fun KotlinMultiplatformExtension.configureAllPlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
+    configureLinuxCompatiblePlatforms(nativeSetup)
+    configureWindowsCompatiblePlatforms(nativeSetup)
+    configureDarwinCompatiblePlatforms(nativeSetup)
 }
 
 allprojects {
@@ -116,6 +145,9 @@ allprojects {
             }
         }
 
+        js { nodejs() }
+
+        val releaseStage: String? by project
         val nativeSetup: KotlinNativeTarget.() -> Unit = {
             compilations["main"].defaultSourceSet.dependsOn(sourceSets["nativeMain"])
             compilations["test"].defaultSourceSet.dependsOn(sourceSets["nativeTest"])
@@ -125,10 +157,15 @@ allprojects {
             }
         }
 
-        js { nodejs() }
-
-        linuxX64(nativeSetup)
-        mingwX64(nativeSetup)
+        when (OperatingSystem.current() to releaseStage.toBoolean()) {
+            OperatingSystem.LINUX to false -> configureLinuxCompatiblePlatforms(nativeSetup)
+            OperatingSystem.WINDOWS to false -> configureWindowsCompatiblePlatforms(nativeSetup)
+            OperatingSystem.MAC_OS to false -> configureDarwinCompatiblePlatforms(nativeSetup)
+            OperatingSystem.MAC_OS to true -> configureAllPlatforms(nativeSetup)
+            else -> throw GradleException(
+                "To cross-compile for all the platforms, a `macos` runner should be used",
+            )
+        }
     }
 
     tasks.dokkaJavadoc {
