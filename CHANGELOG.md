@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/nicolasfara/pulverization-framework/compare/0.4.1...0.4.2) (2022-12-28)
+
+
+### Bug Fixes
+
+* **build:** enable all compatible kotlin multiplatform targets ([b0b8de9](https://github.com/nicolasfara/pulverization-framework/commit/b0b8de9fedc7c5179fdb2c99e0d675c39b42ba66))
+
 ## [0.4.1](https://github.com/nicolasfara/pulverization-framework/compare/0.4.0...0.4.1) (2022-12-27)
 
 
