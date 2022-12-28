@@ -2,9 +2,9 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -45,16 +45,7 @@ tasks {
     }
 }
 
-val nativeSetup: KotlinNativeTarget.() -> Unit = {
-    compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
-    compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
-    binaries {
-        sharedLib()
-        staticLib()
-    }
-}
-
-fun KotlinMultiplatformExtension.configureDarwinPlatforms() {
+fun KotlinMultiplatformExtension.configureDarwinCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
     macosX64(nativeSetup)
     macosArm64(nativeSetup)
 
@@ -67,18 +58,18 @@ fun KotlinMultiplatformExtension.configureDarwinPlatforms() {
     // watchosSimulatorArm64(nativeSetup)
 }
 
-fun KotlinMultiplatformExtension.configureWindowsPlatforms() {
+fun KotlinMultiplatformExtension.configureWindowsCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
     mingwX64(nativeSetup)
 }
 
-fun KotlinMultiplatformExtension.configureLinuxPlatforms() {
+fun KotlinMultiplatformExtension.configureLinuxCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
     linuxX64(nativeSetup)
 }
 
-fun KotlinMultiplatformExtension.configureAllPlatforms() {
-    configureLinuxPlatforms()
-    configureWindowsPlatforms()
-    configureDarwinPlatforms()
+fun KotlinMultiplatformExtension.configureAllPlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
+    configureLinuxCompatiblePlatforms(nativeSetup)
+    configureWindowsCompatiblePlatforms(nativeSetup)
+    configureDarwinCompatiblePlatforms(nativeSetup)
 }
 
 allprojects {
@@ -154,22 +145,26 @@ allprojects {
             }
         }
 
-        val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()
-        val releaseMultiplatform: String? by project
-
         js { nodejs() }
 
-        if (!releaseMultiplatform.toBoolean()) {
-            when (hostOs) {
-                "linux" -> configureLinuxPlatforms()
-                "windows" -> configureWindowsPlatforms()
-                "mac os x" -> configureDarwinPlatforms()
+        val releaseStage: String? by project
+        val nativeSetup: KotlinNativeTarget.() -> Unit = {
+            compilations["main"].defaultSourceSet.dependsOn(sourceSets["nativeMain"])
+            compilations["test"].defaultSourceSet.dependsOn(sourceSets["nativeTest"])
+            binaries {
+                sharedLib()
+                staticLib()
             }
-        } else {
-            if (hostOs != "mac os x") {
-                throw GradleException("To cross-compile for all the platforms ma `macos` runner is required")
-            }
-            configureAllPlatforms()
+        }
+
+        when (OperatingSystem.current() to releaseStage.toBoolean()) {
+            OperatingSystem.LINUX to false -> configureLinuxCompatiblePlatforms(nativeSetup)
+            OperatingSystem.WINDOWS to false -> configureWindowsCompatiblePlatforms(nativeSetup)
+            OperatingSystem.MAC_OS to false -> configureDarwinCompatiblePlatforms(nativeSetup)
+            OperatingSystem.MAC_OS to true -> configureAllPlatforms(nativeSetup)
+            else -> throw GradleException(
+                "To cross-compile for all the platforms, a `macos` runner should be used",
+            )
         }
     }
 
