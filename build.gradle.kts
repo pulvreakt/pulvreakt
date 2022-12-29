@@ -145,7 +145,7 @@ allprojects {
             }
         }
 
-        js { nodejs() }
+        js(IR) { nodejs() }
 
         val releaseStage: String? by project
         val nativeSetup: KotlinNativeTarget.() -> Unit = {
