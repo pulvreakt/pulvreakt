@@ -1,18 +1,18 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
-import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 
-class LocalCommunicatorManagerTest : ShouldSpec(), KoinTest {
+class LocalCommunicatorManagerTest : FreeSpec(), KoinTest {
     private val module = module { single { CommManager() } }
 
     init {
-        context("The local communicator manager") {
-            should("return the same instance for the same communication type") {
+        "The local communicator manager" - {
+            "should return the same instance for the same communication type" {
                 PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                 val commManager: CommManager = PulverizationKoinModule.koinApp?.koin?.get()!!
 
