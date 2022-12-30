@@ -15,8 +15,8 @@
 |               | `core`               | `platform`           | `rabbitmq-platform`   |
 |---------------|:--------------------:|:--------------------:|:---------------------:|
 | **JVM**       | :heavy_check_mark:   | :heavy_check_mark:   | :heavy_check_mark:    |
-| **JS**        | :x:                  | :x:                  | :x:                   |
-| **Native***   | :x:                  | :x:                  | :x:                   |
+| **JS**        | :heavy_check_mark:   | :x:                  | :x:                   |
+| **Native***   | :heavy_check_mark:   | :x:                  | :x:                   |
 
 \* The current native supported platforms are: `linux X64`, `mingw X64`, `macos X64`, `macos ARM`, `iOS`, `watchOS`, `tvOS`.  
 
