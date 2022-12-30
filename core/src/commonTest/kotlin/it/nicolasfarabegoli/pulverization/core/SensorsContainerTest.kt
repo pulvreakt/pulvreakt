@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
 import io.kotest.assertions.failure
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -14,7 +14,7 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
 
-class SensorsContainerTest : FunSpec(), KoinTest {
+class SensorsContainerTest : FreeSpec(), KoinTest {
     override fun getKoin(): Koin = koinApplication {
         module {
             single {
@@ -26,8 +26,8 @@ class SensorsContainerTest : FunSpec(), KoinTest {
     }.koin
 
     init {
-        context("SensorsContainer test") {
-            test("To the container can be added multiple sensors at once") {
+        "SensorsContainer test" - {
+            "To the container can be added multiple sensors at once" {
                 val container = object : SensorsContainer() {
                     override val context: Context by inject()
                 }.apply {
@@ -40,7 +40,7 @@ class SensorsContainerTest : FunSpec(), KoinTest {
                 container.getAll<MySensor1>().size shouldBe 2
                 container.getAll<MySensor2>().size shouldBe 1
             }
-            test("To the container can be added a single sensor") {
+            "To the container can be added a single sensor" {
                 val container = object : SensorsContainer() {
                     override val context: Context by inject()
                 }
@@ -48,7 +48,7 @@ class SensorsContainerTest : FunSpec(), KoinTest {
                 container.get<MySensor1>() shouldNotBe null
                 container.getAll<MySensor1>().size shouldBe 1
             }
-            test("The container can be queried using the KClass") {
+            "The container can be queried using the KClass" {
                 val container = object : SensorsContainer() {
                     override val context: Context by inject()
                 }.apply {
@@ -61,7 +61,7 @@ class SensorsContainerTest : FunSpec(), KoinTest {
                 container[MySensor2::class] shouldNotBe null
                 container.getAll(MySensor1::class).size shouldBe 2
             }
-            test("The container, when queried, should return the sensor in the lambda") {
+            "The container, when queried, should return the sensor in the lambda" {
                 val sensor2 = MySensor2()
                 val container = object : SensorsContainer() {
                     override val context: Context by inject()
@@ -69,7 +69,7 @@ class SensorsContainerTest : FunSpec(), KoinTest {
                 container.get<MySensor2> { this shouldBeSameInstanceAs sensor2 }
                 container.getAll<MySensor1> { size shouldBe 2 }
             }
-            test("The container, when queried with an invalid class, should not execute the lambda") {
+            "The container, when queried with an invalid class, should not execute the lambda" {
                 val container = object : SensorsContainer() {
                     override val context: Context by inject()
                 }

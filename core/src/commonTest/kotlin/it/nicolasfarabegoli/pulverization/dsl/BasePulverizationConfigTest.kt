@@ -2,17 +2,17 @@ package it.nicolasfarabegoli.pulverization.dsl
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
 
-class BasePulverizationConfigTest : FunSpec(
+class BasePulverizationConfigTest : FreeSpec(
     {
-        context("The configuration DSL") {
-            test("should configure a logical device") {
+        "The configuration DSL" - {
+            "should configure a logical device" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
                         StateComponent deployableOn Cloud
@@ -27,7 +27,7 @@ class BasePulverizationConfigTest : FunSpec(
                     logicalDevice.deploymentUnits.size shouldBe 2
                 }
             }
-            test("An exception should occur when try to configure a logical device with the same name") {
+            "An exception should occur when try to configure a logical device with the same name" {
                 val exc = shouldThrow<Exception> {
                     pulverizationConfig {
                         logicalDevice("device-1") { }
@@ -36,7 +36,7 @@ class BasePulverizationConfigTest : FunSpec(
                 }
                 exc.message shouldContain "device-1"
             }
-            test("No exception should be thrown on a right configuration") {
+            "No exception should be thrown on a right configuration" {
                 shouldNotThrow<IllegalStateException> {
                     pulverizationConfig {
                         logicalDevice("device-1") { }
@@ -44,7 +44,7 @@ class BasePulverizationConfigTest : FunSpec(
                     }
                 }
             }
-            test("An exception should be thrown if the same component appear in multiple deployment units") {
+            "An exception should be thrown if the same component appear in multiple deployment units" {
                 val exc = shouldThrow<IllegalStateException> {
                     pulverizationConfig {
                         logicalDevice("device-1") {
@@ -55,7 +55,7 @@ class BasePulverizationConfigTest : FunSpec(
                 }
                 exc.message shouldContain "A component appear in more than one deployment unit"
             }
-            test("An exception should be thrown when the same component is in the deployment unit") {
+            "An exception should be thrown when the same component is in the deployment unit" {
                 shouldThrow<IllegalStateException> {
                     pulverizationConfig {
                         logicalDevice("device-1") {
@@ -64,7 +64,7 @@ class BasePulverizationConfigTest : FunSpec(
                     }
                 }
             }
-            test("The set of deployable unit should be accessed via the configuration") {
+            "The set of deployable unit should be accessed via the configuration" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
                         StateComponent and BehaviourComponent deployableOn Device
