@@ -1,3 +1,25 @@
+## [0.4.3](https://github.com/nicolasfara/pulverization-framework/compare/0.4.2...0.4.3) (2022-12-30)
+
+
+### Bug Fixes
+
+* enable IR js compiler and enable browser target ([033aa4b](https://github.com/nicolasfara/pulverization-framework/commit/033aa4b87a131f7a7502a6c78bea501af0c8c987))
+
+
+### Dependency updates
+
+* **deps:** update koin to v3.3.2 ([f83c5ea](https://github.com/nicolasfara/pulverization-framework/commit/f83c5eaa0767c28b4b3685a625e54f0e26e39ca1))
+
+
+### General maintenance
+
+* **build:** use new IR js compiler ([e0b9f4d](https://github.com/nicolasfara/pulverization-framework/commit/e0b9f4d25ce10081d463fc5d860d461ac6333c55))
+
+
+### Tests
+
+* align all tests with freespec ([17f2d41](https://github.com/nicolasfara/pulverization-framework/commit/17f2d4193453f6f4dda09c9c2895926434dd5b34))
+
 ## [0.4.2](https://github.com/nicolasfara/pulverization-framework/compare/0.4.1...0.4.2) (2022-12-28)
 
 
