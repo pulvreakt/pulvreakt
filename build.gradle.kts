@@ -137,6 +137,12 @@ allprojects {
             }
         }
 
+        js(IR) {
+            browser()
+            nodejs()
+            binaries.library()
+        }
+
         targets.all {
             compilations.all {
                 kotlinOptions {
@@ -144,8 +150,6 @@ allprojects {
                 }
             }
         }
-
-        js(IR) { nodejs() }
 
         val releaseStage: String? by project
         val nativeSetup: KotlinNativeTarget.() -> Unit = {
