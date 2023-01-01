@@ -20,6 +20,7 @@ taskTree = "com.dorongold.task-tree:2.1.1"
 conventionalCommits = "it.nicolasfarabegoli.conventional-commits:3.1.0"
 publishOnCentral = "org.danilopianini.publish-on-central:2.0.12"
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:0.3.0"
+sonarqube = "org.sonarqube:3.5.0.2730"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
