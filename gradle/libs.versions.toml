@@ -18,7 +18,7 @@ shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
 kover = "org.jetbrains.kotlinx.kover:0.6.1"
 taskTree = "com.dorongold.task-tree:2.1.0"
 conventionalCommits = "it.nicolasfarabegoli.conventional-commits:3.0.14"
-publishOnCentral = "org.danilopianini.publish-on-central:2.0.11"
+publishOnCentral = "org.danilopianini.publish-on-central:2.0.12"
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:0.3.0"
 
 [libraries]
