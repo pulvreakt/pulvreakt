@@ -20,6 +20,7 @@ plugins {
     alias(libs.plugins.conventionalCommits)
     alias(libs.plugins.publishOnCentral)
     alias(libs.plugins.gitSemVer)
+    alias(libs.plugins.sonarqube)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
@@ -83,6 +84,7 @@ allprojects {
         apply(plugin = publishOnCentral.id)
         apply(plugin = gitSemVer.id)
         apply(plugin = kotlinx.serialization.id)
+        apply(plugin = sonarqube.id)
     }
 
     repositories {
@@ -252,5 +254,13 @@ koverMerged {
         projects {
             excludes += listOf(":", ":examples:example-03")
         }
+    }
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "nicolasfara_pulverization-framework")
+        property("sonar.organization", "nicolasfara")
+        property("sonar.host.url", "https://sonarcloud.io")
     }
 }

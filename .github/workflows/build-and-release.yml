@@ -29,7 +29,10 @@ jobs:
       - name: Run assemble and check tasks
         run: |
           ./gradlew assemble --parallel
-          ./gradlew check --parallel
+          ./gradlew check sonarqube --parallel
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Test upload artifacts
         if: >-
           ${{
