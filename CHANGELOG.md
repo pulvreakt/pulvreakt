@@ -1,3 +1,33 @@
+## [0.4.4](https://github.com/nicolasfara/pulverization-framework/compare/0.4.3...0.4.4) (2023-01-09)
+
+
+### Bug Fixes
+
+* fix a problem with kotlin type inference forcing the declaration of some types explicitly. Morover, the Any serialization problem is fixed when an used type is definied in the DSL. ([8518f00](https://github.com/nicolasfara/pulverization-framework/commit/8518f00684c60e879ca306788f2ebb3c480d3d76))
+
+
+### General maintenance
+
+* setup sonarqube ([16576a9](https://github.com/nicolasfara/pulverization-framework/commit/16576a9512582e656974b84791c73fec35a0d54d))
+* update readme ([a4cd221](https://github.com/nicolasfara/pulverization-framework/commit/a4cd22137e97bf2bad90f7ce3a022bcbcb41c6ca))
+* update readme ([444a75c](https://github.com/nicolasfara/pulverization-framework/commit/444a75cf67a21f218d3836772107bd0e07c9befb))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.3.0 ([f277aba](https://github.com/nicolasfara/pulverization-framework/commit/f277abacdae8a7497b17e0cf84e102853f7b1be6))
+
+
+### Dependency updates
+
+* **deps:** update dependency org.jetbrains.kotlin.plugin.serialization to v1.8.0 ([fa40b3d](https://github.com/nicolasfara/pulverization-framework/commit/fa40b3dd9a2029b7068a8bb71076b87015ea1a76))
+* **deps:** update node.js to 18.13 ([24c6665](https://github.com/nicolasfara/pulverization-framework/commit/24c6665ac61ef86c7a0597f2e91f0f9c456f4168))
+* **deps:** update plugin conventionalcommits to v3.1.0 ([9323f45](https://github.com/nicolasfara/pulverization-framework/commit/9323f45bc9d58bdcded05b187ff45095d87da24c))
+* **deps:** update plugin gitsemver to v1 ([93ffe2c](https://github.com/nicolasfara/pulverization-framework/commit/93ffe2c43b4e85137915f8512679a379775f5498))
+* **deps:** update plugin publishoncentral to v2.0.12 ([caf0489](https://github.com/nicolasfara/pulverization-framework/commit/caf0489532d819d7c52c08140b0e0aaac3afbc85))
+* **deps:** update plugin publishoncentral to v3 ([e6e0410](https://github.com/nicolasfara/pulverization-framework/commit/e6e0410b9f7fc11a5f655442dc56675e6e474821))
+* **deps:** update plugin tasktree to v2.1.1 ([7e6906e](https://github.com/nicolasfara/pulverization-framework/commit/7e6906e9d53e0a54eb0042e4c6367481815a1639))
+
 ## [0.4.3](https://github.com/nicolasfara/pulverization-framework/compare/0.4.2...0.4.3) (2022-12-30)
 
 
