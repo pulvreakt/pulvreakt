@@ -11,10 +11,6 @@ import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommPayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.FixtureBehaviour
-import it.nicolasfarabegoli.pulverization.runtime.dsl.NoVal
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.behaviourLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StatePayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
@@ -41,7 +37,7 @@ class AsyncScenario : FreeSpec(
                         val comm: CommPayload = commDefer.await()
                         st shouldBe StatePayload(0)
                         comm shouldBe CommPayload(3)
-                        val r = b(st, listOf(comm), NoVal)
+                        val r = b(st, listOf(comm), 1)
                         sr.sendToComponent(r.newState)
                         cr.sendToComponent(r.newExport)
                     }

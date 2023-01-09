@@ -1,14 +1,13 @@
 package example.components
 
 import it.nicolasfarabegoli.pulverization.core.Communication
-import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NeighboursMessage(val device: String, val location: Gps) : CommunicationPayload
+data class NeighboursMessage(val device: String, val location: Gps)
 
 expect class CommunicationComp : Communication<NeighboursMessage>
 

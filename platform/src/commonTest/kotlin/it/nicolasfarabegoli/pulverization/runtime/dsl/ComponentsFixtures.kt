@@ -1,12 +1,14 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import it.nicolasfarabegoli.pulverization.component.Context
+import it.nicolasfarabegoli.pulverization.core.Actuator
+import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.BehaviourOutput
 import it.nicolasfarabegoli.pulverization.core.Communication
-import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
+import it.nicolasfarabegoli.pulverization.core.Sensor
+import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
-import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
@@ -17,21 +19,21 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StatePayload(val i: Int) : StateRepresentation
+data class StatePayload(val i: Int)
 
 @Serializable
-data class CommPayload(val i: Int) : CommunicationPayload
+data class CommPayload(val i: Int)
 
-class FixtureBehaviour : Behaviour<StatePayload, CommPayload, NoVal, NoVal, Unit> {
+class FixtureBehaviour : Behaviour<StatePayload, CommPayload, Int, Double, Unit> {
     override val context: Context
         get() = TODO("Not yet implemented")
 
     override fun invoke(
         state: StatePayload,
         export: List<CommPayload>,
-        sensedValues: NoVal,
-    ): BehaviourOutput<StatePayload, CommPayload, NoVal, Unit> =
-        BehaviourOutput(state, CommPayload(2), NoVal, Unit)
+        sensedValues: Int,
+    ): BehaviourOutput<StatePayload, CommPayload, Double, Unit> =
+        BehaviourOutput(state, CommPayload(2), 1.0, Unit)
 }
 
 class StateFixture : State<StatePayload> {
@@ -53,6 +55,38 @@ class CommunicationFixture : Communication<CommPayload> {
 
     override suspend fun send(payload: CommPayload) {}
     override fun receive(): Flow<CommPayload> = emptyFlow()
+}
+
+class DeviceActuator : Actuator<Double> {
+    override suspend fun actuate(payload: Double) {
+        TODO("Not yet implemented")
+    }
+}
+
+class DeviceActuatorContainer : ActuatorsContainer() {
+    override val context: Context
+        get() = TODO("Not yet implemented")
+
+    override suspend fun initialize() {
+        val actuator = DeviceActuator().apply { initialize() }
+        this += actuator
+    }
+}
+
+class DeviceSensor : Sensor<Int> {
+    override suspend fun sense(): Int {
+        TODO("Not yet implemented")
+    }
+}
+
+class DeviceSensorContainer : SensorsContainer() {
+    override val context: Context
+        get() = TODO("Not yet implemented")
+
+    override suspend fun initialize() {
+        val sensor = DeviceSensor().apply { initialize() }
+        this += sensor
+    }
 }
 
 class RemoteCommunicator(private val comm: MutableSharedFlow<ByteArray>) : Communicator {

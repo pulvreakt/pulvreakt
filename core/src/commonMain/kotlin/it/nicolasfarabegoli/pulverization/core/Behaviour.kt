@@ -8,7 +8,7 @@ package it.nicolasfarabegoli.pulverization.core
  * @param A the type of the actuations
  * @param O the type of the outcome of the function
  */
-data class BehaviourOutput<S : StateRepresentation, E : CommunicationPayload, A, O>(
+data class BehaviourOutput<S : Any, E : Any, A : Any, O : Any>(
     val newState: S,
     val newExport: E,
     val actuations: A,
@@ -23,7 +23,7 @@ data class BehaviourOutput<S : StateRepresentation, E : CommunicationPayload, A,
  * @param W the type of the sensed values
  * @param A the type of the actuation to do
  */
-interface Behaviour<S, E, W, A, O> : PulverizedComponent where S : StateRepresentation, E : CommunicationPayload {
+interface Behaviour<S : Any, E : Any, W : Any, A : Any, O : Any> : PulverizedComponent {
     override val componentType: PulverizedComponentType
         get() = BehaviourComponent
 

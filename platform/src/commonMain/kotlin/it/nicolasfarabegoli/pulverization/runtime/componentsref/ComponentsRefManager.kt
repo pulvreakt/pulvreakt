@@ -3,17 +3,15 @@ package it.nicolasfarabegoli.pulverization.runtime.componentsref
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.StateComponent
-import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
-internal fun <S : StateRepresentation> createStateRef(
+internal fun <S : Any> createStateRef(
     serializer: KSerializer<S>,
     allComponents: Set<PulverizedComponentType>,
     deploymentUnit: Set<PulverizedComponentType>,
@@ -27,7 +25,7 @@ internal fun <S : StateRepresentation> createStateRef(
     }
 }
 
-internal fun <C : CommunicationPayload> createCommunicationRef(
+internal fun <C : Any> createCommunicationRef(
     serializer: KSerializer<C>,
     allComponents: Set<PulverizedComponentType>,
     deploymentUnit: Set<PulverizedComponentType>,
@@ -98,12 +96,12 @@ internal fun <S : Any> setupBehaviourRef(
     }
 }
 
-internal data class ComponentsRefInstances<S, C, SS, AS>(
+internal data class ComponentsRefInstances<S : Any, C : Any, SS : Any, AS : Any>(
     val stateRef: StateRef<S>,
     val communicationRef: CommunicationRef<C>,
     val sensorsRef: SensorsRef<SS>,
     val actuatorsRef: ActuatorsRef<AS>,
-) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any
+)
 
 internal sealed interface Placement
 internal object Remote : Placement
