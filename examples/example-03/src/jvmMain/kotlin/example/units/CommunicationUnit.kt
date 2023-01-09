@@ -6,6 +6,7 @@ import example.components.communicationLogic
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.RabbitmqCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.defaultRabbitMQRemotePlace
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
 import kotlinx.coroutines.runBlocking
 

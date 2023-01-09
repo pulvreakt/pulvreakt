@@ -11,6 +11,9 @@ import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommPayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.FixtureBehaviour
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.behaviourLogic
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StatePayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
