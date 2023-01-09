@@ -7,13 +7,11 @@ import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationPayload
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.core.StateComponent
-import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
@@ -37,7 +35,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -51,56 +53,51 @@ typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>
 typealias BehaviourLogicType<S, C, SS, AS, R> =
     suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
+@PublishedApi
+internal class AnySerializer<S> : KSerializer<S> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("kotlin.Any", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): S {
+        TODO("Not yet implemented")
+    }
+
+    override fun serialize(encoder: Encoder, value: S) {
+        TODO("Not yet implemented")
+    }
+}
+
+@PublishedApi
+internal inline fun <reified T> getSerializer(): KSerializer<T> = when (T::class) {
+    Any::class -> AnySerializer()
+    else -> serializer()
+}
+
 /**
  * Configure the platform based on the [configuration] of a logical device.
  */
 inline fun <reified S, reified C, reified SS, reified AS, reified R> pulverizationPlatform(
     configuration: LogicalDeviceConfiguration,
     init: PulverizationPlatformScope<S, C, SS, AS, R>.() -> Unit,
-) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any =
-    PulverizationPlatformScope<S, C, SS, AS, R>(
-        serializer(),
-        serializer(),
-        serializer(),
-        serializer(),
+): PulverizationPlatformScope<S, C, SS, AS, R> where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+    return PulverizationPlatformScope<S, C, SS, AS, R>(
+        getSerializer(),
+        getSerializer(),
+        getSerializer(),
+        getSerializer(),
         configuration,
     ).apply(init)
-
-/**
- * Represent the absence of value.
- * This specific type aim to replace the 'Nothing' type which is not serializable.
- * Use this type in all the place where a serializable type is required but no concrete type is necessarily.
- */
-@Serializable
-object NoVal
-
-/**
- * Represent the absence of value.
- * This specific type aim to replace the 'Nothing' type which is not serializable.
- * Use this type in all the place where a [StateRepresentation] is required but no concrete type is necessarily.
- */
-@Serializable
-object NoState : StateRepresentation
-
-/**
- * Represent the absence of value.
- * This specific type aim to replace the 'Nothing' type which is not serializable.
- * Use this type in all the place where a [CommunicationPayload] is required but no concrete type is necessarily.
- */
-@Serializable
-object NoComm : CommunicationPayload
+}
 
 /**
  * DSL scope for configure the platform with all components logic and the type of communicator.
  */
-class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
+class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
     private val stateSer: KSerializer<S>,
     private val commSer: KSerializer<C>,
     private val senseSer: KSerializer<SS>,
     private val actSer: KSerializer<AS>,
     private val deviceConfig: LogicalDeviceConfiguration,
-) where S : StateRepresentation, C : CommunicationPayload {
-
+) {
     private var communicator: () -> Communicator? = { null }
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
         object : RemotePlaceProvider, KoinComponent {
@@ -214,66 +211,49 @@ class PulverizationPlatformScope<S, C, SS : Any, AS : Any, R : Any>(
         allComponentsRef.forEach { it.finalize() }
     }
 
-    companion object {
-        /**
-         * This method configure the [behaviour] to be used and the corresponding [logic].
-         */
-        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
-            behaviour: Behaviour<S, C, SS, AS, R>,
-            logic: BehaviourLogicType<S, C, SS, AS, R>,
-        ) where S : StateRepresentation, C : CommunicationPayload, SS : Any, AS : Any, R : Any {
-            configuredComponents += BehaviourComponent
-            behaviourComponent = behaviour
-            behaviourLogic = logic
-        }
+    /**
+     * This method configure the [behaviour] to be used and the corresponding [logic].
+     */
+    fun behaviourLogic(behaviour: Behaviour<S, C, SS, AS, R>, logic: BehaviourLogicType<S, C, SS, AS, R>) {
+        configuredComponents += BehaviourComponent
+        behaviourComponent = behaviour
+        behaviourLogic = logic
+    }
 
-        /**
-         * This method configure the [communication] to be used and the corresponding [logic].
-         */
-        fun <C> PulverizationPlatformScope<NoState, C, NoVal, NoVal, NoVal>.communicationLogic(
-            communication: Communication<C>,
-            logic: CommunicationLogicType<C>,
-        ) where C : CommunicationPayload {
-            configuredComponents += CommunicationComponent
-            communicationComponent = communication
-            communicationLogic = logic
-        }
+    /**
+     * This method configure the [communication] to be used and the corresponding [logic].
+     */
+    fun communicationLogic(communication: Communication<C>, logic: CommunicationLogicType<C>) {
+        configuredComponents += CommunicationComponent
+        communicationComponent = communication
+        communicationLogic = logic
+    }
 
-        /**
-         * This method configure the [actuators] to be used and the corresponding [logic].
-         */
-        fun <AS : Any> PulverizationPlatformScope<NoState, NoComm, NoVal, AS, NoVal>.actuatorsLogic(
-            actuators: ActuatorsContainer,
-            logic: ActuatorsLogicType<AS>,
-        ) {
-            configuredComponents += ActuatorsComponent
-            actuatorsComponent = actuators
-            actuatorsLogic = logic
-        }
+    /**
+     * This method configure the [actuators] to be used and the corresponding [logic].
+     */
+    fun actuatorsLogic(actuators: ActuatorsContainer, logic: ActuatorsLogicType<AS>) {
+        configuredComponents += ActuatorsComponent
+        actuatorsComponent = actuators
+        actuatorsLogic = logic
+    }
 
-        /**
-         * This method configure the [sensors] to be used and the corresponding [logic].
-         */
-        fun <SS : Any> PulverizationPlatformScope<NoState, NoComm, SS, NoVal, NoVal>.sensorsLogic(
-            sensors: SensorsContainer,
-            logic: SensorsLogicType<SS>,
-        ) {
-            configuredComponents += SensorsComponent
-            sensorsComponent = sensors
-            sensorsLogic = logic
-        }
+    /**
+     * This method configure the [sensors] to be used and the corresponding [logic].
+     */
+    fun sensorsLogic(sensors: SensorsContainer, logic: SensorsLogicType<SS>) {
+        configuredComponents += SensorsComponent
+        sensorsComponent = sensors
+        sensorsLogic = logic
+    }
 
-        /**
-         * This method configure the [state] to be used and the corresponding [logic].
-         */
-        fun <S> PulverizationPlatformScope<S, NoComm, NoVal, NoVal, NoVal>.stateLogic(
-            state: State<S>,
-            logic: StateLogicType<S>,
-        ) where S : StateRepresentation {
-            configuredComponents += StateComponent
-            stateComponent = state
-            stateLogic = logic
-        }
+    /**
+     * This method configure the [state] to be used and the corresponding [logic].
+     */
+    fun stateLogic(state: State<S>, logic: StateLogicType<S>) {
+        configuredComponents += StateComponent
+        stateComponent = state
+        stateLogic = logic
     }
 }
 

@@ -7,7 +7,6 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
-import it.nicolasfarabegoli.pulverization.runtime.dsl.NoVal
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -18,7 +17,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVal, Unit> {
+class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, Any, Unit> {
     override val context: Context by inject()
 
     companion object {
@@ -30,7 +29,7 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
         state: StateOps,
         export: List<NeighboursMessage>,
         sensedValues: DeviceSensors,
-    ): BehaviourOutput<StateOps, NeighboursMessage, NoVal, Unit> {
+    ): BehaviourOutput<StateOps, NeighboursMessage, Any, Unit> {
         val (myLat, myLong) = sensedValues.gps
         val distances = export.map { (device, location) ->
             val dLat = (location.lat - myLat) * PI / ANGLE
@@ -46,7 +45,7 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
         return BehaviourOutput(
             Distances(distances, min),
             NeighboursMessage(context.deviceID, sensedValues.gps),
-            NoVal,
+            Unit,
             Unit,
         )
     }
@@ -54,11 +53,11 @@ class BehaviourComp : Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVa
 
 @Suppress("UNUSED_PARAMETER")
 suspend fun behaviourLogics(
-    behaviour: Behaviour<StateOps, NeighboursMessage, DeviceSensors, NoVal, Unit>,
+    behaviour: Behaviour<StateOps, NeighboursMessage, DeviceSensors, Any, Unit>,
     state: StateRef<StateOps>,
     comm: CommunicationRef<NeighboursMessage>,
     sensors: SensorsRef<DeviceSensors>,
-    actuators: ActuatorsRef<NoVal>,
+    actuators: ActuatorsRef<Any>,
 ) = coroutineScope {
     var neighboursComm = listOf<NeighboursMessage>()
     val jobComm = launch {

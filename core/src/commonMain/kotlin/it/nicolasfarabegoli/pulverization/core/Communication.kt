@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Marker interface modelling the export payload.
  */
-interface CommunicationPayload
+// interface CommunicationPayload
 
 /**
  * This interface model the _Communication component_ in a pulverized context.
@@ -13,7 +13,7 @@ interface CommunicationPayload
  * @param S the type of the message to send.
  * @param R the type of the message to receive.
  */
-interface Communication<P : CommunicationPayload> : PulverizedComponent {
+interface Communication<P : Any> : PulverizedComponent {
     override val componentType: PulverizedComponentType
         get() = CommunicationComponent
 

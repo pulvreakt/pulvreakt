@@ -4,13 +4,13 @@ package it.nicolasfarabegoli.pulverization.core
  * Marker interface modelling the representation of the [State].
  * Each state representation must implement this interface.
  */
-interface StateRepresentation
+// interface StateRepresentation
 
 /**
  * Models the concept of [State] in the pulverization context.
  * @param S the type of the [State].
  */
-interface State<S : StateRepresentation> : PulverizedComponent {
+interface State<S : Any> : PulverizedComponent {
     override val componentType: PulverizedComponentType
         get() = StateComponent
 

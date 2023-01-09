@@ -11,9 +11,7 @@ import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.behaviourLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.context.stopKoin
@@ -24,6 +22,22 @@ class PulverizationRuntimeTest : FreeSpec(
             logicalDevice("device-1") {
                 BehaviourComponent and StateComponent deployableOn Edge
                 CommunicationComponent deployableOn Cloud
+            }
+        }
+        "The kotlin type inference" - {
+            "should infer the right type using only sensors and actuators" {
+                pulverizationPlatform<Any, Any, Int, Double, Unit>(config.getDeviceConfiguration("device-1")!!) {
+                    actuatorsLogic(DeviceActuatorContainer()) { _, _: BehaviourRef<Double> -> }
+                    sensorsLogic(DeviceSensorContainer()) { _, _: BehaviourRef<Int> -> }
+                }
+            }
+            "should compile mixing sensors and actuators with other component" {
+                pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
+                    behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                    communicationLogic(CommunicationFixture()) { _, _ -> }
+                    sensorsLogic(DeviceSensorContainer()) { _, _ -> }
+                    actuatorsLogic(DeviceActuatorContainer()) { _, _ -> }
+                }
             }
         }
         "The platform DSL" - {

@@ -2,13 +2,12 @@ package example.components
 
 import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.State
-import it.nicolasfarabegoli.pulverization.core.StateRepresentation
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.serialization.Serializable
 import org.koin.core.component.inject
 
 @Serializable
-sealed interface StateOps : StateRepresentation
+sealed interface StateOps
 
 @Serializable
 data class Distances(val distances: List<Pair<String, Double>>, val nearest: Pair<String, Double>?) : StateOps
