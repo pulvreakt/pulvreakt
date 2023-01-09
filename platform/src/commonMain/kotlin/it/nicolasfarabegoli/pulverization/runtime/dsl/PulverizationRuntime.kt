@@ -211,49 +211,67 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
         allComponentsRef.forEach { it.finalize() }
     }
 
-    /**
-     * This method configure the [behaviour] to be used and the corresponding [logic].
-     */
-    fun behaviourLogic(behaviour: Behaviour<S, C, SS, AS, R>, logic: BehaviourLogicType<S, C, SS, AS, R>) {
-        configuredComponents += BehaviourComponent
-        behaviourComponent = behaviour
-        behaviourLogic = logic
-    }
+    companion object {
 
-    /**
-     * This method configure the [communication] to be used and the corresponding [logic].
-     */
-    fun communicationLogic(communication: Communication<C>, logic: CommunicationLogicType<C>) {
-        configuredComponents += CommunicationComponent
-        communicationComponent = communication
-        communicationLogic = logic
-    }
+        /**
+         * This method configure the [behaviour] to be used and the corresponding [logic].
+         */
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.behaviourLogic(
+            behaviour: Behaviour<S, C, SS, AS, R>,
+            logic: BehaviourLogicType<S, C, SS, AS, R>,
+        ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+            configuredComponents += BehaviourComponent
+            behaviourComponent = behaviour
+            behaviourLogic = logic
+        }
 
-    /**
-     * This method configure the [actuators] to be used and the corresponding [logic].
-     */
-    fun actuatorsLogic(actuators: ActuatorsContainer, logic: ActuatorsLogicType<AS>) {
-        configuredComponents += ActuatorsComponent
-        actuatorsComponent = actuators
-        actuatorsLogic = logic
-    }
+        /**
+         * This method configure the [communication] to be used and the corresponding [logic].
+         */
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.communicationLogic(
+            communication: Communication<C>,
+            logic: CommunicationLogicType<C>,
+        ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+            configuredComponents += CommunicationComponent
+            communicationComponent = communication
+            communicationLogic = logic
+        }
 
-    /**
-     * This method configure the [sensors] to be used and the corresponding [logic].
-     */
-    fun sensorsLogic(sensors: SensorsContainer, logic: SensorsLogicType<SS>) {
-        configuredComponents += SensorsComponent
-        sensorsComponent = sensors
-        sensorsLogic = logic
-    }
+        /**
+         * This method configure the [actuators] to be used and the corresponding [logic].
+         */
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.actuatorsLogic(
+            actuators: ActuatorsContainer,
+            logic: ActuatorsLogicType<AS>,
+        ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+            configuredComponents += ActuatorsComponent
+            actuatorsComponent = actuators
+            actuatorsLogic = logic
+        }
 
-    /**
-     * This method configure the [state] to be used and the corresponding [logic].
-     */
-    fun stateLogic(state: State<S>, logic: StateLogicType<S>) {
-        configuredComponents += StateComponent
-        stateComponent = state
-        stateLogic = logic
+        /**
+         * This method configure the [sensors] to be used and the corresponding [logic].
+         */
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.sensorsLogic(
+            sensors: SensorsContainer,
+            logic: SensorsLogicType<SS>,
+        ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+            configuredComponents += SensorsComponent
+            sensorsComponent = sensors
+            sensorsLogic = logic
+        }
+
+        /**
+         * This method configure the [state] to be used and the corresponding [logic].
+         */
+        fun <S, C, SS, AS, R> PulverizationPlatformScope<S, C, SS, AS, R>.stateLogic(
+            state: State<S>,
+            logic: StateLogicType<S>,
+        ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
+            configuredComponents += StateComponent
+            stateComponent = state
+            stateLogic = logic
+        }
     }
 }
 
