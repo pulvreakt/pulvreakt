@@ -1,3 +1,16 @@
+## [0.4.5](https://github.com/nicolasfara/pulverization-framework/compare/0.4.4...0.4.5) (2023-01-10)
+
+
+### Bug Fixes
+
+* restore companion object in order to help the type inference to infer the default types without specifing them ([44431ce](https://github.com/nicolasfara/pulverization-framework/commit/44431cecc21145279f68b8d18b94aa4578120f95))
+
+
+### Dependency updates
+
+* **deps:** update dependency hast-util-is-element to v2.1.3 ([c2547ae](https://github.com/nicolasfara/pulverization-framework/commit/c2547aef47cae27a52b98cbb78ae9ff4dc8a69c9))
+* **deps:** update plugin publishoncentral to v3.1.0 ([81ff2b4](https://github.com/nicolasfara/pulverization-framework/commit/81ff2b4838dd44f7060c590cf95384d996d8de89))
+
 ## [0.4.4](https://github.com/nicolasfara/pulverization-framework/compare/0.4.3...0.4.4) (2023-01-09)
 
 
