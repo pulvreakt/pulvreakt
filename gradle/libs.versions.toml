@@ -2,7 +2,7 @@
 kotlin = "1.8.0"
 dokka = "1.7.20"
 detekt = "1.22.0"
-ktlint-plugin = "11.0.0"
+ktlint-plugin = "11.1.0"
 kotest = "5.5.4"
 shadowjar = "7.1.2"
 koin = "3.3.2"
