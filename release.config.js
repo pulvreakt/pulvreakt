@@ -1,7 +1,7 @@
 const publishCmd = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md || exit 1
 git push --force origin \${nextRelease.version} || exit 2
-./gradlew uploadAll releaseStagingRepositoryOnMavenCentral || exit 3
+./gradlew -PstagingRepoId=\${process.env.STAGING_REPO_ID} releaseStagingRepositoryOnMavenCentral || exit 3
 ./gradlew uploadAllGithub || true
 `;
 
