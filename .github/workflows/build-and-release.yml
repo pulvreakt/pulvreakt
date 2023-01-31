@@ -9,7 +9,35 @@ env:
   JDK_VERSION: 17.0.5
 
 jobs:
+  staging-repo:
+    runs-on: ubuntu-latest
+    outputs:
+      maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
+      next-version: ${{ steps.staging-repo.outputs.next-version }}
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
+      - name: Setup Java
+        uses: actions/setup-java@v3.9.0
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
+      - name: Create staging repository
+        id: staging-repo
+        run: |
+          ./gradlew createStagingRepositoryOnMavenCentral --parallel
+          [[ -f build/staging-repo-ids.properties ]] || (
+            echo "Staging repositories ID file not found" &&
+            exit 1
+          )
+          cat build/staging-repo-ids.properties >> $GITHUB_OUTPUT
+          NEXT_VERSION=${$(npx semantic-release --dry-run | grep 'The next release version is' | sed -E 's/.* ([[:digit:].]+)$/\1/'):-"0.1.0-$(git rev-parse --short HEAD)"}
+          echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
   build:
+    needs: [ staging-repo ]
     strategy:
       matrix:
         os: [ ubuntu, macos, windows ]
@@ -36,14 +64,13 @@ jobs:
       - name: Test upload artifacts
         if: >-
           ${{
-            runner.os == 'macOS'
-            && !github.event.repository.fork
+            !github.event.repository.fork
             && (
               github.event_name != 'pull_request'
               || github.event.pull_request.head.repo.full_name == github.repository
             )
           }}
-        run: ./gradlew uploadAll close --parallel
+        run: ./gradlew -Pversion=${{ needs.staging-repo.outputs.next-version }} -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -86,7 +113,7 @@ jobs:
     concurrency:
       group: release
     needs: [ build, docsite ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
       !github.event.repository.fork
@@ -111,12 +138,18 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATEKEY }}
           gpg-passphrase: GPG_PASSPHRASE
           cache: gradle
+      - name: Close staging repository
+        run: ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Release artifacts
         run: |
           npm install
           npx semantic-release
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          STAGING_REPO_ID: ${{ needs.staging-repo.outputs.maven-central-repo-id }}
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
