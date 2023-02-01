@@ -21,7 +21,7 @@ jobs:
       }}
     outputs:
       maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
-      next-version: ${{ steps.staging-repo.outputs.next-version }}
+      next-version: ${{ steps.staging-repo.outputs.new-release-version }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.3.0
@@ -46,8 +46,7 @@ jobs:
           )
           cat build/staging-repo-ids.properties >> $GITHUB_OUTPUT
           npm install
-          NEXT_VERSION=${$(npx semantic-release --dry-run | grep 'The next release version is' | sed -E 's/.* ([[:digit:].]+)$/\1/'):-"0.1.0-$(git rev-parse --short HEAD)"}
-          echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          npx semantic-release --dry-run
   build:
     needs: [ staging-repo ]
     strategy:
