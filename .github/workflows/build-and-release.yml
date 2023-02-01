@@ -11,14 +11,14 @@ env:
 jobs:
   staging-repo:
     runs-on: ubuntu-latest
+    concurrency:
+      group: staging-repo
     if: >-
-      ${{
-        !github.event.repository.fork
-        && (
-          github.event_name != 'pull_request'
-          || github.event.pull_request.head.repo.full_name == github.repository
-        )
-      }}
+      !github.event.repository.fork
+      && (
+        github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository
+      )
     outputs:
       maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
       next-version: ${{ steps.staging-repo.outputs.new-release-version }}
@@ -75,13 +75,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test upload artifacts
         if: >-
-          ${{
-            !github.event.repository.fork
-            && (
-              github.event_name != 'pull_request'
-              || github.event.pull_request.head.repo.full_name == github.repository
-            )
-          }}
+          !github.event.repository.fork
+          && (
+            github.event_name != 'pull_request'
+            || github.event.pull_request.head.repo.full_name == github.repository
+          )
         run: ./gradlew -Pversion=${{ needs.staging-repo.outputs.next-version }} -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
         env:
           MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
@@ -121,10 +119,37 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docsite/build
 
+  close-staging-repos:
+    needs: [ staging-repo, build, docsite ]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: close-staging-repos
+    if: >-
+      !github.event.repository.fork
+      && (
+        github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository
+      )
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.3.0
+      - name: Setup Java
+        uses: actions/setup-java@v3.9.0
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
+      - name: Close staging repositories
+        run: |
+          ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
+        env:
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
   release:
     concurrency:
       group: release
-    needs: [ staging-repo, build, docsite ]
+    needs: [ staging-repo, build, docsite, close-staging-repos ]
     runs-on: ubuntu-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
@@ -150,11 +175,6 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATEKEY }}
           gpg-passphrase: GPG_PASSPHRASE
           cache: gradle
-      - name: Close staging repository
-        run: ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
-        env:
-          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
-          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Release artifacts
         run: |
           npm install
