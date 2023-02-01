@@ -36,7 +36,7 @@ jobs:
       - name: Create staging repository
         id: staging-repo
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         run: |
           ./gradlew createStagingRepositoryOnMavenCentral --parallel
@@ -84,7 +84,7 @@ jobs:
           }}
         run: ./gradlew -Pversion=${{ needs.staging-repo.outputs.next-version }} -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
@@ -145,7 +145,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRIUTION }}
           java-version: ${{ env.JDK_VERSION }}
           server-id: ossrh
-          server-username: MAVEN_CENTRAL_USERNAME
+          server-username: nicolasfarabegoli
           server-password: MAVEN_CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATEKEY }}
           gpg-passphrase: GPG_PASSPHRASE
@@ -153,7 +153,7 @@ jobs:
       - name: Close staging repository
         run: ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       - name: Release artifacts
         run: |
@@ -162,7 +162,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           STAGING_REPO_ID: ${{ needs.staging-repo.outputs.maven-central-repo-id }}
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
