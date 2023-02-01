@@ -45,6 +45,7 @@ jobs:
             exit 1
           )
           cat build/staging-repo-ids.properties >> $GITHUB_OUTPUT
+          npm install
           NEXT_VERSION=${$(npx semantic-release --dry-run | grep 'The next release version is' | sed -E 's/.* ([[:digit:].]+)$/\1/'):-"0.1.0-$(git rev-parse --short HEAD)"}
           echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
   build:
