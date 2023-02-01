@@ -139,7 +139,7 @@ allprojects {
                 macosX64(nativeSetup)
                 macosArm64(nativeSetup)
                 iosArm64(nativeSetup)
-                iosArm32(nativeSetup)
+                // iosArm32(nativeSetup)
                 iosSimulatorArm64(nativeSetup)
                 watchosArm64(nativeSetup)
                 watchosArm32(nativeSetup)
