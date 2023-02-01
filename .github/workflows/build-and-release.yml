@@ -44,7 +44,7 @@ jobs:
             echo "Staging repositories ID file not found" &&
             exit 1
           )
-          cat build/staging-repo-ids.properties >> $GITHUB_OUTPUT
+          while IFS= read -r line; do echo "$line" >> $GITHUB_OUTPUT; done < build/staging-repo-ids.properties
           npm install
           npx semantic-release --dry-run
   build:
