@@ -6,6 +6,7 @@ git push --force origin \${nextRelease.version} || exit 2
 
 const config = require('semantic-release-preconfigured-conventional-commits');
 config.plugins.push(
+  "semantic-release-export-data",
   [
     "@semantic-release/exec",
     {
