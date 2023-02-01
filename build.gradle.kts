@@ -148,7 +148,7 @@ allprojects {
                 tvosSimulatorArm64(nativeSetup)
             }
 
-            "windows" -> {
+            "windows", "windows server 2022" -> {
                 mingwX64(nativeSetup)
                 // mingwX86()
             }
