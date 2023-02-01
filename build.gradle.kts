@@ -45,18 +45,6 @@ tasks {
     }
 }
 
-fun KotlinNativeTarget.configureNativeTarget() {
-    compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
-    compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
-    binaries {
-        sharedLib()
-        staticLib()
-        "main".let {
-            executable { entryPoint = it }
-        }
-    }
-}
-
 allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
@@ -129,44 +117,53 @@ allprojects {
             binaries.library()
         }
 
+        val nativeSetup: KotlinNativeTarget.() -> Unit = {
+            compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
+            compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
+            binaries {
+                sharedLib()
+                staticLib()
+            }
+        }
+
+        when (val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()) {
+            "linux" -> {
+                linuxX64(nativeSetup)
+                // linuxArm64(nativeSetup)
+                // linuxArm32Hfp(nativeSetup)
+                // linuxMips32(nativeSetup)
+                // linuxMipsel32(nativeSetup)
+            }
+
+            "mac os x" -> {
+                macosX64(nativeSetup)
+                macosArm64(nativeSetup)
+                iosArm64(nativeSetup)
+                iosArm32(nativeSetup)
+                iosSimulatorArm64(nativeSetup)
+                watchosArm64(nativeSetup)
+                watchosArm32(nativeSetup)
+                watchosSimulatorArm64(nativeSetup)
+                tvosArm64(nativeSetup)
+                tvosSimulatorArm64(nativeSetup)
+            }
+
+            "windows" -> {
+                mingwX64(nativeSetup)
+                // mingwX86()
+            }
+
+            else -> throw GradleException(
+                "Host OS '$hostOs' is not supported in Kotlin/Native.",
+            )
+        }
+
         targets.all {
             compilations.all {
                 kotlinOptions {
                     allWarningsAsErrors = true
                 }
             }
-        }
-
-        when (val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()) {
-            "linux" -> {
-                linuxX64().configureNativeTarget()
-                // linuxArm64().configureNativeTarget()
-                // linuxArm32Hfp().configureNativeTarget()
-                // linuxMips32().configureNativeTarget()
-                // linuxMipsel32().configureNativeTarget()
-            }
-
-            "mac os x" -> {
-                macosX64().configureNativeTarget()
-                macosArm64().configureNativeTarget()
-                iosArm64().configureNativeTarget()
-                iosArm32().configureNativeTarget()
-                iosSimulatorArm64().configureNativeTarget()
-                watchosArm64().configureNativeTarget()
-                watchosArm32().configureNativeTarget()
-                watchosSimulatorArm64().configureNativeTarget()
-                tvosArm64().configureNativeTarget()
-                tvosSimulatorArm64().configureNativeTarget()
-            }
-
-            "windows" -> {
-                mingwX64().configureNativeTarget()
-                // mingwX86().configureNativeTarget()
-            }
-
-            else -> throw GradleException(
-                "Host OS '$hostOs' is not supported in Kotlin/Native.",
-            )
         }
     }
 
