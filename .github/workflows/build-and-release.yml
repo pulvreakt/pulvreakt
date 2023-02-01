@@ -11,6 +11,14 @@ env:
 jobs:
   staging-repo:
     runs-on: ubuntu-latest
+    if: >-
+      ${{
+        !github.event.repository.fork
+        && (
+          github.event_name != 'pull_request'
+          || github.event.pull_request.head.repo.full_name == github.repository
+        )
+      }}
     outputs:
       maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
       next-version: ${{ steps.staging-repo.outputs.next-version }}
@@ -27,6 +35,9 @@ jobs:
           cache: gradle
       - name: Create staging repository
         id: staging-repo
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         run: |
           ./gradlew createStagingRepositoryOnMavenCentral --parallel
           [[ -f build/staging-repo-ids.properties ]] || (
@@ -57,10 +68,9 @@ jobs:
       - name: Run assemble and check tasks
         run: |
           ./gradlew assemble --parallel
-          ./gradlew check sonarqube --parallel
+          ./gradlew check --parallel
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Test upload artifacts
         if: >-
           ${{
