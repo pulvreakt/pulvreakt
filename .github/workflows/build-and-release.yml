@@ -112,7 +112,7 @@ jobs:
   release:
     concurrency:
       group: release
-    needs: [ build, docsite ]
+    needs: [ staging-repo, build, docsite ]
     runs-on: ubuntu-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
@@ -159,6 +159,7 @@ jobs:
   success:
     runs-on: ubuntu-latest
     needs:
+      - staging-repo
       - release
       - build
       - docsite
