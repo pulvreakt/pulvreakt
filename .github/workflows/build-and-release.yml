@@ -46,7 +46,7 @@ jobs:
           )
           REPO_IDS=$(cat build/staging-repo-ids.properties)
           echo "Staging repositories IDs:\n$REPO_IDS"
-          cat "build/staging-repo-ids.properties" >> $GITHUB_OUTPUT
+          echo $REPO_IDS >> $GITHUB_OUTPUT
           npm install
           npx semantic-release --dry-run
           DEFAULT_VERSION="$(git describe --tags)"
@@ -89,7 +89,7 @@ jobs:
             github.event_name != 'pull_request'
             || github.event.pull_request.head.repo.full_name == github.repository
           )
-        run: ./gradlew -Pversion=${{ needs.staging-repo.outputs.next-version }} -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
+        run: ./gradlew -Pversion="${{ needs.staging-repo.outputs.next-version }}" -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
         env:
           MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
