@@ -7,3 +7,27 @@ pull_request_rules:
     actions:
       merge:
         method: rebase
+  - name: Auto-rebase if appropriately labeled
+    conditions:
+      - label=auto-update-rebase
+      - -draft
+      - -conflict
+    actions:
+      rebase:
+  - name: Auto-update with merge if appropriately labeled
+    conditions:
+      - label=auto-update-merge
+      - -draft
+      - -conflict
+    actions:
+      update:
+  - name: Ask to resolve conflict
+    conditions:
+      - conflict
+    actions:
+      comment:
+        message: |
+          Hi @{{author}}! :wave:
+          I could not help but notice that this pull request has conflicts. :confounded:
+          Could you fix it? :wrench:
+          Thank you! :pray:
