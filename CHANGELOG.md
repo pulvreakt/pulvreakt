@@ -1,3 +1,10 @@
+## [0.4.7](https://github.com/nicolasfara/pulverization-framework/compare/0.4.6...0.4.7) (2023-02-04)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.multiplatform to v1.8.10 ([e8246b9](https://github.com/nicolasfara/pulverization-framework/commit/e8246b99fdf1d72bbaea422397ebc2727dae161a))
+
 ## [0.4.6](https://github.com/nicolasfara/pulverization-framework/compare/0.4.5...0.4.6) (2023-02-04)
 
 
