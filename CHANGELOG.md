@@ -1,3 +1,23 @@
+## [0.4.6](https://github.com/nicolasfara/pulverization-framework/compare/0.4.5...0.4.6) (2023-02-04)
+
+
+### Bug Fixes
+
+* **ci:** use multi stage build instead publish from a macOS runner ([d7c04ca](https://github.com/nicolasfara/pulverization-framework/commit/d7c04ca453025c92465b7fb8c0f4ee8d4fd7fc7e))
+
+
+### Dependency updates
+
+* **deps:** update dependency org.jlleitschuh.gradle.ktlint to v11.1.0 ([87fcaef](https://github.com/nicolasfara/pulverization-framework/commit/87fcaefd059d459bd6ecb3cdbe137d21c26bef22))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.16 ([b1db232](https://github.com/nicolasfara/pulverization-framework/commit/b1db232399ed29fa18bd4684cb6703be5950c58b))
+* **deps:** update docusaurus monorepo to v2.3.0 ([a98bdba](https://github.com/nicolasfara/pulverization-framework/commit/a98bdbafa71e51c97df8e01045ee9c5d49774f6d))
+* **deps:** update plugin publishoncentral to v3.1.1 ([78f4779](https://github.com/nicolasfara/pulverization-framework/commit/78f477935f68c1b6f610ee7cde6ffd28288ea122))
+
+
+### General maintenance
+
+* publish build scan on failure ([ca7bb76](https://github.com/nicolasfara/pulverization-framework/commit/ca7bb76c4539e851958dde4310baeb8e47c4cd24))
+
 ## [0.4.5](https://github.com/nicolasfara/pulverization-framework/compare/0.4.4...0.4.5) (2023-01-10)
 
 
