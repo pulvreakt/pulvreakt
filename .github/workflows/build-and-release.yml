@@ -49,12 +49,12 @@ jobs:
           echo $REPO_IDS >> $GITHUB_OUTPUT
           npm install
           npx semantic-release --dry-run
-          DEFAULT_VERSION="$(git describe --tags)"
-          if [[ -z "${{ steps.staging-repo.outputs.new-release-version }}" ]]; then
-            echo "No new release version found, fallback to default version: $DEFAULT_VERSION"
-            echo "new-release-version=$DEFAULT_VERSION" >> $GITHUB_OUTPUT
+          if [[ ! -s ".next-version" ]]; then
+            echo "No new release version found"
+            echo "new-release-version=$(git describe --tag)" >> $GITHUB_OUTPUT
           else
-            echo "New release version found: ${{ steps.staging-repo.outputs.new-release-version }}"
+            echo "New release version found: $(cat .next-version)"
+            echo "new-release-version=$(cat .next-version)" >> $GITHUB_OUTPUT
           fi
   build:
     needs: [ staging-repo ]
