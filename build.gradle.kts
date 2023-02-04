@@ -2,9 +2,8 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
-import org.gradle.internal.os.OperatingSystem
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -19,7 +18,6 @@ plugins {
     alias(libs.plugins.taskTree)
     alias(libs.plugins.conventionalCommits)
     alias(libs.plugins.publishOnCentral)
-    alias(libs.plugins.gitSemVer)
     alias(libs.plugins.sonarqube)
 }
 
@@ -46,33 +44,6 @@ tasks {
     }
 }
 
-fun KotlinMultiplatformExtension.configureDarwinCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
-    macosX64(nativeSetup)
-    macosArm64(nativeSetup)
-
-    ios(nativeSetup)
-    iosSimulatorArm64(nativeSetup)
-    tvos(nativeSetup)
-    tvosSimulatorArm64(nativeSetup)
-    // Disabled due to https://youtrack.jetbrains.com/issue/KT-54814
-    // watchos(nativeSetup)
-    // watchosSimulatorArm64(nativeSetup)
-}
-
-fun KotlinMultiplatformExtension.configureWindowsCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
-    mingwX64(nativeSetup)
-}
-
-fun KotlinMultiplatformExtension.configureLinuxCompatiblePlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
-    linuxX64(nativeSetup)
-}
-
-fun KotlinMultiplatformExtension.configureAllPlatforms(nativeSetup: KotlinNativeTarget.() -> Unit) {
-    configureLinuxCompatiblePlatforms(nativeSetup)
-    configureWindowsCompatiblePlatforms(nativeSetup)
-    configureDarwinCompatiblePlatforms(nativeSetup)
-}
-
 allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
@@ -82,9 +53,9 @@ allprojects {
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
-        apply(plugin = gitSemVer.id)
         apply(plugin = kotlinx.serialization.id)
         apply(plugin = sonarqube.id)
+        apply(plugin = publishOnCentral.id)
     }
 
     repositories {
@@ -145,6 +116,47 @@ allprojects {
             binaries.library()
         }
 
+        val nativeSetup: KotlinNativeTarget.() -> Unit = {
+            compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
+            compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
+            binaries {
+                sharedLib()
+                staticLib()
+            }
+        }
+
+        when (val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()) {
+            "linux" -> {
+                linuxX64(nativeSetup)
+                // linuxArm64(nativeSetup)
+                // linuxArm32Hfp(nativeSetup)
+                // linuxMips32(nativeSetup)
+                // linuxMipsel32(nativeSetup)
+            }
+
+            "mac os x" -> {
+                macosX64(nativeSetup)
+                macosArm64(nativeSetup)
+                iosArm64(nativeSetup)
+                // iosArm32(nativeSetup)
+                iosSimulatorArm64(nativeSetup)
+                watchosArm64(nativeSetup)
+                watchosArm32(nativeSetup)
+                watchosSimulatorArm64(nativeSetup)
+                tvosArm64(nativeSetup)
+                tvosSimulatorArm64(nativeSetup)
+            }
+
+            "windows", "windows server 2022" -> {
+                mingwX64(nativeSetup)
+                // mingwX86()
+            }
+
+            else -> throw GradleException(
+                "Host OS '$hostOs' is not supported in Kotlin/Native.",
+            )
+        }
+
         targets.all {
             compilations.all {
                 kotlinOptions {
@@ -153,92 +165,74 @@ allprojects {
             }
         }
 
-        val releaseStage: String? by project
-        val nativeSetup: KotlinNativeTarget.() -> Unit = {
-            compilations["main"].defaultSourceSet.dependsOn(sourceSets["nativeMain"])
-            compilations["test"].defaultSourceSet.dependsOn(sourceSets["nativeTest"])
-            binaries {
-                sharedLib()
-                staticLib()
+        tasks.dokkaJavadoc {
+            enabled = false
+        }
+        tasks.withType<Detekt>().configureEach {
+            exclude("**/*Test.kt", "**/*Fixtures.kt")
+        }
+        tasks.withType<JavadocJar>().configureEach {
+            val dokka = tasks.dokkaHtml.get()
+            dependsOn(dokka)
+            from(dokka.outputDirectory)
+        }
+
+        signing {
+            if (System.getenv("CI") == "true") {
+                val signingKey: String? by project
+                val signingPassword: String? by project
+                useInMemoryPgpKeys(signingKey, signingPassword)
             }
         }
-
-        when (OperatingSystem.current() to releaseStage.toBoolean()) {
-            OperatingSystem.LINUX to false -> configureLinuxCompatiblePlatforms(nativeSetup)
-            OperatingSystem.WINDOWS to false -> configureWindowsCompatiblePlatforms(nativeSetup)
-            OperatingSystem.MAC_OS to false -> configureDarwinCompatiblePlatforms(nativeSetup)
-            OperatingSystem.MAC_OS to true -> configureAllPlatforms(nativeSetup)
-            else -> throw GradleException(
-                "To cross-compile for all the platforms, a `macos` runner should be used",
-            )
-        }
-    }
-
-    tasks.dokkaJavadoc {
-        enabled = false
-    }
-    tasks.withType<Detekt>().configureEach {
-        exclude("**/*Test.kt", "**/*Fixtures.kt")
-    }
-    tasks.withType<JavadocJar>().configureEach {
-        val dokka = tasks.dokkaHtml.get()
-        dependsOn(dokka)
-        from(dokka.outputDirectory)
-    }
-
-    detekt {
-        parallel = true
-        buildUponDefaultConfig = true
-        config = files("${rootDir.path}/detekt.yml")
-        source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
-    }
-    group = "it.nicolasfarabegoli.${rootProject.name}"
-}
-
-subprojects {
-    with(rootProject.libs.plugins) {
-        apply(plugin = publishOnCentral.id)
-    }
-    signing {
-        if (System.getenv("CI") == "true") {
-            val signingKey: String? by project
-            val signingPassword: String? by project
-            useInMemoryPgpKeys(signingKey, signingPassword)
-        }
-    }
-    publishOnCentral {
-        projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
-        projectLongName.set("Framework enabling pulverization")
-        projectDescription.set("A framework to create a pulverized system")
-        repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
-            user.set("nicolasfara")
-            password.set(System.getenv("GITHUB_TOKEN"))
-        }
-    }
-    publishing.publications.withType<MavenPublication>().configureEach {
-        pom {
-            scm {
-                connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                url.set("https://github.com/nicolasfara/rabbitmq-platform")
+        publishOnCentral {
+            projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
+            projectLongName.set("Framework enabling pulverization")
+            projectDescription.set("A framework to create a pulverized system")
+            repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
+                user.set("nicolasfara")
+                password.set(System.getenv("GITHUB_TOKEN"))
             }
-            developers {
-                developer {
-                    name.set("Nicolas Farabegoli")
-                    email.set("nicolas.farabegoli@gmail.com")
-                    url.set("https://www.nicolasfarabegoli.it/")
+        }
+        publishing.publications.withType<MavenPublication>().configureEach {
+            pom {
+                scm {
+                    connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                    developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                    url.set("https://github.com/nicolasfara/rabbitmq-platform")
+                }
+                developers {
+                    developer {
+                        name.set("Nicolas Farabegoli")
+                        email.set("nicolas.farabegoli@gmail.com")
+                        url.set("https://www.nicolasfarabegoli.it/")
+                    }
                 }
             }
         }
-    }
-    publishing {
-        publications {
-            publications.withType<MavenPublication>().configureEach {
-                if ("OSSRH" !in name) {
-                    artifact(tasks.javadocJar)
+        publishing {
+            publications {
+                val publicationsFromMainHost = listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
+                matching { it.name in publicationsFromMainHost }.all {
+                    val targetPublication = this@all
+                    tasks.withType<AbstractPublishToMaven>()
+                        .matching { it.publication == targetPublication }
+                        .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                }
+                publications.withType<MavenPublication>().configureEach {
+                    if ("OSSRH" !in name) {
+                        artifact(tasks.javadocJar)
+                    }
                 }
             }
         }
+
+        detekt {
+            parallel = true
+            buildUponDefaultConfig = true
+            config = files("${rootDir.path}/detekt.yml")
+            source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
+        }
+        group = "it.nicolasfarabegoli.${rootProject.name}"
     }
 }
 
