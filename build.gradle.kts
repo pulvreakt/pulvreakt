@@ -55,6 +55,7 @@ allprojects {
         apply(plugin = publishOnCentral.id)
         apply(plugin = kotlinx.serialization.id)
         apply(plugin = sonarqube.id)
+        apply(plugin = publishOnCentral.id)
     }
 
     repositories {
@@ -163,73 +164,75 @@ allprojects {
                 }
             }
         }
-    }
 
-    tasks.dokkaJavadoc {
-        enabled = false
-    }
-    tasks.withType<Detekt>().configureEach {
-        exclude("**/*Test.kt", "**/*Fixtures.kt")
-    }
-    tasks.withType<JavadocJar>().configureEach {
-        val dokka = tasks.dokkaHtml.get()
-        dependsOn(dokka)
-        from(dokka.outputDirectory)
-    }
-
-    detekt {
-        parallel = true
-        buildUponDefaultConfig = true
-        config = files("${rootDir.path}/detekt.yml")
-        source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
-    }
-    group = "it.nicolasfarabegoli.${rootProject.name}"
-}
-
-subprojects {
-    with(rootProject.libs.plugins) {
-        apply(plugin = publishOnCentral.id)
-    }
-    signing {
-        if (System.getenv("CI") == "true") {
-            val signingKey: String? by project
-            val signingPassword: String? by project
-            useInMemoryPgpKeys(signingKey, signingPassword)
+        tasks.dokkaJavadoc {
+            enabled = false
         }
-    }
-    publishOnCentral {
-        projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
-        projectLongName.set("Framework enabling pulverization")
-        projectDescription.set("A framework to create a pulverized system")
-        repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
-            user.set("nicolasfara")
-            password.set(System.getenv("GITHUB_TOKEN"))
+        tasks.withType<Detekt>().configureEach {
+            exclude("**/*Test.kt", "**/*Fixtures.kt")
         }
-    }
-    publishing.publications.withType<MavenPublication>().configureEach {
-        pom {
-            scm {
-                connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                url.set("https://github.com/nicolasfara/rabbitmq-platform")
+        tasks.withType<JavadocJar>().configureEach {
+            val dokka = tasks.dokkaHtml.get()
+            dependsOn(dokka)
+            from(dokka.outputDirectory)
+        }
+
+        signing {
+            if (System.getenv("CI") == "true") {
+                val signingKey: String? by project
+                val signingPassword: String? by project
+                useInMemoryPgpKeys(signingKey, signingPassword)
             }
-            developers {
-                developer {
-                    name.set("Nicolas Farabegoli")
-                    email.set("nicolas.farabegoli@gmail.com")
-                    url.set("https://www.nicolasfarabegoli.it/")
+        }
+        publishOnCentral {
+            projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
+            projectLongName.set("Framework enabling pulverization")
+            projectDescription.set("A framework to create a pulverized system")
+            repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
+                user.set("nicolasfara")
+                password.set(System.getenv("GITHUB_TOKEN"))
+            }
+        }
+        publishing.publications.withType<MavenPublication>().configureEach {
+            pom {
+                scm {
+                    connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                    developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
+                    url.set("https://github.com/nicolasfara/rabbitmq-platform")
+                }
+                developers {
+                    developer {
+                        name.set("Nicolas Farabegoli")
+                        email.set("nicolas.farabegoli@gmail.com")
+                        url.set("https://www.nicolasfarabegoli.it/")
+                    }
                 }
             }
         }
-    }
-    publishing {
-        publications {
-            publications.withType<MavenPublication>().configureEach {
-                if ("OSSRH" !in name) {
-                    artifact(tasks.javadocJar)
+        publishing {
+            publications {
+                val publicationsFromMainHost = listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
+                matching { it.name in publicationsFromMainHost }.all {
+                    val targetPublication = this@all
+                    tasks.withType<AbstractPublishToMaven>()
+                        .matching { it.publication == targetPublication }
+                        .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                }
+                publications.withType<MavenPublication>().configureEach {
+                    if ("OSSRH" !in name) {
+                        artifact(tasks.javadocJar)
+                    }
                 }
             }
         }
+
+        detekt {
+            parallel = true
+            buildUponDefaultConfig = true
+            config = files("${rootDir.path}/detekt.yml")
+            source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
+        }
+        group = "it.nicolasfarabegoli.${rootProject.name}"
     }
 }
 
