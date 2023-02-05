@@ -1,4 +1,4 @@
-![CI/CD Pipeline](https://github.com/nicolasfara/pulverization-framework/actions/workflows/build-and-release.yml/badge.svg)
+[![CI/CD](https://github.com/nicolasfara/pulverization-framework/actions/workflows/dispatchers.yml/badge.svg?branch=master)](https://github.com/nicolasfara/pulverization-framework/actions/workflows/dispatchers.yml)
 ![Maven Central](https://img.shields.io/maven-central/v/it.nicolasfarabegoli.pulverization-framework/core)
 [![codecov](https://codecov.io/gh/nicolasfara/pulverization-framework/branch/master/graph/badge.svg?token=L3NJH26WWJ)](https://codecov.io/gh/nicolasfara/pulverization-framework)
 ![GitHub issues](https://img.shields.io/github/issues/nicolasfara/pulverization-framework)
@@ -9,6 +9,8 @@
 # Pulverization Framework
 
 > A simple and lightweight Kotlin mulitplatform framework to create pulverized systems
+
+📘 Documentation available [here](https://nicolasfarabegoli.it/pulverization-framework)
 
 ### Current implemented platforms
 
