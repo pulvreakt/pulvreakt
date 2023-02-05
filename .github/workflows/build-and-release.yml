@@ -9,7 +9,56 @@ env:
   JDK_VERSION: 17.0.5
 
 jobs:
+  staging-repo:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: staging-repo
+    if: >-
+      !github.event.repository.fork
+      && (
+        github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository
+      )
+    outputs:
+      maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
+      next-version: ${{ steps.staging-repo.outputs.new-release-version }}
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
+      - name: Setup Java
+        uses: actions/setup-java@v3.9.0
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
+      - name: Create staging repository
+        id: staging-repo
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: |
+          ./gradlew createStagingRepositoryOnMavenCentral --parallel
+          [[ -f build/staging-repo-ids.properties ]] || (
+            echo "Staging repositories ID file not found" &&
+            exit 1
+          )
+          REPO_IDS=$(cat build/staging-repo-ids.properties)
+          echo "Staging repositories IDs:\n$REPO_IDS"
+          echo $REPO_IDS >> $GITHUB_OUTPUT
+          npm install
+          npx semantic-release --dry-run
+          if [[ ! -s ".next-version" ]]; then
+            echo "No new release version found"
+            echo "new-release-version=$(git describe --tag)" >> $GITHUB_OUTPUT
+          else
+            echo "New release version found: $(cat .next-version)"
+            echo "new-release-version=$(cat .next-version)" >> $GITHUB_OUTPUT
+          fi
   build:
+    needs: [ staging-repo ]
     strategy:
       matrix:
         os: [ ubuntu, macos, windows ]
@@ -20,6 +69,8 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
       - name: Setup Java
         uses: actions/setup-java@v3.9.0
         with:
@@ -29,23 +80,19 @@ jobs:
       - name: Run assemble and check tasks
         run: |
           ./gradlew assemble --parallel
-          ./gradlew check sonarqube --parallel
+          ./gradlew check --parallel
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Test upload artifacts
         if: >-
-          ${{
-            runner.os == 'macOS'
-            && !github.event.repository.fork
-            && (
-              github.event_name != 'pull_request'
-              || github.event.pull_request.head.repo.full_name == github.repository
-            )
-          }}
-        run: ./gradlew uploadAll close --parallel
+          !github.event.repository.fork
+          && (
+            github.event_name != 'pull_request'
+            || github.event.pull_request.head.repo.full_name == github.repository
+          )
+        run: ./gradlew -PisMainHost=${{ runner.os == 'Linux' }} -Pversion="${{ needs.staging-repo.outputs.next-version }}" -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
         env:
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
@@ -82,11 +129,38 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docsite/build
 
+  close-staging-repos:
+    needs: [ staging-repo, build ]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: close-staging-repos
+    if: >-
+      !github.event.repository.fork
+      && (
+        github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository
+      )
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3.3.0
+      - name: Setup Java
+        uses: actions/setup-java@v3.9.0
+        with:
+          distribution: ${{ env.JDK_DISTRIUTION }}
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
+      - name: Close staging repositories
+        run: |
+          ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
+        env:
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
   release:
     concurrency:
       group: release
-    needs: [ build, docsite ]
-    runs-on: macos-latest
+    needs: [ staging-repo, build, docsite, close-staging-repos ]
+    runs-on: ubuntu-latest
     # Prevent the release job if the run is on a PR or a fork
     if: >-
       !github.event.repository.fork
@@ -106,7 +180,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRIUTION }}
           java-version: ${{ env.JDK_VERSION }}
           server-id: ossrh
-          server-username: MAVEN_CENTRAL_USERNAME
+          server-username: nicolasfarabegoli
           server-password: MAVEN_CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATEKEY }}
           gpg-passphrase: GPG_PASSPHRASE
@@ -117,7 +191,8 @@ jobs:
           npx semantic-release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          STAGING_REPO_ID: ${{ needs.staging-repo.outputs.maven-central-repo-id }}
+          MAVEN_CENTRAL_USERNAME: nicolasfarabegoli
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATEKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
@@ -126,6 +201,7 @@ jobs:
   success:
     runs-on: ubuntu-latest
     needs:
+      - staging-repo
       - release
       - build
       - docsite

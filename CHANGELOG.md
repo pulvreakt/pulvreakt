@@ -1,3 +1,42 @@
+## [0.4.8](https://github.com/nicolasfara/pulverization-framework/compare/0.4.7...0.4.8) (2023-02-05)
+
+
+### Bug Fixes
+
+* fix typo that prevent the release of the correct staging repository ([669bdc9](https://github.com/nicolasfara/pulverization-framework/commit/669bdc922de05de43d6c8515c9a2697f255adf35))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.14 ([6cd5435](https://github.com/nicolasfara/pulverization-framework/commit/6cd5435990e92a2a67c78aa04943684eef527474))
+
+## [0.4.7](https://github.com/nicolasfara/pulverization-framework/compare/0.4.6...0.4.7) (2023-02-04)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.multiplatform to v1.8.10 ([e8246b9](https://github.com/nicolasfara/pulverization-framework/commit/e8246b99fdf1d72bbaea422397ebc2727dae161a))
+
+## [0.4.6](https://github.com/nicolasfara/pulverization-framework/compare/0.4.5...0.4.6) (2023-02-04)
+
+
+### Bug Fixes
+
+* **ci:** use multi stage build instead publish from a macOS runner ([d7c04ca](https://github.com/nicolasfara/pulverization-framework/commit/d7c04ca453025c92465b7fb8c0f4ee8d4fd7fc7e))
+
+
+### Dependency updates
+
+* **deps:** update dependency org.jlleitschuh.gradle.ktlint to v11.1.0 ([87fcaef](https://github.com/nicolasfara/pulverization-framework/commit/87fcaefd059d459bd6ecb3cdbe137d21c26bef22))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.16 ([b1db232](https://github.com/nicolasfara/pulverization-framework/commit/b1db232399ed29fa18bd4684cb6703be5950c58b))
+* **deps:** update docusaurus monorepo to v2.3.0 ([a98bdba](https://github.com/nicolasfara/pulverization-framework/commit/a98bdbafa71e51c97df8e01045ee9c5d49774f6d))
+* **deps:** update plugin publishoncentral to v3.1.1 ([78f4779](https://github.com/nicolasfara/pulverization-framework/commit/78f477935f68c1b6f610ee7cde6ffd28288ea122))
+
+
+### General maintenance
+
+* publish build scan on failure ([ca7bb76](https://github.com/nicolasfara/pulverization-framework/commit/ca7bb76c4539e851958dde4310baeb8e47c4cd24))
+
 ## [0.4.5](https://github.com/nicolasfara/pulverization-framework/compare/0.4.4...0.4.5) (2023-01-10)
 
 
