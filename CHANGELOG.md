@@ -1,3 +1,15 @@
+## [0.4.8](https://github.com/nicolasfara/pulverization-framework/compare/0.4.7...0.4.8) (2023-02-05)
+
+
+### Bug Fixes
+
+* fix typo that prevent the release of the correct staging repository ([669bdc9](https://github.com/nicolasfara/pulverization-framework/commit/669bdc922de05de43d6c8515c9a2697f255adf35))
+
+
+### Dependency updates
+
+* **deps:** update node.js to 18.14 ([6cd5435](https://github.com/nicolasfara/pulverization-framework/commit/6cd5435990e92a2a67c78aa04943684eef527474))
+
 ## [0.4.7](https://github.com/nicolasfara/pulverization-framework/compare/0.4.6...0.4.7) (2023-02-04)
 
 
