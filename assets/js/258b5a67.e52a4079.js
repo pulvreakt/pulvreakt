@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocsite=self.webpackChunkdocsite||[]).push([[3798],{60637:e=>{e.exports=JSON.parse('{"label":"facebook","permalink":"/pulverization-framework/blog/tags/facebook","allTagsPath":"/pulverization-framework/blog/tags","count":1}')}}]);
