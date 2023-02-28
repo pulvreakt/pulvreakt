@@ -1,3 +1,46 @@
+## [0.4.9](https://github.com/nicolasfara/pulverization-framework/compare/0.4.8...0.4.9) (2023-02-28)
+
+
+### Bug Fixes
+
+* fix the publication strategy ([d762cc0](https://github.com/nicolasfara/pulverization-framework/commit/d762cc0add807a0f2b5d378a3705720d7a035d8d))
+
+
+### General maintenance
+
+* **build:** remove sonarcloud plugin ([a5bae53](https://github.com/nicolasfara/pulverization-framework/commit/a5bae536737d2bfd37c9864be0a396aa8bc8d898))
+* refactor semantic-release config file ([b3a69a0](https://github.com/nicolasfara/pulverization-framework/commit/b3a69a07bbc29f494eb406d1151e73e47dcff4bd))
+* update readme ([#104](https://github.com/nicolasfara/pulverization-framework/issues/104)) ([677dc2b](https://github.com/nicolasfara/pulverization-framework/commit/677dc2bac8bc8c1396d51c7077352dc16d73886e))
+
+
+### Dependency updates
+
+* **deps:** update dependency gradle to v8 ([ffc246a](https://github.com/nicolasfara/pulverization-framework/commit/ffc246a22c4663e7394ab4146069e7f4e5be5c20))
+* **deps:** update dependency gradle to v8.0.1 ([b63c368](https://github.com/nicolasfara/pulverization-framework/commit/b63c368e649bfdef76a6e0423ec98446c772ff13))
+* **deps:** update dependency mermaid to v10 ([fea16b3](https://github.com/nicolasfara/pulverization-framework/commit/fea16b3d37f430f58673e3aaefb16512521e2ee7))
+* **deps:** update dependency mermaid to v9.4.0 ([4c13eb4](https://github.com/nicolasfara/pulverization-framework/commit/4c13eb429497e49b3b83ecfeb9d23e859952d929))
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-serialization-json to v1.5.0 ([bc2021d](https://github.com/nicolasfara/pulverization-framework/commit/bc2021d1993400cd41628c13a2ec155ee0ecb599))
+* **deps:** update dependency org.jlleitschuh.gradle.ktlint to v11.2.0 ([b5e4d58](https://github.com/nicolasfara/pulverization-framework/commit/b5e4d584b8b062b2f3aab55a264ef8301cdd2eda))
+* **deps:** update docusaurus monorepo to v2.3.1 ([36022eb](https://github.com/nicolasfara/pulverization-framework/commit/36022eb86646a673dc908d432bd96ec7c8fdfd8f))
+* **deps:** update koin to v3.3.3 ([63d2c31](https://github.com/nicolasfara/pulverization-framework/commit/63d2c31f6e83e1fea1639ee65f60a3069799b5c1))
+* **deps:** update plugin com.gradle.enterprise to v3.12.3 ([4a73e96](https://github.com/nicolasfara/pulverization-framework/commit/4a73e96024ccdf07408879aed3558138465b9746))
+* **deps:** update plugin publishoncentral to v3.2.2 ([10f5781](https://github.com/nicolasfara/pulverization-framework/commit/10f578121dc96806eea30daede1e91c5c2ad11af))
+* **deps:** update plugin publishoncentral to v3.2.3 ([e9612f7](https://github.com/nicolasfara/pulverization-framework/commit/e9612f7533a3807526fc2bea47ff436cbf9ce27f))
+* **deps:** update plugin publishoncentral to v3.2.4 ([60c78f4](https://github.com/nicolasfara/pulverization-framework/commit/60c78f40abf6be782f338d577296411262ddaafc))
+* **deps:** update plugin publishoncentral to v3.3.0 ([85d4df1](https://github.com/nicolasfara/pulverization-framework/commit/85d4df12d44ca4b558a95c390f96e9c89a5ef015))
+* **deps:** update plugin sonarqube to v4 ([d4d90ad](https://github.com/nicolasfara/pulverization-framework/commit/d4d90adc7e92e3e14d41f807b5de32a246235d74))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-java action to v3.10.0 ([521a45f](https://github.com/nicolasfara/pulverization-framework/commit/521a45fcfc4db558dacf401ad35872a28934021a))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.1.26 ([b09261f](https://github.com/nicolasfara/pulverization-framework/commit/b09261f0d999735ee5639d51cd82b05165d93a9f))
+* fix staging repo job ([946519b](https://github.com/nicolasfara/pulverization-framework/commit/946519bd3cfd3c3666a088161af1a84c9a87f974))
+* fix staging repo job ([bdda32a](https://github.com/nicolasfara/pulverization-framework/commit/bdda32a392a240c798d79c7458e39f40e42a047e))
+* **Mergify:** configuration update ([a7aa24f](https://github.com/nicolasfara/pulverization-framework/commit/a7aa24f0e1bdff85c04e5b95fd3dc752e0aa93c7))
+* slim ci workflow ([fcd3d16](https://github.com/nicolasfara/pulverization-framework/commit/fcd3d16bafb49f74bbe9252c6fbeef78ed619a56))
+* update precompute version action ([ecac46f](https://github.com/nicolasfara/pulverization-framework/commit/ecac46f9b870bf2487a5f851260ba59f91c64b26))
+
 ## [0.4.8](https://github.com/nicolasfara/pulverization-framework/compare/0.4.7...0.4.8) (2023-02-05)
 
 
