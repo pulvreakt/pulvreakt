@@ -2,8 +2,8 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -27,11 +27,47 @@ tasks {
     create("uploadAll") {
         description = "Upload all artifacts"
         group = "publishing"
-        dependsOn(
-            "core:uploadAllPublicationsToMavenCentralNexus",
-            "platform:uploadAllPublicationsToMavenCentralNexus",
-            "rabbitmq-platform:uploadAllPublicationsToMavenCentralNexus",
-        )
+        val os = OperatingSystem.current()
+        when {
+            os.isLinux -> dependsOn(
+                "core:uploadAllPublicationsToMavenCentralNexus",
+                "platform:uploadAllPublicationsToMavenCentralNexus",
+                "rabbitmq-platform:uploadAllPublicationsToMavenCentralNexus",
+            )
+
+            os.isWindows -> dependsOn(
+                "core:uploadMingwX64ToMavenCentralNexus",
+                "platform:uploadMingwX64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadMingwX64ToMavenCentralNexus",
+            )
+
+            os.isMacOsX -> dependsOn(
+                "core:uploadMacosX64ToMavenCentralNexus",
+                "platform:uploadMacosX64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadMacosX64ToMavenCentralNexus",
+                "core:uploadMacosArm64ToMavenCentralNexus",
+                "platform:uploadMacosArm64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadMacosArm64ToMavenCentralNexus",
+                "core:uploadIosArm64ToMavenCentralNexus",
+                "platform:uploadIosArm64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadIosArm64ToMavenCentralNexus",
+                "core:uploadIosX64ToMavenCentralNexus",
+                "platform:uploadIosX64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadIosX64ToMavenCentralNexus",
+                "core:uploadTvosArm64ToMavenCentralNexus",
+                "platform:uploadTvosArm64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadTvosArm64ToMavenCentralNexus",
+                "core:uploadTvosX64ToMavenCentralNexus",
+                "platform:uploadTvosX64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadTvosX64ToMavenCentralNexus",
+                "core:uploadWatchosArm64ToMavenCentralNexus",
+                "platform:uploadWatchosArm64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadWatchosArm64ToMavenCentralNexus",
+                "core:uploadWatchosX64ToMavenCentralNexus",
+                "platform:uploadWatchosX64ToMavenCentralNexus",
+                "rabbitmq-platform:uploadWatchosX64ToMavenCentralNexus",
+            )
+        }
     }
     create("uploadAllGithub") {
         description = "Upload all artifacts to github"
@@ -45,6 +81,8 @@ tasks {
 }
 
 allprojects {
+    group = "it.nicolasfarabegoli.${rootProject.name}"
+
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
         apply(plugin = kotest.multiplatform.id)
@@ -125,37 +163,27 @@ allprojects {
             }
         }
 
-        when (val hostOs = System.getProperty("os.name").trim().toLowerCaseAsciiOnly()) {
-            "linux" -> {
-                linuxX64(nativeSetup)
-                // linuxArm64(nativeSetup)
-                // linuxArm32Hfp(nativeSetup)
-                // linuxMips32(nativeSetup)
-                // linuxMipsel32(nativeSetup)
-            }
+        linuxX64(nativeSetup)
+        // linuxArm64(nativeSetup)
+        // linuxArm32Hfp(nativeSetup)
+        // linuxMips32(nativeSetup)
+        // linuxMipsel32(nativeSetup)
 
-            "mac os x" -> {
-                macosX64(nativeSetup)
-                macosArm64(nativeSetup)
-                iosArm64(nativeSetup)
-                // iosArm32(nativeSetup)
-                iosSimulatorArm64(nativeSetup)
-                watchosArm64(nativeSetup)
-                watchosArm32(nativeSetup)
-                watchosSimulatorArm64(nativeSetup)
-                tvosArm64(nativeSetup)
-                tvosSimulatorArm64(nativeSetup)
-            }
+        macosX64(nativeSetup)
+        macosArm64(nativeSetup)
+        ios(nativeSetup)
+        // iosArm32(nativeSetup)
+        // iosSimulatorArm64(nativeSetup)
+        watchos(nativeSetup)
+        // watchosArm64(nativeSetup)
+        // watchosArm32(nativeSetup)
+        // watchosSimulatorArm64(nativeSetup)
+        tvos(nativeSetup)
+        // tvosArm64(nativeSetup)
+        // tvosSimulatorArm64(nativeSetup)
 
-            "windows", "windows server 2022" -> {
-                mingwX64(nativeSetup)
-                // mingwX86()
-            }
-
-            else -> throw GradleException(
-                "Host OS '$hostOs' is not supported in Kotlin/Native.",
-            )
-        }
+        mingwX64(nativeSetup)
+        // mingwX86()
 
         targets.all {
             compilations.all {
@@ -232,7 +260,6 @@ allprojects {
             config = files("${rootDir.path}/detekt.yml")
             source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
         }
-        group = "it.nicolasfarabegoli.${rootProject.name}"
     }
 }
 
