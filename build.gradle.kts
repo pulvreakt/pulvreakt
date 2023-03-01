@@ -27,47 +27,11 @@ tasks {
     create("uploadAll") {
         description = "Upload all artifacts"
         group = "publishing"
-        val os = OperatingSystem.current()
-        when {
-            os.isLinux -> dependsOn(
-                "core:uploadAllPublicationsToMavenCentralNexus",
-                "platform:uploadAllPublicationsToMavenCentralNexus",
-                "rabbitmq-platform:uploadAllPublicationsToMavenCentralNexus",
-            )
-
-            os.isWindows -> dependsOn(
-                "core:uploadMingwX64ToMavenCentralNexus",
-                "platform:uploadMingwX64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadMingwX64ToMavenCentralNexus",
-            )
-
-            os.isMacOsX -> dependsOn(
-                "core:uploadMacosX64ToMavenCentralNexus",
-                "platform:uploadMacosX64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadMacosX64ToMavenCentralNexus",
-                "core:uploadMacosArm64ToMavenCentralNexus",
-                "platform:uploadMacosArm64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadMacosArm64ToMavenCentralNexus",
-                "core:uploadIosArm64ToMavenCentralNexus",
-                "platform:uploadIosArm64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadIosArm64ToMavenCentralNexus",
-                "core:uploadIosX64ToMavenCentralNexus",
-                "platform:uploadIosX64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadIosX64ToMavenCentralNexus",
-                "core:uploadTvosArm64ToMavenCentralNexus",
-                "platform:uploadTvosArm64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadTvosArm64ToMavenCentralNexus",
-                "core:uploadTvosX64ToMavenCentralNexus",
-                "platform:uploadTvosX64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadTvosX64ToMavenCentralNexus",
-                "core:uploadWatchosArm64ToMavenCentralNexus",
-                "platform:uploadWatchosArm64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadWatchosArm64ToMavenCentralNexus",
-                "core:uploadWatchosX64ToMavenCentralNexus",
-                "platform:uploadWatchosX64ToMavenCentralNexus",
-                "rabbitmq-platform:uploadWatchosX64ToMavenCentralNexus",
-            )
-        }
+        dependsOn(
+            "core:uploadAllPublicationsToMavenCentralNexus",
+            "platform:uploadAllPublicationsToMavenCentralNexus",
+            "rabbitmq-platform:uploadAllPublicationsToMavenCentralNexus",
+        )
     }
     create("uploadAllGithub") {
         description = "Upload all artifacts to github"
@@ -100,6 +64,8 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    val os = OperatingSystem.current()
 
     kotlin {
         jvm {
@@ -254,6 +220,34 @@ allprojects {
             }
         }
 
+        // Disable cross compilation
+        plugins.withId("org.jetbrains.kotlin.multiplatform") {
+            afterEvaluate {
+                val excludeTargets = when {
+                    os.isLinux -> kotlin.targets.filter { "linux" !in it.name }
+                    os.isWindows -> kotlin.targets.filter { "mingw" !in it.name }
+                    os.isMacOsX -> kotlin.targets.filter { "linux" in it.name || "mingw" in it.name }
+                    else -> emptyList()
+                }.mapNotNull { it as? KotlinNativeTarget }
+
+                configure(excludeTargets) {
+                    compilations.all {
+                        cinterops.all { tasks[interopProcessingTaskName].enabled = false }
+                        compileKotlinTask.enabled = false
+                        tasks[processResourcesTaskName].enabled = false
+                    }
+                    binaries.all { linkTask.enabled = false }
+
+                    mavenPublication {
+                        val publicationToDisable = this
+                        tasks.withType<AbstractPublishToMaven>().all { onlyIf { publication != publicationToDisable } }
+                        tasks.withType<GenerateModuleMetadata>()
+                            .all { onlyIf { publication.get() != publicationToDisable } }
+                    }
+                }
+            }
+        }
+
         detekt {
             parallel = true
             buildUponDefaultConfig = true
@@ -273,7 +267,7 @@ koverMerged {
     }
     filters {
         projects {
-            excludes += listOf(":", ":examples:example-03")
+            excludes += listOf(":" /*, ":examples:example-03"*/)
         }
     }
 }
