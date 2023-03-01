@@ -4,7 +4,7 @@ dokka = "1.7.20"
 detekt = "1.22.0"
 ktlint-plugin = "11.2.0"
 kotest = "5.5.4"
-shadowjar = "7.1.2"
+shadowjar = "8.0.0"
 koin = "3.3.3"
 
 [plugins]
