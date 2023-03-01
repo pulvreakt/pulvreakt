@@ -1,3 +1,10 @@
+## [0.4.10](https://github.com/nicolasfara/pulverization-framework/compare/0.4.9...0.4.10) (2023-03-01)
+
+
+### Bug Fixes
+
+* **build:** prevent publishing metadata file from mac and windows ([4a548a0](https://github.com/nicolasfara/pulverization-framework/commit/4a548a061864dee6d585c9c937ffab6b79219f2e))
+
 ## [0.4.9](https://github.com/nicolasfara/pulverization-framework/compare/0.4.8...0.4.9) (2023-02-28)
 
 
