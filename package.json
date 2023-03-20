@@ -4,6 +4,6 @@
     "semantic-release-export-data": "1.0.1"
   },
   "engines": {
-    "node": "18.14"
+    "node": "18.15"
   }
 }
