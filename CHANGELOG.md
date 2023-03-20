@@ -1,3 +1,36 @@
+## [0.4.11](https://github.com/nicolasfara/pulverization-framework/compare/0.4.10...0.4.11) (2023-03-20)
+
+
+### General maintenance
+
+* **mergify:** disable auto-rebasing due to Mergifyio/mergify[#5074](https://github.com/nicolasfara/pulverization-framework/issues/5074) ([69ba515](https://github.com/nicolasfara/pulverization-framework/commit/69ba515114dd1b691899f36bb07d1e309a7076b4))
+* **mergify:** fix anchor ([fa719dd](https://github.com/nicolasfara/pulverization-framework/commit/fa719dd1e781edf158aab7fe54bc6307dbb62664))
+* update .mergify ([fe8e691](https://github.com/nicolasfara/pulverization-framework/commit/fe8e6915e91017af06f103577d41be607d1591cf))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.4.0 ([6863a69](https://github.com/nicolasfara/pulverization-framework/commit/6863a69e9d3fe2517db89b698be271a0d48abf88))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.0 ([3d1145d](https://github.com/nicolasfara/pulverization-framework/commit/3d1145d3ca29f72fe6a3014cc8e31faeded7fdfd))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.dokka to v1.8.10 ([4a361b7](https://github.com/nicolasfara/pulverization-framework/commit/4a361b759f1bb6d3b05b9c2f9ba8d52542909226))
+* **deps:** update dependency com.github.johnrengelman.shadow to v8 ([0b0d265](https://github.com/nicolasfara/pulverization-framework/commit/0b0d265363b745643994a9a50fbdfad7a7b10965))
+* **deps:** update dependency com.github.johnrengelman.shadow to v8.1.0 ([7392067](https://github.com/nicolasfara/pulverization-framework/commit/73920671f816856ffe00ceec67da22dae6d4f3e5))
+* **deps:** update dependency gradle to v8.0.2 ([8cfd2f5](https://github.com/nicolasfara/pulverization-framework/commit/8cfd2f5bfb9a4a598984307cacf7960f78fd1043))
+* **deps:** update dependency mermaid to v10.0.2 ([9a56f18](https://github.com/nicolasfara/pulverization-framework/commit/9a56f18692688660da057eb6b3c430527d565ef8))
+* **deps:** update dependency org.jlleitschuh.gradle.ktlint to v11.3.1 ([3c2e9b1](https://github.com/nicolasfara/pulverization-framework/commit/3c2e9b1b0905e152e38e71983b75349b23538e17))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.17 ([3593b1d](https://github.com/nicolasfara/pulverization-framework/commit/3593b1d81016b22075beb5078fbe7fb215b1c218))
+* **deps:** update node.js to 18.15 ([6759649](https://github.com/nicolasfara/pulverization-framework/commit/67596498fba023523d8b735c1abb8fdae233a58c))
+* **deps:** update plugin com.gradle.enterprise to v3.12.4 ([102a684](https://github.com/nicolasfara/pulverization-framework/commit/102a684dc0ad1db7884b3dba2c0d3b38191a63ff))
+* **deps:** update plugin git-sensitive-semver to v1.1.2 ([16444af](https://github.com/nicolasfara/pulverization-framework/commit/16444af22391d238479af3e08c334c7d0fe01bc1))
+* **deps:** update plugin git-sensitive-semver to v1.1.4 ([6ff1a88](https://github.com/nicolasfara/pulverization-framework/commit/6ff1a88615aa784448baa45157915add2a99f38b))
+* **deps:** update plugin publishoncentral to v3.3.2 ([471f244](https://github.com/nicolasfara/pulverization-framework/commit/471f244856f39aaf0fc4455db77b1eb9f5827369))
+* **deps:** update plugin publishoncentral to v3.3.3 ([cfd1427](https://github.com/nicolasfara/pulverization-framework/commit/cfd142778a8c36718b626475489fdb6174936f8d))
+* **deps:** update plugin publishoncentral to v3.4.0 ([2a3d96e](https://github.com/nicolasfara/pulverization-framework/commit/2a3d96e4e61dece6acf39e1e97f60798a43d269a))
+
 ## [0.4.10](https://github.com/nicolasfara/pulverization-framework/compare/0.4.9...0.4.10) (2023-03-01)
 
 
