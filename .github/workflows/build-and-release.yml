@@ -23,7 +23,7 @@ jobs:
       will-release: ${{ steps.compute-next-version.outputs.will-release }}
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 0
       - name: Compute next release version
@@ -67,7 +67,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 0
       - uses: DanySK/build-check-deploy-gradle-action@2.2.0
@@ -101,7 +101,7 @@ jobs:
       group: docsite
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
       - uses: actions/setup-node@v3
         with:
           node-version: 18.12
@@ -132,7 +132,7 @@ jobs:
       }}
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
       - uses: DanySK/build-check-deploy-gradle-action@2.2.0
         with:
           maven-central-username: nicolasfarabegoli
@@ -159,7 +159,7 @@ jobs:
       }}
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_TOKEN }}
