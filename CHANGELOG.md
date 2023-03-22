@@ -1,3 +1,16 @@
+## [0.4.12](https://github.com/nicolasfara/pulverization-framework/compare/0.4.11...0.4.12) (2023-03-22)
+
+
+### Bug Fixes
+
+* **build:** improve build config and refactor plugins and dependencies ([40c936a](https://github.com/nicolasfara/pulverization-framework/commit/40c936a1130d21035e3d8a471c3a0c034218486f))
+
+
+### Dependency updates
+
+* **deps:** update dependency com.github.johnrengelman.shadow to v8.1.1 ([2e8f204](https://github.com/nicolasfara/pulverization-framework/commit/2e8f2045393e819a0248757b95b8e4fe4cc0b6fb))
+* **deps:** update plugin com.gradle.enterprise to v3.12.5 ([6444782](https://github.com/nicolasfara/pulverization-framework/commit/6444782c334c069f693e40456b2490d41e808d18))
+
 ## [0.4.11](https://github.com/nicolasfara/pulverization-framework/compare/0.4.10...0.4.11) (2023-03-20)
 
 
