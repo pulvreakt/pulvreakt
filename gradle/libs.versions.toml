@@ -4,7 +4,6 @@ dokka = "1.8.10"
 detekt = "1.22.0"
 ktlint-plugin = "11.3.1"
 kotest = "5.5.4"
-shadowjar = "8.1.1"
 koin = "3.3.3"
 
 [plugins]
@@ -12,14 +11,11 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
+kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.25.1"
 kover = "org.jetbrains.kotlinx.kover:0.6.1"
 taskTree = "com.dorongold.task-tree:2.1.1"
-conventionalCommits = "it.nicolasfarabegoli.conventional-commits:3.1.0"
 publishOnCentral = "org.danilopianini.publish-on-central:3.4.0"
-git-sensitive-semver = "org.danilopianini.git-sensitive-semantic-versioning:1.1.4"
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.4"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }

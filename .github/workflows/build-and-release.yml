@@ -5,18 +5,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-secrets:
+    runs-on: ubuntu-22.04
+    outputs:
+      run-with-secrets: ${{ steps.require-secrets.outputs.run-with-secrets }}
+    steps:
+      - name: Find if secrets are available
+        id: detect-secrets
+        uses: DanySK/are-secrets-available@1.0.0
+        with:
+          secrets: ${{ toJson(secrets) }}
+      - name: Set condition
+        id: require-secrets
+        run: |
+          echo "run-with-secrets=${{ steps.detect-secrets.outputs.has-secrets == 'true' && !github.event.repository.fork }}" >> $GITHUB_OUTPUT
+
   staging-repo:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    needs:
+      - check-secrets
     concurrency:
       group: staging-repo
-    if: >-
-      ${{
-        !github.event.repository.fork
-        && (
-          github.event_name != 'pull_request'
-          || github.event.pull_request.head.repo.full_name == github.repository
-        )
-      }}
+    if: ${{ needs.check-secrets.outputs.run-with-secrets == 'true' }}
     outputs:
       maven-central-repo-id: ${{ steps.staging-repo.outputs.MavenCentral }}
       next-version: ${{ steps.compute-next-version.outputs.next-version }}
@@ -57,11 +67,14 @@ jobs:
           echo $REPO_IDS >> $GITHUB_OUTPUT
 
   build:
-    needs: [ staging-repo ]
+    needs:
+      - check-secrets
+      - staging-repo
+    if: ${{ always() && !contains(needs.staging-repo.result, 'failure') }}
     strategy:
       matrix:
-        os: [ ubuntu, macos, windows ]
-    runs-on: ${{ matrix.os }}-latest
+        os: [ windows-2022, macos-12, ubuntu-22.04 ]
+    runs-on: ${{ matrix.os }}
     concurrency:
       group: build-${{ github.workflow }}-${{ matrix.os }}-${{ github.event.number || github.ref }}
       cancel-in-progress: true
@@ -72,31 +85,20 @@ jobs:
           fetch-depth: 0
       - uses: DanySK/build-check-deploy-gradle-action@2.2.0
         with:
+          # Dry-deployment
+          deploy-command: |
+            NEXT_VERSION="${{ needs.staging-repo.outputs.next-version }}"
+            OVERRIDE_VERSION=$([[ "$NEXT_VERSION" != "" ]] && echo "-PforceVersion=$(echo $NEXT_VERSION)" || echo "")
+            ./gradlew $OVERRIDE_VERSION -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
+          should-run-codecov: ${{ runner.os == 'Linux' }}
+          should-deploy: ${{ needs.check-secrets.outputs.run-with-secrets == 'true' }}
           maven-central-username: nicolasfarabegoli
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           signing-key: ${{ secrets.GPG_PRIVATEKEY }}
           signing-password: ${{ secrets.GPG_PASSPHRASE }}
-          should-run-codecov: ${{ runner.os == 'Linux' }}
-          codecov-directory: build/reports/kover/merged/xml
-          github-token: ${{ github.token }}
-          should-deploy: >-
-            ${{
-              !github.event.repository.fork
-              && (
-                github.event_name != 'pull_request'
-                || github.event.pull_request.head.repo.full_name == github.repository
-              )
-            }}
-          # Dry-deployment
-          deploy-command: >-
-            if [[ "${{ needs.staging-repo.outputs.will-release }}" == "true" ]]; then
-              ./gradlew -PisMainHost=${{ runner.os == 'Linux' }} -PforceVersion="${{ needs.staging-repo.outputs.next-version }}" -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
-            else
-              ./gradlew -PisMainHost=${{ runner.os == 'Linux' }} -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} uploadAll --parallel
-            fi
 
   docsite:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     concurrency:
       group: docsite
     steps:
@@ -118,18 +120,13 @@ jobs:
           FOLDER: docsite/build
 
   close-staging-repos:
-    needs: [ staging-repo, build ]
-    runs-on: ubuntu-latest
+    needs:
+      - staging-repo
+      - build
+    runs-on: ubuntu-22.04
     concurrency:
       group: close-staging-repos
-    if: >-
-      ${{
-        !github.event.repository.fork
-        && (
-          github.event_name != 'pull_request'
-          || github.event.pull_request.head.repo.full_name == github.repository
-        )
-      }}
+    if: ${{ needs.check-secrets.outputs.run-with-secrets == 'true' }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.4.0
@@ -141,22 +138,24 @@ jobs:
           should-deploy: true
           build-command: true
           check-command: true
-          deploy-command: >-
+          deploy-command: |
             ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} close --parallel
+            if [[ "${{ needs.staging-repo.outputs.will-release }}" == "false" ]]; then
+              ./gradlew -PstagingRepositoryId=${{ needs.staging-repo.outputs.maven-central-repo-id }} drop
+            fi
+
   release:
     concurrency:
       group: release
-    needs: [ staging-repo, build, docsite, close-staging-repos ]
-    runs-on: ubuntu-latest
+    needs:
+      - check-secrets
+      - staging-repo
+      - docsite
+      - build
+      - close-staging-repos
+    runs-on: ubuntu-22.04
     # Prevent the release job if the run is on a PR or a fork
-    if: >-
-      ${{
-        !github.event.repository.fork
-        && (github.event_name != 'pull_request' ||
-          github.event.pull_request.head.repo.full_name == github.repository
-        )
-        && github.ref == 'refs/heads/master'
-      }}
+    if: ${{ needs.check-secrets.outputs.run-with-secrets == 'true' }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.4.0
@@ -191,10 +190,12 @@ jobs:
   success:
     runs-on: ubuntu-latest
     needs:
+      - check-secrets
       - staging-repo
+      - close-staging-repos
+      - docsite
       - release
       - build
-      - docsite
     if: >-
       ${{
         always() && (

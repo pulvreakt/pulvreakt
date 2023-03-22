@@ -1,48 +1,22 @@
-@file:Suppress("UndocumentedPublicFunction", "UnusedPrivateMember")
-
-import io.gitlab.arturbosch.detekt.Detekt
 import org.danilopianini.gradle.mavencentral.JavadocJar
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import java.util.*
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlin.qa)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.shadow)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kover)
     alias(libs.plugins.taskTree)
-    alias(libs.plugins.conventionalCommits)
     alias(libs.plugins.publishOnCentral)
-    alias(libs.plugins.git.sensitive.semver)
+    alias(libs.plugins.gitSemVer)
 }
 
 val Provider<PluginDependency>.id get() = get().pluginId
-
-tasks {
-    create("uploadAll") {
-        description = "Upload all artifacts"
-        group = "publishing"
-        dependsOn(
-            "core:uploadAllPublicationsToMavenCentralNexus",
-            "platform:uploadAllPublicationsToMavenCentralNexus",
-            "rabbitmq-platform:uploadAllPublicationsToMavenCentralNexus",
-        )
-    }
-    create("uploadAllGithub") {
-        description = "Upload all artifacts to github"
-        group = "publishing"
-        dependsOn(
-            "core:publishKotlinMultiplatformPublicationToGithubRepository",
-            "platform:publishKotlinMultiplatformPublicationToGithubRepository",
-            "rabbitmq-platform:publishKotlinMultiplatformPublicationToGithubRepository",
-        )
-    }
-}
 
 allprojects {
     group = "it.nicolasfarabegoli.${rootProject.name}"
@@ -50,14 +24,13 @@ allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
         apply(plugin = kotest.multiplatform.id)
-        apply(plugin = detekt.id)
-        apply(plugin = ktlint.id)
+        apply(plugin = kotlin.qa.id)
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
         apply(plugin = kotlinx.serialization.id)
         apply(plugin = publishOnCentral.id)
-        apply(plugin = git.sensitive.semver.id)
+        apply(plugin = gitSemVer.id)
     }
 
     repositories {
@@ -131,25 +104,14 @@ allprojects {
 
         linuxX64(nativeSetup)
         // linuxArm64(nativeSetup)
-        // linuxArm32Hfp(nativeSetup)
-        // linuxMips32(nativeSetup)
-        // linuxMipsel32(nativeSetup)
+
+        mingwX64(nativeSetup)
 
         macosX64(nativeSetup)
         macosArm64(nativeSetup)
         ios(nativeSetup)
-        // iosArm32(nativeSetup)
-        // iosSimulatorArm64(nativeSetup)
         watchos(nativeSetup)
-        // watchosArm64(nativeSetup)
-        // watchosArm32(nativeSetup)
-        // watchosSimulatorArm64(nativeSetup)
         tvos(nativeSetup)
-        // tvosArm64(nativeSetup)
-        // tvosSimulatorArm64(nativeSetup)
-
-        mingwX64(nativeSetup)
-        // mingwX86()
 
         targets.all {
             compilations.all {
@@ -159,18 +121,6 @@ allprojects {
             }
         }
 
-        tasks.dokkaJavadoc {
-            enabled = false
-        }
-        tasks.withType<Detekt>().configureEach {
-            exclude("**/*Test.kt", "**/*Fixtures.kt")
-        }
-        tasks.withType<JavadocJar>().configureEach {
-            val dokka = tasks.dokkaHtml.get()
-            dependsOn(dokka)
-            from(dokka.outputDirectory)
-        }
-
         signing {
             if (System.getenv("CI") == "true") {
                 val signingKey: String? by project
@@ -178,96 +128,95 @@ allprojects {
                 useInMemoryPgpKeys(signingKey, signingPassword)
             }
         }
+
         publishOnCentral {
-            projectUrl.set("https://github.com/nicolasfara/rabbitmq-platform")
+            projectUrl.set("https://github.com/nicolasfara/${rootProject.name}")
             projectLongName.set("Framework enabling pulverization")
             projectDescription.set("A framework to create a pulverized system")
-            repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".toLowerCase()) {
+            licenseName.set("MIT License")
+            licenseUrl.set("https://opensource.org/license/mit/")
+            repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".lowercase(Locale.getDefault())) {
                 user.set("nicolasfara")
                 password.set(System.getenv("GITHUB_TOKEN"))
             }
-        }
-        publishing.publications.withType<MavenPublication>().configureEach {
-            pom {
-                scm {
-                    connection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                    developerConnection.set("git:git@github.com:nicolasfara/rabbitmq-platform")
-                    url.set("https://github.com/nicolasfara/rabbitmq-platform")
-                }
-                developers {
-                    developer {
-                        name.set("Nicolas Farabegoli")
-                        email.set("nicolas.farabegoli@gmail.com")
-                        url.set("https://www.nicolasfarabegoli.it/")
-                    }
-                }
-            }
-        }
-        publishing {
-            publications {
-                val publicationsFromMainHost = listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
-                matching { it.name in publicationsFromMainHost }.all {
-                    val targetPublication = this@all
-                    tasks.withType<AbstractPublishToMaven>()
-                        .matching { it.publication == targetPublication }
-                        .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
-                }
-                publications.withType<MavenPublication>().configureEach {
-                    if ("OSSRH" !in name) {
-                        artifact(tasks.javadocJar)
+            publishing {
+                publications {
+                    withType<MavenPublication>().configureEach {
+                        if ("OSSRH" !in name) {
+                            artifact(tasks.javadocJar)
+                        }
+                        pom {
+                            scm {
+                                connection.set("git:git@github.com:nicolasfara/${rootProject.name}")
+                                developerConnection.set("git:git@github.com:nicolasfara/${rootProject.name}")
+                                url.set("https://github.com/nicolasfara/${rootProject.name}")
+                            }
+                            developers {
+                                developer {
+                                    name.set("Nicolas Farabegoli")
+                                    email.set("nicolas.farabegoli@gmail.com")
+                                    url.set("https://www.nicolasfarabegoli.it/")
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
 
         // Disable cross compilation
-        plugins.withId("org.jetbrains.kotlin.multiplatform") {
-            afterEvaluate {
-                val excludeTargets = when {
-                    os.isLinux -> kotlin.targets.filter { "linux" !in it.name }
-                    os.isWindows -> kotlin.targets.filter { "mingw" !in it.name }
-                    os.isMacOsX -> kotlin.targets.filter { "linux" in it.name || "mingw" in it.name }
-                    else -> emptyList()
-                }.mapNotNull { it as? KotlinNativeTarget }
+        val excludeTargets = when {
+            os.isLinux -> kotlin.targets.filterNot { "linux" in it.name }
+            os.isWindows -> kotlin.targets.filterNot { "mingw" in it.name }
+            os.isMacOsX -> kotlin.targets.filter { "linux" in it.name || "mingw" in it.name }
+            else -> emptyList()
+        }.mapNotNull { it as? KotlinNativeTarget }
 
-                configure(excludeTargets) {
-                    compilations.all {
-                        cinterops.all { tasks[interopProcessingTaskName].enabled = false }
-                        compileKotlinTask.enabled = false
-                        tasks[processResourcesTaskName].enabled = false
-                    }
-                    binaries.all { linkTask.enabled = false }
+        configure(excludeTargets) {
+            compilations.configureEach {
+                cinterops.configureEach { tasks[interopProcessingTaskName].enabled = false }
+                compileTaskProvider.get().enabled = false
+                tasks[processResourcesTaskName].enabled = false
+            }
+            binaries.configureEach { linkTask.enabled = false }
 
-                    mavenPublication {
-                        val publicationToDisable = this
-                        tasks.withType<AbstractPublishToMaven>().all { onlyIf { publication != publicationToDisable } }
-                        tasks.withType<GenerateModuleMetadata>()
-                            .all { onlyIf { publication.get() != publicationToDisable } }
-                    }
-                }
+            mavenPublication {
+                tasks.withType<AbstractPublishToMaven>()
+                    .configureEach { onlyIf { publication != this@mavenPublication } }
+                tasks.withType<GenerateModuleMetadata>()
+                    .configureEach { onlyIf { publication.get() != this@mavenPublication } }
             }
         }
+    }
+}
 
-        detekt {
-            parallel = true
-            buildUponDefaultConfig = true
-            config = files("${rootDir.path}/detekt.yml")
-            source = files(kotlin.sourceSets.map { it.kotlin.sourceDirectories })
-        }
+tasks {
+    dokkaJavadoc {
+        enabled = false
+    }
+
+    withType<JavadocJar>().configureEach {
+        val dokka = dokkaHtml.get()
+        dependsOn(dokka)
+        from(dokka.outputDirectory)
+    }
+
+    // Prevent publishing the root project (since is empty)
+    withType<AbstractPublishToMaven>().configureEach {
+        enabled = false
+    }
+    withType<GenerateModuleMetadata>().configureEach {
+        enabled = false
     }
 }
 
 koverMerged {
     enable()
-    htmlReport {
-        onCheck.set(true)
-    }
-    xmlReport {
-        onCheck.set(true)
-    }
+    htmlReport { onCheck.set(true) }
+    xmlReport { onCheck.set(true) }
     filters {
         projects {
-            excludes += listOf(":" /*, ":examples:example-03"*/)
+            excludes += listOf(":")
         }
     }
 }
