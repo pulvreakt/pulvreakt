@@ -1,9 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.context
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import java.io.File
 
 internal actual suspend fun createContext(configFilePath: String): Context {
@@ -14,14 +12,13 @@ internal actual suspend fun createContext(configFilePath: String): Context {
 }
 
 internal fun getIDFromEnv(): String? = System.getenv("DEVICE_ID")
+
 internal suspend fun getIDFromFile(file: String): String? = coroutineScope {
-    withContext(Dispatchers.IO) {
-        val configFile = File(file)
-        if (!configFile.exists()) {
-            null
-        } else {
-            getKey("DEVICE_ID", configFile.readText())
-        }
+    val configFile = File(file)
+    if (!configFile.exists()) {
+        null
+    } else {
+        getKey("DEVICE_ID", configFile.readText())
     }
 }
 
