@@ -1,3 +1,10 @@
+## [0.4.13](https://github.com/nicolasfara/pulverization-framework/compare/0.4.12...0.4.13) (2023-03-23)
+
+
+### Bug Fixes
+
+* prevent using dispatchers directly ([191dc9f](https://github.com/nicolasfara/pulverization-framework/commit/191dc9fc1794b350d5cc58ef1235509b5a86d2ba))
+
 ## [0.4.12](https://github.com/nicolasfara/pulverization-framework/compare/0.4.11...0.4.12) (2023-03-22)
 
 
