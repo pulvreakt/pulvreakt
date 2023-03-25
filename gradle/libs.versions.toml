@@ -4,7 +4,7 @@ dokka = "1.8.10"
 detekt = "1.22.0"
 ktlint-plugin = "11.3.1"
 kotest = "5.5.4"
-koin = "3.3.3"
+koin = "3.4.0"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
