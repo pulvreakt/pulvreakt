@@ -41,7 +41,7 @@ jobs:
         uses: nicolasfara/precompute-semantic-release-version-action@1.0.2
         with:
           github-token: ${{ github.token }}
-      - uses: DanySK/build-check-deploy-gradle-action@2.2.0
+      - uses: DanySK/build-check-deploy-gradle-action@2.2.1
         with:
           maven-central-username: nicolasfarabegoli
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 0
-      - uses: DanySK/build-check-deploy-gradle-action@2.2.0
+      - uses: DanySK/build-check-deploy-gradle-action@2.2.1
         with:
           # Dry-deployment
           deploy-command: |
@@ -130,7 +130,7 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.4.0
-      - uses: DanySK/build-check-deploy-gradle-action@2.2.0
+      - uses: DanySK/build-check-deploy-gradle-action@2.2.1
         with:
           maven-central-username: nicolasfarabegoli
           maven-central-password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -169,7 +169,7 @@ jobs:
         uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ steps.node-version.outputs.version }}
-      - uses: DanySK/build-check-deploy-gradle-action@2.2.0
+      - uses: DanySK/build-check-deploy-gradle-action@2.2.1
         env:
           STAGING_REPO_ID: ${{ needs.staging-repo.outputs.maven-central-repo-id }}
           ORG_GRADLE_PROJECT_releaseStage: true
