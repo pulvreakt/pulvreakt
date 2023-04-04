@@ -11,10 +11,30 @@ interface Capability
  * All available pulverization components type.
  */
 sealed interface ComponentType
+
+/**
+ * Behaviour component.
+ */
 object Behaviour : ComponentType
+
+/**
+ * State component.
+ */
 object State : ComponentType
+
+/**
+ * Communication component.
+ */
 object Communication : ComponentType
+
+/**
+ * Actuators component.
+ */
 object Actuators : ComponentType
+
+/**
+ * Sensors component.
+ */
 object Sensors : ComponentType
 
 /**
