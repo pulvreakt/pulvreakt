@@ -1,31 +1,29 @@
 package it.nicolasfarabegoli.pulverization.dsl.v2.model
 
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.dsl.Tier
+import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
 
 /**
- * Partial deployment configuration where only partial [components] are configured with their respective [tier].
- * Note: this class is used internally by the DSL to build the _allocation map_ incrementally and **MUST** not used
- * directly.
+ * Represents the capability on which a [PulverizedComponent].
  */
-data class PartialDeploymentMap(val components: Set<PulverizedComponentType>, val tier: Set<Tier>)
+interface Capability
 
 /**
- * Definition of the _allocation map_ where [componentsAllocations] defines for each component where it can be deployed
- * and [componentsStartup] defines where each component is started on which tier.
+ * All available pulverization components type.
  */
-data class DeviceAllocationMap(
-    val componentsAllocations: Map<PulverizedComponentType, Set<Tier>>,
-    val componentsStartup: Map<PulverizedComponentType, Tier>,
-)
+sealed interface ComponentType
+object Behaviour : ComponentType
+object State : ComponentType
+object Communication : ComponentType
+object Actuators : ComponentType
+object Sensors : ComponentType
 
 /**
- * Configuration of a device called [deviceName] with its [allocationMap] and its [components].
+ * Configuration of a device called [deviceName] with its [capabilities] and its [components].
  */
 data class LogicalDeviceSpecification(
     val deviceName: String,
-    val allocationMap: DeviceAllocationMap,
-    val components: Set<PulverizedComponentType>,
+    val capabilities: Map<ComponentType, Set<Capability>>,
+    val components: Set<ComponentType>,
 )
 
 /**

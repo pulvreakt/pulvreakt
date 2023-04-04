@@ -1,76 +1,49 @@
 package it.nicolasfarabegoli.pulverization.dsl.v2
 
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.dsl.Tier
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.DeviceAllocationMap
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.LogicalDeviceSpecification
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.PartialDeploymentMap
 
 /**
  * DSL scope for configuring a device with a [deviceName].
  */
 class DeviceScope(private val deviceName: String) {
-    private var allocationMap: DeviceAllocationMap = DeviceAllocationMap(emptyMap(), emptyMap())
+    private var allocationMap = emptyMap<ComponentType, Set<Capability>>()
+
+    /**
+     * Utility method for defining where the specified component can be deployed on.
+     */
+    infix fun Set<ComponentType>.deployableOn(tier: Capability) = deployableOn(setOf(tier))
+
+    /**
+     * Utility method for defining where the specified component can be deployed on.
+     */
+    infix fun Set<ComponentType>.deployableOn(tiers: Set<Capability>) {
+        allocationMap = allocationMap + this.associateWith { tiers }
+    }
+
+    /**
+     * Utility method for defining where the specified component can be deployed on.
+     */
+    infix fun ComponentType.deployableOn(tier: Capability) = deployableOn(setOf(tier))
+
+    /**
+     * Utility method for defining where the specified component can be deployed on.
+     */
+    infix fun ComponentType.deployableOn(tiers: Set<Capability>) {
+        allocationMap = allocationMap + (this to tiers)
+    }
 
     /**
      * Utility method used for set up the components belonging to a device.
      */
-    infix fun Set<PulverizedComponentType>.and(otherComponent: PulverizedComponentType): Set<PulverizedComponentType> =
-        this + otherComponent
+    infix fun <C> Set<C>.and(otherComponent: C): Set<C> = this + otherComponent
 
     /**
      * Utility method used for set up the components belonging to a device.
      */
-    infix fun PulverizedComponentType.and(otherComponent: PulverizedComponentType): Set<PulverizedComponentType> =
-        setOf(this, otherComponent)
-
-    /**
-     * Utility method for defining where the specified component can be deployed on.
-     */
-    infix fun Set<PulverizedComponentType>.deployableOn(tier: Tier): PartialDeploymentMap {
-        return PartialDeploymentMap(this, setOf(tier))
-    }
-
-    /**
-     * Utility method for defining where the specified component can be deployed on.
-     */
-    infix fun Set<PulverizedComponentType>.deployableOn(tier: Set<Tier>): PartialDeploymentMap {
-        return PartialDeploymentMap(this, tier)
-    }
-
-    /**
-     * Utility method for defining where the specified component can be deployed on.
-     */
-    infix fun PulverizedComponentType.deployableOn(tiers: Set<Tier>): PartialDeploymentMap {
-        return PartialDeploymentMap(setOf(this), tiers)
-    }
-
-    /**
-     * Utility method for defining where the specified component can be deployed on.
-     */
-    infix fun PulverizedComponentType.deployableOn(tiers: Tier): PartialDeploymentMap {
-        return PartialDeploymentMap(setOf(this), setOf(tiers))
-    }
-
-    /**
-     * Utility method for defining multiple tier where component(s) can be deployed on.
-     */
-    infix fun Tier.or(otherTier: Tier): Set<Tier> = setOf(this, otherTier)
-
-    /**
-     * Utility method for defining multiple tier where component(s) can be deployed on.
-     */
-    infix fun Set<Tier>.or(otherTier: Tier): Set<Tier> = this + otherTier
-
-    /**
-     * Utility method for defining where the component is deployed on the startup of the system.
-     */
-    infix fun PartialDeploymentMap.startsOn(startTier: Tier) {
-        val allocComps = allocationMap.componentsAllocations + components.associateWith { tier }
-        val startupTier = allocationMap.componentsStartup + components.associateWith { startTier }
-        allocationMap = DeviceAllocationMap(allocComps, startupTier)
-    }
+    infix fun <C> C.and(otherComponent: C): Set<C> = setOf(this, otherComponent)
 
     internal fun generate(): LogicalDeviceSpecification =
-        LogicalDeviceSpecification(deviceName, allocationMap, allocationMap.componentsAllocations.keys)
+        LogicalDeviceSpecification(deviceName, allocationMap, allocationMap.keys)
 }
