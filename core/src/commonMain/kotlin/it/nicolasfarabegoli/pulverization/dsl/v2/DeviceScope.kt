@@ -2,7 +2,7 @@ package it.nicolasfarabegoli.pulverization.dsl.v2
 
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
 import it.nicolasfarabegoli.pulverization.dsl.Tier
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.DeviceDeploymentMap
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.DeviceAllocationMap
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.LogicalDeviceSpecification
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.PartialDeploymentMap
 
@@ -10,7 +10,7 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.PartialDeploymentMap
  * DSL scope for configuring a device with a [deviceName].
  */
 class DeviceScope(private val deviceName: String) {
-    private var allocationMap: DeviceDeploymentMap = DeviceDeploymentMap(emptyMap(), emptyMap())
+    private var allocationMap: DeviceAllocationMap = DeviceAllocationMap(emptyMap(), emptyMap())
 
     /**
      * Utility method used for set up the components belonging to a device.
@@ -66,11 +66,11 @@ class DeviceScope(private val deviceName: String) {
      * Utility method for defining where the component is deployed on the startup of the system.
      */
     infix fun PartialDeploymentMap.startsOn(startTier: Tier) {
-        val allocComps = allocationMap.allocationComponents + components.associateWith { tier }
-        val startupTier = allocationMap.startsOn + components.associateWith { startTier }
-        allocationMap = DeviceDeploymentMap(allocComps, startupTier)
+        val allocComps = allocationMap.componentsAllocations + components.associateWith { tier }
+        val startupTier = allocationMap.componentsStartup + components.associateWith { startTier }
+        allocationMap = DeviceAllocationMap(allocComps, startupTier)
     }
 
     internal fun generate(): LogicalDeviceSpecification =
-        LogicalDeviceSpecification(deviceName, allocationMap, allocationMap.allocationComponents.keys)
+        LogicalDeviceSpecification(deviceName, allocationMap, allocationMap.componentsAllocations.keys)
 }
