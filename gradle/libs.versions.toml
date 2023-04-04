@@ -15,7 +15,7 @@ kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.36.1"
 kover = "org.jetbrains.kotlinx.kover:0.6.1"
 taskTree = "com.dorongold.task-tree:2.1.1"
 publishOnCentral = "org.danilopianini.publish-on-central:4.0.0"
-gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.4"
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.5"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
