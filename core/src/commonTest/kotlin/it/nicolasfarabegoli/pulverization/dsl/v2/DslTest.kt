@@ -1,7 +1,9 @@
 package it.nicolasfarabegoli.pulverization.dsl.v2
 
+import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
@@ -31,10 +33,10 @@ class DslTest : FreeSpec({
                         ActuatorsComponent,
                         SensorsComponent,
                     )
-                    device.deploymentMap.startsOn.size shouldBe 5
-                    device.deploymentMap.allocationComponents.size shouldBe 5
+                    device.allocationMap.componentsStartup.size shouldBe 5
+                    device.allocationMap.componentsAllocations.size shouldBe 5
 
-                    device.deploymentMap.allocationComponents shouldBe mapOf(
+                    device.allocationMap.componentsAllocations shouldBe mapOf(
                         BehaviourComponent to setOf(Cloud),
                         StateComponent to setOf(Cloud),
                         CommunicationComponent to setOf(Cloud),
@@ -42,8 +44,8 @@ class DslTest : FreeSpec({
                         ActuatorsComponent to setOf(Device),
                     )
 
-                    device.deploymentMap.allocationComponents
-                        .mapValues { (_, v) -> v.first() } shouldBe device.deploymentMap.startsOn
+                    device.allocationMap.componentsAllocations
+                        .mapValues { (_, v) -> v.first() } shouldBe device.allocationMap.componentsStartup
                 } ?: error("The device-1 should be present in the configuration!")
             }
             "a consistent configuration with multiple tier" {
@@ -53,14 +55,33 @@ class DslTest : FreeSpec({
                     }
                 }
                 config.devicesConfiguration.firstOrNull { it.deviceName == "device-1" }?.let { device ->
-                    device.deploymentMap.allocationComponents shouldBe mapOf(
+                    device.allocationMap.componentsAllocations shouldBe mapOf(
                         BehaviourComponent to setOf(Device, Cloud),
                     )
 
-                    device.deploymentMap.startsOn shouldBe mapOf(
+                    device.allocationMap.componentsStartup shouldBe mapOf(
                         BehaviourComponent to Cloud,
                     )
                 }
+            }
+        }
+    }
+    "The configuration produced by the DSL" - {
+        val config = pulverizationSystem {
+            device("device-1") {
+                BehaviourComponent and StateComponent deployableOn Cloud startsOn Cloud
+            }
+        }
+        "can be queried by retrieving a device-specific configuration" {
+            val deviceConfig = config.getConfigurationByDeviceOrNull("device-1")
+
+            deviceConfig shouldNotBe null
+            deviceConfig?.components shouldBe setOf(BehaviourComponent, StateComponent)
+        }
+        "if queried with an invalid device should return null or an exception" {
+            config.getConfigurationByDeviceOrNull("device-2") shouldBe null
+            shouldThrowUnit<IllegalStateException> {
+                config.getConfigurationByDevice("device-2")
             }
         }
     }
