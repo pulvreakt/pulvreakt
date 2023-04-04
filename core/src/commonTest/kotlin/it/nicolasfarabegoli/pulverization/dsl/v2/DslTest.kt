@@ -11,8 +11,9 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 
+// User-defined capabilities
 object HighComputationalPower : Capability
-object LowLatency : Capability
+object HighMemory : Capability
 object EmbeddedDevice : Capability
 
 class DslTest : FreeSpec({
@@ -21,8 +22,8 @@ class DslTest : FreeSpec({
             "a consistent configuration" {
                 val config = pulverizationSystem {
                     device("device-1") {
-                        Behaviour and State deployableOn HighComputationalPower
-                        Communication deployableOn LowLatency
+                        Behaviour and Communication deployableOn HighComputationalPower
+                        State deployableOn HighMemory
                         Sensors and Actuators deployableOn EmbeddedDevice
                     }
                 }
@@ -35,26 +36,26 @@ class DslTest : FreeSpec({
 
                     device.capabilities shouldBe mapOf(
                         Behaviour to setOf(HighComputationalPower),
-                        State to setOf(HighComputationalPower),
-                        Communication to setOf(LowLatency),
+                        State to setOf(HighMemory),
+                        Communication to setOf(HighComputationalPower),
                         Sensors to setOf(EmbeddedDevice),
                         Actuators to setOf(EmbeddedDevice),
                     )
                 } ?: error("The device-1 should be present in the configuration!")
             }
-            "a consistent configuration with multiple tier" {
+            "a consistent configuration with multiple capabilities" {
                 val config = pulverizationSystem {
                     device("device-1") {
                         Behaviour and State deployableOn (EmbeddedDevice and HighComputationalPower)
                         Sensors and Actuators deployableOn EmbeddedDevice
-                        Communication deployableOn (EmbeddedDevice and LowLatency)
+                        Communication deployableOn (EmbeddedDevice and HighMemory)
                     }
                 }
                 config.devicesConfiguration.firstOrNull { it.deviceName == "device-1" }?.let { device ->
                     device.capabilities shouldBe mapOf(
                         Behaviour to setOf(EmbeddedDevice, HighComputationalPower),
                         State to setOf(EmbeddedDevice, HighComputationalPower),
-                        Communication to setOf(LowLatency, EmbeddedDevice),
+                        Communication to setOf(HighMemory, EmbeddedDevice),
                         Sensors to setOf(EmbeddedDevice),
                         Actuators to setOf(EmbeddedDevice),
                     )
