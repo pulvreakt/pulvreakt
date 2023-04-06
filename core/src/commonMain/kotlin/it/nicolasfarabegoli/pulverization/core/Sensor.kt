@@ -18,7 +18,7 @@ interface Sensor<out T> : Initializable {
  * Model the concept of set of [Sensor]s in the pulverization context.
  * Contains a set of [Sensor]s managed by a single [LogicalDevice].
  */
-abstract class SensorsContainer : PulverizedComponent {
+abstract class SensorsContainer : PulverizedComponent<Any, Any, Any, Any, Any> {
     override val componentType: PulverizedComponentType = SensorsComponent
 
     /**

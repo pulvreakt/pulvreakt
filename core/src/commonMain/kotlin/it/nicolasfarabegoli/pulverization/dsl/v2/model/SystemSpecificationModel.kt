@@ -3,7 +3,7 @@ package it.nicolasfarabegoli.pulverization.dsl.v2.model
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
 
 /**
- * Represents the capability on which a [PulverizedComponent].
+ * Represents the capability on which a [PulverizedComponent] should runs on.
  */
 interface Capability
 
@@ -38,11 +38,11 @@ object Actuators : ComponentType
 object Sensors : ComponentType
 
 /**
- * Configuration of a device called [deviceName] with its [capabilities] and its [components].
+ * Configuration of a device called [deviceName] where its [components] have [requiredCapabilities] in oder to run.
  */
 data class LogicalDeviceSpecification(
     val deviceName: String,
-    val capabilities: Map<ComponentType, Set<Capability>>,
+    val requiredCapabilities: Map<ComponentType, Set<Capability>>,
     val components: Set<ComponentType>,
 )
 

@@ -32,9 +32,9 @@ class DslTest : FreeSpec({
                     device.components.size shouldBe 5
                     device.components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
 
-                    device.capabilities.size shouldBe 5
+                    device.requiredCapabilities.size shouldBe 5
 
-                    device.capabilities shouldBe mapOf(
+                    device.requiredCapabilities shouldBe mapOf(
                         Behaviour to setOf(HighComputationalPower),
                         State to setOf(HighMemory),
                         Communication to setOf(HighComputationalPower),
@@ -52,7 +52,7 @@ class DslTest : FreeSpec({
                     }
                 }
                 config.devicesConfiguration.firstOrNull { it.deviceName == "device-1" }?.let { device ->
-                    device.capabilities shouldBe mapOf(
+                    device.requiredCapabilities shouldBe mapOf(
                         Behaviour to setOf(EmbeddedDevice, HighComputationalPower),
                         State to setOf(EmbeddedDevice, HighComputationalPower),
                         Communication to setOf(HighMemory, EmbeddedDevice),

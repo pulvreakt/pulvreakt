@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
  * @param S the type of the message to send.
  * @param R the type of the message to receive.
  */
-interface Communication<P : Any> : PulverizedComponent {
+interface Communication<P : Any> : PulverizedComponent<Any, P, Any, Any, Any> {
     override val componentType: PulverizedComponentType
         get() = CommunicationComponent
 

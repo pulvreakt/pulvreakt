@@ -19,7 +19,7 @@ interface Actuator<in T> : Initializable {
  * Contains a set of [Actuator] managed by a single [Device].
  * @param I the type of the ID of each [Actuator].
  */
-abstract class ActuatorsContainer : PulverizedComponent {
+abstract class ActuatorsContainer : PulverizedComponent<Any, Any, Any, Any, Any> {
 
     override val componentType: PulverizedComponentType = ActuatorsComponent
 
