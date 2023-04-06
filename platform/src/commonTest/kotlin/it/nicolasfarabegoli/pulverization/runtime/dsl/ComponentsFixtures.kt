@@ -12,6 +12,8 @@ import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -88,6 +90,8 @@ class DeviceSensorContainer : SensorsContainer() {
         this += sensor
     }
 }
+
+suspend fun sensorsLogic(sensor: SensorsContainer, behaviourRef: BehaviourRef<Int>) = coroutineScope { }
 
 class RemoteCommunicator(private val comm: MutableSharedFlow<ByteArray>) : Communicator {
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}

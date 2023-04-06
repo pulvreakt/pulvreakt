@@ -23,7 +23,7 @@ data class BehaviourOutput<S : Any, E : Any, A : Any, O : Any>(
  * @param W the type of the sensed values
  * @param A the type of the actuation to do
  */
-interface Behaviour<S : Any, E : Any, W : Any, A : Any, O : Any> : PulverizedComponent {
+interface Behaviour<S : Any, E : Any, W : Any, A : Any, O : Any> : PulverizedComponent<S, E, W, A, O> {
     override val componentType: PulverizedComponentType
         get() = BehaviourComponent
 

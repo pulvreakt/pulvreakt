@@ -8,7 +8,7 @@ import org.koin.core.component.KoinComponent
 /**
  * High level concept of pulverized component.
  */
-interface PulverizedComponent : Initializable, KoinComponent {
+interface PulverizedComponent<S, C, SS, AS, O> : Initializable, KoinComponent {
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
 
     /**

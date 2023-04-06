@@ -18,18 +18,18 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
-import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createCommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createSensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createStateRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.setupBehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.context.createContext
+import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
+import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
+import it.nicolasfarabegoli.pulverization.runtime.utils.CommunicationLogicType
+import it.nicolasfarabegoli.pulverization.runtime.utils.SensorsLogicType
+import it.nicolasfarabegoli.pulverization.runtime.utils.StateLogicType
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -45,13 +45,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-
-typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
-typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
-typealias SensorsLogicType<SS> = suspend (SensorsContainer, BehaviourRef<SS>) -> Unit
-typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>) -> Unit
-typealias BehaviourLogicType<S, C, SS, AS, R> =
-    suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
 
 @PublishedApi
 internal class AnySerializer<S> : KSerializer<S> {
