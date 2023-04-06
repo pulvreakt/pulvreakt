@@ -10,4 +10,9 @@ interface Host {
     val capabilities: Set<Capability>
 }
 
-typealias HostCapabilityMapping = Set<Host>
+typealias HostCapabilityMapping = Map<Capability, Set<Host>>
+
+fun Set<Host>.toHostCapabilityMapping(): HostCapabilityMapping {
+    val capabilities = map { it.capabilities }.flatten().toSet()
+    return capabilities.associateWith { key -> filter { it.capabilities.contains(key) }.toSet() }
+}
