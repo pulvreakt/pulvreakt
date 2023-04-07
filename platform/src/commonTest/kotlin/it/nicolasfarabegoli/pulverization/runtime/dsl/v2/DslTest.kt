@@ -53,7 +53,7 @@ class DslTest : FreeSpec(
                 }
             }
             "should configure the runtime properly" {
-                pulverizationRuntime(config, "smartphone") {
+                pulverizationRuntime(config, "smartphone", emptyMap()) {
                     FixtureBehaviour() startsOn Host2
                     CommunicationFixture() startsOn Host1
                     DeviceActuatorContainer() startsOn Host2
@@ -63,7 +63,7 @@ class DslTest : FreeSpec(
                         onDevice {
                             CpuUsage reconfigures { Behaviour movesTo Host2 }
                             DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
-                            on(emptyFlow<Int>()) { it > 0 } reconfigures { State to Host2 }
+                            on(emptyFlow<Int>()) { it > 0 } reconfigures { State movesTo Host2 }
                         }
                     }
                 }

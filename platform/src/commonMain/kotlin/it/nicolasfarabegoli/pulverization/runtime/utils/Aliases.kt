@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package it.nicolasfarabegoli.pulverization.runtime.utils
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
@@ -15,8 +17,13 @@ typealias StateLogicType<S> = suspend (State<S>, BehaviourRef<S>) -> Unit
 typealias ActuatorsLogicType<AS> = suspend (ActuatorsContainer, BehaviourRef<AS>) -> Unit
 typealias SensorsLogicType<SS> = suspend (SensorsContainer, BehaviourRef<SS>) -> Unit
 typealias CommunicationLogicType<C> = suspend (Communication<C>, BehaviourRef<C>) -> Unit
-typealias BehaviourLogicType<S, C, SS, AS, R> =
-suspend (Behaviour<S, C, SS, AS, R>, StateRef<S>, CommunicationRef<C>, SensorsRef<SS>, ActuatorsRef<AS>) -> Unit
+typealias BehaviourLogicType<S, C, SS, AS, R> = suspend (
+    Behaviour<S, C, SS, AS, R>,
+    StateRef<S>,
+    CommunicationRef<C>,
+    SensorsRef<SS>,
+    ActuatorsRef<AS>,
+) -> Unit
 
 internal suspend fun <S : Any, C : Any, SS : Any, AS : Any, R : Any> defaultBehaviourLogic(
     behaviour: Behaviour<S, C, SS, AS, R>,

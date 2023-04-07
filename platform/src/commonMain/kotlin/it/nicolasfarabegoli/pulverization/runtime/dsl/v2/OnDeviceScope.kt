@@ -4,14 +4,24 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeviceReconfigura
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Scope class for configuring a reconfiguration rule on device.
+ */
 class OnDeviceScope {
     private var onDeviceReconfigurationRules = emptySet<DeviceReconfigurationRule>()
 
+    /**
+     * Configure the [ReconfigurationEvent] based on the [event] and the [predicate] that must be true to reconfigure
+     * the device.
+     */
     fun <P : Any> on(
         event: Flow<P>,
         predicate: (P) -> Boolean,
     ): ReconfigurationEvent<P> = ReconfigurationEvent(event, predicate)
 
+    /**
+     * Given the [ReconfigurationEvent] configure which reconfiguration should occur.
+     */
     infix fun <P : Any> ReconfigurationEvent<P>.reconfigures(
         config: ReconfigurationComponentScope.() -> Unit,
     ) {

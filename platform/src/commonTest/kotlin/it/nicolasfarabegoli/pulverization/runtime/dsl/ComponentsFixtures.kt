@@ -91,7 +91,13 @@ class DeviceSensorContainer : SensorsContainer() {
     }
 }
 
-suspend fun sensorsLogic(sensor: SensorsContainer, behaviourRef: BehaviourRef<Int>) = coroutineScope { }
+suspend fun sensorsLogic(sensor: SensorsContainer, behaviourRef: BehaviourRef<Int>) = coroutineScope {
+    while (true) {
+        sensor.get<DeviceSensor> {
+            behaviourRef.sendToComponent(sense())
+        }
+    }
+}
 
 class RemoteCommunicator(private val comm: MutableSharedFlow<ByteArray>) : Communicator {
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
