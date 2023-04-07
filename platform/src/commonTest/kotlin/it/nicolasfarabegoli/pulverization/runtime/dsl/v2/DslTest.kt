@@ -14,6 +14,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.FixtureBehaviour
 import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -31,37 +32,42 @@ object Host2 : Host {
     override val capabilities: Set<Capability> = setOf(EmbeddedDevice)
 }
 
-object CpuUsage : EventProducer<Double> {
+object CpuUsage : ReconfigurationEvent<Double> {
     override val events: Flow<Double> = emptyFlow()
+    override val predicate: (Double) -> Boolean = { it > 0.75 }
 }
 
-object DeviceNetworkChange : EventProducer<Int> {
+object DeviceNetworkChange : ReconfigurationEvent<Int> {
     override val events: Flow<Int> = emptyFlow()
+    override val predicate: (Int) -> Boolean = { it > 10 }
 }
 
-class DslTest : FreeSpec({
-    "The runtime DSL" - {
-        val config = pulverizationSystem {
-            device("smartphone") {
-                Behaviour and Communication deployableOn HighCpu
-                State deployableOn HighMemory
-                Actuators and Sensors deployableOn EmbeddedDevice
+class DslTest : FreeSpec(
+    {
+        "The runtime DSL" - {
+            val config = pulverizationSystem {
+                device("smartphone") {
+                    Behaviour and Communication deployableOn HighCpu
+                    State deployableOn HighMemory
+                    Actuators and Sensors deployableOn EmbeddedDevice
+                }
             }
-        }
-        "should configure the runtime properly" {
-            pulverizationRuntime(config, "smartphone") {
-                FixtureBehaviour() startsOn Host2
-                CommunicationFixture() startsOn Host1
-                DeviceActuatorContainer() startsOn Host2
-                DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
+            "should configure the runtime properly" {
+                pulverizationRuntime(config, "smartphone") {
+                    FixtureBehaviour() startsOn Host2
+                    CommunicationFixture() startsOn Host1
+                    DeviceActuatorContainer() startsOn Host2
+                    DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
 
-                reconfigurationRules {
-                    onDevice {
-                        condition(CpuUsage) { it > 0.75 } reconfigures { Behaviour movesTo Host2 }
-                        condition(DeviceNetworkChange) { it > 5 } reconfigures { Behaviour movesTo Host1 }
+                    reconfigurationRules {
+                        onDevice {
+                            CpuUsage reconfigures { Behaviour movesTo Host2 }
+                            DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
+                            on(emptyFlow<Int>()) { it > 0 } reconfigures { State to Host2 }
+                        }
                     }
                 }
             }
         }
-    }
-})
+    },
+)

@@ -1,28 +1,24 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.OnDeviceReconfigurationRules
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeviceReconfigurationRule
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
 import kotlinx.coroutines.flow.Flow
 
-interface EventProducer<out E : Any> {
-    val events: Flow<E>
-}
-
-data class EventReconfiguration<P : Any, E : EventProducer<P>>(
-    val event: E,
-    val predicate: (P) -> Boolean,
-)
-
 class OnDeviceScope {
-    private var rules: OnDeviceReconfigurationRules = OnDeviceReconfigurationRules(emptySet())
+    private var onDeviceReconfigurationRules = emptySet<DeviceReconfigurationRule>()
 
-    fun <P : Any, E : EventProducer<P>> condition(
-        event: E,
+    fun <P : Any> on(
+        event: Flow<P>,
         predicate: (P) -> Boolean,
-    ): EventReconfiguration<P, E> = EventReconfiguration(event, predicate)
+    ): ReconfigurationEvent<P> = ReconfigurationEvent(event, predicate)
 
-    infix fun <P : Any, E : EventProducer<P>> EventReconfiguration<P, E>.reconfigures(
-        reconfiguration: ReconfigurationComponentScope.() -> Unit,
+    infix fun <P : Any> ReconfigurationEvent<P>.reconfigures(
+        config: ReconfigurationComponentScope.() -> Unit,
     ) {
-        rules = OnDeviceReconfigurationRules(rules.rules + this)
+        val reconfigurationScope = ReconfigurationComponentScope().apply(config)
+        val reconfiguration = reconfigurationScope.generate()
+        onDeviceReconfigurationRules = onDeviceReconfigurationRules + DeviceReconfigurationRule(this, reconfiguration)
     }
+
+    internal fun generate(): Set<DeviceReconfigurationRule> = onDeviceReconfigurationRules
 }

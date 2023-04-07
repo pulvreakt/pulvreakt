@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
@@ -15,6 +17,8 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialBehaviourR
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialCommunicationRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialSensorsRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialStateRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PulverizationRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.SensorsRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.StateRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
@@ -31,11 +35,14 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.defaultStateLogic
 /**
  * Scope for configuring the device with its components.
  */
-@Suppress("TooManyFunctions")
 class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
     private var componentsRuntime = ComponentsRuntimeContainer<S, C, SS, AS, O>(null, null, null, null, null)
+    private var allReconfigurationRules: ReconfigurationRules? = null
 
-    fun reconfigurationRules(config: ReconfigurationRulesScope.() -> Unit) { }
+    fun reconfigurationRules(config: ReconfigurationRulesScope.() -> Unit) {
+        val reconfigurationRulesScope = ReconfigurationRulesScope().apply(config)
+        allReconfigurationRules = reconfigurationRulesScope.generate()
+    }
 
     infix fun Behaviour<S, C, SS, AS, O>.withLogic(
         logic: BehaviourLogicType<S, C, SS, AS, O>,
@@ -116,4 +123,7 @@ class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
             actuatorsRuntime = ActuatorsRuntimeConfig(actuatorsComponent, actuatorsLogic, host),
         )
     }
+
+    internal fun generate(): PulverizationRuntimeConfiguration<S, C, SS, AS, O> =
+        PulverizationRuntimeConfiguration(componentsRuntime, allReconfigurationRules)
 }
