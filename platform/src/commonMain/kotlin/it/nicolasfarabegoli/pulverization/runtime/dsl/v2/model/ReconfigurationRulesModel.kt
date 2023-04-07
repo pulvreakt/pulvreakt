@@ -6,13 +6,27 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the event that can trigger a reconfiguration.
+ */
 interface ReconfigurationEvent<P : Any> {
     companion object {
+        /**
+         * Utility method for creating an [ReconfigurationEvent] from [events] and a [predicate] which should
+         * be true to trigger the reconfiguration.
+         */
         operator fun <P : Any> invoke(events: Flow<P>, predicate: (P) -> Boolean): ReconfigurationEvent<P> =
             ReconfigurationEventImpl(events, predicate)
     }
 
+    /**
+     * The [Flow] of [events] that could trigger the reconfiguration.
+     */
     val events: Flow<P>
+
+    /**
+     * The predicate that should be true to trigger the reconfiguration.
+     */
     val predicate: (P) -> Boolean
 
     private data class ReconfigurationEventImpl<P : Any>(
@@ -21,11 +35,17 @@ interface ReconfigurationEvent<P : Any> {
     ) : ReconfigurationEvent<P>
 }
 
+/**
+ * A single device [reconfiguration] [rule].
+ */
 data class DeviceReconfigurationRule(
     val rule: ReconfigurationEvent<*>,
     val reconfiguration: Pair<ComponentType, Host>,
 )
 
+/**
+ * All the [deviceReconfigurationRules].
+ */
 data class ReconfigurationRules(
     val deviceReconfigurationRules: Set<DeviceReconfigurationRule>,
     // val externalReconfigurationRules: DeviceReconfigurationRule
