@@ -38,7 +38,7 @@ class PulverizationRuntimeTest : FreeSpec(
             }
             "should compile mixing sensors and actuators with other component" {
                 pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
-                    behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                    behaviourLogic(BehaviourFixture()) { _, _, _, _, _ -> }
                     communicationLogic(CommunicationFixture()) { _, _ -> }
                     sensorsLogic(DeviceSensorContainer()) { _, _ -> }
                     actuatorsLogic(DeviceActuatorContainer()) { _, _ -> }
@@ -51,7 +51,7 @@ class PulverizationRuntimeTest : FreeSpec(
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                             withContext { deviceID("1") }
-                            behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                            behaviourLogic(BehaviourFixture()) { _, _, _, _, _ -> }
                             stateLogic(StateFixture()) { _, _ -> }
                             communicationLogic(CommunicationFixture()) { _, _ -> }
                         }.start()
@@ -63,7 +63,7 @@ class PulverizationRuntimeTest : FreeSpec(
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                             withContext { deviceID("1") }
-                            behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                            behaviourLogic(BehaviourFixture()) { _, _, _, _, _ -> }
                         }.start()
                     }
                     exception.message shouldContain "The configured components doesn't match the configuration"
@@ -75,7 +75,7 @@ class PulverizationRuntimeTest : FreeSpec(
                     val exception = shouldThrowUnit<IllegalStateException> {
                         pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                             withContext { deviceID("1") }
-                            behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                            behaviourLogic(BehaviourFixture()) { _, _, _, _, _ -> }
                             stateLogic(StateFixture()) { _, _ -> }
                         }.start()
                     }
@@ -87,7 +87,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 shouldNotThrowUnit<IllegalStateException> {
                     val jobs = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                         withContext { deviceID("1") }
-                        behaviourLogic(FixtureBehaviour()) { _, _, _, _, _ -> }
+                        behaviourLogic(BehaviourFixture()) { _, _, _, _, _ -> }
                         stateLogic(StateFixture()) { _, _ -> }
                         withPlatform { RemoteCommunicator(MutableSharedFlow(1)) }
                     }.start()

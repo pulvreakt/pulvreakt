@@ -10,7 +10,7 @@ import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommPayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
-import it.nicolasfarabegoli.pulverization.runtime.dsl.FixtureBehaviour
+import it.nicolasfarabegoli.pulverization.runtime.dsl.BehaviourFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.behaviourLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.communicationLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.stateLogic
@@ -33,7 +33,7 @@ class AsyncScenario : FreeSpec(
                     withContext {
                         deviceID("1")
                     }
-                    behaviourLogic(FixtureBehaviour()) { b, sr, cr, _, _ ->
+                    behaviourLogic(BehaviourFixture()) { b, sr, cr, _, _ ->
                         val stateDefer = async { sr.receiveFromComponent().first() }
                         val commDefer = async { cr.receiveFromComponent().first() }
                         val st: StatePayload = stateDefer.await()
