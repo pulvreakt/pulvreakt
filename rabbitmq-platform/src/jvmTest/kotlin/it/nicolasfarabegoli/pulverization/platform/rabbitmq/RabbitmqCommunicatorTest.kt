@@ -4,8 +4,8 @@ import io.kotest.assertions.throwables.shouldNotThrowUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.StateComponent
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.RabbitmqCommunicator
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.defaultRabbitMQRemotePlace
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
@@ -31,7 +31,7 @@ class RabbitmqCommunicatorTest : FreeSpec() {
                     PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                     val communicator = RabbitmqCommunicator()
                     val remotePlaceProvider = defaultRabbitMQRemotePlace()
-                    communicator.setup(StateComponent to BehaviourComponent, remotePlaceProvider[BehaviourComponent])
+                    communicator.setup(State to Behaviour, remotePlaceProvider[Behaviour])
                 }
             }
             "should communicate with another communicator".config(enabled = false) {
@@ -39,8 +39,8 @@ class RabbitmqCommunicatorTest : FreeSpec() {
                 val stateComm = RabbitmqCommunicator()
                 val behaviourComm = RabbitmqCommunicator()
                 val remotePlaceProvider = defaultRabbitMQRemotePlace()
-                stateComm.setup(StateComponent to BehaviourComponent, remotePlaceProvider[BehaviourComponent])
-                behaviourComm.setup(BehaviourComponent to StateComponent, remotePlaceProvider[StateComponent])
+                stateComm.setup(State to Behaviour, remotePlaceProvider[Behaviour])
+                behaviourComm.setup(Behaviour to State, remotePlaceProvider[State])
                 val stateJob = launch {
                     stateComm.fireMessage("hello".toByteArray())
                 }

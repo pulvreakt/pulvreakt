@@ -2,12 +2,12 @@ package it.nicolasfarabegoli.pulverization.runtime
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.dsl.Device
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.dsl.BehaviourFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommPayload
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
@@ -26,7 +26,7 @@ class AsyncScenario : FreeSpec(
             "should work as expected" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
-                        BehaviourComponent and StateComponent and CommunicationComponent deployableOn Device
+                        Behaviour and State and Communication deployableOn Device
                     }
                 }
                 val platform = pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
