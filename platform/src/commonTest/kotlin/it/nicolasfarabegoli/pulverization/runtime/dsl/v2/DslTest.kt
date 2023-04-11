@@ -1,61 +1,38 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.dsl.v2.pulverizationSystem
+import it.nicolasfarabegoli.pulverization.runtime.dsl.BehaviourFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceActuatorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
-import it.nicolasfarabegoli.pulverization.runtime.dsl.FixtureBehaviour
+import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-object HighCpu : Capability
-object HighMemory : Capability
-object EmbeddedDevice : Capability
-
-object Host1 : Host {
-    override val hostname: String = "host1"
-    override val capabilities: Set<Capability> = setOf(HighCpu, HighMemory)
-}
-
-object Host2 : Host {
-    override val hostname: String = "host2"
-    override val capabilities: Set<Capability> = setOf(EmbeddedDevice)
-}
-
-object CpuUsage : ReconfigurationEvent<Double> {
-    override val events: Flow<Double> = emptyFlow()
-    override val predicate: (Double) -> Boolean = { it > 0.75 }
-}
-
-object DeviceNetworkChange : ReconfigurationEvent<Int> {
-    override val events: Flow<Int> = emptyFlow()
-    override val predicate: (Int) -> Boolean = { it > 10 }
+val config = pulverizationSystem {
+    device("smartphone") {
+        Behaviour and Communication deployableOn HighCpu
+        State deployableOn HighMemory
+        Actuators and Sensors deployableOn EmbeddedDevice
+    }
 }
 
 class DslTest : FreeSpec(
     {
         "The runtime DSL" - {
-            val config = pulverizationSystem {
-                device("smartphone") {
-                    Behaviour and Communication deployableOn HighCpu
-                    State deployableOn HighMemory
-                    Actuators and Sensors deployableOn EmbeddedDevice
-                }
-            }
             "should configure the runtime properly" {
-                pulverizationRuntime(config, "smartphone", emptyMap()) {
-                    FixtureBehaviour() startsOn Host2
+                val runtimeConfig = pulverizationRuntime(config, "smartphone", emptyMap()) {
+                    BehaviourFixture() startsOn Host2
                     CommunicationFixture() startsOn Host1
+                    StateFixture() startsOn Host2
                     DeviceActuatorContainer() startsOn Host2
                     DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
 
@@ -66,6 +43,31 @@ class DslTest : FreeSpec(
                             on(emptyFlow<Int>()) { it > 0 } reconfigures { State movesTo Host2 }
                         }
                     }
+                }
+                with(runtimeConfig) {
+                    with(deviceSpecification) {
+                        deviceName shouldBe "smartphone"
+                        components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
+                        requiredCapabilities shouldBe mapOf(
+                            Behaviour to setOf(HighCpu),
+                            Communication to setOf(HighCpu),
+                            State to setOf(HighMemory),
+                            Actuators to setOf(EmbeddedDevice),
+                            Sensors to setOf(EmbeddedDevice),
+                        )
+                    }
+
+                    with(runtimeConfiguration.componentsRuntimeConfiguration) {
+                        behaviourRuntime shouldNotBe null
+                        stateRuntime shouldNotBe null
+                        communicationRuntime shouldNotBe null
+                        actuatorsRuntime shouldNotBe null
+                        sensorsRuntime shouldNotBe null
+                    }
+
+                    runtimeConfiguration.reconfigurationRules?.let {
+                        it.deviceReconfigurationRules.size shouldBe 3
+                    } ?: error("Reconfiguration rules must be defined")
                 }
             }
         }
