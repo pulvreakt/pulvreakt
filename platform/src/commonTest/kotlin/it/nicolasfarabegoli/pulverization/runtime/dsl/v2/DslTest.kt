@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceActuatorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityMapping
 import kotlinx.coroutines.flow.emptyFlow
 
 val config = pulverizationSystem {
@@ -25,51 +26,51 @@ val config = pulverizationSystem {
     }
 }
 
-class DslTest : FreeSpec(
-    {
-        "The runtime DSL" - {
-            "should configure the runtime properly" {
-                val runtimeConfig = pulverizationRuntime(config, "smartphone", emptyMap()) {
-                    BehaviourFixture() startsOn Host2
-                    CommunicationFixture() startsOn Host1
-                    StateFixture() startsOn Host2
-                    DeviceActuatorContainer() startsOn Host2
-                    DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
+val capabilityMapping = setOf(Host1, Host2).toHostCapabilityMapping()
 
-                    reconfigurationRules {
-                        onDevice {
-                            CpuUsage reconfigures { Behaviour movesTo Host2 }
-                            DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
-                            on(emptyFlow<Int>()) { it > 0 } reconfigures { State movesTo Host2 }
-                        }
-                    }
-                }
-                with(runtimeConfig) {
-                    with(deviceSpecification) {
-                        deviceName shouldBe "smartphone"
-                        components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
-                        requiredCapabilities shouldBe mapOf(
-                            Behaviour to setOf(HighCpu),
-                            Communication to setOf(HighCpu),
-                            State to setOf(HighMemory),
-                            Actuators to setOf(EmbeddedDevice),
-                            Sensors to setOf(EmbeddedDevice),
-                        )
-                    }
+class DslTest : FreeSpec({
+    "The runtime DSL" - {
+        "should configure the runtime properly" {
+            val runtimeConfig = pulverizationRuntime(config, "smartphone", capabilityMapping) {
+                BehaviourFixture() startsOn Host2
+                CommunicationFixture() startsOn Host1
+                StateFixture() startsOn Host2
+                DeviceActuatorContainer() startsOn Host2
+                DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
 
-                    with(runtimeConfiguration.componentsRuntimeConfiguration) {
-                        behaviourRuntime shouldNotBe null
-                        stateRuntime shouldNotBe null
-                        communicationRuntime shouldNotBe null
-                        actuatorsRuntime shouldNotBe null
-                        sensorsRuntime shouldNotBe null
+                reconfigurationRules {
+                    onDevice {
+                        CpuUsage reconfigures { Behaviour movesTo Host2 }
+                        DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
+                        on(emptyFlow<Int>()) { it > 0 } reconfigures { State movesTo Host2 }
                     }
-
-                    runtimeConfiguration.reconfigurationRules?.let {
-                        it.deviceReconfigurationRules.size shouldBe 3
-                    } ?: error("Reconfiguration rules must be defined")
                 }
             }
+            with(runtimeConfig) {
+                with(deviceSpecification) {
+                    deviceName shouldBe "smartphone"
+                    components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
+                    requiredCapabilities shouldBe mapOf(
+                        Behaviour to setOf(HighCpu),
+                        Communication to setOf(HighCpu),
+                        State to setOf(HighMemory),
+                        Actuators to setOf(EmbeddedDevice),
+                        Sensors to setOf(EmbeddedDevice),
+                    )
+                }
+
+                with(runtimeConfiguration.componentsRuntimeConfiguration) {
+                    behaviourRuntime shouldNotBe null
+                    stateRuntime shouldNotBe null
+                    communicationRuntime shouldNotBe null
+                    actuatorsRuntime shouldNotBe null
+                    sensorsRuntime shouldNotBe null
+                }
+
+                runtimeConfiguration.reconfigurationRules?.let {
+                    it.deviceReconfigurationRules.size shouldBe 3
+                } ?: error("Reconfiguration rules must be defined")
+            }
         }
-    },
-)
+    }
+})
