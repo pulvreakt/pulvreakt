@@ -26,7 +26,7 @@ data class StatePayload(val i: Int)
 @Serializable
 data class CommPayload(val i: Int)
 
-class FixtureBehaviour : Behaviour<StatePayload, CommPayload, Int, Double, Unit> {
+class BehaviourFixture : Behaviour<StatePayload, CommPayload, Int, Double, Unit> {
     override val context: Context
         get() = TODO("Not yet implemented")
 
