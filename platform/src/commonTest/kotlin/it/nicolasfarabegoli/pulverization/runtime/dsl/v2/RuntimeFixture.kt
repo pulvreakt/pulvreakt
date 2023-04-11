@@ -3,8 +3,13 @@ package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityMapping
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 object HighCpu : Capability
 object HighMemory : Capability
@@ -28,4 +33,14 @@ object CpuUsage : ReconfigurationEvent<Double> {
 object DeviceNetworkChange : ReconfigurationEvent<Int> {
     override val events: Flow<Int> = emptyFlow()
     override val predicate: (Int) -> Boolean = { it > 10 }
+}
+
+val capabilityMapping = setOf(Host1, Host2).toHostCapabilityMapping()
+
+val memoryUsageFlow = flow {
+    while (true) {
+        val deviceMemoryUsage = Random.nextDouble()
+        emit(deviceMemoryUsage)
+        delay(1.seconds)
+    }
 }
