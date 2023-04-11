@@ -1,19 +1,19 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
 import it.nicolasfarabegoli.pulverization.core.Communication
-import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
-import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State as StateC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour as BehaviourC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication as CommunicationC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
@@ -95,7 +95,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
         object : RemotePlaceProvider, KoinComponent {
             override val context: Context by inject()
-            override fun get(type: PulverizedComponentType): RemotePlace? = null
+            override fun get(type: ComponentType): RemotePlace? = null
         }
     }
 
@@ -113,7 +113,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
 
     private var context: Context? = null
 
-    private val configuredComponents: MutableSet<PulverizedComponentType> = mutableSetOf()
+    private val configuredComponents: MutableSet<ComponentType> = mutableSetOf()
     private val allComponentsRef: MutableSet<ComponentRef<*>> = mutableSetOf()
 
     private suspend fun setupKoinModule() {
@@ -170,25 +170,25 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
         }
         val communicationJob = communicationLogic to communicationComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(commSer, CommunicationComponent, allComponents, deploymentUnit, communicator())
+                setupBehaviourRef(commSer, CommunicationC, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val actuatorsJob = actuatorsLogic to actuatorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(actSer, ActuatorsComponent, allComponents, deploymentUnit, communicator())
+                setupBehaviourRef(actSer, Actuators, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val sensorsJob = sensorsLogic to sensorsComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(senseSer, SensorsComponent, allComponents, deploymentUnit, communicator())
+                setupBehaviourRef(senseSer, Sensors, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
         val stateJob = stateLogic to stateComponent takeAllNotNull { logic, comp ->
             val behaviourRef =
-                setupBehaviourRef(stateSer, StateComponent, allComponents, deploymentUnit, communicator())
+                setupBehaviourRef(stateSer, StateC, allComponents, deploymentUnit, communicator())
             allComponentsRef += behaviourRef
             launch { behaviourRef.setup(); comp.initialize(); logic(comp, behaviourRef) }
         }
@@ -213,7 +213,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             behaviour: Behaviour<S, C, SS, AS, R>,
             logic: BehaviourLogicType<S, C, SS, AS, R>,
         ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
-            configuredComponents += BehaviourComponent
+            configuredComponents += BehaviourC
             behaviourComponent = behaviour
             behaviourLogic = logic
         }
@@ -225,7 +225,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             communication: Communication<C>,
             logic: CommunicationLogicType<C>,
         ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
-            configuredComponents += CommunicationComponent
+            configuredComponents += CommunicationC
             communicationComponent = communication
             communicationLogic = logic
         }
@@ -237,7 +237,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             actuators: ActuatorsContainer,
             logic: ActuatorsLogicType<AS>,
         ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
-            configuredComponents += ActuatorsComponent
+            configuredComponents += Actuators
             actuatorsComponent = actuators
             actuatorsLogic = logic
         }
@@ -249,7 +249,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             sensors: SensorsContainer,
             logic: SensorsLogicType<SS>,
         ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
-            configuredComponents += SensorsComponent
+            configuredComponents += Sensors
             sensorsComponent = sensors
             sensorsLogic = logic
         }
@@ -261,7 +261,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             state: State<S>,
             logic: StateLogicType<S>,
         ) where S : Any, C : Any, SS : Any, AS : Any, R : Any {
-            configuredComponents += StateComponent
+            configuredComponents += StateC
             stateComponent = state
             stateLogic = logic
         }

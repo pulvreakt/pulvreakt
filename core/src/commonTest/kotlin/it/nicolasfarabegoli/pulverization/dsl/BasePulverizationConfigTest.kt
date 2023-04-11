@@ -6,8 +6,8 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.StateComponent
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 
 class BasePulverizationConfigTest : FreeSpec(
     {
@@ -15,8 +15,8 @@ class BasePulverizationConfigTest : FreeSpec(
             "should configure a logical device" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
-                        StateComponent deployableOn Cloud
-                        BehaviourComponent deployableOn Edge
+                        State deployableOn Cloud
+                        Behaviour deployableOn Edge
                     }
                     logicalDevice("device-2") { }
                 }
@@ -48,8 +48,8 @@ class BasePulverizationConfigTest : FreeSpec(
                 val exc = shouldThrow<IllegalStateException> {
                     pulverizationConfig {
                         logicalDevice("device-1") {
-                            StateComponent deployableOn Cloud
-                            BehaviourComponent and StateComponent deployableOn Edge
+                            State deployableOn Cloud
+                            Behaviour and State deployableOn Edge
                         }
                     }
                 }
@@ -59,7 +59,7 @@ class BasePulverizationConfigTest : FreeSpec(
                 shouldThrow<IllegalStateException> {
                     pulverizationConfig {
                         logicalDevice("device-1") {
-                            BehaviourComponent and StateComponent and StateComponent deployableOn Cloud
+                            Behaviour and State and State deployableOn Cloud
                         }
                     }
                 }
@@ -67,13 +67,13 @@ class BasePulverizationConfigTest : FreeSpec(
             "The set of deployable unit should be accessed via the configuration" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {
-                        StateComponent and BehaviourComponent deployableOn Device
+                        State and Behaviour deployableOn Device
                     }
                 }
                 config.getDeviceConfiguration("device-1")
-                    ?.getDeploymentUnit(BehaviourComponent, StateComponent)?.let {
-                        it.deployableComponents shouldContain StateComponent
-                        it.deployableComponents shouldContain BehaviourComponent
+                    ?.getDeploymentUnit(Behaviour, State)?.let {
+                        it.deployableComponents shouldContain State
+                        it.deployableComponents shouldContain Behaviour
                     } ?: error("The deployment unit should be not empty")
             }
         }

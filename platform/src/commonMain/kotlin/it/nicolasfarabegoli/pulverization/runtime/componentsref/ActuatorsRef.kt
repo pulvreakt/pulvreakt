@@ -1,8 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
-import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
@@ -14,14 +13,12 @@ interface ActuatorsRef<S : Any> : ComponentRef<S> {
         /**
          * Create a [ActuatorsRef] specifying the [serializer] and the [communicator] to be used.
          */
-        fun <S : Any> create(serializer: KSerializer<S>, communicator: Communicator): ActuatorsRef<S> =
-            ActuatorsRefImpl(serializer, communicator)
+        fun <S : Any> create(serializer: KSerializer<S>): ActuatorsRef<S> = ActuatorsRefImpl(serializer)
 
         /**
          * Create a [ActuatorsRef] specifying the [communicator] to be used.
          */
-        inline fun <reified S : Any> create(communicator: Communicator): ActuatorsRef<S> =
-            create(serializer(), communicator)
+        inline fun <reified S : Any> create(): ActuatorsRef<S> = create(serializer())
 
         /**
          * Create a fake component reference.
@@ -33,8 +30,7 @@ interface ActuatorsRef<S : Any> : ComponentRef<S> {
 
 internal class ActuatorsRefImpl<S : Any>(
     private val serializer: KSerializer<S>,
-    private val communicator: Communicator,
-) : ComponentRef<S> by ComponentRefImpl(serializer, BehaviourComponent to ActuatorsComponent, communicator),
+) : ComponentRef<S> by ComponentRefImpl(serializer, Behaviour to Actuators),
     ActuatorsRef<S>
 
 internal class NoOpActuatorsRef<S : Any> : ComponentRef<S> by NoOpComponentRef(), ActuatorsRef<S>

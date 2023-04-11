@@ -1,5 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -14,8 +16,8 @@ import kotlinx.coroutines.flow.Flow
  * @param R the type of the message to receive.
  */
 interface Communication<P : Any> : PulverizedComponent<Any, P, Any, Any, Any> {
-    override val componentType: PulverizedComponentType
-        get() = CommunicationComponent
+    override val componentType: ComponentType
+        get() = Communication
 
     /**
      * Abstraction of the _sending action_ to other devices.

@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 
 /**
  * Annotation class used for scoping correctly the DSL.
@@ -28,21 +28,21 @@ class LogicalDeviceScope : Scope<Set<DeploymentUnit>> {
     /**
      * Define where the deployment unit should be deployed.
      */
-    infix fun Set<PulverizedComponentType>.deployableOn(tier: Tier) {
+    infix fun Set<ComponentType>.deployableOn(tier: Tier) {
         deploymentUnits += DeploymentUnit(this, tier)
     }
 
     /**
      * Define where the deployment unit should be deployed.
      */
-    infix fun PulverizedComponentType.deployableOn(tier: Tier) {
+    infix fun ComponentType.deployableOn(tier: Tier) {
         deploymentUnits += DeploymentUnit(setOf(this), tier)
     }
 
     /**
      * Set the current component in the same deployment unit with [other] component.
      */
-    infix fun PulverizedComponentType.and(other: PulverizedComponentType): Set<PulverizedComponentType> {
+    infix fun ComponentType.and(other: ComponentType): Set<ComponentType> {
         if (this == other) error("The same component should not appear in the same deployment unit")
         return setOf(this, other)
     }
@@ -50,7 +50,7 @@ class LogicalDeviceScope : Scope<Set<DeploymentUnit>> {
     /**
      * Set the current components in the same deployment unit with [other] component.
      */
-    infix fun Set<PulverizedComponentType>.and(other: PulverizedComponentType): Set<PulverizedComponentType> {
+    infix fun Set<ComponentType>.and(other: ComponentType): Set<ComponentType> {
         if (this.contains(other)) error("The same component should not appear in the same deployment unit")
         return this + other
     }

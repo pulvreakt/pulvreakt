@@ -1,5 +1,8 @@
 package it.nicolasfarabegoli.pulverization.core
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+
 /**
  * Marker interface modelling the representation of the [State].
  * Each state representation must implement this interface.
@@ -11,8 +14,8 @@ package it.nicolasfarabegoli.pulverization.core
  * @param S the type of the [State].
  */
 interface State<S : Any> : PulverizedComponent<S, Any, Any, Any, Any> {
-    override val componentType: PulverizedComponentType
-        get() = StateComponent
+    override val componentType: ComponentType
+        get() = State
 
     /**
      * Retrive the value of the [State].

@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 
 /**
  * Type of _tier_ where a [DeploymentUnit] could be deployed.
@@ -27,7 +27,7 @@ object Device : Tier
  * The configuration contains all the [deployableComponents] and a reference to the tier [where] the deployment unit
  * should be deployed.
  */
-data class DeploymentUnit(val deployableComponents: Set<PulverizedComponentType>, val where: Tier)
+data class DeploymentUnit(val deployableComponents: Set<ComponentType>, val where: Tier)
 
 /**
  * Represents the configuration of a **Logical device**.
@@ -36,7 +36,7 @@ data class DeploymentUnit(val deployableComponents: Set<PulverizedComponentType>
  */
 data class LogicalDeviceConfiguration(
     val deviceName: String,
-    val components: Set<PulverizedComponentType>,
+    val components: Set<ComponentType>,
     val deploymentUnits: Set<DeploymentUnit>,
 )
 
@@ -70,7 +70,7 @@ fun PulverizationConfiguration.getDeviceConfiguration(name: String): LogicalDevi
  * To retrive the [DeploymentUnit], a complete set of [components] must be provided.
  * The [components] set must match 1:1 all the components in the deployment unit.
  */
-fun LogicalDeviceConfiguration.getDeploymentUnit(components: Set<PulverizedComponentType>): DeploymentUnit? =
+fun LogicalDeviceConfiguration.getDeploymentUnit(components: Set<ComponentType>): DeploymentUnit? =
     deploymentUnits.firstOrNull {
         it.deployableComponents.containsAll(components) && it.deployableComponents.size == components.size
     }
@@ -80,5 +80,5 @@ fun LogicalDeviceConfiguration.getDeploymentUnit(components: Set<PulverizedCompo
  * To retrive the [DeploymentUnit], a complete set of [components] must be provided.
  * The [components] set must match 1:1 all the components in the deployment unit.
  */
-fun LogicalDeviceConfiguration.getDeploymentUnit(vararg components: PulverizedComponentType): DeploymentUnit? =
+fun LogicalDeviceConfiguration.getDeploymentUnit(vararg components: ComponentType): DeploymentUnit? =
     getDeploymentUnit(components.toSet())

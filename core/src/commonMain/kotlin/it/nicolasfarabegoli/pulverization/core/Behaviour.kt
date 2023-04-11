@@ -1,5 +1,8 @@
 package it.nicolasfarabegoli.pulverization.core
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+
 /**
  * Represents the output of the function modelling the behaviour.
  * Contains the [newState], the [newExport], the [actuations] and the function [outcome].
@@ -24,8 +27,8 @@ data class BehaviourOutput<S : Any, E : Any, A : Any, O : Any>(
  * @param A the type of the actuation to do
  */
 interface Behaviour<S : Any, E : Any, W : Any, A : Any, O : Any> : PulverizedComponent<S, E, W, A, O> {
-    override val componentType: PulverizedComponentType
-        get() = BehaviourComponent
+    override val componentType: ComponentType
+        get() = Behaviour
 
     /**
      * The function used to implement the device logic.

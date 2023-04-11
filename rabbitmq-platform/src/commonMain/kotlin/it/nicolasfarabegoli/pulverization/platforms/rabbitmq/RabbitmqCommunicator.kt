@@ -1,8 +1,8 @@
 package it.nicolasfarabegoli.pulverization.platforms.rabbitmq
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.core.show
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
@@ -29,7 +29,7 @@ fun defaultRabbitMQRemotePlace(): RemotePlaceProvider = object : RemotePlaceProv
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("No Koin app defined")
     override val context: Context by inject()
 
-    override fun get(type: PulverizedComponentType): RemotePlace {
+    override fun get(type: ComponentType): RemotePlace {
         return RemotePlace(context.deviceID, type.show())
     }
 }

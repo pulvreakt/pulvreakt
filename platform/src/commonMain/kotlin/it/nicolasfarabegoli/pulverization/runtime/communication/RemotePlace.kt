@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 
 /**
  * Represent a remote place where a component is located.
@@ -21,5 +21,5 @@ interface RemotePlaceProvider {
     /**
      * Return a [RemotePlace] (if any) of a given [type].
      */
-    operator fun get(type: PulverizedComponentType): RemotePlace?
+    operator fun get(type: ComponentType): RemotePlace?
 }

@@ -1,5 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import kotlin.reflect.KClass
 
 /** Models the concept of single [Sensor] in the pulverization context.
@@ -19,7 +21,7 @@ interface Sensor<out T> : Initializable {
  * Contains a set of [Sensor]s managed by a single [LogicalDevice].
  */
 abstract class SensorsContainer : PulverizedComponent<Any, Any, Any, Any, Any> {
-    override val componentType: PulverizedComponentType = SensorsComponent
+    override val componentType: ComponentType = Sensors
 
     /**
      * The set of [Sensor]s.
