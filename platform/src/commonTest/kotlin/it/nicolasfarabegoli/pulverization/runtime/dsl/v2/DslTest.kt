@@ -28,17 +28,17 @@ class DslTest : FreeSpec({
     "The runtime DSL" - {
         "should configure the runtime properly" {
             val runtimeConfig = pulverizationRuntime(config, "smartphone", capabilityMapping) {
-                BehaviourFixture() startsOn Host2
-                CommunicationFixture() startsOn Host1
-                StateFixture() startsOn Host2
+                BehaviourFixture() startsOn Host1
+                CommunicationFixture() startsOn Host3
+                StateFixture() startsOn Host1
                 DeviceActuatorContainer() startsOn Host2
                 DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
 
                 reconfigurationRules {
                     onDevice {
-                        CpuUsage reconfigures { Behaviour movesTo Host2 }
-                        DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
-                        on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host2 }
+                        CpuUsage reconfigures { Behaviour movesTo Host3 }
+                        DeviceNetworkChange reconfigures { Communication movesTo Host1 }
+                        on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host3 }
                     }
                 }
             }
