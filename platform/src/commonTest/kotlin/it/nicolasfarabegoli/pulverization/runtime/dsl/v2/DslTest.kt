@@ -15,8 +15,6 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceActuatorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityMapping
-import kotlinx.coroutines.flow.emptyFlow
 
 val config = pulverizationSystem {
     device("smartphone") {
@@ -25,8 +23,6 @@ val config = pulverizationSystem {
         Actuators and Sensors deployableOn EmbeddedDevice
     }
 }
-
-val capabilityMapping = setOf(Host1, Host2).toHostCapabilityMapping()
 
 class DslTest : FreeSpec({
     "The runtime DSL" - {
@@ -42,7 +38,7 @@ class DslTest : FreeSpec({
                     onDevice {
                         CpuUsage reconfigures { Behaviour movesTo Host2 }
                         DeviceNetworkChange reconfigures { Behaviour movesTo Host1 }
-                        on(emptyFlow<Int>()) { it > 0 } reconfigures { State movesTo Host2 }
+                        on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host2 }
                     }
                 }
             }
