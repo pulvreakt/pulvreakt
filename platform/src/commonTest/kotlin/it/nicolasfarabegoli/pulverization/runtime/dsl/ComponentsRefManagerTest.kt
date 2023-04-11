@@ -6,17 +6,17 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.core.ActuatorsComponent
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.PulverizedComponentType
-import it.nicolasfarabegoli.pulverization.core.SensorsComponent
-import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
@@ -27,7 +27,6 @@ import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.koin.dsl.koinApplication
@@ -39,7 +38,7 @@ class ComponentsRefManagerTest : FreeSpec() {
         factory<RemotePlaceProvider> {
             return@factory object : RemotePlaceProvider {
                 override val context: Context by inject()
-                override fun get(type: PulverizedComponentType): RemotePlace? = null
+                override fun get(type: ComponentType): RemotePlace? = null
             }
         }
     }
@@ -47,15 +46,15 @@ class ComponentsRefManagerTest : FreeSpec() {
     init {
         val config = pulverizationConfig {
             logicalDevice("device-1") {
-                BehaviourComponent and
-                    StateComponent and
-                    CommunicationComponent and
-                    SensorsComponent and
-                    ActuatorsComponent deployableOn Edge
+                Behaviour and
+                    State and
+                    Communication and
+                    Sensors and
+                    Actuators deployableOn Edge
             }
             logicalDevice("device-2") {
-                StateComponent and BehaviourComponent deployableOn Cloud
-                CommunicationComponent deployableOn Edge
+                State and Behaviour deployableOn Cloud
+                Communication deployableOn Edge
             }
         }
         "The component ref manager" - {
@@ -68,11 +67,11 @@ class ComponentsRefManagerTest : FreeSpec() {
 
                         val deviceConfig = config.getDeviceConfiguration("device-1")!!
                         val deploymentUnit = deviceConfig.getDeploymentUnit(
-                            StateComponent,
-                            BehaviourComponent,
-                            SensorsComponent,
-                            ActuatorsComponent,
-                            CommunicationComponent,
+                            State,
+                            Behaviour,
+                            Sensors,
+                            Actuators,
+                            Communication,
                         )!!.deployableComponents
 
                         val stateRef =
@@ -94,7 +93,7 @@ class ComponentsRefManagerTest : FreeSpec() {
                         val communicator = RemoteCommunicator(flow)
                         val deviceConfig = config.getDeviceConfiguration("device-2")!!
                         val deploymentUnit =
-                            deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
+                            deviceConfig.getDeploymentUnit(Behaviour, State)!!.deployableComponents
                         val communicationRef = createCommunicationRef(
                             CommPayload.serializer(),
                             deviceConfig.components,
@@ -114,25 +113,25 @@ class ComponentsRefManagerTest : FreeSpec() {
                 shouldThrowUnit<IllegalStateException> {
                     val deviceConfig = config.getDeviceConfiguration("device-2")!!
                     val deploymentUnit =
-                        deviceConfig.getDeploymentUnit(BehaviourComponent, StateComponent)!!.deployableComponents
+                        deviceConfig.getDeploymentUnit(Behaviour, State)!!.deployableComponents
                     createCommunicationRef(CommPayload.serializer(), deviceConfig.components, deploymentUnit, null)
                 }
             }
             "when creating the behaviour ref" - {
                 "should throw an exception if no behaviour is present in the config" {
                     val exception = shouldThrowUnit<IllegalStateException> {
-                        setupBehaviourRef<StatePayload>(StateComponent, emptySet(), emptySet(), null)
+                        setupBehaviourRef<StatePayload>(State, emptySet(), emptySet(), null)
                     }
                     exception.message shouldContain "The Behaviour must be defined!"
                 }
                 "it should be created remote" {
                     shouldNotThrowUnit<Exception> {
                         val flow = MutableSharedFlow<ByteArray>(1)
-                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        val allComponents = setOf(Behaviour, State)
                         val behaviorRef = setupBehaviourRef<StatePayload>(
-                            StateComponent,
+                            State,
                             allComponents,
-                            setOf(StateComponent),
+                            setOf(State),
                             RemoteCommunicator(flow),
                         )
                         val job = launch {
@@ -145,11 +144,11 @@ class ComponentsRefManagerTest : FreeSpec() {
                 }
                 "it should throw an exception if we try to create a behaviour ref linked to a non-existing component" {
                     val exception = shouldThrowUnit<IllegalStateException> {
-                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        val allComponents = setOf(Behaviour, State)
                         setupBehaviourRef<CommPayload>(
-                            CommunicationComponent,
+                            Communication,
                             allComponents,
-                            setOf(StateComponent),
+                            setOf(State),
                             RemoteCommunicator(MutableSharedFlow(1)),
                         )
                     }
@@ -157,11 +156,11 @@ class ComponentsRefManagerTest : FreeSpec() {
                 }
                 "an exception should be thrown if no communicator is given" {
                     val exception = shouldThrowUnit<IllegalStateException> {
-                        val allComponents = setOf(BehaviourComponent, StateComponent)
+                        val allComponents = setOf(Behaviour, State)
                         setupBehaviourRef<StatePayload>(
-                            StateComponent,
+                            State,
                             allComponents,
-                            setOf(StateComponent),
+                            setOf(State),
                             null,
                         )
                     }

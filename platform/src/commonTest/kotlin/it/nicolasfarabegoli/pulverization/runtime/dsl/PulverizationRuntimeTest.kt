@@ -4,13 +4,13 @@ import io.kotest.assertions.throwables.shouldNotThrowUnit
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.string.shouldContain
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.core.StateComponent
 import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.actuatorsLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.behaviourLogic
@@ -25,8 +25,8 @@ class PulverizationRuntimeTest : FreeSpec(
     {
         val config = pulverizationConfig {
             logicalDevice("device-1") {
-                BehaviourComponent and StateComponent deployableOn Edge
-                CommunicationComponent deployableOn Cloud
+                Behaviour and State deployableOn Edge
+                Communication deployableOn Cloud
             }
         }
         "The kotlin type inference" - {

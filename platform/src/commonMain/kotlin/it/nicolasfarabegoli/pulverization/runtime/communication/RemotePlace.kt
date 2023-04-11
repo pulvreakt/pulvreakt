@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
-import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 
 /**
  * Represent a remote place where a component is located.
@@ -16,7 +16,7 @@ interface RemotePlaceProvider {
     /**
      * The execution context.
      */
-    val context: Context
+    val context: ExecutionContext
 
     /**
      * Return a [RemotePlace] (if any) of a given [type].

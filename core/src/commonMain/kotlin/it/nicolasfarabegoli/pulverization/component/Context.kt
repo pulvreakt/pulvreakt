@@ -1,11 +1,11 @@
 package it.nicolasfarabegoli.pulverization.component
 
 /**
- * TODO.
+ * The context on which a component run on.
  */
 interface Context {
     /**
-     * TODO.
+     * The ID of the device.
      */
-    val deviceID: String // TODO change it
+    val deviceID: String
 }

@@ -12,6 +12,7 @@ import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -104,4 +105,6 @@ class RemoteCommunicator(private val comm: MutableSharedFlow<ByteArray>) : Commu
     override suspend fun finalize() {}
     override suspend fun fireMessage(message: ByteArray) = comm.emit(message)
     override fun receiveMessage(): Flow<ByteArray> = comm.asSharedFlow()
+    override val remotePlaceProvider: RemotePlaceProvider
+        get() = TODO("Not yet implemented")
 }

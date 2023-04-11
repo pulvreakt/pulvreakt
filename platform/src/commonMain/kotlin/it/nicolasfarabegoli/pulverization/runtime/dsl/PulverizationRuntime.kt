@@ -8,9 +8,6 @@ import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.dsl.LogicalDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State as StateC
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour as BehaviourC
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication as CommunicationC
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
@@ -24,12 +21,14 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.createCommunicat
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createSensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createStateRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.setupBehaviourRef
+import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.context.createContext
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.CommunicationLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.SensorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.StateLogicType
+import it.nicolasfarabegoli.pulverization.runtime.utils.takeAllNotNull
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -45,6 +44,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour as BehaviourC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication as CommunicationC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State as StateC
 
 @PublishedApi
 internal class AnySerializer<S> : KSerializer<S> {
@@ -94,7 +96,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
     private var communicator: () -> Communicator? = { null }
     private var remotePlaceProvider: () -> RemotePlaceProvider = {
         object : RemotePlaceProvider, KoinComponent {
-            override val context: Context by inject()
+            override val context: ExecutionContext by inject()
             override fun get(type: ComponentType): RemotePlace? = null
         }
     }
@@ -266,11 +268,4 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
             stateLogic = logic
         }
     }
-}
-
-internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? {
-    // The local assignment is necessary because a problem with smart cast in Kotlin
-    val f = first
-    val s = second
-    return if (f != null && s != null) body(f, s) else null
 }

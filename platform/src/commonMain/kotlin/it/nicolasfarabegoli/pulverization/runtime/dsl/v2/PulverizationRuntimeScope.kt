@@ -7,6 +7,7 @@ import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
+import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ActuatorsRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.BehaviourRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.CommunicationRuntimeConfig
@@ -21,6 +22,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialStateRunti
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.SensorsRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.StateRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.CommunicationLogicType
@@ -38,6 +40,22 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.defaultStateLogic
 class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
     private var componentsRuntime = ComponentsRuntimeContainer<S, C, SS, AS, O>(null, null, null, null, null)
     private var allReconfigurationRules: ReconfigurationRules? = null
+    private lateinit var communicator: () -> Communicator
+    private lateinit var reconfigurator: () -> Reconfigurator
+
+    /**
+     * Specify which [Communicator] should be used.
+     */
+    fun withCommunicator(commProvider: () -> Communicator) {
+        communicator = commProvider
+    }
+
+    /**
+     * Specify which [Reconfigurator] should be used.
+     */
+    fun withReconfigurator(reconfigProvider: () -> Reconfigurator) {
+        reconfigurator = reconfigProvider
+    }
 
     /**
      * Configure all the reconfiguration rules.
@@ -172,6 +190,9 @@ class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
         )
     }
 
-    internal fun generate(): ComponentsRuntimeConfiguration<S, C, SS, AS, O> =
-        ComponentsRuntimeConfiguration(componentsRuntime, allReconfigurationRules)
+    internal fun generate(): ComponentsRuntimeConfiguration<S, C, SS, AS, O> {
+        require(::communicator.isInitialized) { "Communicator not initialized" }
+        require(::reconfigurator.isInitialized) { "Reconfigurator not initialized" }
+        return ComponentsRuntimeConfiguration(componentsRuntime, allReconfigurationRules, communicator, reconfigurator)
+    }
 }
