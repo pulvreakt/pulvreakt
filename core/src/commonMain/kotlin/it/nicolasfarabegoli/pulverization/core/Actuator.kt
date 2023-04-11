@@ -1,5 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import kotlin.reflect.KClass
 
 /**
@@ -21,7 +23,7 @@ interface Actuator<in T> : Initializable {
  */
 abstract class ActuatorsContainer : PulverizedComponent<Any, Any, Any, Any, Any> {
 
-    override val componentType: PulverizedComponentType = ActuatorsComponent
+    override val componentType: ComponentType = Actuators
 
     /**
      * The collection of [Actuator]s.

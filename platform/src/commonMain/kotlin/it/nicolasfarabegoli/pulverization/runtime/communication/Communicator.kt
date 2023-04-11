@@ -1,12 +1,20 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import kotlinx.coroutines.flow.Flow
+
+typealias Binding = Pair<ComponentType, ComponentType>
 
 /**
  * Models the communication between component.
  * Is used to enable intra-component-communication.
  */
 interface Communicator {
+
+    /**
+     * Return the remote place provider belonging to this communicator.
+     */
+    val remotePlaceProvider: RemotePlaceProvider
 
     /**
      * Setup the communication with a given [binding].

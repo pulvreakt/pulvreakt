@@ -1,8 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
-import it.nicolasfarabegoli.pulverization.core.BehaviourComponent
-import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
-import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
@@ -14,14 +13,12 @@ interface CommunicationRef<S : Any> : ComponentRef<S> {
         /**
          * Create a [CommunicationRef] specifying the [serializer] and the [communicator] to be used.
          */
-        fun <S : Any> create(serializer: KSerializer<S>, communicator: Communicator):
-            CommunicationRef<S> = CommunicationRefImpl(serializer, communicator)
+        fun <S : Any> create(serializer: KSerializer<S>): CommunicationRef<S> = CommunicationRefImpl(serializer)
 
         /**
          * Create a [CommunicationRef] specifying the [communicator] to be used.
          */
-        inline fun <reified S : Any> create(communicator: Communicator): CommunicationRef<S> =
-            create(serializer(), communicator)
+        inline fun <reified S : Any> create(): CommunicationRef<S> = create(serializer())
 
         /**
          * Create a fake component reference.
@@ -33,8 +30,7 @@ interface CommunicationRef<S : Any> : ComponentRef<S> {
 
 internal class CommunicationRefImpl<S : Any>(
     private val serializer: KSerializer<S>,
-    private val communicator: Communicator,
-) : ComponentRef<S> by ComponentRefImpl(serializer, BehaviourComponent to CommunicationComponent, communicator),
+) : ComponentRef<S> by ComponentRefImpl(serializer, Behaviour to Communication),
     CommunicationRef<S>
 
 internal class NoOpCommunicationRef<S : Any> :
