@@ -36,7 +36,7 @@ class DslTest : FreeSpec({
 
                 reconfigurationRules {
                     onDevice {
-                        CpuUsage reconfigures { Behaviour movesTo Host3 }
+                        HighCpuUsage reconfigures { Behaviour movesTo Host3 }
                         DeviceNetworkChange reconfigures { Communication movesTo Host1 }
                         on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host3 }
                     }
