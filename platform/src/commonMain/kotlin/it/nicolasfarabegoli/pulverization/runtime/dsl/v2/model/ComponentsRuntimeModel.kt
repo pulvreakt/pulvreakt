@@ -5,11 +5,17 @@ import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.CommunicationLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.SensorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.StateLogicType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour as BehaviourC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State as StateC
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication as CommunicationC
 
 /**
  * Runtime configuration that set up the [startupHost].
@@ -125,4 +131,14 @@ data class ComponentsRuntimeContainer<S : Any, C : Any, SS : Any, AS : Any, O : 
     val communicationRuntime: CommunicationRuntimeConfig<C>?,
     val sensorsRuntime: SensorsRuntimeConfig<SS>?,
     val actuatorsRuntime: ActuatorsRuntimeConfig<AS>?,
-)
+) {
+    fun getStartupComponents(host: Host): Set<ComponentType> {
+        val components = mutableSetOf<ComponentType>()
+        if (behaviourRuntime?.startupHost == host) components += BehaviourC
+        if (stateRuntime?.startupHost == host) components += StateC
+        if (communicationRuntime?.startupHost == host) components += CommunicationC
+        if (sensorsRuntime?.startupHost == host) components += Sensors
+        if (actuatorsRuntime?.startupHost == host) components += Actuators
+        return components
+    }
+}
