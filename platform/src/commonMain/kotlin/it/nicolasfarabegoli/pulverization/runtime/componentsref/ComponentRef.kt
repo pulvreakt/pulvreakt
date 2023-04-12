@@ -8,6 +8,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.Ope
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.KSerializer
@@ -61,11 +62,12 @@ interface ComponentRef<S : Any> {
     fun setOperationMode(mode: OperationMode)
 }
 
+@Suppress("EmptyFunctionBlock")
 internal class NoOpComponentRef<S : Any> : ComponentRef<S> {
-    override suspend fun sendToComponent(message: S) = TODO("Not yet implemented")
-    override suspend fun receiveFromComponent(): Flow<S> = TODO("Not yet implemented")
-    override suspend fun receiveLastFromComponent(): S = TODO("Not yet implemented")
-    override fun setOperationMode(mode: ComponentRef.OperationMode) = TODO("Not yet implemented")
+    override suspend fun sendToComponent(message: S) { }
+    override suspend fun receiveFromComponent(): Flow<S> = emptyFlow()
+    override suspend fun receiveLastFromComponent(): S? = null
+    override fun setOperationMode(mode: ComponentRef.OperationMode) { }
 }
 
 internal class ComponentRefImpl<S : Any>(
