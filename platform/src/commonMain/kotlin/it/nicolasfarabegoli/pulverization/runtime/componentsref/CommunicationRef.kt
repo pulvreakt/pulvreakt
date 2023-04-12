@@ -33,6 +33,4 @@ internal class CommunicationRefImpl<S : Any>(
 ) : ComponentRef<S> by ComponentRefImpl(serializer, Behaviour to Communication),
     CommunicationRef<S>
 
-internal class NoOpCommunicationRef<S : Any> :
-    ComponentRef<S> by NoOpComponentRef(),
-    CommunicationRef<S>
+internal class NoOpCommunicationRef<S : Any> : ComponentRef<S> by NoOpComponentRef(), CommunicationRef<S>
