@@ -131,14 +131,4 @@ data class ComponentsRuntimeContainer<S : Any, C : Any, SS : Any, AS : Any, O : 
     val communicationRuntime: CommunicationRuntimeConfig<C>?,
     val sensorsRuntime: SensorsRuntimeConfig<SS>?,
     val actuatorsRuntime: ActuatorsRuntimeConfig<AS>?,
-) {
-    fun getStartupComponents(host: Host): Set<ComponentType> {
-        val components = mutableSetOf<ComponentType>()
-        if (behaviourRuntime?.startupHost == host) components += BehaviourC
-        if (stateRuntime?.startupHost == host) components += StateC
-        if (communicationRuntime?.startupHost == host) components += CommunicationC
-        if (sensorsRuntime?.startupHost == host) components += Sensors
-        if (actuatorsRuntime?.startupHost == host) components += Actuators
-        return components
-    }
-}
+)
