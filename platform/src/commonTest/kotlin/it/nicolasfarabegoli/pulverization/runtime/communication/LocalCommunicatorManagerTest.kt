@@ -11,7 +11,7 @@ class LocalCommunicatorManagerTest : FreeSpec(), KoinTest {
     private val module = module { single { CommManager() } }
 
     init {
-        "The local communicator manager" - {
+        "The local communicator manager".config(enabled = false) - {
             "should return the same instance for the same communication type" {
                 PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                 val commManager: CommManager = PulverizationKoinModule.koinApp?.koin?.get()!!

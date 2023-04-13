@@ -41,6 +41,9 @@ class DslTest : FreeSpec({
                         on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host3 }
                     }
                 }
+
+                withCommunicator { TestCommunicator() }
+                withReconfigurator { TestReconfigurator() }
             }
             with(runtimeConfig) {
                 with(deviceSpecification) {

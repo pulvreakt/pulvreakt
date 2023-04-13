@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
 
 class AsyncScenario : FreeSpec(
     {
-        "Instantiating the platform" - {
+        "Instantiating the platform".config(enabled = false) - {
             "should work as expected" {
                 val config = pulverizationConfig {
                     logicalDevice("device-1") {

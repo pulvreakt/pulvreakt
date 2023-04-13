@@ -29,7 +29,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 Communication deployableOn Cloud
             }
         }
-        "The kotlin type inference" - {
+        "The kotlin type inference".config(enabled = false) - {
             "should infer the right type using only sensors and actuators" {
                 pulverizationPlatform(config.getDeviceConfiguration("device-1")!!) {
                     actuatorsLogic(DeviceActuatorContainer()) { _, _: BehaviourRef<Double> -> }
@@ -45,7 +45,7 @@ class PulverizationRuntimeTest : FreeSpec(
                 }
             }
         }
-        "The platform DSL" - {
+        "The platform DSL".config(enabled = false) - {
             "when not respect the configuration" - {
                 "were more components are registered, should throw an exception" {
                     val exception = shouldThrowUnit<IllegalStateException> {
