@@ -120,7 +120,7 @@ data class ActuatorsRuntimeConfig<AS : Any>(
  * [actuatorsRuntime] holds the actuators components with its corresponding logic and the startup host.
  */
 data class ComponentsRuntimeContainer<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
-    val behaviourRuntime: BehaviourRuntimeConfig<S, C, SS, AS, O>,
+    val behaviourRuntime: BehaviourRuntimeConfig<S, C, SS, AS, O>?,
     val stateRuntime: StateRuntimeConfig<S>?,
     val communicationRuntime: CommunicationRuntimeConfig<C>?,
     val sensorsRuntime: SensorsRuntimeConfig<SS>?,
