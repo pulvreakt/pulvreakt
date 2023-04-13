@@ -5,8 +5,9 @@ import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.reconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.UnitReconfigurator
-import it.nicolasfarabegoli.pulverization.runtime.utils.Spawner
+import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.runtime.utils.createComponentsRefs
+import it.nicolasfarabegoli.pulverization.runtime.utils.setupOperationMode
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
@@ -27,20 +28,23 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
 
     private val executionContext: ExecutionContext by inject()
     private val componentsRef =
-        runtimeConfig.createComponentsRefs(emptyMap(), stateSer, commSer, sensorsSer, actuatorsSer)
-    private val spawner = Spawner(runtimeConfig.runtimeConfiguration.componentsRuntimeConfiguration, componentsRef)
+        runtimeConfig.createComponentsRefs(stateSer, commSer, sensorsSer, actuatorsSer)
+    private val spawner =
+        SpawnerManager(runtimeConfig.runtimeConfiguration.componentsRuntimeConfiguration, componentsRef)
     private val unitReconfigurator = UnitReconfigurator(
         runtimeConfig.runtimeConfiguration.reconfiguratorProvider(),
         runtimeConfig.reconfigurationRules(),
         componentsRef,
         spawner,
-        runtimeConfig.getStartupComponents(executionContext.host),
+        runtimeConfig.startupComponent(executionContext.host),
     )
 
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
 
     override suspend fun initialize() {
-        runtimeConfig.getStartupComponents(executionContext.host).forEach { spawner.spawn(it) }
+        // Initialize operation mode based on initial deployment
+        componentsRef.setupOperationMode(runtimeConfig.hostComponentsStartupMap(), executionContext.host)
+        runtimeConfig.startupComponent(executionContext.host).forEach { spawner.spawn(it) }
         unitReconfigurator.initialize()
     }
 
@@ -48,11 +52,17 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         unitReconfigurator.finalize()
     }
 
+    /**
+     * Start the platform.
+     */
     suspend fun start() {
         initialize()
         TODO("Spawn local fiber with components logics")
     }
 
+    /**
+     * Stop the platform.
+     */
     suspend fun stop() {
         finalize()
     }
