@@ -22,7 +22,6 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.createSensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createStateRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.setupBehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.context.createContext
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.CommunicationLogicType
@@ -119,7 +118,7 @@ class PulverizationPlatformScope<S : Any, C : Any, SS : Any, AS : Any, R : Any>(
     private val allComponentsRef: MutableSet<ComponentRef<*>> = mutableSetOf()
 
     private suspend fun setupKoinModule() {
-        val context = this.context ?: createContext()
+        val context = this.context ?: TODO()
         val module = module {
             single { context }
             single { CommManager() }
