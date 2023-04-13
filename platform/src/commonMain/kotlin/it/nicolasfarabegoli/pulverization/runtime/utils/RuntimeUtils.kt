@@ -10,9 +10,12 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.OperationMode.Local
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.OperationMode.Remote
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.BehaviourRefsContainer
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
 import kotlinx.serialization.KSerializer
@@ -24,30 +27,60 @@ internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? 
     return if (f != null && s != null) body(f, s) else null
 }
 
-internal fun <S : Any, C : Any, SS : Any, AS : Any, O : Any>
-    DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.createComponentsRefs(
-        startup: Map<ComponentType, ComponentRef.OperationMode>,
-        stateSer: KSerializer<S>,
-        commSer: KSerializer<C>,
-        sensorsSer: KSerializer<SS>,
-        actuatorsSer: KSerializer<AS>,
-    ): ComponentsRefsContainer<S, C, SS, AS> {
+internal fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.createComponentsRefs(
+    stateSer: KSerializer<S>,
+    commSer: KSerializer<C>,
+    sensorsSer: KSerializer<SS>,
+    actuatorsSer: KSerializer<AS>,
+): ComponentsRefsContainer<S, C, SS, AS> where S : Any, C : Any, SS : Any, AS : Any, O : Any {
     val missing = setOf(Behaviour, Communication, State, Sensors, Actuators) - deviceSpecification.components
     return ComponentsRefsContainer(
         BehaviourRefsContainer(
-            if (State in missing) StateRef.createDummy() else StateRef.create(stateSer)
-                .apply { setOperationMode(startup[State] ?: error("Missing start mode")) },
-            if (Communication in missing) CommunicationRef.createDummy() else CommunicationRef.create(commSer)
-                .apply { setOperationMode(startup[Communication] ?: error("Missing start mode")) },
-            if (Sensors in missing) SensorsRef.createDummy() else SensorsRef.create(sensorsSer)
-                .apply { setOperationMode(startup[Sensors] ?: error("Missing start mode")) },
-            if (Actuators in missing) ActuatorsRef.createDummy() else ActuatorsRef.create(actuatorsSer)
-                .apply { setOperationMode(startup[Actuators] ?: error("Missing start mode")) },
+            if (State in missing) StateRef.createDummy() else StateRef.create(stateSer),
+            if (Communication in missing) CommunicationRef.createDummy() else CommunicationRef.create(commSer),
+            if (Sensors in missing) SensorsRef.createDummy() else SensorsRef.create(sensorsSer),
+            if (Actuators in missing) ActuatorsRef.createDummy() else ActuatorsRef.create(actuatorsSer),
         ),
-        // TODO(put start mode below)
         BehaviourRef.create(stateSer, State),
         BehaviourRef.create(commSer, Communication),
         BehaviourRef.create(sensorsSer, Sensors),
         BehaviourRef.create(actuatorsSer, Actuators),
     )
+}
+
+internal fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>.setupBehaviourMode(
+    component: ComponentType,
+    mode: ComponentRef.OperationMode,
+) {
+    when (component) {
+        is Behaviour -> { /* Do nothing here */ }
+        is State -> { stateToBehaviourRef.operationMode = mode; behaviourRefs.stateRef.operationMode = mode }
+        is Communication -> {
+            communicationToBehaviourRef.operationMode = mode
+            behaviourRefs.communicationRef.operationMode = mode
+        }
+        is Sensors -> {
+            sensorsToBehaviourRef.operationMode = mode
+            behaviourRefs.sensorsRef.operationMode = mode
+        }
+        is Actuators -> {
+            actuatorsToBehaviourRef.operationMode = mode
+            behaviourRefs.actuatorsRef.operationMode = mode
+        }
+    }
+}
+
+internal fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>.setupOperationMode(
+    startHosts: Map<ComponentType, Host>,
+    currentHost: Host,
+) {
+    val localComponents = startHosts.filter { (_, host) -> host == currentHost }.map { (component, _) -> component }
+    val remoteComponents = startHosts.filter { (_, host) -> host != currentHost }.map { (component, _) -> component }
+
+    if (Behaviour in localComponents) {
+        localComponents.forEach { setupBehaviourMode(it, Local) }
+        remoteComponents.forEach { setupBehaviourMode(it, Remote) }
+    } else {
+        localComponents.forEach { setupBehaviourMode(it, Remote) }
+    }
 }
