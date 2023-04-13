@@ -30,6 +30,11 @@ interface ComponentRef<S : Any> {
     }
 
     /**
+     * The current operation mode.
+     */
+    var operationMode: OperationMode
+
+    /**
      * Method used to setup the component reference.
      * By default, this method no nothing.
      */
@@ -54,12 +59,6 @@ interface ComponentRef<S : Any> {
      * Receive the last published message (if any) from the component.
      */
     suspend fun receiveLastFromComponent(): S?
-
-    /**
-     * Enable the switch at runtime on how the communication between two components should occur.
-     * This method enable the reconfiguration of a deployment unit.
-     */
-    fun setOperationMode(mode: OperationMode)
 }
 
 @Suppress("EmptyFunctionBlock")
@@ -67,7 +66,7 @@ internal class NoOpComponentRef<S : Any> : ComponentRef<S> {
     override suspend fun sendToComponent(message: S) { }
     override suspend fun receiveFromComponent(): Flow<S> = emptyFlow()
     override suspend fun receiveLastFromComponent(): S? = null
-    override fun setOperationMode(mode: ComponentRef.OperationMode) { }
+    override var operationMode: ComponentRef.OperationMode = Local
 }
 
 internal class ComponentRefImpl<S : Any>(
@@ -108,7 +107,5 @@ internal class ComponentRefImpl<S : Any>(
 
     override suspend fun receiveLastFromComponent(): S? = last
 
-    override fun setOperationMode(mode: ComponentRef.OperationMode) {
-        currentOperationMode = mode
-    }
+    override var operationMode: ComponentRef.OperationMode = Local
 }
