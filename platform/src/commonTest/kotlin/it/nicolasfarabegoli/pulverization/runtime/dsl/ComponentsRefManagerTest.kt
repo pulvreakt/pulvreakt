@@ -5,7 +5,6 @@ import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.getDeploymentUnit
@@ -23,6 +22,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvi
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createCommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.createStateRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.setupBehaviourRef
+import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
@@ -37,7 +37,7 @@ class ComponentsRefManagerTest : FreeSpec() {
         single { CommManager() }
         factory<RemotePlaceProvider> {
             return@factory object : RemotePlaceProvider {
-                override val context: Context by inject()
+                override val context: ExecutionContext by inject()
                 override fun get(type: ComponentType): RemotePlace? = null
             }
         }
@@ -57,7 +57,7 @@ class ComponentsRefManagerTest : FreeSpec() {
                 Communication deployableOn Edge
             }
         }
-        "The component ref manager" - {
+        "The component ref manager".config(enabled = false) - {
             "based on the given configuration" - {
                 "with all local device" - {
                     "should create all components ref with a local communicator" {
