@@ -19,7 +19,7 @@ import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
-import it.nicolasfarabegoli.pulverization.runtime.utils.Spawner
+import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -54,7 +54,7 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     private val reconfigurator: Reconfigurator,
     private val rules: ReconfigurationRules?,
     private val componentsRef: ComponentsRefsContainer<S, C, SS, AS>,
-    private val spawner: Spawner<S, C, SS, AS, O>,
+    private val spawner: SpawnerManager<S, C, SS, AS, O>,
     localStartComponents: Set<ComponentType>,
 ) : Initializable, KoinComponent {
 
@@ -133,13 +133,13 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     ) {
         if (this !in localComponents && moveToLocal) { // Activation of local instance of the component
             // TODO(Capire se far partire l'istanza locale del componente oppure non e' necessario)
-            component.setOperationMode(Local)
-            behaviour.setOperationMode(Local)
+            component.operationMode = Local
+            behaviour.operationMode = Local
             localComponents = localComponents + this
         } else if (this in localComponents && !moveToLocal) { // The component should move to another deployment unit
             // TODO(Capire se killare l'istanza locale del componente oppure non e' necessario)
-            component.setOperationMode(Remote)
-            behaviour.setOperationMode(Remote)
+            component.operationMode = Remote
+            behaviour.operationMode = Remote
             localComponents = localComponents - this
         }
         // On the other case nothing should be done.
@@ -153,10 +153,10 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
             TODO()
         } else if (this in localComponents && !moveToLocal) {
             // TODO(capire se killare il behaviour)
-            componentsRef.stateToBehaviourRef.setOperationMode(Remote)
-            componentsRef.communicationToBehaviourRef.setOperationMode(Remote)
-            componentsRef.sensorsToBehaviourRef.setOperationMode(Remote)
-            componentsRef.actuatorsToBehaviourRef.setOperationMode(Remote)
+            componentsRef.stateToBehaviourRef.operationMode = Remote
+            componentsRef.communicationToBehaviourRef.operationMode = Remote
+            componentsRef.sensorsToBehaviourRef.operationMode = Remote
+            componentsRef.actuatorsToBehaviourRef.operationMode = Remote
             localComponents = localComponents - this
         }
     }
