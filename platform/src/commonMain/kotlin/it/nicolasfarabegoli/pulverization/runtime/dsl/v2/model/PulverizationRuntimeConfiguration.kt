@@ -13,6 +13,7 @@ import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 /**
  * Configuration holding [componentsRuntimeConfiguration] and the [reconfigurationRules] belonging to that deployment
  * unit.
+ * Save also [communicatorProvider] and [reconfiguratorProvider].
  */
 data class ComponentsRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     val componentsRuntimeConfiguration: ComponentsRuntimeContainer<S, C, SS, AS, O>,
@@ -36,7 +37,7 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
     fun startupComponent(host: Host): Set<ComponentType> {
         return with(runtimeConfiguration.componentsRuntimeConfiguration) {
             val components = mutableSetOf<ComponentType>()
-            if (behaviourRuntime.startupHost == host) components += Behaviour
+            if (behaviourRuntime?.startupHost == host) components += Behaviour
             if (stateRuntime?.startupHost == host) components += State
             if (communicationRuntime?.startupHost == host) components += Communication
             if (sensorsRuntime?.startupHost == host) components += Sensors
@@ -51,7 +52,7 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
     fun hostComponentsStartupMap(): Map<ComponentType, Host> {
         return with(runtimeConfiguration.componentsRuntimeConfiguration) {
             val componentMap = mutableMapOf<ComponentType, Host>()
-            behaviourRuntime.startupHost.run { componentMap += Behaviour to this }
+            behaviourRuntime?.startupHost?.run { componentMap += Behaviour to this }
             stateRuntime?.startupHost?.run { componentMap += State to this }
             communicationRuntime?.startupHost?.run { componentMap += Communication to this }
             sensorsRuntime?.startupHost?.run { componentMap += Sensors to this }
@@ -61,6 +62,8 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
     }
 }
 
-fun <S : Any, C : Any, SS : Any, AS : Any, O : Any>
-    DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.reconfigurationRules(): ReconfigurationRules? =
-    runtimeConfiguration.reconfigurationRules
+/**
+ * Retrieve the configuration rules, if any.
+ */
+fun <S : Any, C : Any, SS : Any, AS : Any, O : Any> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>
+    .reconfigurationRules(): ReconfigurationRules? = runtimeConfiguration.reconfigurationRules
