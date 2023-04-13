@@ -5,11 +5,13 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.OperationMode.Local
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.OperationMode.Remote
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -90,7 +92,7 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun setup() {
-        localCommunicator.setup(binding, remotePlaceProvider[binding.second])
+        localCommunicator.setup(binding, null)
         remoteCommunicator.setup(binding, remotePlaceProvider[binding.second])
     }
 
@@ -100,9 +102,12 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun receiveFromComponent(): Flow<S> {
-        return remoteCommunicator.receiveMessage().combine(localCommunicator.receiveMessage()) { local, remote ->
-            if (currentOperationMode == Local) local else remote
-        }.map { Json.decodeFromString(serializer, it.decodeToString()) }.onEach { last = it }
+        return merge(
+            localCommunicator.receiveMessage().map { Local to it },
+            remoteCommunicator.receiveMessage().map { Remote to it },
+        ).filter { (mode, _) -> mode == operationMode }
+            .map { (_, content) -> content }
+            .map { Json.decodeFromString(serializer, it.decodeToString()) }.onEach { last = it }
     }
 
     override suspend fun receiveLastFromComponent(): S? = last
