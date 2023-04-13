@@ -30,15 +30,33 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
     val runtimeConfiguration: ComponentsRuntimeConfiguration<S, C, SS, AS, O>,
     val hostCapabilityMapping: HostCapabilityMapping,
 ) {
-    fun getStartupComponents(host: Host): Set<ComponentType> {
+    /**
+     * Given a [host], return the set of [ComponentType] belonging to it.
+     */
+    fun startupComponent(host: Host): Set<ComponentType> {
         return with(runtimeConfiguration.componentsRuntimeConfiguration) {
             val components = mutableSetOf<ComponentType>()
-            if (behaviourRuntime?.startupHost == host) components += Behaviour
+            if (behaviourRuntime.startupHost == host) components += Behaviour
             if (stateRuntime?.startupHost == host) components += State
             if (communicationRuntime?.startupHost == host) components += Communication
             if (sensorsRuntime?.startupHost == host) components += Sensors
             if (actuatorsRuntime?.startupHost == host) components += Actuators
             components
+        }
+    }
+
+    /**
+     * Returns a map containing the [ComponentType] related to its startup [Host].
+     */
+    fun hostComponentsStartupMap(): Map<ComponentType, Host> {
+        return with(runtimeConfiguration.componentsRuntimeConfiguration) {
+            val componentMap = mutableMapOf<ComponentType, Host>()
+            behaviourRuntime.startupHost.run { componentMap += Behaviour to this }
+            stateRuntime?.startupHost?.run { componentMap += State to this }
+            communicationRuntime?.startupHost?.run { componentMap += Communication to this }
+            sensorsRuntime?.startupHost?.run { componentMap += Sensors to this }
+            actuatorsRuntime?.startupHost?.run { componentMap += Actuators to this }
+            componentMap
         }
     }
 }
