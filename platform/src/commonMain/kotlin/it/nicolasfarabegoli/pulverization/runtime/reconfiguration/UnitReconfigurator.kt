@@ -98,16 +98,16 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
             }
     }
 
-    private fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
+    private suspend fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
         val (component, targetHost) = newConfiguration
         val moveToLocal = targetHost == executionContext.host // The component should be moved on this host?
         when (component) {
-            is Actuators -> component.manageReconfiguration(
-                moveToLocal,
-                componentsRef.actuatorsToBehaviourRef,
-                componentsRef.behaviourRefs.actuatorsRef,
-            )
             is Behaviour -> component.manageReconfiguration(moveToLocal)
+            is State -> component.manageReconfiguration(
+                moveToLocal,
+                componentsRef.stateToBehaviourRef,
+                componentsRef.behaviourRefs.stateRef,
+            )
             is Communication -> component.manageReconfiguration(
                 moveToLocal,
                 componentsRef.communicationToBehaviourRef,
@@ -118,26 +118,26 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
                 componentsRef.sensorsToBehaviourRef,
                 componentsRef.behaviourRefs.sensorsRef,
             )
-            is State -> component.manageReconfiguration(
+            is Actuators -> component.manageReconfiguration(
                 moveToLocal,
-                componentsRef.stateToBehaviourRef,
-                componentsRef.behaviourRefs.stateRef,
+                componentsRef.actuatorsToBehaviourRef,
+                componentsRef.behaviourRefs.actuatorsRef,
             )
         }
     }
 
-    private fun ComponentType.manageReconfiguration(
+    private suspend fun ComponentType.manageReconfiguration(
         moveToLocal: Boolean,
         component: ComponentRef<*>,
         behaviour: ComponentRef<*>,
     ) {
         if (this !in localComponents && moveToLocal) { // Activation of local instance of the component
-            // TODO(Capire se far partire l'istanza locale del componente oppure non e' necessario)
+            spawner.spawn(this)
             component.operationMode = Local
             behaviour.operationMode = Local
             localComponents = localComponents + this
         } else if (this in localComponents && !moveToLocal) { // The component should move to another deployment unit
-            // TODO(Capire se killare l'istanza locale del componente oppure non e' necessario)
+            spawner.kill(this)
             component.operationMode = Remote
             behaviour.operationMode = Remote
             localComponents = localComponents - this
@@ -145,14 +145,33 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
         // On the other case nothing should be done.
     }
 
-    private fun Behaviour.manageReconfiguration(
-        moveToLocal: Boolean,
-    ) {
+    private suspend fun Behaviour.manageReconfiguration(moveToLocal: Boolean) {
         if (this !in localComponents && moveToLocal) { // Activation of local instance of the behaviour
             localComponents = localComponents + this
-            TODO()
+            spawner.spawn(Behaviour)
+            localComponents.forEach {
+                when (it) {
+                    is Behaviour -> { /* Do nothing here */ }
+                    is State -> {
+                        componentsRef.stateToBehaviourRef.operationMode = Local
+                        componentsRef.behaviourRefs.stateRef.operationMode = Local
+                    }
+                    is Communication -> {
+                        componentsRef.communicationToBehaviourRef.operationMode = Local
+                        componentsRef.behaviourRefs.communicationRef.operationMode = Local
+                    }
+                    is Sensors -> {
+                        componentsRef.sensorsToBehaviourRef.operationMode = Local
+                        componentsRef.behaviourRefs.sensorsRef.operationMode = Local
+                    }
+                    is Actuators -> {
+                        componentsRef.actuatorsToBehaviourRef.operationMode = Local
+                        componentsRef.behaviourRefs.actuatorsRef.operationMode = Local
+                    }
+                }
+            }
         } else if (this in localComponents && !moveToLocal) {
-            // TODO(capire se killare il behaviour)
+            spawner.kill(Behaviour)
             componentsRef.stateToBehaviourRef.operationMode = Remote
             componentsRef.communicationToBehaviourRef.operationMode = Remote
             componentsRef.sensorsToBehaviourRef.operationMode = Remote
