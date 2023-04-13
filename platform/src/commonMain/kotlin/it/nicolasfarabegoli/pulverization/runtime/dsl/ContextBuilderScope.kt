@@ -1,7 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.runtime.context.createContext
 
 /**
  * Scope to configure the context.
@@ -29,6 +28,6 @@ class ContextBuilderScope {
             return object : Context {
                 override val deviceID: String = it
             }
-        } ?: createContext(path)
+        } ?: TODO()
     }
 }
