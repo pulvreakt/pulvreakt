@@ -15,8 +15,8 @@ internal class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
 ) {
 
     private val behaviourSpawnable = BehaviourSpawnable(
-        componentsRuntimeContainer.behaviourRuntime.behaviourComponent,
-        componentsRuntimeContainer.behaviourRuntime.behaviourLogic,
+        componentsRuntimeContainer.behaviourRuntime?.behaviourComponent,
+        componentsRuntimeContainer.behaviourRuntime?.behaviourLogic,
         componentsRefsContainer.behaviourRefs.stateRef,
         componentsRefsContainer.behaviourRefs.communicationRef,
         componentsRefsContainer.behaviourRefs.sensorsRef,

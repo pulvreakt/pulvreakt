@@ -12,8 +12,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
-    private val behaviour: Behaviour<S, C, SS, AS, O>,
-    private val behaviourLogic: BehaviourLogicType<S, C, SS, AS, O>,
+    private val behaviour: Behaviour<S, C, SS, AS, O>?,
+    private val behaviourLogic: BehaviourLogicType<S, C, SS, AS, O>?,
     private val behaviourStateRef: StateRef<S>,
     private val behaviourCommRef: CommunicationRef<C>,
     private val behaviourSensorsRef: SensorsRef<SS>,
@@ -22,9 +22,12 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     private var jobRef: Job? = null
     override suspend fun spawn(): Job = coroutineScope {
         jobRef = launch {
-            behaviour.initialize()
-            behaviourLogic(behaviour, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
-            behaviour.finalize()
+            behaviour?.let {
+                it.initialize()
+                behaviourLogic
+                    ?.invoke(it, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
+                it.finalize()
+            }
         }
         return@coroutineScope jobRef!!
     }
@@ -32,7 +35,7 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     override suspend fun kill() {
         jobRef?.let {
             it.cancelAndJoin()
-            behaviour.finalize()
+            behaviour?.finalize()
         }
     }
 }
