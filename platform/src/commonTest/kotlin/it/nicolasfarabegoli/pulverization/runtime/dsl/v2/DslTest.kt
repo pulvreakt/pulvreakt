@@ -27,7 +27,8 @@ val config = pulverizationSystem {
 class DslTest : FreeSpec({
     "The runtime DSL" - {
         "should configure the runtime properly" {
-            val runtimeConfig = pulverizationRuntime(config, "smartphone", capabilityMapping) {
+            val hosts = setOf(Host1, Host2, Host3)
+            val runtimeConfig = pulverizationRuntime(config, "smartphone", hosts) {
                 BehaviourFixture() startsOn Host1
                 CommunicationFixture() startsOn Host3
                 StateFixture() startsOn Host1
@@ -44,6 +45,7 @@ class DslTest : FreeSpec({
 
                 withCommunicator { TestCommunicator() }
                 withReconfigurator { TestReconfigurator() }
+                withRemotePlaceProvider { RPP }
             }
             with(runtimeConfig) {
                 with(deviceSpecification) {
