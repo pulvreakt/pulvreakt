@@ -1,10 +1,13 @@
 package it.nicolasfarabegoli.pulverization.runtime.reconfiguration
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
+import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RPP
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestCommunicator
@@ -22,11 +25,13 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.SensorsContainerTest
 import it.nicolasfarabegoli.pulverization.runtime.utils.availableHosts
 import it.nicolasfarabegoli.pulverization.runtime.utils.behaviourTestLogic
 import it.nicolasfarabegoli.pulverization.runtime.utils.createComponentsRefs
+import it.nicolasfarabegoli.pulverization.runtime.utils.highCpuUsageFlow
 import it.nicolasfarabegoli.pulverization.runtime.utils.sensorsLogicTest
 import it.nicolasfarabegoli.pulverization.runtime.utils.setupOperationMode
 import it.nicolasfarabegoli.pulverization.runtime.utils.setupRefs
 import it.nicolasfarabegoli.pulverization.runtime.utils.systemConfig
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.serializer
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -39,27 +44,28 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
         single<RemotePlaceProvider> { RPP }
         single<ExecutionContext> {
             object : ExecutionContext {
-                override val host: Host = Host1
-                override val deviceID: String = "smartphone-1"
+                override val host: Host = Host2
+                override val deviceID: String = "1"
             }
         }
     }
+    private val flow = MutableSharedFlow<Pair<ComponentType, Host>>(1)
 
     init {
         "The ReconfigurationUnit" - {
             PulverizationKoinModule.koinApp = koinApplication { modules(module) }
             val config: DeploymentUnitRuntimeConfiguration<Unit, Unit, Int, Unit, Unit> =
                 pulverizationRuntime(systemConfig, "smartphone", availableHosts) {
-                    BehaviourTest() withLogic ::behaviourTestLogic startsOn Host1
+                    BehaviourTest() withLogic ::behaviourTestLogic startsOn Host2
                     SensorsContainerTest() withLogic ::sensorsLogicTest startsOn Host2
 
-                    withReconfigurator { TestReconfigurator() }
+                    withReconfigurator { TestReconfigurator(flow) }
                     withCommunicator { TestCommunicator() }
                     withRemotePlaceProvider { RPP }
 
                     reconfigurationRules {
                         onDevice {
-                            HighCpuUsage reconfigures { Behaviour movesTo Host2 }
+                            HighCpuUsage reconfigures { Behaviour movesTo Host1 }
                         }
                     }
                 }
@@ -74,13 +80,19 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                 config.reconfigurationRules(),
                 componentsRef,
                 spawner,
-                config.startupComponent(Host1),
+                config.startupComponent(Host2),
             )
             "when the condition of an event" - {
                 "should change mode accordingly" {
                     componentsRef.setupRefs()
-                    componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host1)
-                    // unitReconfigurator.initialize()
+                    componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
+                    unitReconfigurator.initialize()
+                    componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                    componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                    // Trigger a reconfiguration
+                    highCpuUsageFlow.emit(0.95)
+                    componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Remote
+                    unitReconfigurator.finalize()
                 }
             }
         }

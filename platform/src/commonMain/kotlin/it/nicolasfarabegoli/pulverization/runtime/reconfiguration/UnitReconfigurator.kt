@@ -69,7 +69,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
 
     override suspend fun initialize(): Unit = coroutineScope {
-        incomingReconfigurationJob = launch {
+        incomingReconfigurationJob = scope.launch {
             reconfigurator.receiveReconfiguration().collect {
                 changeComponentMode(it)
             }
@@ -100,12 +100,12 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
                 }
                 rulesJobs += job
             }
-        println("S")
     }
 
     private suspend fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
         val (component, targetHost) = newConfiguration
         val moveToLocal = targetHost == executionContext.host // The component should be moved on this host?
+        println("New config: $newConfiguration - $moveToLocal")
         when (component) {
             is Behaviour -> component.manageReconfiguration(moveToLocal)
             is State -> component.manageReconfiguration(

@@ -1,7 +1,13 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
@@ -13,8 +19,11 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityM
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
@@ -47,8 +56,6 @@ object DeviceNetworkChange : ReconfigurationEvent<Int> {
     override val predicate: (Int) -> Boolean = { it > 10 }
 }
 
-val capabilityMapping = setOf(Host1, Host2).toHostCapabilityMapping()
-
 val memoryUsageFlow = flow {
     while (true) {
         val deviceMemoryUsage = Random.nextDouble()
@@ -72,17 +79,14 @@ class TestCommunicator : Communicator {
 }
 
 @Suppress("EmptyFunctionBlock")
-class TestReconfigurator : Reconfigurator {
-    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) { }
-
-    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = emptyFlow()
+class TestReconfigurator(private val flow: MutableSharedFlow<Pair<ComponentType, Host>>) : Reconfigurator {
+    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) {
+        flow.emit(newConfiguration)
+    }
+    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = flow
 }
 
-object RPP : RemotePlaceProvider {
-    override val context: ExecutionContext
-        get() = TODO("Not yet implemented")
-
-    override fun get(type: ComponentType): RemotePlace? {
-        TODO("Not yet implemented")
-    }
+object RPP : RemotePlaceProvider, KoinComponent {
+    override val context: ExecutionContext = ExecutionContext.create("1", Host2)
+    override fun get(type: ComponentType): RemotePlace = RemotePlace(type.show(), context.deviceID)
 }
