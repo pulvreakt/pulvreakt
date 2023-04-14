@@ -21,6 +21,8 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEv
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filter
@@ -29,14 +31,14 @@ import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal data class BehaviourRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
+data class BehaviourRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
     val stateRef: StateRef<S>,
     val communicationRef: CommunicationRef<C>,
     val sensorsRef: SensorsRef<SS>,
     val actuatorsRef: ActuatorsRef<AS>,
 )
 
-internal data class ComponentsRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
+data class ComponentsRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
     val behaviourRefs: BehaviourRefsContainer<S, C, SS, AS>,
     val stateToBehaviourRef: BehaviourRef<S>,
     val communicationToBehaviourRef: BehaviourRef<C>,
@@ -50,7 +52,7 @@ internal data class ComponentsRefsContainer<S : Any, C : Any, SS : Any, AS : Any
  * [rules] the set of rules that should be checked.
  * [componentsRef] component references used to switch mode based on the rules.
  */
-internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
+class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private val reconfigurator: Reconfigurator,
     private val rules: ReconfigurationRules?,
     private val componentsRef: ComponentsRefsContainer<S, C, SS, AS>,
@@ -58,6 +60,7 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     localStartComponents: Set<ComponentType>,
 ) : Initializable, KoinComponent {
 
+    private val scope = CoroutineScope(Dispatchers.Default)
     private val executionContext: ExecutionContext by inject()
     private val rulesJobs = mutableSetOf<Job>()
     private var incomingReconfigurationJob: Job? = null
@@ -79,10 +82,11 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
         incomingReconfigurationJob?.cancel()
     }
 
-    private suspend fun spawnRulesObserver() = coroutineScope {
+    private suspend fun spawnRulesObserver() {
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: Pair<ComponentType, Host>) {
             val (targetComponent, _) = newConfig
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
+                println("New reconfiguration!")
                 changeComponentMode(newConfig)
                 reconfigurator.reconfigure(newConfig)
             }
@@ -91,11 +95,12 @@ internal class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>
         rules?.deviceReconfigurationRules
             ?.filter { it.reconfiguration.second != executionContext.host } // Take only legitimate rules
             ?.forEach {
-                val job = launch {
+                val job = scope.launch {
                     it.rule.checkRule(it.reconfiguration)
                 }
                 rulesJobs += job
             }
+        println("S")
     }
 
     private suspend fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
