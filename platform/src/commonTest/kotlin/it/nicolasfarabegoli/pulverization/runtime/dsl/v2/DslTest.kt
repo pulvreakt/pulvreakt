@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceActuatorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
 import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
 import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 val config = pulverizationSystem {
     device("smartphone") {
@@ -44,7 +45,7 @@ class DslTest : FreeSpec({
                 }
 
                 withCommunicator { TestCommunicator() }
-                withReconfigurator { TestReconfigurator() }
+                withReconfigurator { TestReconfigurator(MutableSharedFlow(1)) }
                 withRemotePlaceProvider { RPP }
             }
             with(runtimeConfig) {
