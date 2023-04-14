@@ -8,6 +8,7 @@ import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ActuatorsRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.BehaviourRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.CommunicationRuntimeConfig
@@ -42,6 +43,7 @@ class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
     private var allReconfigurationRules: ReconfigurationRules? = null
     private lateinit var communicator: () -> Communicator
     private lateinit var reconfigurator: () -> Reconfigurator
+    private lateinit var remotePlaceProvider: RemotePlaceProvider
 
     /**
      * Specify which [Communicator] should be used.
@@ -55,6 +57,13 @@ class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
      */
     fun withReconfigurator(reconfigProvider: () -> Reconfigurator) {
         reconfigurator = reconfigProvider
+    }
+
+    /**
+     * Specify which [RemotePlaceProvider] should be used.
+     */
+    fun withRemotePlaceProvider(rpProvider: () -> RemotePlaceProvider) {
+        remotePlaceProvider = rpProvider()
     }
 
     /**
@@ -193,6 +202,13 @@ class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
     internal fun generate(): ComponentsRuntimeConfiguration<S, C, SS, AS, O> {
         require(::communicator.isInitialized) { "Communicator not initialized" }
         require(::reconfigurator.isInitialized) { "Reconfigurator not initialized" }
-        return ComponentsRuntimeConfiguration(componentsRuntime, allReconfigurationRules, communicator, reconfigurator)
+        require(::remotePlaceProvider.isInitialized) { "Remote place provider not initialized" }
+        return ComponentsRuntimeConfiguration(
+            componentsRuntime,
+            allReconfigurationRules,
+            communicator,
+            reconfigurator,
+            remotePlaceProvider,
+        )
     }
 }
