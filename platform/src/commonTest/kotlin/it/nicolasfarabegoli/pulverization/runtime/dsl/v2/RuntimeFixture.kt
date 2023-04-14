@@ -6,6 +6,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
+import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityMapping
@@ -75,4 +76,13 @@ class TestReconfigurator : Reconfigurator {
     override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) { }
 
     override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = emptyFlow()
+}
+
+object RPP : RemotePlaceProvider {
+    override val context: ExecutionContext
+        get() = TODO("Not yet implemented")
+
+    override fun get(type: ComponentType): RemotePlace? {
+        TODO("Not yet implemented")
+    }
 }

@@ -19,7 +19,7 @@ class LocalCommunicatorTest : FreeSpec(), KoinTest {
     private val module = module { single { CommManager() } }
 
     init {
-        "The local communicator".config(enabled = false) - {
+        "The local communicator" - {
             "could not have a self reference" {
                 PulverizationKoinModule.koinApp = koinApplication { modules(module) }
                 shouldThrow<IllegalStateException> {
