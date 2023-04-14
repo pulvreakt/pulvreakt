@@ -81,7 +81,6 @@ internal class ComponentRefImpl<S : Any>(
     private val remotePlaceProvider: RemotePlaceProvider by inject()
     private val remoteCommunicator: Communicator by inject()
     private var localCommunicator: Communicator = LocalCommunicator()
-    private var currentOperationMode: ComponentRef.OperationMode = ComponentRef.OperationMode.Local
 
     private var last: S? = null
 
@@ -97,7 +96,7 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun sendToComponent(message: S) {
-        val communicator = if (currentOperationMode == Local) localCommunicator else remoteCommunicator
+        val communicator = if (operationMode == Local) localCommunicator else remoteCommunicator
         communicator.fireMessage(Json.encodeToString(serializer, message).encodeToByteArray())
     }
 
