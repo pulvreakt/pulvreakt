@@ -1,6 +1,8 @@
 package it.nicolasfarabegoli.pulverization.runtime
 
 import it.nicolasfarabegoli.pulverization.core.Initializable
+import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
+import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.reconfigurationRules
@@ -8,25 +10,29 @@ import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.UnitReconfigur
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.runtime.utils.createComponentsRefs
 import it.nicolasfarabegoli.pulverization.runtime.utils.setupOperationMode
+import it.nicolasfarabegoli.pulverization.runtime.utils.setupRefs
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import org.koin.core.Koin
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 
 /**
  * Pulverization runtime class.
  */
-class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
+@Suppress("LongParameterList")
+class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any> (
+    deviceId: String,
+    host: String,
     private val runtimeConfig: DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>,
     stateSer: KSerializer<S>,
     commSer: KSerializer<C>,
     sensorsSer: KSerializer<SS>,
     actuatorsSer: KSerializer<AS>,
-) : Initializable, KoinComponent {
+) : Initializable {
 
-    private val executionContext: ExecutionContext by inject()
+    private val executionContext =
+        ExecutionContext.create(deviceId, runtimeConfig.getHost(host) ?: error("No host `$host` found"))
     private val componentsRef =
         runtimeConfig.createComponentsRefs(stateSer, commSer, sensorsSer, actuatorsSer)
     private val spawner =
@@ -39,13 +45,17 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         runtimeConfig.startupComponent(executionContext.host),
     )
 
-    override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
-
     override suspend fun initialize() {
+        val koinModule = module {
+            single { executionContext }
+            single { CommManager() }
+            single { runtimeConfig.runtimeConfiguration.remotePlaceProvider }
+            factory<Communicator> { runtimeConfig.runtimeConfiguration.communicatorProvider() }
+        }
+        PulverizationKoinModule.koinApp = koinApplication { modules(koinModule) }
         // Initialize operation mode based on initial deployment
+        componentsRef.setupRefs()
         componentsRef.setupOperationMode(runtimeConfig.hostComponentsStartupMap(), executionContext.host)
-        runtimeConfig.startupComponent(executionContext.host).forEach { spawner.spawn(it) }
-        unitReconfigurator.initialize()
     }
 
     override suspend fun finalize() {
@@ -57,7 +67,8 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
      */
     suspend fun start() {
         initialize()
-        TODO("Spawn local fiber with components logics")
+        runtimeConfig.startupComponent(executionContext.host).forEach { spawner.spawn(it) }
+        unitReconfigurator.initialize()
     }
 
     /**
@@ -65,6 +76,7 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
      */
     suspend fun stop() {
         finalize()
+        spawner.killAll()
     }
 
     companion object {
@@ -72,8 +84,12 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
          * Static method for creating [PulverizationRuntime] without specifying all serializer.
          */
         inline operator fun <reified S : Any, reified C : Any, reified SS : Any, reified AS : Any, O : Any> invoke(
+            deviceId: String,
+            host: String,
             runtimeConfiguration: DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>,
         ): PulverizationRuntime<S, C, SS, AS, O> = PulverizationRuntime(
+            deviceId,
+            host,
             runtimeConfiguration,
             serializer(),
             serializer(),
