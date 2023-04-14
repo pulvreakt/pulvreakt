@@ -27,7 +27,7 @@ internal class StateSpawnable<S : Any>(
     }
 
     override suspend fun kill() {
-        jobRef?.let{
+        jobRef?.let {
             it.cancelAndJoin()
             state?.finalize()
         }
