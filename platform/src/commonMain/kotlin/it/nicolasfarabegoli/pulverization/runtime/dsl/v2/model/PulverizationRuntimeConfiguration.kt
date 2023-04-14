@@ -8,28 +8,31 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.LogicalDeviceSpecificatio
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
+import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 
 /**
  * Configuration holding [componentsRuntimeConfiguration] and the [reconfigurationRules] belonging to that deployment
  * unit.
- * Save also [communicatorProvider] and [reconfiguratorProvider].
+ * Save also [communicatorProvider] and [reconfiguratorProvider] and [remotePlaceProvider].
  */
 data class ComponentsRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     val componentsRuntimeConfiguration: ComponentsRuntimeContainer<S, C, SS, AS, O>,
     val reconfigurationRules: ReconfigurationRules?,
     val communicatorProvider: () -> Communicator,
     val reconfiguratorProvider: () -> Reconfigurator,
+    val remotePlaceProvider: RemotePlaceProvider,
 )
 
 /**
  * Complete configuration needed for the pulverization runtime.
- * Holds the [deviceSpecification], the [runtimeConfiguration] and the [hostCapabilityMapping].
+ * Holds the [deviceSpecification], the [runtimeConfiguration], the [hostCapabilityMapping] and [availableHosts].
  */
 data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     val deviceSpecification: LogicalDeviceSpecification,
     val runtimeConfiguration: ComponentsRuntimeConfiguration<S, C, SS, AS, O>,
     val hostCapabilityMapping: HostCapabilityMapping,
+    val availableHosts: Set<Host>,
 ) {
     /**
      * Given a [host], return the set of [ComponentType] belonging to it.
@@ -60,10 +63,15 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
             componentMap
         }
     }
+
+    /**
+     * Return the [Host] that match the [hostname], if any.
+     */
+    fun getHost(hostname: String): Host? = availableHosts.firstOrNull { it.hostname == hostname }
 }
 
 /**
  * Retrieve the configuration rules, if any.
  */
-fun <S : Any, C : Any, SS : Any, AS : Any, O : Any> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>
-    .reconfigurationRules(): ReconfigurationRules? = runtimeConfiguration.reconfigurationRules
+fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.reconfigurationRules(
+): ReconfigurationRules? where S : Any, C : Any, SS : Any, AS : Any, O : Any = runtimeConfiguration.reconfigurationRules
