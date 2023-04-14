@@ -9,7 +9,7 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ComponentsRuntimeContainer
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
 
-internal class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
+class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     componentsRuntimeContainer: ComponentsRuntimeContainer<S, C, SS, AS, O>,
     componentsRefsContainer: ComponentsRefsContainer<S, C, SS, AS>,
 ) {
@@ -46,6 +46,14 @@ internal class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     suspend fun spawn(component: ComponentType) = operation(component, true)
 
     suspend fun kill(component: ComponentType) = operation(component, false)
+
+    suspend fun killAll() {
+        behaviourSpawnable.kill()
+        stateSpawnable.kill()
+        commSpawnable.kill()
+        sensorsSpawnable.kill()
+        actuatorsSpawnable.kill()
+    }
 
     private suspend fun operation(component: ComponentType, shouldSpawn: Boolean) {
         when (component) {

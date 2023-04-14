@@ -6,9 +6,10 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
@@ -19,9 +20,11 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     private val behaviourSensorsRef: SensorsRef<SS>,
     private val behaviourActuatorsRef: ActuatorsRef<AS>,
 ) : Spawnable {
+    private val scope = CoroutineScope(Dispatchers.Default)
     private var jobRef: Job? = null
-    override suspend fun spawn(): Job = coroutineScope {
-        jobRef = launch {
+
+    override fun spawn(): Job {
+        jobRef = scope.launch {
             behaviour?.let {
                 it.initialize()
                 behaviourLogic
@@ -29,7 +32,7 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
                 it.finalize()
             }
         }
-        return@coroutineScope jobRef!!
+        return jobRef!!
     }
 
     override suspend fun kill() {
