@@ -31,6 +31,7 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.setupOperationMode
 import it.nicolasfarabegoli.pulverization.runtime.utils.setupRefs
 import it.nicolasfarabegoli.pulverization.runtime.utils.systemConfig
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.serializer
 import org.koin.dsl.koinApplication
@@ -59,7 +60,7 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     BehaviourTest() withLogic ::behaviourTestLogic startsOn Host2
                     SensorsContainerTest() withLogic ::sensorsLogicTest startsOn Host2
 
-                    withReconfigurator { TestReconfigurator(flow) }
+                    withReconfigurator { TestReconfigurator(flow, MutableSharedFlow()) }
                     withCommunicator { TestCommunicator() }
                     withRemotePlaceProvider { RPP }
 
@@ -75,7 +76,7 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                 config.runtimeConfiguration.componentsRuntimeConfiguration,
                 componentsRef,
             )
-            val unitReconfigurator = UnitReconfigurator<Unit, Unit, Int, Unit, Unit>(
+            val unitReconfigurator = UnitReconfigurator(
                 config.runtimeConfiguration.reconfiguratorProvider(),
                 config.reconfigurationRules(),
                 componentsRef,
@@ -91,6 +92,7 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
                     // Trigger a reconfiguration
                     highCpuUsageFlow.emit(0.95)
+                    delay(100) // wait the reconfiguration
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Remote
                     unitReconfigurator.finalize()
                 }
