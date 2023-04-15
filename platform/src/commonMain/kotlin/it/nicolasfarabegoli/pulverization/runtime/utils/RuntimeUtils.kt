@@ -27,6 +27,9 @@ internal infix fun <F, S, R> Pair<F?, S?>.takeAllNotNull(body: (F, S) -> R): R? 
     return if (f != null && s != null) body(f, s) else null
 }
 
+/**
+ * Creates the components ref.
+ */
 fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.createComponentsRefs(
     stateSer: KSerializer<S>,
     commSer: KSerializer<C>,
@@ -48,21 +51,31 @@ fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.create
     )
 }
 
+/**
+ * Setup the behaviour references mode.
+ */
 fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>.setupBehaviourMode(
     component: ComponentType,
     mode: ComponentRef.OperationMode,
 ) {
     when (component) {
-        is Behaviour -> { /* Do nothing here */ }
-        is State -> { stateToBehaviourRef.operationMode = mode; behaviourRefs.stateRef.operationMode = mode }
+        is Behaviour -> { /* Do nothing here */
+        }
+
+        is State -> {
+            stateToBehaviourRef.operationMode = mode; behaviourRefs.stateRef.operationMode = mode
+        }
+
         is Communication -> {
             communicationToBehaviourRef.operationMode = mode
             behaviourRefs.communicationRef.operationMode = mode
         }
+
         is Sensors -> {
             sensorsToBehaviourRef.operationMode = mode
             behaviourRefs.sensorsRef.operationMode = mode
         }
+
         is Actuators -> {
             actuatorsToBehaviourRef.operationMode = mode
             behaviourRefs.actuatorsRef.operationMode = mode
@@ -70,6 +83,9 @@ fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>
     }
 }
 
+/**
+ * Setup the components refs.
+ */
 suspend fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>.setupRefs() {
     behaviourRefs.stateRef.setup()
     behaviourRefs.communicationRef.setup()
