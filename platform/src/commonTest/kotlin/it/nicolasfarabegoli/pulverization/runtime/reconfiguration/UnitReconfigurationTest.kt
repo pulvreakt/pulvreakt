@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
@@ -88,12 +89,16 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     componentsRef.setupRefs()
                     componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
                     unitReconfigurator.initialize()
+                    spawner.spawn(Behaviour)
+                    spawner.spawn(Sensors)
+                    spawner.activeComponents() shouldBe setOf(Behaviour, Sensors)
                     componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
                     // Trigger a reconfiguration
                     highCpuUsageFlow.emit(0.95)
                     delay(100) // wait the reconfiguration
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Remote
+                    spawner.activeComponents() shouldBe setOf(Sensors)
                     unitReconfigurator.finalize()
                 }
             }
