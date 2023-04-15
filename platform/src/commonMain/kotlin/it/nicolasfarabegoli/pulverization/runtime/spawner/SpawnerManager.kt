@@ -16,6 +16,7 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     componentsRuntimeContainer: ComponentsRuntimeContainer<S, C, SS, AS, O>,
     componentsRefsContainer: ComponentsRefsContainer<S, C, SS, AS>,
 ) {
+    private var activeComponents = emptySet<ComponentType>()
 
     private val behaviourSpawnable = BehaviourSpawnable(
         componentsRuntimeContainer.behaviourRuntime?.behaviourComponent,
@@ -57,6 +58,11 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     suspend fun kill(component: ComponentType) = operation(component, false)
 
     /**
+     * The current active components.
+     */
+    fun activeComponents(): Set<ComponentType> = activeComponents
+
+    /**
      * Kill all the active components.
      */
     suspend fun killAll() {
@@ -65,6 +71,7 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         commSpawnable.kill()
         sensorsSpawnable.kill()
         actuatorsSpawnable.kill()
+        activeComponents = emptySet()
     }
 
     private suspend fun operation(component: ComponentType, shouldSpawn: Boolean) {
@@ -75,5 +82,6 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
             is Sensors -> if (shouldSpawn) sensorsSpawnable.spawn() else sensorsSpawnable.kill()
             is Actuators -> if (shouldSpawn) actuatorsSpawnable.spawn() else actuatorsSpawnable.kill()
         }
+        if (shouldSpawn) activeComponents += component else activeComponents -= component
     }
 }
