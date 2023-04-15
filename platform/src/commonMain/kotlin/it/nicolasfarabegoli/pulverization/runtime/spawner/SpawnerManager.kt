@@ -9,6 +9,9 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ComponentsRuntimeContainer
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
 
+/**
+ * Manager of the spawning of components execution.
+ */
 class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     componentsRuntimeContainer: ComponentsRuntimeContainer<S, C, SS, AS, O>,
     componentsRefsContainer: ComponentsRefsContainer<S, C, SS, AS>,
@@ -43,10 +46,19 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         componentsRefsContainer.actuatorsToBehaviourRef,
     )
 
+    /**
+     * Spawn a fiber corresponding to the given [component].
+     */
     suspend fun spawn(component: ComponentType) = operation(component, true)
 
+    /**
+     * Kill the fiber corresponding to the given [component].
+     */
     suspend fun kill(component: ComponentType) = operation(component, false)
 
+    /**
+     * Kill all the active components.
+     */
     suspend fun killAll() {
         behaviourSpawnable.kill()
         stateSpawnable.kill()
