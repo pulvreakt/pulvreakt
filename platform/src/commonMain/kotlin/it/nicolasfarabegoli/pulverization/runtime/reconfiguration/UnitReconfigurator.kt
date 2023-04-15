@@ -31,6 +31,9 @@ import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * References from the behavior to [stateRef], [communicationRef], [sensorsRef], [actuatorsRef].
+ */
 data class BehaviourRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
     val stateRef: StateRef<S>,
     val communicationRef: CommunicationRef<C>,
@@ -38,6 +41,14 @@ data class BehaviourRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
     val actuatorsRef: ActuatorsRef<AS>,
 )
 
+/**
+ * References to the behaviour.
+ * [behaviourRefs]
+ * [stateToBehaviourRef]
+ * [communicationToBehaviourRef]
+ * [sensorsToBehaviourRef]
+ * [actuatorsToBehaviourRef]
+ */
 data class ComponentsRefsContainer<S : Any, C : Any, SS : Any, AS : Any>(
     val behaviourRefs: BehaviourRefsContainer<S, C, SS, AS>,
     val stateToBehaviourRef: BehaviourRef<S>,
@@ -113,16 +124,19 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
                 componentsRef.stateToBehaviourRef,
                 componentsRef.behaviourRefs.stateRef,
             )
+
             is Communication -> component.manageReconfiguration(
                 moveToLocal,
                 componentsRef.communicationToBehaviourRef,
                 componentsRef.behaviourRefs.communicationRef,
             )
+
             is Sensors -> component.manageReconfiguration(
                 moveToLocal,
                 componentsRef.sensorsToBehaviourRef,
                 componentsRef.behaviourRefs.sensorsRef,
             )
+
             is Actuators -> component.manageReconfiguration(
                 moveToLocal,
                 componentsRef.actuatorsToBehaviourRef,
@@ -156,19 +170,24 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
             spawner.spawn(Behaviour)
             localComponents.forEach {
                 when (it) {
-                    is Behaviour -> { /* Do nothing here */ }
+                    is Behaviour -> { /* Do nothing here */
+                    }
+
                     is State -> {
                         componentsRef.stateToBehaviourRef.operationMode = Local
                         componentsRef.behaviourRefs.stateRef.operationMode = Local
                     }
+
                     is Communication -> {
                         componentsRef.communicationToBehaviourRef.operationMode = Local
                         componentsRef.behaviourRefs.communicationRef.operationMode = Local
                     }
+
                     is Sensors -> {
                         componentsRef.sensorsToBehaviourRef.operationMode = Local
                         componentsRef.behaviourRefs.sensorsRef.operationMode = Local
                     }
+
                     is Actuators -> {
                         componentsRef.actuatorsToBehaviourRef.operationMode = Local
                         componentsRef.behaviourRefs.actuatorsRef.operationMode = Local
