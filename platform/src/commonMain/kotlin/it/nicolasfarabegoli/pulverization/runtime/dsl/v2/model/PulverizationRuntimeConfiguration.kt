@@ -73,5 +73,5 @@ data class DeploymentUnitRuntimeConfiguration<S : Any, C : Any, SS : Any, AS : A
 /**
  * Retrieve the configuration rules, if any.
  */
-fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.reconfigurationRules(
-): ReconfigurationRules? where S : Any, C : Any, SS : Any, AS : Any, O : Any = runtimeConfiguration.reconfigurationRules
+fun <S, C, SS, AS, O> DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>.reconfigurationRules(): ReconfigurationRules?
+    where S : Any, C : Any, SS : Any, AS : Any, O : Any = runtimeConfiguration.reconfigurationRules
