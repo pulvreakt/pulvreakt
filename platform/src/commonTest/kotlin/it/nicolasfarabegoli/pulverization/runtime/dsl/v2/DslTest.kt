@@ -25,54 +25,56 @@ val config = pulverizationSystem {
     }
 }
 
-class DslTest : FreeSpec({
-    "The runtime DSL" - {
-        "should configure the runtime properly" {
-            val hosts = setOf(Host1, Host2, Host3)
-            val runtimeConfig = pulverizationRuntime(config, "smartphone", hosts) {
-                BehaviourFixture() startsOn Host1
-                CommunicationFixture() startsOn Host3
-                StateFixture() startsOn Host1
-                DeviceActuatorContainer() startsOn Host2
-                DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
+class DslTest : FreeSpec(
+    {
+        "The runtime DSL" - {
+            "should configure the runtime properly" {
+                val hosts = setOf(Host1, Host2, Host3)
+                val runtimeConfig = pulverizationRuntime(config, "smartphone", hosts) {
+                    BehaviourFixture() startsOn Host1
+                    CommunicationFixture() startsOn Host3
+                    StateFixture() startsOn Host1
+                    DeviceActuatorContainer() startsOn Host2
+                    DeviceSensorContainer() withLogic ::sensorsLogic startsOn Host2
 
-                reconfigurationRules {
-                    onDevice {
-                        HighCpuUsage reconfigures { Behaviour movesTo Host3 }
-                        DeviceNetworkChange reconfigures { Communication movesTo Host1 }
-                        on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host3 }
+                    reconfigurationRules {
+                        onDevice {
+                            HighCpuUsage reconfigures { Behaviour movesTo Host3 }
+                            DeviceNetworkChange reconfigures { Communication movesTo Host1 }
+                            on(memoryUsageFlow) { it > 0.70 } reconfigures { State movesTo Host3 }
+                        }
                     }
-                }
 
-                withCommunicator { TestCommunicator() }
-                withReconfigurator { TestReconfigurator(MutableSharedFlow(1)) }
-                withRemotePlaceProvider { RPP }
-            }
-            with(runtimeConfig) {
-                with(deviceSpecification) {
-                    deviceName shouldBe "smartphone"
-                    components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
-                    requiredCapabilities shouldBe mapOf(
-                        Behaviour to setOf(HighCpu),
-                        Communication to setOf(HighCpu),
-                        State to setOf(HighMemory),
-                        Actuators to setOf(EmbeddedDevice),
-                        Sensors to setOf(EmbeddedDevice),
-                    )
+                    withCommunicator { TestCommunicator() }
+                    withReconfigurator { TestReconfigurator(MutableSharedFlow(), MutableSharedFlow()) }
+                    withRemotePlaceProvider { RPP }
                 }
+                with(runtimeConfig) {
+                    with(deviceSpecification) {
+                        deviceName shouldBe "smartphone"
+                        components shouldBe setOf(Behaviour, State, Communication, Actuators, Sensors)
+                        requiredCapabilities shouldBe mapOf(
+                            Behaviour to setOf(HighCpu),
+                            Communication to setOf(HighCpu),
+                            State to setOf(HighMemory),
+                            Actuators to setOf(EmbeddedDevice),
+                            Sensors to setOf(EmbeddedDevice),
+                        )
+                    }
 
-                with(runtimeConfiguration.componentsRuntimeConfiguration) {
-                    behaviourRuntime shouldNotBe null
-                    stateRuntime shouldNotBe null
-                    communicationRuntime shouldNotBe null
-                    actuatorsRuntime shouldNotBe null
-                    sensorsRuntime shouldNotBe null
+                    with(runtimeConfiguration.componentsRuntimeConfiguration) {
+                        behaviourRuntime shouldNotBe null
+                        stateRuntime shouldNotBe null
+                        communicationRuntime shouldNotBe null
+                        actuatorsRuntime shouldNotBe null
+                        sensorsRuntime shouldNotBe null
+                    }
+
+                    runtimeConfiguration.reconfigurationRules?.let {
+                        it.deviceReconfigurationRules.size shouldBe 3
+                    } ?: error("Reconfiguration rules must be defined")
                 }
-
-                runtimeConfiguration.reconfigurationRules?.let {
-                    it.deviceReconfigurationRules.size shouldBe 3
-                } ?: error("Reconfiguration rules must be defined")
             }
         }
-    }
-})
+    },
+)

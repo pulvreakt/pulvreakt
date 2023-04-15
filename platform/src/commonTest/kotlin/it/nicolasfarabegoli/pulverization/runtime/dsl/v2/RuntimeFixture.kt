@@ -1,12 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
@@ -15,7 +10,6 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvi
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.toHostCapabilityMapping
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +17,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
@@ -69,21 +62,22 @@ class TestCommunicator : Communicator {
     override val remotePlaceProvider: RemotePlaceProvider
         get() = TODO("Not yet implemented")
 
-    override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) { }
+    override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
 
-    override suspend fun finalize() { }
+    override suspend fun finalize() {}
 
-    override suspend fun fireMessage(message: ByteArray) { }
+    override suspend fun fireMessage(message: ByteArray) {}
 
     override fun receiveMessage(): Flow<ByteArray> = emptyFlow()
 }
 
 @Suppress("EmptyFunctionBlock")
-class TestReconfigurator(private val flow: MutableSharedFlow<Pair<ComponentType, Host>>) : Reconfigurator {
-    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) {
-        flow.emit(newConfiguration)
-    }
-    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = flow
+class TestReconfigurator(
+    private val inFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
+    private val outFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
+) : Reconfigurator {
+    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) = outFlow.emit(newConfiguration)
+    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = inFlow
 }
 
 object RPP : RemotePlaceProvider, KoinComponent {

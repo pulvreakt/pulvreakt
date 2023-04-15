@@ -2,10 +2,13 @@ package it.nicolasfarabegoli.pulverization.runtime.utils
 
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.dsl.v2.pulverizationSystem
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.pulverizationRuntime
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 object HighCpu : Capability
 object EmbeddedDevice : Capability
@@ -29,4 +32,13 @@ val systemConfig = pulverizationSystem {
 
 val availableHosts = setOf(Host1, Host2)
 
+class TestReconfigurator(
+    private val inFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
+    private val outFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
+) : Reconfigurator {
+    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) {
+        outFlow.emit(newConfiguration)
+    }
 
+    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = inFlow
+}
