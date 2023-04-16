@@ -6,8 +6,8 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -19,17 +19,22 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     private val behaviourCommRef: CommunicationRef<C>,
     private val behaviourSensorsRef: SensorsRef<SS>,
     private val behaviourActuatorsRef: ActuatorsRef<AS>,
+    private val scope: CoroutineScope,
 ) : Spawnable {
-    private val scope = CoroutineScope(Dispatchers.Default)
     private var jobRef: Job? = null
 
     override fun spawn(): Job {
+        jobRef?.cancel()
         jobRef = scope.launch {
             behaviour?.let {
-                it.initialize()
-                behaviourLogic
-                    ?.invoke(it, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
-                it.finalize()
+                try {
+                    it.initialize()
+                    behaviourLogic
+                        ?.invoke(it, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
+                    it.finalize()
+                } catch (e: CancellationException) {
+                    println("Got cancelled $e")
+                }
             }
         }
         return jobRef!!

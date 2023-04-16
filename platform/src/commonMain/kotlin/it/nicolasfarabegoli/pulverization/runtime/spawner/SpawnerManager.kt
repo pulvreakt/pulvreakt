@@ -8,6 +8,8 @@ import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ComponentsRuntimeContainer
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Manager of the spawning of components execution.
@@ -17,6 +19,7 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     componentsRefsContainer: ComponentsRefsContainer<S, C, SS, AS>,
 ) {
     private var activeComponents = emptySet<ComponentType>()
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     private val behaviourSpawnable = BehaviourSpawnable(
         componentsRuntimeContainer.behaviourRuntime?.behaviourComponent,
@@ -25,26 +28,31 @@ class SpawnerManager<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         componentsRefsContainer.behaviourRefs.communicationRef,
         componentsRefsContainer.behaviourRefs.sensorsRef,
         componentsRefsContainer.behaviourRefs.actuatorsRef,
+        scope,
     )
     private val stateSpawnable = StateSpawnable(
         componentsRuntimeContainer.stateRuntime?.stateComponent,
         componentsRuntimeContainer.stateRuntime?.stateLogic,
         componentsRefsContainer.stateToBehaviourRef,
+        scope,
     )
     private val commSpawnable = CommunicationSpawnable(
         componentsRuntimeContainer.communicationRuntime?.communicationComponent,
         componentsRuntimeContainer.communicationRuntime?.communicationLogic,
         componentsRefsContainer.communicationToBehaviourRef,
+        scope,
     )
     private val sensorsSpawnable = SensorsSpawnable(
         componentsRuntimeContainer.sensorsRuntime?.sensorsComponent,
         componentsRuntimeContainer.sensorsRuntime?.sensorsLogic,
         componentsRefsContainer.sensorsToBehaviourRef,
+        scope,
     )
     private val actuatorsSpawnable = ActuatorsSpawnable(
         componentsRuntimeContainer.actuatorsRuntime?.actuatorsComponent,
         componentsRuntimeContainer.actuatorsRuntime?.actuatorsLogic,
         componentsRefsContainer.actuatorsToBehaviourRef,
+        scope,
     )
 
     /**
