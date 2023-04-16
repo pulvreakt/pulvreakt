@@ -47,7 +47,7 @@ class DslTest : FreeSpec(
 
                     withCommunicator { TestCommunicator() }
                     withReconfigurator { TestReconfigurator(MutableSharedFlow(), MutableSharedFlow()) }
-                    withRemotePlaceProvider { RPP }
+                    withRemotePlaceProvider { RemotePlaceProviderTest }
                 }
                 with(runtimeConfig) {
                     with(deviceSpecification) {

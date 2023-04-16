@@ -11,6 +11,7 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import org.koin.core.component.inject
 import kotlin.random.Random
 
@@ -39,7 +40,7 @@ suspend fun behaviourTestLogic(
 }
 
 class SensorTest : Sensor<Int> {
-    override suspend fun sense(): Int = Random.nextInt()
+    override suspend fun sense(): Int = Random.nextInt(0, 100)
 }
 
 class SensorsContainerTest : SensorsContainer() {
@@ -51,11 +52,14 @@ class SensorsContainerTest : SensorsContainer() {
 
 suspend fun sensorsLogicTest(
     sensors: SensorsContainer,
-    behaviourRef: BehaviourRef<Int>
+    behaviourRef: BehaviourRef<Int>,
 ) = coroutineScope {
+    println("Spawned")
     sensors.get<SensorTest> {
         while (true) {
+            println("send")
             behaviourRef.sendToComponent(sense())
+            delay(200)
         }
     }
 }

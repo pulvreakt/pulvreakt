@@ -58,17 +58,17 @@ val memoryUsageFlow = flow {
 }
 
 @Suppress("EmptyFunctionBlock")
-class TestCommunicator : Communicator {
+class TestCommunicator(
+    private val inFlow: MutableSharedFlow<ByteArray> = MutableSharedFlow(),
+    private val outFlow: MutableSharedFlow<ByteArray> = MutableSharedFlow(),
+) : Communicator {
     override val remotePlaceProvider: RemotePlaceProvider
         get() = TODO("Not yet implemented")
 
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
-
     override suspend fun finalize() {}
-
-    override suspend fun fireMessage(message: ByteArray) {}
-
-    override fun receiveMessage(): Flow<ByteArray> = emptyFlow()
+    override suspend fun fireMessage(message: ByteArray) = outFlow.emit(message)
+    override fun receiveMessage(): Flow<ByteArray> = inFlow
 }
 
 @Suppress("EmptyFunctionBlock")
@@ -80,7 +80,7 @@ class TestReconfigurator(
     override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = inFlow
 }
 
-object RPP : RemotePlaceProvider, KoinComponent {
+object RemotePlaceProviderTest : RemotePlaceProvider, KoinComponent {
     override val context: ExecutionContext = ExecutionContext.create("1", Host2)
     override fun get(type: ComponentType): RemotePlace = RemotePlace(type.show(), context.deviceID)
 }
