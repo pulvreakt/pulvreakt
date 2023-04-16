@@ -68,7 +68,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private val rules: ReconfigurationRules?,
     private val componentsRef: ComponentsRefsContainer<S, C, SS, AS>,
     private val spawner: SpawnerManager<S, C, SS, AS, O>,
-    localStartComponents: Set<ComponentType>,
+    private val localStartComponents: Set<ComponentType>,
 ) : Initializable, KoinComponent {
 
     private val scope = CoroutineScope(Dispatchers.Default)
@@ -80,6 +80,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
 
     override suspend fun initialize(): Unit = coroutineScope {
+        localComponents = localStartComponents
         incomingReconfigurationJob = scope.launch {
             reconfigurator.receiveReconfiguration().collect {
                 changeComponentMode(it)
