@@ -1,16 +1,16 @@
 package it.nicolasfarabegoli.pulverization.runtime.reconfiguration
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.shouldBe
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
 import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RPP
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RemotePlaceProviderTest
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestReconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
@@ -34,6 +34,11 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.systemConfig
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -42,8 +47,8 @@ import org.koin.test.KoinTest
 class UnitReconfigurationTest : FreeSpec(), KoinTest {
     private val module = module {
         single { CommManager() }
-        single<Communicator> { TestCommunicator() }
-        single<RemotePlaceProvider> { RPP }
+        single<Communicator> { communicator }
+        single<RemotePlaceProvider> { RemotePlaceProviderTest }
         single<ExecutionContext> {
             object : ExecutionContext {
                 override val host: Host = Host2
@@ -51,7 +56,9 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
             }
         }
     }
-    private val flow = MutableSharedFlow<Pair<ComponentType, Host>>(1)
+    private val inFlow = MutableSharedFlow<ByteArray>(1)
+    private val outFlow = MutableSharedFlow<ByteArray>(1)
+    private val communicator = TestCommunicator(inFlow, outFlow)
 
     init {
         "The ReconfigurationUnit" - {
@@ -61,9 +68,9 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     BehaviourTest() withLogic ::behaviourTestLogic startsOn Host2
                     SensorsContainerTest() withLogic ::sensorsLogicTest startsOn Host2
 
-                    withReconfigurator { TestReconfigurator(flow, MutableSharedFlow()) }
-                    withCommunicator { TestCommunicator() }
-                    withRemotePlaceProvider { RPP }
+                    withReconfigurator { TestReconfigurator(MutableSharedFlow(), MutableSharedFlow()) }
+                    withCommunicator { communicator }
+                    withRemotePlaceProvider { RemotePlaceProviderTest }
 
                     reconfigurationRules {
                         onDevice {
@@ -84,8 +91,8 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                 spawner,
                 config.startupComponent(Host2),
             )
-            "when the condition of an event" - {
-                "should change mode accordingly" {
+            "when the condition of an event should trigger a reconfiguration" - {
+                "the operation mode should change accordingly" {
                     componentsRef.setupRefs()
                     componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
                     unitReconfigurator.initialize()
@@ -94,11 +101,33 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     spawner.activeComponents() shouldBe setOf(Behaviour, Sensors)
                     componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
-                    // Trigger a reconfiguration
-                    highCpuUsageFlow.emit(0.95)
+                    highCpuUsageFlow.emit(0.95) // Trigger a reconfiguration
                     delay(100) // wait the reconfiguration
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Remote
                     spawner.activeComponents() shouldBe setOf(Sensors)
+                    spawner.killAll()
+                    unitReconfigurator.finalize()
+                }
+                "the component ref should receive the messages from the new source" {
+                    componentsRef.setupRefs()
+                    componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
+                    unitReconfigurator.initialize()
+                    spawner.spawn(Behaviour)
+                    spawner.spawn(Sensors)
+                    componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                    componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                    componentsRef.behaviourRefs.sensorsRef.receiveFromComponent().first() shouldBeInRange (0..100)
+
+                    highCpuUsageFlow.emit(0.95) // Trigger a reconfiguration
+                    delay(100)
+
+                    spawner.activeComponents() shouldBe setOf(Sensors)
+
+                    outFlow.map { Json.decodeFromString<Int>(it.decodeToString()) }.take(5).collect {
+                        it shouldBeInRange (0..100)
+                    }
+
+                    spawner.killAll()
                     unitReconfigurator.finalize()
                 }
             }

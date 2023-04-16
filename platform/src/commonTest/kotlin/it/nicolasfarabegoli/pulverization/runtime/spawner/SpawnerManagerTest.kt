@@ -10,7 +10,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RPP
+import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RemotePlaceProviderTest
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestReconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
@@ -26,6 +26,7 @@ import it.nicolasfarabegoli.pulverization.runtime.utils.availableHosts
 import it.nicolasfarabegoli.pulverization.runtime.utils.behaviourTestLogic
 import it.nicolasfarabegoli.pulverization.runtime.utils.createComponentsRefs
 import it.nicolasfarabegoli.pulverization.runtime.utils.sensorsLogicTest
+import it.nicolasfarabegoli.pulverization.runtime.utils.setupRefs
 import it.nicolasfarabegoli.pulverization.runtime.utils.systemConfig
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,7 +38,7 @@ class SpawnerManagerTest : FreeSpec() {
     private val module = module {
         single { CommManager() }
         single<Communicator> { TestCommunicator() }
-        single<RemotePlaceProvider> { RPP }
+        single<RemotePlaceProvider> { RemotePlaceProviderTest }
         single<ExecutionContext> {
             object : ExecutionContext {
                 override val host: Host = Host2
@@ -56,7 +57,7 @@ class SpawnerManagerTest : FreeSpec() {
 
                     withReconfigurator { TestReconfigurator(MutableSharedFlow(), MutableSharedFlow()) }
                     withCommunicator { TestCommunicator() }
-                    withRemotePlaceProvider { RPP }
+                    withRemotePlaceProvider { RemotePlaceProviderTest }
 
                     reconfigurationRules {
                         onDevice {
@@ -66,6 +67,7 @@ class SpawnerManagerTest : FreeSpec() {
                 }
             val componentsRef: ComponentsRefsContainer<Unit, Unit, Int, Unit> =
                 config.createComponentsRefs(serializer(), serializer(), serializer(), serializer())
+            componentsRef.setupRefs()
             "can spawn the components" {
                 val spawner = SpawnerManager(
                     config.runtimeConfiguration.componentsRuntimeConfiguration,
