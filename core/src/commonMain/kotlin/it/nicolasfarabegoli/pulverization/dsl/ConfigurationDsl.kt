@@ -1,6 +1,6 @@
-package it.nicolasfarabegoli.pulverization.dsl.v2
+package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.SystemSpecification
+import it.nicolasfarabegoli.pulverization.dsl.model.SystemSpecification
 
 /**
  * Entrypoint of the configuration DSL for the pulverized system.

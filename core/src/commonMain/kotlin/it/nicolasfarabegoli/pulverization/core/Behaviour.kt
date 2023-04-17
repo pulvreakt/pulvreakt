@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 
 /**
  * Represents the output of the function modelling the behaviour.

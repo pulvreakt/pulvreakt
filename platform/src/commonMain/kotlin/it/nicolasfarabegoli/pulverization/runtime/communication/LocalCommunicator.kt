@@ -1,10 +1,10 @@
 package it.nicolasfarabegoli.pulverization.runtime.communication
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.State
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow

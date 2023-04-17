@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider

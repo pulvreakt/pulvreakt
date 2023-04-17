@@ -1,8 +1,8 @@
 package it.nicolasfarabegoli.pulverization.runtime.reconfiguration
 
 import it.nicolasfarabegoli.pulverization.core.Initializable
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import kotlinx.coroutines.flow.Flow
 
 /**

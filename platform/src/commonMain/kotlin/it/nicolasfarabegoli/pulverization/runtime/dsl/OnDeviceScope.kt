@@ -1,7 +1,7 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeviceReconfigurationRule
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationEvent
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeviceReconfigurationRule
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationEvent
 import kotlinx.coroutines.flow.Flow
 
 /**

@@ -2,7 +2,7 @@ package it.nicolasfarabegoli.pulverization.platforms.rabbitmq
 
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.show
+import it.nicolasfarabegoli.pulverization.dsl.model.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace

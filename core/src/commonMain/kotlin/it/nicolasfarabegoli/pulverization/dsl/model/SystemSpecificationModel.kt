@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.dsl.v2.model
+package it.nicolasfarabegoli.pulverization.dsl.model
 
 import it.nicolasfarabegoli.pulverization.core.PulverizedComponent
 import kotlinx.serialization.Serializable

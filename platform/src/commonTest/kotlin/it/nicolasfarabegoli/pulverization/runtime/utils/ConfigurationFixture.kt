@@ -1,11 +1,11 @@
 package it.nicolasfarabegoli.pulverization.runtime.utils
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.pulverizationSystem
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.pulverizationSystem
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

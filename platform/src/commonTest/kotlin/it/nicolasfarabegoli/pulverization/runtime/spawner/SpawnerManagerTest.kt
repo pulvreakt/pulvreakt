@@ -2,20 +2,21 @@ package it.nicolasfarabegoli.pulverization.runtime.spawner
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.RemotePlaceProviderTest
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestCommunicator
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.TestReconfigurator
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.pulverizationRuntime
+import it.nicolasfarabegoli.pulverization.runtime.dsl.RemotePlaceProviderTest
+import it.nicolasfarabegoli.pulverization.runtime.dsl.TestCommunicator
+import it.nicolasfarabegoli.pulverization.runtime.dsl.TestReconfigurator
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeploymentUnitRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationRuntime
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourTest
 import it.nicolasfarabegoli.pulverization.runtime.utils.HighCpuUsage
@@ -80,7 +81,11 @@ class SpawnerManagerTest : FreeSpec() {
                 spawner.spawn(State)
                 spawner.activeComponents() shouldBe setOf(Behaviour, State)
 
+                spawner.spawn(Communication)
+                spawner.activeComponents() shouldBe setOf(Behaviour, State, Communication)
+
                 spawner.killAll()
+                spawner.activeComponents() shouldBe emptySet()
             }
             "can kill a component" {
                 val spawner = SpawnerManager(

@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.State
 
 /**
  * Marker interface modelling the representation of the [State].

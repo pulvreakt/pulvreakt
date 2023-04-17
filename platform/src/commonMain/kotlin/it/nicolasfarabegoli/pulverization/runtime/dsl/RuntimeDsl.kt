@@ -1,9 +1,9 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.SystemSpecification
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.dsl.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.model.SystemSpecification
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeploymentUnitRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import kotlinx.coroutines.coroutineScope
 
 /**

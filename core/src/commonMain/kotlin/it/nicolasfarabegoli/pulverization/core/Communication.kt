@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import kotlinx.coroutines.flow.Flow
 
 /**

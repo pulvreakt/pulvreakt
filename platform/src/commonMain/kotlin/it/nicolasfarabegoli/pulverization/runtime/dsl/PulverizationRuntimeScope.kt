@@ -1,6 +1,6 @@
 @file:Suppress("TooManyFunctions")
 
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour
@@ -9,20 +9,20 @@ import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ActuatorsRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.BehaviourRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.CommunicationRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ComponentsRuntimeConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ComponentsRuntimeContainer
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialActuatorsRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialBehaviourRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialCommunicationRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialSensorsRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.PartialStateRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.SensorsRuntimeConfig
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.StateRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ActuatorsRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.BehaviourRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.CommunicationRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ComponentsRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ComponentsRuntimeContainer
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.PartialActuatorsRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.PartialBehaviourRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.PartialCommunicationRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.PartialSensorsRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.PartialStateRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationRules
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.SensorsRuntimeConfig
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.StateRuntimeConfig
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.utils.ActuatorsLogicType
 import it.nicolasfarabegoli.pulverization.runtime.utils.BehaviourLogicType

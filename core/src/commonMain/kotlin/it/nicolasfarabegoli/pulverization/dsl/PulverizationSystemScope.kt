@@ -1,7 +1,7 @@
-package it.nicolasfarabegoli.pulverization.dsl.v2
+package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.LogicalDeviceSpecification
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.SystemSpecification
+import it.nicolasfarabegoli.pulverization.dsl.model.LogicalDeviceSpecification
+import it.nicolasfarabegoli.pulverization.dsl.model.SystemSpecification
 
 /**
  * DSL pulverization marker.

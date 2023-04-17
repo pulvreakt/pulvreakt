@@ -1,8 +1,8 @@
-package it.nicolasfarabegoli.pulverization.dsl.v2
+package it.nicolasfarabegoli.pulverization.dsl
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.LogicalDeviceSpecification
+import it.nicolasfarabegoli.pulverization.dsl.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.LogicalDeviceSpecification
 
 /**
  * DSL scope for configuring a device with a [deviceName].

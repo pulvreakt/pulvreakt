@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
