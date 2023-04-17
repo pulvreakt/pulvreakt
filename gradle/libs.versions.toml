@@ -28,10 +28,14 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-koin = { module = "co.touchlab:kermit-koin", version.ref = "kermit" }
 
 [bundles]
 kotest-common = [
   "kotest-assertions-core",
   "kotest-framework-engine",
   "kotest-framework-datatest",
+]
+kermit = [
+  "kermit", "kermit-koin"
 ]
