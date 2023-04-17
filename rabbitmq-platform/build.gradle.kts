@@ -3,6 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":platform"))
+                implementation(rootProject.libs.kotlinx.serialization.json)
             }
         }
         jvmMain {
