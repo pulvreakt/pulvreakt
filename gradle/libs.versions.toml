@@ -1,10 +1,9 @@
 [versions]
-kotlin = "1.8.10"
 dokka = "1.8.10"
-detekt = "1.22.0"
-ktlint-plugin = "11.3.1"
-kotest = "5.5.4"
+kermit = "2.0.0-RC4"
 koin = "3.4.0"
+kotest = "5.5.4"
+kotlin = "1.8.10"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -28,6 +27,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 [bundles]
 kotest-common = [
