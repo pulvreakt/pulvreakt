@@ -62,9 +62,6 @@ class TestCommunicator(
     private val inFlow: MutableSharedFlow<ByteArray> = MutableSharedFlow(),
     private val outFlow: MutableSharedFlow<ByteArray> = MutableSharedFlow(),
 ) : Communicator {
-    override val remotePlaceProvider: RemotePlaceProvider
-        get() = TODO("Not yet implemented")
-
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {}
     override suspend fun finalize() {}
     override suspend fun fireMessage(message: ByteArray) = outFlow.emit(message)

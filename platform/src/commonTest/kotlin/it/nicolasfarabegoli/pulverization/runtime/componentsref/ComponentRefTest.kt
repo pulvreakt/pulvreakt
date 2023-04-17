@@ -26,9 +26,6 @@ import kotlin.time.Duration.Companion.seconds
 class TestRemoteCommunicator(
     private val flow: MutableSharedFlow<ByteArray>,
 ) : Communicator {
-    override val remotePlaceProvider: RemotePlaceProvider
-        get() = TODO("Not yet implemented")
-
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) { }
     override fun receiveMessage(): Flow<ByteArray> = flow
     override suspend fun fireMessage(message: ByteArray) { flow.emit(message) }

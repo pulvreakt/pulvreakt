@@ -6,6 +6,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
@@ -21,6 +22,17 @@ expect class RabbitmqCommunicator(
     password: String = "guest",
     virtualHost: String = "/",
 ) : Communicator
+
+/**
+ * Implement the [Reconfigurator] interface relying on RabbitMQ as a platform for communication.
+ */
+expect class RabbitmqReconfigurator(
+    hostname: String = "localhost",
+    port: Int = 5672,
+    username: String = "guest",
+    password: String = "guest",
+    virtualHost: String = "/",
+) : Reconfigurator
 
 /**
  * Default representation for a [RemotePlaceProvider] used by the [RabbitmqCommunicator].
