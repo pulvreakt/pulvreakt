@@ -10,12 +10,6 @@ typealias Binding = Pair<ComponentType, ComponentType>
  * Is used to enable intra-component-communication.
  */
 interface Communicator {
-
-    /**
-     * Return the remote place provider belonging to this communicator.
-     */
-    val remotePlaceProvider: RemotePlaceProvider
-
     /**
      * Setup the communication with a given [binding].
      */

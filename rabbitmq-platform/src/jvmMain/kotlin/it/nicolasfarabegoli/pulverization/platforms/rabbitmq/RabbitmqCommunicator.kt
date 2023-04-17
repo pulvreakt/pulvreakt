@@ -6,7 +6,6 @@ import it.nicolasfarabegoli.pulverization.dsl.model.show
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
-import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -54,9 +53,6 @@ actual class RabbitmqCommunicator actual constructor(
         }
         return connectionFactory.newConnection()
     }
-
-    override val remotePlaceProvider: RemotePlaceProvider
-        get() = TODO("Not yet implemented")
 
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {
         if (remotePlace == null) error("To initialize Rabbitmq the RemotePlace should not be null")

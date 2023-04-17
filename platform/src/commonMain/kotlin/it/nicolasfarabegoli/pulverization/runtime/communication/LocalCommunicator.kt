@@ -22,8 +22,6 @@ internal class LocalCommunicator : Communicator, KoinComponent {
     private lateinit var inbox: MutableSharedFlow<ByteArray>
     private lateinit var outbox: MutableSharedFlow<ByteArray>
 
-    override val remotePlaceProvider: RemotePlaceProvider by inject()
-
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {
         if (binding.first == binding.second) error("The binding '$binding' is an invalid configuration")
         val (receiver, sender) = when (binding) {
