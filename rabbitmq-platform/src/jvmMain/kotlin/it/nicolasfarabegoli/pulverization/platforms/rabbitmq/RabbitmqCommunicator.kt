@@ -55,7 +55,7 @@ actual class RabbitmqCommunicator actual constructor(
     }
 
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {
-        if (remotePlace == null) error("To initialize Rabbitmq the RemotePlace should not be null")
+        requireNotNull(remotePlace) { "To initialize Rabbitmq the RemotePlace should not be null" }
         initConnection().apply {
             val senderOptions = SenderOptions().connectionSupplier { this }
             val receiverOptions = ReceiverOptions().connectionSupplier { this }
