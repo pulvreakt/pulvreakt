@@ -43,6 +43,7 @@ import kotlinx.serialization.serializer
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
+import kotlin.time.Duration.Companion.seconds
 
 class UnitReconfigurationTest : FreeSpec(), KoinTest {
     private val module = module {
@@ -92,7 +93,7 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                 config.startupComponent(Host2),
             )
             "when the condition of an event should trigger a reconfiguration" - {
-                "the operation mode should change accordingly" {
+                "the operation mode should change accordingly".config(timeout = 1.seconds) {
                     componentsRef.setupRefs()
                     componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
                     unitReconfigurator.initialize()
@@ -101,14 +102,16 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     spawner.activeComponents() shouldBe setOf(Behaviour, Sensors)
                     componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
+
                     highCpuUsageFlow.emit(0.95) // Trigger a reconfiguration
                     delay(100) // wait the reconfiguration
+
                     componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Remote
                     spawner.activeComponents() shouldBe setOf(Sensors)
                     spawner.killAll()
                     unitReconfigurator.finalize()
                 }
-                "the component ref should receive the messages from the new source" {
+                "the component ref should receive the messages from the new source".config(timeout = 5.seconds) {
                     componentsRef.setupRefs()
                     componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
                     unitReconfigurator.initialize()
