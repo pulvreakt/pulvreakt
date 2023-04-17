@@ -66,6 +66,7 @@ allprojects {
                 dependencies {
                     implementation(rootProject.libs.koin.core)
                     implementation(rootProject.libs.kotlinx.coroutines.core)
+                    api(rootProject.libs.kermit)
                 }
             }
             val commonTest by getting {
