@@ -1,8 +1,10 @@
 package it.nicolasfarabegoli.pulverization.runtime.spawner
 
+import co.touchlab.kermit.Logger
 import it.nicolasfarabegoli.pulverization.core.State
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.utils.StateLogicType
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -15,14 +17,20 @@ internal class StateSpawnable<S : Any>(
     private val scope: CoroutineScope,
 ) : Spawnable {
     private var jobRef: Job? = null
+    private val logger = Logger.withTag(this::class.simpleName!!)
 
     override fun spawn(): Job {
         jobRef?.cancel()
         jobRef = scope.launch {
+            logger.d { "Spawning State component" }
             state?.let {
-                it.initialize()
-                stateLogic?.invoke(it, stateToBehaviourRef)
-                it.finalize()
+                try {
+                    it.initialize()
+                    stateLogic?.invoke(it, stateToBehaviourRef)
+                    it.finalize()
+                } catch (e: CancellationException) {
+                    logger.d(e) { "State component fiber cancelled" }
+                }
             }
         }
         return jobRef!!

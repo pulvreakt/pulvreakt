@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
+import co.touchlab.kermit.Logger
 import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.LocalCommunicator
@@ -81,6 +82,7 @@ internal class ComponentRefImpl<S : Any>(
     private val remotePlaceProvider: RemotePlaceProvider by inject()
     private val remoteCommunicator: Communicator by inject()
     private var localCommunicator: Communicator = LocalCommunicator()
+    private val logger = Logger.withTag("${binding.first}Communicator")
 
     private var last: S? = null
 
@@ -91,11 +93,14 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun setup() {
+        logger.i { "Setup communicator" }
+        logger.d { "Setup remote communicator for ${binding.second} component" }
         localCommunicator.setup(binding, null)
         remoteCommunicator.setup(binding, remotePlaceProvider[binding.second])
     }
 
     override suspend fun sendToComponent(message: S) {
+        logger.d { "Send '$message' - operation mode: '${if (operationMode == Remote) "Remote" else "Local"}'" }
         val communicator = if (operationMode == Local) localCommunicator else remoteCommunicator
         communicator.fireMessage(Json.encodeToString(serializer, message).encodeToByteArray())
     }
@@ -106,7 +111,11 @@ internal class ComponentRefImpl<S : Any>(
             remoteCommunicator.receiveMessage().map { Remote to it },
         ).filter { (mode, _) -> mode == operationMode }
             .map { (_, content) -> content }
-            .map { Json.decodeFromString(serializer, it.decodeToString()) }.onEach { last = it }
+            .map { Json.decodeFromString(serializer, it.decodeToString()) }
+            .onEach {
+                last = it
+                logger.d { "Received '$it' - operation mode '${if (operationMode == Remote) "Remote" else "Local"}'" }
+            }
     }
 
     override suspend fun receiveLastFromComponent(): S? = last

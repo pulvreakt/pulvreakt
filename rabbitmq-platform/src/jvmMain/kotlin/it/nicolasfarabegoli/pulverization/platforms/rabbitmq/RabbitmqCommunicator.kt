@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.platforms.rabbitmq
 
+import co.touchlab.kermit.Logger
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import it.nicolasfarabegoli.pulverization.dsl.model.show
@@ -36,12 +37,17 @@ actual class RabbitmqCommunicator actual constructor(
     private lateinit var receiveQueue: String
     private lateinit var sendRoutingKey: String
     private lateinit var receiveRoutingKey: String
+    private val logger = Logger.withTag("RabbitmqCommunicator")
 
     companion object {
         private const val EXCHANGE = "pulverization.exchange"
     }
 
     private fun initConnection(): Connection {
+        logger.d { "Setup RabbitMQ connection" }
+        logger.d {
+            "Connection parameters: [hostname=$hostname, port=$port, username=$username, virtualhost=$virtualHost]"
+        }
         val connectionFactory = ConnectionFactory()
         connectionFactory.useNio()
         connectionFactory.apply {
@@ -55,26 +61,38 @@ actual class RabbitmqCommunicator actual constructor(
     }
 
     override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {
+        logger.i { "Setup RabbitMQ communicator from ${binding.first} and ${binding.second}" }
         requireNotNull(remotePlace) { "To initialize Rabbitmq the RemotePlace should not be null" }
         initConnection().apply {
+            logger.d { "Setup RabbitMQ sender and receiver" }
             val senderOptions = SenderOptions().connectionSupplier { this }
             val receiverOptions = ReceiverOptions().connectionSupplier { this }
             sender = RabbitFlux.createSender(senderOptions)
             receiver = RabbitFlux.createReceiver(receiverOptions)
         }
         sender.apply {
+            logger.d { "Declare exchange `$EXCHANGE`" }
             declareExchange(ExchangeSpecification.exchange(EXCHANGE).type("topic").durable(false))
                 .awaitSingleOrNull() ?: error("Unable to declare exchange")
+
             sendQueue = "${binding.first.show()}/${remotePlace.where}/${remotePlace.who}"
             receiveQueue = "${remotePlace.where}/${binding.first.show()}/${remotePlace.who}"
             sendRoutingKey = "${remotePlace.who}.${remotePlace.where}.${binding.first.show()}"
             receiveRoutingKey = "${remotePlace.who}.${binding.first.show()}.${remotePlace.where}"
+
+            logger.d { "Declare queue $sendQueue" }
             declareQueue(QueueSpecification.queue(sendQueue).durable(false))
                 .awaitSingleOrNull() ?: error("Unable to create the queue $sendQueue")
+
+            logger.d { "Declare queue $receiveQueue" }
             declareQueue(QueueSpecification.queue(receiveQueue).durable(false))
                 .awaitSingleOrNull() ?: error("Unable to create the queue $receiveQueue")
+
+            logger.d { "Bind queue $sendQueue with exchange $EXCHANGE with routing key $sendRoutingKey" }
             bindQueue(BindingSpecification().queue(sendQueue).exchange(EXCHANGE).routingKey(sendRoutingKey))
                 .awaitSingleOrNull() ?: error("Unable to bind $EXCHANGE with $sendQueue")
+
+            logger.d { "Bind queue $receiveQueue with exchange $EXCHANGE with routing key $receiveRoutingKey" }
             bindQueue(BindingSpecification().queue(receiveQueue).exchange(EXCHANGE).routingKey(receiveRoutingKey))
                 .awaitSingleOrNull() ?: error("Unable to bind $EXCHANGE with $receiveQueue")
         }
