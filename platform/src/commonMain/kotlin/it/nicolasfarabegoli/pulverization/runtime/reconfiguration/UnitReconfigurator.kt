@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.reconfiguration
 
+import co.touchlab.kermit.Logger
 import it.nicolasfarabegoli.pulverization.core.Initializable
 import it.nicolasfarabegoli.pulverization.dsl.model.Actuators
 import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
@@ -76,12 +77,15 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private val rulesJobs = mutableSetOf<Job>()
     private var incomingReconfigurationJob: Job? = null
     private var localComponents = localStartComponents
+    private val logger = Logger.withTag("UnitReconfigurator")
 
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
 
     override suspend fun initialize(): Unit = coroutineScope {
+        logger.i { "Setup unit reconfigurator with local components: $localComponents" }
         localComponents = localStartComponents
         incomingReconfigurationJob = scope.launch {
+            logger.d { "Spawned listener for incoming reconfiguration events" }
             reconfigurator.receiveReconfiguration().collect {
                 changeComponentMode(it)
             }
@@ -95,6 +99,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     }
 
     private suspend fun spawnRulesObserver() {
+        logger.i { "Spawning rules listener" }
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: Pair<ComponentType, Host>) {
             val (targetComponent, _) = newConfig
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
@@ -103,7 +108,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
                 reconfigurator.reconfigure(newConfig)
             }
         }
-
+        logger.d { "Spawning ${rules?.deviceReconfigurationRules?.size ?: 0} listeners" }
         rules?.deviceReconfigurationRules
             ?.filter { it.reconfiguration.second != executionContext.host } // Take only legitimate rules
             ?.forEach {
@@ -117,7 +122,8 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private suspend fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
         val (component, targetHost) = newConfiguration
         val moveToLocal = targetHost == executionContext.host // The component should be moved on this host?
-        println("New config: $newConfiguration - $moveToLocal")
+        logger.d { "New reconfiguration: $newConfiguration" }
+        logger.d { "The components should move to local: $moveToLocal" }
         when (component) {
             is Behaviour -> component.manageReconfiguration(moveToLocal)
             is State -> component.manageReconfiguration(

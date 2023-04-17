@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.spawner
 
+import co.touchlab.kermit.Logger
 import it.nicolasfarabegoli.pulverization.core.Behaviour
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
@@ -22,10 +23,12 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
     private val scope: CoroutineScope,
 ) : Spawnable {
     private var jobRef: Job? = null
+    private val logger = Logger.withTag(this::class.simpleName!!)
 
     override fun spawn(): Job {
         jobRef?.cancel()
         jobRef = scope.launch {
+            logger.d { "Spawning Behaviour component" }
             behaviour?.let {
                 try {
                     it.initialize()
@@ -33,7 +36,7 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
                         ?.invoke(it, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
                     it.finalize()
                 } catch (e: CancellationException) {
-                    println("Got cancelled $e")
+                    logger.d(e) { "Behaviour component fiber cancelled" }
                 }
             }
         }
