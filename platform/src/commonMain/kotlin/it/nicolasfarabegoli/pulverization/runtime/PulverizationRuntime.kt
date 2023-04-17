@@ -1,7 +1,5 @@
 package it.nicolasfarabegoli.pulverization.runtime
 
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.koin.KermitKoinLogger
 import it.nicolasfarabegoli.pulverization.core.Initializable
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
@@ -55,7 +53,7 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any> (
             factory<Communicator> { runtimeConfig.runtimeConfiguration.communicatorProvider() }
         }
         PulverizationKoinModule.koinApp = koinApplication {
-            logger(KermitKoinLogger(Logger.withTag("koin")))
+            // logger(KermitKoinLogger(Logger.withTag("koin")))
             modules(koinModule)
         }
         // Initialize operation mode based on initial deployment
