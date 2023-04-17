@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model
+package it.nicolasfarabegoli.pulverization.runtime.dsl.model
 
 import it.nicolasfarabegoli.pulverization.core.ActuatorsContainer
 import it.nicolasfarabegoli.pulverization.core.Behaviour

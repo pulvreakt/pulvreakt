@@ -1,6 +1,6 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model
+package it.nicolasfarabegoli.pulverization.runtime.dsl.model
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

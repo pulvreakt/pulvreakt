@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.context
 
 import it.nicolasfarabegoli.pulverization.component.Context
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 
 /**
  * Execution context of the system.

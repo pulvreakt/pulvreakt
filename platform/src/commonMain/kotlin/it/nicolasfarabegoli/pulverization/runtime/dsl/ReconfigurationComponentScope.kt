@@ -1,7 +1,7 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 
 /**
  * Scope class for configuring the reconfiguration.

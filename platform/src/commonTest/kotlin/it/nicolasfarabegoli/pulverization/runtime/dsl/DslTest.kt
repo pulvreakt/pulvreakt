@@ -1,20 +1,14 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
-import it.nicolasfarabegoli.pulverization.dsl.v2.pulverizationSystem
-import it.nicolasfarabegoli.pulverization.runtime.dsl.BehaviourFixture
-import it.nicolasfarabegoli.pulverization.runtime.dsl.CommunicationFixture
-import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceActuatorContainer
-import it.nicolasfarabegoli.pulverization.runtime.dsl.DeviceSensorContainer
-import it.nicolasfarabegoli.pulverization.runtime.dsl.StateFixture
-import it.nicolasfarabegoli.pulverization.runtime.dsl.sensorsLogic
+import it.nicolasfarabegoli.pulverization.dsl.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.State
+import it.nicolasfarabegoli.pulverization.dsl.pulverizationSystem
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 val config = pulverizationSystem {

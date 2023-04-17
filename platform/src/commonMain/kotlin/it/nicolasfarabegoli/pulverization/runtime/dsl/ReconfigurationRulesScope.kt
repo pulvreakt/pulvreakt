@@ -1,6 +1,6 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2
+package it.nicolasfarabegoli.pulverization.runtime.dsl
 
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.ReconfigurationRules
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationRules
 
 /**
  * Scope class for configuring reconfiguration rules.

@@ -4,8 +4,8 @@ import it.nicolasfarabegoli.pulverization.core.Initializable
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.reconfigurationRules
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeploymentUnitRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.reconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.UnitReconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.runtime.utils.createComponentsRefs

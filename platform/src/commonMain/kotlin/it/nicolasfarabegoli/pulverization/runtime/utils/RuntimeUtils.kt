@@ -1,11 +1,11 @@
 package it.nicolasfarabegoli.pulverization.runtime.utils
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Actuators
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Communication
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.model.Actuators
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.State
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
@@ -14,8 +14,8 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.Ope
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.OperationMode.Remote
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.DeploymentUnitRuntimeConfiguration
-import it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeploymentUnitRuntimeConfiguration
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.BehaviourRefsContainer
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.ComponentsRefsContainer
 import kotlinx.serialization.KSerializer

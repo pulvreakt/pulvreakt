@@ -1,6 +1,6 @@
-package it.nicolasfarabegoli.pulverization.runtime.dsl.v2.model
+package it.nicolasfarabegoli.pulverization.runtime.dsl.model
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.model.Capability
 
 /**
  * Physical host with an [hostname], a set of [capabilities] on which pulverized components can run on.

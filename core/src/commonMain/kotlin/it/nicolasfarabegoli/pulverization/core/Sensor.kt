@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.core
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
 import kotlin.reflect.KClass
 
 /** Models the concept of single [Sensor] in the pulverization context.

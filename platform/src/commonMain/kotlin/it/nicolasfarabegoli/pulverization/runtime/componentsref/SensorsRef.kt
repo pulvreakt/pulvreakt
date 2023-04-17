@@ -1,7 +1,7 @@
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 

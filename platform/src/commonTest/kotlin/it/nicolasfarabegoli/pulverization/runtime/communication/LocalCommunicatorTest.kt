@@ -3,9 +3,9 @@ package it.nicolasfarabegoli.pulverization.runtime.communication
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Behaviour
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.Sensors
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.State
+import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
+import it.nicolasfarabegoli.pulverization.dsl.model.State
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first

@@ -2,7 +2,7 @@
 
 package it.nicolasfarabegoli.pulverization.runtime.componentsref
 
-import it.nicolasfarabegoli.pulverization.dsl.v2.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
