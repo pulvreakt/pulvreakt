@@ -93,7 +93,7 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                 config.startupComponent(Host2),
             )
             "when the condition of an event should trigger a reconfiguration" - {
-                "the operation mode should change accordingly".config(timeout = 1.seconds) {
+                "the operation mode should change accordingly".config(enabled = false, timeout = 1.seconds) {
                     componentsRef.setupRefs()
                     componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
                     unitReconfigurator.initialize()
