@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime
 
+import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.Initializable
 import it.nicolasfarabegoli.pulverization.runtime.communication.CommManager
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
@@ -47,7 +48,8 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any> (
 
     override suspend fun initialize() {
         val koinModule = module {
-            single { executionContext }
+            single<ExecutionContext> { executionContext }
+            single<Context> { executionContext }
             single { CommManager() }
             single { runtimeConfig.runtimeConfiguration.remotePlaceProvider }
             factory<Communicator> { runtimeConfig.runtimeConfiguration.communicatorProvider() }
