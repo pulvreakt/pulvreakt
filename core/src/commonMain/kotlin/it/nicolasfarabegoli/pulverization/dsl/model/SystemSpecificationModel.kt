@@ -18,31 +18,41 @@ sealed interface ComponentType
  * Behaviour component.
  */
 @Serializable
-object Behaviour : ComponentType
+object Behaviour : ComponentType {
+    override fun toString(): String = "Behaviour[component]"
+}
 
 /**
  * State component.
  */
 @Serializable
-object State : ComponentType
+object State : ComponentType {
+    override fun toString(): String = "State[component]"
+}
 
 /**
  * Communication component.
  */
 @Serializable
-object Communication : ComponentType
+object Communication : ComponentType {
+    override fun toString(): String = "Communication[component]"
+}
 
 /**
  * Actuators component.
  */
 @Serializable
-object Actuators : ComponentType
+object Actuators : ComponentType {
+    override fun toString(): String = "Actuators[component]"
+}
 
 /**
  * Sensors component.
  */
 @Serializable
-object Sensors : ComponentType
+object Sensors : ComponentType {
+    override fun toString(): String = "Sensor[component]"
+}
 
 /**
  * Utility extension method to return a string representation for each [PulverizedComponentType].
