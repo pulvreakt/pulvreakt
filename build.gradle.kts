@@ -1,3 +1,4 @@
+import org.danilopianini.gradle.mavencentral.DocStyle
 import org.danilopianini.gradle.mavencentral.JavadocJar
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -140,6 +141,7 @@ allprojects {
                 user.set("nicolasfara")
                 password.set(System.getenv("GITHUB_TOKEN"))
             }
+            docStyle.set(DocStyle.HTML)
             publishing {
                 publications {
                     withType<MavenPublication>().configureEach {
