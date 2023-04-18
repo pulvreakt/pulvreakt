@@ -1,6 +1,6 @@
 package it.nicolasfarabegoli.pulverization.runtime.dsl.model
 
-import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.NewConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +40,7 @@ interface ReconfigurationEvent<P : Any> {
  */
 data class DeviceReconfigurationRule(
     val rule: ReconfigurationEvent<*>,
-    val reconfiguration: Pair<ComponentType, Host>,
+    val reconfiguration: NewConfiguration,
 )
 
 /**

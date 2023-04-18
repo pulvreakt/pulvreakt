@@ -17,7 +17,6 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.Ope
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationEvent
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
@@ -84,6 +83,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     override suspend fun initialize(): Unit = coroutineScope {
         logger.i { "Setup unit reconfigurator with local components: $localComponents" }
         localComponents = localStartComponents
+        reconfigurator.initialize()
         incomingReconfigurationJob = scope.launch {
             logger.d { "Spawned listener for incoming reconfiguration events" }
             reconfigurator.receiveReconfiguration().collect {
@@ -100,7 +100,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
 
     private suspend fun spawnRulesObserver() {
         logger.i { "Spawning rules listener" }
-        suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: Pair<ComponentType, Host>) {
+        suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: NewConfiguration) {
             val (targetComponent, _) = newConfig
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
                 println("New reconfiguration!")
@@ -110,7 +110,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         }
         logger.d { "Spawning ${rules?.deviceReconfigurationRules?.size ?: 0} listeners" }
         rules?.deviceReconfigurationRules
-            ?.filter { it.reconfiguration.second != executionContext.host } // Take only legitimate rules
+            ?.filter { it.reconfiguration.second != executionContext.host.hostname } // Take only legitimate rules
             ?.forEach {
                 val job = scope.launch {
                     it.rule.checkRule(it.reconfiguration)
@@ -119,9 +119,9 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
             }
     }
 
-    private suspend fun changeComponentMode(newConfiguration: Pair<ComponentType, Host>) {
+    private suspend fun changeComponentMode(newConfiguration: NewConfiguration) {
         val (component, targetHost) = newConfiguration
-        val moveToLocal = targetHost == executionContext.host // The component should be moved on this host?
+        val moveToLocal = targetHost == executionContext.host.hostname // The component should be moved on this host?
         logger.d { "New reconfiguration: $newConfiguration" }
         logger.d { "The components should move to local: $moveToLocal" }
         when (component) {
