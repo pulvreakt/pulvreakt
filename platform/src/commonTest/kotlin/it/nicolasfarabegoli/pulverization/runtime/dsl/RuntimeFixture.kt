@@ -10,6 +10,7 @@ import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlaceProvi
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationEvent
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.NewConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -70,11 +71,11 @@ class TestCommunicator(
 
 @Suppress("EmptyFunctionBlock")
 class TestReconfigurator(
-    private val inFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
-    private val outFlow: MutableSharedFlow<Pair<ComponentType, Host>>,
+    private val inFlow: MutableSharedFlow<NewConfiguration>,
+    private val outFlow: MutableSharedFlow<NewConfiguration>,
 ) : Reconfigurator {
-    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) = outFlow.emit(newConfiguration)
-    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> = inFlow
+    override suspend fun reconfigure(newConfiguration: NewConfiguration) = outFlow.emit(newConfiguration)
+    override fun receiveReconfiguration(): Flow<NewConfiguration> = inFlow
 }
 
 object RemotePlaceProviderTest : RemotePlaceProvider, KoinComponent {

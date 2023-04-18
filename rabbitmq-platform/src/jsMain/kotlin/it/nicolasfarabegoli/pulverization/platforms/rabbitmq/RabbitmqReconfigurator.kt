@@ -1,7 +1,6 @@
 package it.nicolasfarabegoli.pulverization.platforms.rabbitmq
 
-import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
-import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.NewConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import kotlinx.coroutines.flow.Flow
 
@@ -15,11 +14,11 @@ actual class RabbitmqReconfigurator actual constructor(
     password: String,
     virtualHost: String,
 ) : Reconfigurator {
-    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) {
+    override suspend fun reconfigure(newConfiguration: NewConfiguration) {
         TODO("Not yet implemented")
     }
 
-    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> {
+    override fun receiveReconfiguration(): Flow<NewConfiguration> {
         TODO("Not yet implemented")
     }
 }

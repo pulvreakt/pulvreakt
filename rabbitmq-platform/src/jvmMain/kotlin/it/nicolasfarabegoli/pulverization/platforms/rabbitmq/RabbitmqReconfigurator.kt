@@ -2,9 +2,8 @@ package it.nicolasfarabegoli.pulverization.platforms.rabbitmq
 
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
-import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
-import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.NewConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.Reconfigurator
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.flow.Flow
@@ -64,7 +63,7 @@ actual class RabbitmqReconfigurator actual constructor(
 
             declareQueue(QueueSpecification.queue(reconfigurationQueue).durable(false))
                 .awaitSingleOrNull() ?: error("Unable to create the queue `$reconfigurationQueue`")
-            bindQueue(BindingSpecification().queue(reconfigurationQueue).exchange(EXCHANGE))
+            bindQueue(BindingSpecification().queue(reconfigurationQueue).exchange(EXCHANGE).routingKey(""))
                 .awaitSingleOrNull() ?: error("Unable to bind `$EXCHANGE` to `$reconfigurationQueue`")
         }
     }
@@ -74,15 +73,15 @@ actual class RabbitmqReconfigurator actual constructor(
         receiver.close()
     }
 
-    override suspend fun reconfigure(newConfiguration: Pair<ComponentType, Host>) {
+    override suspend fun reconfigure(newConfiguration: NewConfiguration) {
         val payload = Json.encodeToString(newConfiguration).encodeToByteArray()
         val message = OutboundMessage(EXCHANGE, "", payload)
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }
 
-    override fun receiveReconfiguration(): Flow<Pair<ComponentType, Host>> =
+    override fun receiveReconfiguration(): Flow<NewConfiguration> =
         receiver.consumeAutoAck(reconfigurationQueue)
-            .map { Json.decodeFromString<Pair<ComponentType, Host>>(it.body.decodeToString()) }
+            .map { Json.decodeFromString<NewConfiguration>(it.body.decodeToString()) }
             .asFlow()
 
     private fun initConnection(): Connection {
