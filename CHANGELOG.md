@@ -1,3 +1,146 @@
+## [0.5.0](https://github.com/nicolasfara/pulverization-framework/compare/0.4.13...0.5.0) (2023-04-19)
+
+
+### Features
+
+* add facility for creating an execution context ([0d963a7](https://github.com/nicolasfara/pulverization-framework/commit/0d963a71f0184b77a0cf2fcc4ea6d5fcd1828a7e))
+* add method for retreiving the startup component-host mapping ([39cf17b](https://github.com/nicolasfara/pulverization-framework/commit/39cf17b2a4282337c0b0aea485eaf6b183354d28))
+* add reconfiguration rules concept ([ef68937](https://github.com/nicolasfara/pulverization-framework/commit/ef68937a973c509150fe45524a4936bfbdf4bd1a))
+* add spawner to manage execution of components ([86cd222](https://github.com/nicolasfara/pulverization-framework/commit/86cd222d5d3fd6a9bb3609d9861a1a28c5afa307))
+* add utility method for retreiving a device configuration ([a5ba415](https://github.com/nicolasfara/pulverization-framework/commit/a5ba4152b05b0688964dd2086a0138b6f80c9f5d))
+* add utility method for take trace of current active components ([046bef2](https://github.com/nicolasfara/pulverization-framework/commit/046bef20a1885021171bd10b6c40389633daee68))
+* implemented reconfigurator relying on Rabbitmq ([967cdb8](https://github.com/nicolasfara/pulverization-framework/commit/967cdb8322f485d25976a1ee146b9fce271b2ef7))
+* new DSL supporting dynamics reconfiguration ([7ddf73a](https://github.com/nicolasfara/pulverization-framework/commit/7ddf73abfaa17655d5d6cc43a46431d1bf0ae2d4))
+* refactor DSL with custom capabilities ([ea60582](https://github.com/nicolasfara/pulverization-framework/commit/ea6058217492360089241f6e0cc060f00e1d0e5c))
+* setup koin module ([73953c6](https://github.com/nicolasfara/pulverization-framework/commit/73953c6f13fe385d7d853979c8f51c39cd2db750))
+* support host on which components runs on ([9fdf3dc](https://github.com/nicolasfara/pulverization-framework/commit/9fdf3dce084e71e6feddcf7d7002a641b1768e5f))
+* support reconfiguration rule on device in the DSL ([d8aa9b8](https://github.com/nicolasfara/pulverization-framework/commit/d8aa9b8ccb9697c8f91f19d348e75d5232e61a08))
+* use spawner in reconfiguration unit ([cb8ea61](https://github.com/nicolasfara/pulverization-framework/commit/cb8ea618fc4deb22f1234338a2d6ac3f61a95111))
+
+
+### Bug Fixes
+
+* cancel an already started fiber before launch a new one ([ebff822](https://github.com/nicolasfara/pulverization-framework/commit/ebff822a37ae377d0a04b24075e2025b49dbaad5))
+* change exchange type since a problem in communication with other deployment unit ([17c55b7](https://github.com/nicolasfara/pulverization-framework/commit/17c55b73a1f1293e6587aa85a49760ef46515eea))
+* inject both context and execution context ([cdc1728](https://github.com/nicolasfara/pulverization-framework/commit/cdc17281dec35c847f71ccbc5e0cddded9cd6a69))
+* solve a problem where previous implementation not start the flow ([48d95b7](https://github.com/nicolasfara/pulverization-framework/commit/48d95b7dc7431a4e6de68b7771350c315a50ea51))
+* use a local coroutine scope ([24cf753](https://github.com/nicolasfara/pulverization-framework/commit/24cf75346896a447e8b7c345697765e6e60420ae))
+* use the right operation mode variable ([33fbb64](https://github.com/nicolasfara/pulverization-framework/commit/33fbb64ce6d19d94f0d7d8728d94088a1cbd34ed))
+* when initialized the local components are restored ([c2d2fa9](https://github.com/nicolasfara/pulverization-framework/commit/c2d2fa91ca1fbaa1962f0e5938356620d46ae067))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.0 ([c42eca6](https://github.com/nicolasfara/pulverization-framework/commit/c42eca612c7ad110498835a55727cd86e07407f0))
+* **deps:** update actions/checkout action to v3.5.1 ([c45e802](https://github.com/nicolasfara/pulverization-framework/commit/c45e80205b700b032cad6bd30d44a8ae91ef6a97))
+* **deps:** update actions/checkout action to v3.5.2 ([b450583](https://github.com/nicolasfara/pulverization-framework/commit/b45058344de379de465543aa1d25b796b8250f09))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.1 ([780dcf2](https://github.com/nicolasfara/pulverization-framework/commit/780dcf2647b96436ab1d01c340cafe952071bb78))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.2 ([3bd66b8](https://github.com/nicolasfara/pulverization-framework/commit/3bd66b80f07593acd4c529fe516185d861424dd5))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.3 ([78e249c](https://github.com/nicolasfara/pulverization-framework/commit/78e249c57591a7de30f23ade170a1664b846df22))
+
+
+### Style improvements
+
+* format code ([7d1377c](https://github.com/nicolasfara/pulverization-framework/commit/7d1377c8ae220b79c9a2d9bd5d887aef97f7304f))
+* improve code style ([3e4a9d5](https://github.com/nicolasfara/pulverization-framework/commit/3e4a9d5f9f657e82fa922dd03a56a8dfcb02e68c))
+* refactor names ([9181251](https://github.com/nicolasfara/pulverization-framework/commit/918125115e92cd4a3bd76133e1dde9708128dd92))
+* refactor variable name ([0160cc3](https://github.com/nicolasfara/pulverization-framework/commit/0160cc35cf5e0ed21a159c0b2bc404e2a57ab89b))
+* rename fixture class ([9e8b472](https://github.com/nicolasfara/pulverization-framework/commit/9e8b472651e98efa115b5358114957489999676f))
+* reorder import ([bb5beba](https://github.com/nicolasfara/pulverization-framework/commit/bb5beba9607eabb72a94e20183508d2f43e232a7))
+
+
+### Documentation
+
+* add kdoc to components ref container ([a84d28b](https://github.com/nicolasfara/pulverization-framework/commit/a84d28bab4a4bfcd6a360666bb7d3efd07e87328))
+* add kdoc to the new DSL ([5d1271c](https://github.com/nicolasfara/pulverization-framework/commit/5d1271cd31ff300cc89c9e8e80b59021b4df716e))
+* document component types ([4187943](https://github.com/nicolasfara/pulverization-framework/commit/41879437e3d56d6f949162252abc03aec2325e94))
+* document components ref utility function ([3e07555](https://github.com/nicolasfara/pulverization-framework/commit/3e07555a6dd90ce106c64367e5a3ff50f69dd9b4))
+* document the spawner manager ([5ff0194](https://github.com/nicolasfara/pulverization-framework/commit/5ff0194cec4af212f4242f3a084a6d9a97c15f0a))
+
+
+### Tests
+
+* add capability mapping to the test ([4bb0f2e](https://github.com/nicolasfara/pulverization-framework/commit/4bb0f2e2a7af49be625b728b9bdd12d7e307e02a))
+* add host3 for a more consistent test ([54de02a](https://github.com/nicolasfara/pulverization-framework/commit/54de02a746e7457677fefc86546ec39d990e345e))
+* add test case for reconfiguration to check the consistency of the flow ([e330e52](https://github.com/nicolasfara/pulverization-framework/commit/e330e5257d8bc83c0f46325f6b4bfbec4cfbad0a))
+* add timeout to time-sensitive tests ([df328a8](https://github.com/nicolasfara/pulverization-framework/commit/df328a897642f5cdcd20a776d38a7620057c8db9))
+* first stub for unit testing ([5e482cc](https://github.com/nicolasfara/pulverization-framework/commit/5e482cca9786292bd9920264039721be4491f133))
+* improve tests ([65f594d](https://github.com/nicolasfara/pulverization-framework/commit/65f594dbda32ec7263576659e93bd44e85f3e867))
+* reconfiguration test ([29d2d1c](https://github.com/nicolasfara/pulverization-framework/commit/29d2d1c28fa02f76742eca2f2a737750cfb6a500))
+* refactor tests ([d047859](https://github.com/nicolasfara/pulverization-framework/commit/d04785911e05122c5b47da32ef44945ca4cff439))
+* test spawner ([ed2b477](https://github.com/nicolasfara/pulverization-framework/commit/ed2b47705c71c5e354b0d35c8f5a949e8cd3a65d))
+* testing runtime DSL ([733b030](https://github.com/nicolasfara/pulverization-framework/commit/733b03023c27d9d1f9b45bc9f2bdb3e13339ce1c))
+
+
+### Dependency updates
+
+* **deps:** add kermit koin dependency ([dc5abdc](https://github.com/nicolasfara/pulverization-framework/commit/dc5abdcdc6494177b13c014d610aeac116aec2b9))
+* **deps:** add kermit logging library ([76876dd](https://github.com/nicolasfara/pulverization-framework/commit/76876dde1aac85a497bd3ed6af691a87815c11bb))
+* **deps:** update dependency gradle to v8.1 ([7ed01ae](https://github.com/nicolasfara/pulverization-framework/commit/7ed01ae1f10886ca6675b6d7ea26eb4603e47f38))
+* **deps:** update dependency io.projectreactor.rabbitmq:reactor-rabbitmq to v1.5.6 ([051d920](https://github.com/nicolasfara/pulverization-framework/commit/051d9207c62bf25dd9b656083ad73b5c5e13d654))
+* **deps:** update dependency mermaid to v10.1.0 ([78636a8](https://github.com/nicolasfara/pulverization-framework/commit/78636a85563e855931986fe80571dc0e38d2ee83))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.19 ([89b3394](https://github.com/nicolasfara/pulverization-framework/commit/89b3394e90b0d8439e198ee9b2ec14ab1a840971))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.20 ([1687a9c](https://github.com/nicolasfara/pulverization-framework/commit/1687a9c91b8dbf8aa1ac8b1ed7f04f01a2443f3c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.21 ([ab251bf](https://github.com/nicolasfara/pulverization-framework/commit/ab251bf14c426db1851301a4efa66219c1071e86))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.22 ([88c727b](https://github.com/nicolasfara/pulverization-framework/commit/88c727b59bea4cccf8f6abed8931bf3006927a2f))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.23 ([1515954](https://github.com/nicolasfara/pulverization-framework/commit/1515954f2c8d61894bfeadf97044a46cc5458562))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.24 ([2bd9c33](https://github.com/nicolasfara/pulverization-framework/commit/2bd9c33b175b5debe7e0c72a9c6b3cc1192a72ff))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.25 ([f512a63](https://github.com/nicolasfara/pulverization-framework/commit/f512a63f1fc4fa53dafd415091006a64814f2bf5))
+* **deps:** update docusaurus monorepo to v2.4.0 ([2851517](https://github.com/nicolasfara/pulverization-framework/commit/285151745a71c01d7c38af9720d97ced0f2a469f))
+* **deps:** update koin to v3.4.0 ([94bb73d](https://github.com/nicolasfara/pulverization-framework/commit/94bb73d323d3a36ee3b0a6445ffaaa6d670fcb43))
+* **deps:** update node.js to 18.16 ([2483a48](https://github.com/nicolasfara/pulverization-framework/commit/2483a484edb4560d355129d388775278a4d9f81c))
+* **deps:** update plugin com.gradle.enterprise to v3.12.6 ([066e7f8](https://github.com/nicolasfara/pulverization-framework/commit/066e7f84b79907ca2bcef5d6d7a12f352448880e))
+* **deps:** update plugin com.gradle.enterprise to v3.13 ([23da593](https://github.com/nicolasfara/pulverization-framework/commit/23da59304fe6a219cf2e66817335a6b85526c159))
+* **deps:** update plugin gitsemver to v1.1.5 ([66c4e47](https://github.com/nicolasfara/pulverization-framework/commit/66c4e47421013c70edf8c32ed9443f9f8f461ee1))
+* **deps:** update plugin gitsemver to v1.1.6 ([9526bdc](https://github.com/nicolasfara/pulverization-framework/commit/9526bdc5cad5c1faf5677079f3828e2fa9325e51))
+* **deps:** update plugin gitsemver to v1.1.7 ([5e89546](https://github.com/nicolasfara/pulverization-framework/commit/5e89546543a0936220d8702f494712348d79e158))
+* **deps:** update plugin kotlin-qa to v0.35.0 ([a9833f9](https://github.com/nicolasfara/pulverization-framework/commit/a9833f9221a5654cc913ff02c469206ebbf0414a))
+* **deps:** update plugin kotlin-qa to v0.36.0 ([916b48a](https://github.com/nicolasfara/pulverization-framework/commit/916b48ad6d801d6e71a32de09a8118309592e70d))
+* **deps:** update plugin kotlin-qa to v0.36.1 ([ba1caa6](https://github.com/nicolasfara/pulverization-framework/commit/ba1caa6cb80719a2d8f139aeb5f2df17d6ccad39))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.6 ([060b241](https://github.com/nicolasfara/pulverization-framework/commit/060b241efd87b65b83be2c6367510f8a690ff8f7))
+* **deps:** update plugin publishoncentral to v4 ([9486056](https://github.com/nicolasfara/pulverization-framework/commit/948605619507d1f58aea0828fa83fc70cf3a6184))
+* **deps:** update plugin publishoncentral to v4.0.1 ([70fc5fe](https://github.com/nicolasfara/pulverization-framework/commit/70fc5feb687d68a7d67dd2a75027ddf7400b0875))
+* **deps:** update plugin publishoncentral to v4.1.1 ([195a19b](https://github.com/nicolasfara/pulverization-framework/commit/195a19b8c6708d5d7124a55d23e144e475920fb6))
+
+
+### Refactoring
+
+* improve runtime DSL ([4904f3b](https://github.com/nicolasfara/pulverization-framework/commit/4904f3b1c972b923e22c20e79e335926cc4af97f))
+* make behaviour non-nullable ([a0e7379](https://github.com/nicolasfara/pulverization-framework/commit/a0e73799a17a815efa68b2b2fdb85c7bc13249ff))
+* move out reconfiguration expect class ([fc43bc4](https://github.com/nicolasfara/pulverization-framework/commit/fc43bc485bf587635a4c6d576fa843f40fc8b2a1))
+* operation mode ad a public property ([13eb497](https://github.com/nicolasfara/pulverization-framework/commit/13eb497aefe3741005bce63e1a3088c773975af6))
+* refactow spawner manager ([69dd6be](https://github.com/nicolasfara/pulverization-framework/commit/69dd6be445de6657f332134db453b23869537ce0))
+* remove unused field in interface ([7e3da86](https://github.com/nicolasfara/pulverization-framework/commit/7e3da865ffe75700dae47f159845201d772675be))
+* use a more idiomatic null-check ([be4bfc1](https://github.com/nicolasfara/pulverization-framework/commit/be4bfc1958f87b60ce6800bd5b5fd95ffdd7f9d7))
+* use a real flow for memory usage mock ([a268334](https://github.com/nicolasfara/pulverization-framework/commit/a268334a7c4335aa7c2173bee9d1df76fa577d6d))
+* use a string representation for the host since is not serializable ([f52c745](https://github.com/nicolasfara/pulverization-framework/commit/f52c745944c397eb0939ec13c246f8d92d01b277))
+
+
+### General maintenance
+
+* adapt to nullable type ([3e00747](https://github.com/nicolasfara/pulverization-framework/commit/3e00747d8bb609d42f27c4022daa695157bf0ad5))
+* add reconfiguration class stub ([1fc18fe](https://github.com/nicolasfara/pulverization-framework/commit/1fc18fe4a7d595f460ae6d1df47f5b200b7578f2))
+* add utility function ([264357f](https://github.com/nicolasfara/pulverization-framework/commit/264357f9aca7e84ae492bc33e2783ea202094eea))
+* add utility function ([5eca514](https://github.com/nicolasfara/pulverization-framework/commit/5eca514b40d33264a9acab85ffd149a7d26d9b6c))
+* add utility function for operation mode configuration ([95876d6](https://github.com/nicolasfara/pulverization-framework/commit/95876d6b064d7fefb7bcae3647c80f33070b6f25))
+* **build:** add json serialization dependency ([5378b92](https://github.com/nicolasfara/pulverization-framework/commit/5378b92fe583f5d714e1ffafc292847b42a4cacc))
+* **build:** make koin dependency as api ([9884dcb](https://github.com/nicolasfara/pulverization-framework/commit/9884dcbcaff06ae30891318bdce41e8f29f3885f))
+* **build:** set dokka style to html to prevent exception with javadoc style in multiplatform projects ([f4128db](https://github.com/nicolasfara/pulverization-framework/commit/f4128dbf6440d46da3e7840bbf21bd0751cca7d6))
+* cleanup project from old classes ([52dd630](https://github.com/nicolasfara/pulverization-framework/commit/52dd630b7bac7ecd29206ccabe1bc6a34f903388))
+* code cleanup ([f996a00](https://github.com/nicolasfara/pulverization-framework/commit/f996a00bdb6f738d0df1d06a2f8a76d14866ede1))
+* disable old non-valid tests ([18ce4ba](https://github.com/nicolasfara/pulverization-framework/commit/18ce4ba40e3d41fd896d33c1ee8067f79aad4f77))
+* general refactoring ([1036bb1](https://github.com/nicolasfara/pulverization-framework/commit/1036bb1afe1a8436c0bd50c1bfbd4a6150683442))
+* general refactoring to be compatible with dynamicity ([3c70a17](https://github.com/nicolasfara/pulverization-framework/commit/3c70a1722e26cc2307ce48df5d792895416caf7d))
+* logging on varous classes ([210ad70](https://github.com/nicolasfara/pulverization-framework/commit/210ad705d65d7a8c8a4d32056f2a2df5dca34b25))
+* make a field nullable ([5c49327](https://github.com/nicolasfara/pulverization-framework/commit/5c49327efe494aa23aadfadf22bbdbb109596476))
+* minor improvements and refactoring ([7313be5](https://github.com/nicolasfara/pulverization-framework/commit/7313be5bd71d28b1fde2f05802b535d95376db76))
+* override tostring to better represent the component ([7469cd1](https://github.com/nicolasfara/pulverization-framework/commit/7469cd11045376a200f4c961037291c59b3a3241))
+* replace old implementation with a temporary ([f7d43f8](https://github.com/nicolasfara/pulverization-framework/commit/f7d43f84c3da33e9f0a171d4d45e8903afea35eb))
+* temporarily disable kermit-koin dependency ([e42ec50](https://github.com/nicolasfara/pulverization-framework/commit/e42ec50222200ecf04c87cdd17fe2bba1d465f6e))
+* use new api ([7fb7dcc](https://github.com/nicolasfara/pulverization-framework/commit/7fb7dcc206853219724b0b3afc0f691554020b78))
+* use new API of the component ref ([a193be2](https://github.com/nicolasfara/pulverization-framework/commit/a193be22dc2e957e098e33e533ffd62d97ca3eb4))
+* use new execution context api ([6d3d8dc](https://github.com/nicolasfara/pulverization-framework/commit/6d3d8dce06194da24ef7b23a818a3b91bdc14292))
+
 ## [0.4.13](https://github.com/nicolasfara/pulverization-framework/compare/0.4.12...0.4.13) (2023-03-23)
 
 
