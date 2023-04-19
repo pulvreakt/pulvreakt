@@ -39,6 +39,7 @@ actual class RabbitmqReconfigurator actual constructor(
     private lateinit var sender: Sender
     private lateinit var receiver: Receiver
     private lateinit var reconfigurationQueue: String
+    private lateinit var routingKey: String
     private val executionContext: ExecutionContext by inject()
 
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
@@ -56,15 +57,16 @@ actual class RabbitmqReconfigurator actual constructor(
             receiver = RabbitFlux.createReceiver(receiverOptions)
         }
         with(sender) {
-            declareExchange(ExchangeSpecification.exchange(EXCHANGE).type("fanout").durable(false))
+            declareExchange(ExchangeSpecification.exchange(EXCHANGE).type("topic").durable(false))
                 .awaitSingleOrNull() ?: error("Failed to declare exchange `$EXCHANGE`")
 
-            reconfigurationQueue = "reconfiguration/${executionContext.deviceID}"
+            reconfigurationQueue = "reconfiguration/${executionContext.host.hostname}/${executionContext.deviceID}"
+            routingKey = "reconfiguration.${executionContext.deviceID}"
 
             declareQueue(QueueSpecification.queue(reconfigurationQueue).durable(false))
                 .awaitSingleOrNull() ?: error("Unable to create the queue `$reconfigurationQueue`")
-            bindQueue(BindingSpecification().queue(reconfigurationQueue).exchange(EXCHANGE).routingKey(""))
-                .awaitSingleOrNull() ?: error("Unable to bind `$EXCHANGE` to `$reconfigurationQueue`")
+            bindQueue(BindingSpecification().queue(reconfigurationQueue).exchange(EXCHANGE).routingKey(routingKey))
+                .awaitSingleOrNull() ?: error("Unable to bind `$EXCHANGE` to `$reconfigurationQueue` with $routingKey")
         }
     }
 
@@ -75,7 +77,7 @@ actual class RabbitmqReconfigurator actual constructor(
 
     override suspend fun reconfigure(newConfiguration: NewConfiguration) {
         val payload = Json.encodeToString(newConfiguration).encodeToByteArray()
-        val message = OutboundMessage(EXCHANGE, "", payload)
+        val message = OutboundMessage(EXCHANGE, routingKey, payload)
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }
 
