@@ -65,8 +65,8 @@ allprojects {
         sourceSets {
             val commonMain by getting {
                 dependencies {
-                    implementation(rootProject.libs.koin.core)
                     implementation(rootProject.libs.kotlinx.coroutines.core)
+                    api(rootProject.libs.koin.core)
                     api(rootProject.libs.bundles.kermit)
                 }
             }
