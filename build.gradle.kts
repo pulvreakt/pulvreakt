@@ -1,5 +1,4 @@
 import org.danilopianini.gradle.mavencentral.DocStyle
-import org.danilopianini.gradle.mavencentral.JavadocJar
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.util.*
@@ -17,7 +16,7 @@ plugins {
     alias(libs.plugins.gitSemVer)
 }
 
-val Provider<PluginDependency>.id get() = get().pluginId
+val Provider<PluginDependency>.id: String get() = get().pluginId
 
 allprojects {
     group = "it.nicolasfarabegoli.${rootProject.name}"
@@ -194,16 +193,6 @@ allprojects {
 }
 
 tasks {
-    dokkaJavadoc {
-        enabled = false
-    }
-
-    withType<JavadocJar>().configureEach {
-        val dokka = dokkaHtml.get()
-        dependsOn(dokka)
-        from(dokka.outputDirectory)
-    }
-
     // Prevent publishing the root project (since is empty)
     withType<AbstractPublishToMaven>().configureEach {
         enabled = false
