@@ -124,12 +124,11 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     highCpuUsageFlow.emit(0.95) // Trigger a reconfiguration
                     delay(100)
 
-                    spawner.activeComponents() shouldBe setOf(Sensors)
-
                     outFlow.map { Json.decodeFromString<Int>(it.decodeToString()) }.take(5).collect {
                         it shouldBeInRange (0..100)
                     }
 
+                    spawner.activeComponents() shouldBe setOf(Sensors)
                     spawner.killAll()
                     unitReconfigurator.finalize()
                 }
