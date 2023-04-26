@@ -1,3 +1,34 @@
+## [0.5.1](https://github.com/nicolasfara/pulverization-framework/compare/0.5.0...0.5.1) (2023-04-26)
+
+
+### General maintenance
+
+* **build:** prevent dokka exception setting the style to html ([3a3e00e](https://github.com/nicolasfara/pulverization-framework/commit/3a3e00e57b6116015c75fad4043eabc240ee8e2a))
+
+
+### Tests
+
+* **platform:** fix test order assertion ([c889a8b](https://github.com/nicolasfara/pulverization-framework/commit/c889a8bb34eaf8706988e53f7dd79360655988b0))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.4 ([a8ab673](https://github.com/nicolasfara/pulverization-framework/commit/a8ab67399b5c41e218c333607d8c35b65ce5d3ec))
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.kotlin.multiplatform to v1.8.21 ([d8c8b16](https://github.com/nicolasfara/pulverization-framework/commit/d8c8b1686fb2572cf78820ec198dffa5f7f19b9c))
+* **deps:** update dependency gradle to v8.1.1 ([5e9549d](https://github.com/nicolasfara/pulverization-framework/commit/5e9549dc5df7e6cf210a01f656a7d9b4447086dc))
+* **deps:** update dependency org.jetbrains.kotlin.plugin.serialization to v1.8.20 ([be1aa1a](https://github.com/nicolasfara/pulverization-framework/commit/be1aa1a3d49e3fbf429ce9d59c0d94e6bfef497f))
+* **deps:** update kotest to v5.6.1 ([1876046](https://github.com/nicolasfara/pulverization-framework/commit/18760461a9f957c43554b4dad81d392257b50750))
+* **deps:** update plugin gitsemver to v1.1.9 ([8724937](https://github.com/nicolasfara/pulverization-framework/commit/8724937ffd7e2711e6bd9246abebf7c81f3f47bd))
+* **deps:** update plugin kotlin-qa to v0.38.1 ([630bfbb](https://github.com/nicolasfara/pulverization-framework/commit/630bfbb38652b3bb2f13329f9c9c6c7c5c24b8a2))
+* **deps:** update plugin kotlin-qa to v0.38.2 ([e8dc5d4](https://github.com/nicolasfara/pulverization-framework/commit/e8dc5d4b589d493cf15871a5045087ce8136b036))
+* **deps:** update plugin publishoncentral to v5.0.2 ([e67f5cd](https://github.com/nicolasfara/pulverization-framework/commit/e67f5cd4af182dc2414e064202187a68740e311c))
+* **deps:** update plugin publishoncentral to v5.0.3 ([6ddebcf](https://github.com/nicolasfara/pulverization-framework/commit/6ddebcff7c09c92d22e7b070adc7270a19163beb))
+* **deps:** update plugin publishoncentral to v5.0.4 ([1007d5f](https://github.com/nicolasfara/pulverization-framework/commit/1007d5f554cbf164598c21c5144968cc235a7292))
+
 ## [0.5.0](https://github.com/nicolasfara/pulverization-framework/compare/0.4.13...0.5.0) (2023-04-19)
 
 
