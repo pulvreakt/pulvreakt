@@ -103,7 +103,8 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: NewConfiguration) {
             val (targetComponent, _) = newConfig
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
-                println("New reconfiguration!")
+                logger.i { "New reconfiguration triggered" }
+                logger.d { "Reconfiguration details: $newConfig" }
                 changeComponentMode(newConfig)
                 reconfigurator.reconfigure(newConfig)
             }
