@@ -1,3 +1,19 @@
+## [0.5.2](https://github.com/nicolasfara/pulverization-framework/compare/0.5.1...0.5.2) (2023-04-29)
+
+
+### Bug Fixes
+
+* remove println in favor of logger ([3680408](https://github.com/nicolasfara/pulverization-framework/commit/3680408d95030fd4eb73a8657631775c023e7cef))
+
+
+### Dependency updates
+
+* **deps:** update dependency rehype-katex to v6.0.3 ([d9ba026](https://github.com/nicolasfara/pulverization-framework/commit/d9ba02693f9979f5989887a070c7257cfb10811b))
+* **deps:** update plugin kotlin-qa to v0.40.0 ([52065be](https://github.com/nicolasfara/pulverization-framework/commit/52065be76b638984726978db5a58a31c030713dd))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.7 ([bbdf9f9](https://github.com/nicolasfara/pulverization-framework/commit/bbdf9f952125275768a9d00322878a12cf0b0bc2))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.5.0 ([f3d511f](https://github.com/nicolasfara/pulverization-framework/commit/f3d511f9af8df318be135d080fb2590b3c5260bc))
+* **deps:** update plugin publishoncentral to v5.0.5 ([021b1fd](https://github.com/nicolasfara/pulverization-framework/commit/021b1fdd3176b2c0f1d54af592ca8e91b139cd8c))
+
 ## [0.5.1](https://github.com/nicolasfara/pulverization-framework/compare/0.5.0...0.5.1) (2023-04-26)
 
 
