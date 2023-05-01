@@ -100,7 +100,8 @@ jobs:
   docsite:
     runs-on: ubuntu-22.04
     concurrency:
-      group: docsite
+      group: ${{ github.workflow }}-build-website-${{ github.event.number || github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3.5.2
