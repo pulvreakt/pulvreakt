@@ -236,4 +236,3 @@ tasks {
             hugoBuild.configure { finalizedBy(copyTask) }
         }
 }
-
