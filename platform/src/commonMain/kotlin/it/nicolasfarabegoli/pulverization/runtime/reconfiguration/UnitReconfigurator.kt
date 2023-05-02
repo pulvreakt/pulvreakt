@@ -17,14 +17,18 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ComponentRef.Ope
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
 import it.nicolasfarabegoli.pulverization.runtime.context.ExecutionContext
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.FailOnReconfiguration
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationEvent
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationRules
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationSuccess
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.SkipCheck
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
 import it.nicolasfarabegoli.pulverization.utils.PulverizationKoinModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
@@ -98,10 +102,22 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         incomingReconfigurationJob?.cancel()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun spawnRulesObserver() {
         logger.i { "Spawning rules listener" }
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: NewConfiguration) {
             val (targetComponent, _) = newConfig
+            events.collect {
+                if (targetComponent in localComponents && predicate(it)) {
+                    try {
+                        logger.i { "New reconfiguration triggered" }
+                        logger.d { "Reconfiguration details: $newConfig" }
+                        changeComponentMode(newConfig)
+                        reconfigurator.reconfigure(newConfig)
+                        onReconfigurationEvent(ReconfigurationSuccess(it))
+                    } catch (ex: Exception) { onReconfigurationEvent(FailOnReconfiguration(it, ex)) }
+                } else { onReconfigurationEvent(SkipCheck(it)) }
+            }
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
                 logger.i { "New reconfiguration triggered" }
                 logger.d { "Reconfiguration details: $newConfig" }

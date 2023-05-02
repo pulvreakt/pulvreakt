@@ -4,12 +4,39 @@ import it.nicolasfarabegoli.pulverization.runtime.reconfiguration.NewConfigurati
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+
+/**
+ * The type of the possible results when an event is evaluated.
+ */
+sealed interface ReconfigurationResult<P : Any>
+
+/**
+ * A specialization of [ReconfigurationResult] representing a successful evaluation of the [event] that has
+ * triggered a reconfiguration.
+ */
+data class ReconfigurationSuccess<P : Any>(val event: P) : ReconfigurationResult<P>
+
+/**
+ * A specialization of [ReconfigurationResult] representing a successful evaluation of the [event],
+ * but that has not triggered a reconfiguration.
+ */
+data class SkipCheck<P : Any>(val event: P) : ReconfigurationResult<P>
+
+/**
+ * A specialization of [ReconfigurationResult] representing a failure when trying to reconfigure the deployment unit
+ * triggered by the [event]. The [cause] represent the exception raised when a reconfiguration is tried.
+ */
+data class FailOnReconfiguration<P : Any, T : Throwable>(val event: P, val cause: T) : ReconfigurationResult<P>
 
 /**
  * Represents the event that can trigger a reconfiguration.
  */
-interface ReconfigurationEvent<P : Any> {
+abstract class ReconfigurationEvent<P : Any> {
+    private val internalResultFlow: MutableSharedFlow<ReconfigurationResult<P>> = MutableSharedFlow(1)
+
     companion object {
         /**
          * Utility method for creating an [ReconfigurationEvent] from [events] and a [predicate] which should
@@ -20,19 +47,33 @@ interface ReconfigurationEvent<P : Any> {
     }
 
     /**
+     * The [Flow] of [ReconfigurationResult] associated to the processing of the [events].
+     */
+    val results: Flow<ReconfigurationResult<P>> = internalResultFlow.asSharedFlow()
+
+    /**
      * The [Flow] of [events] that could trigger the reconfiguration.
      */
-    val events: Flow<P>
+    abstract val events: Flow<P>
 
     /**
      * The predicate that should be true to trigger the reconfiguration.
      */
-    val predicate: (P) -> Boolean
+    abstract val predicate: (P) -> Boolean
+
+    /**
+     * Function called by the framework whenever an event is processed.
+     * The function is called even if the processed event do not trigger a reconfiguration.
+     * The function takes the [result] of the processing result
+     */
+    suspend fun onReconfigurationEvent(result: ReconfigurationResult<P>) {
+        internalResultFlow.emit(result)
+    }
 
     private data class ReconfigurationEventImpl<P : Any>(
         override val events: Flow<P>,
         override val predicate: (P) -> Boolean,
-    ) : ReconfigurationEvent<P>
+    ) : ReconfigurationEvent<P>()
 }
 
 /**
