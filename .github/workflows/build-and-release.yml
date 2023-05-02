@@ -111,6 +111,7 @@ jobs:
         with:
           build-command: |
             ./gradlew hugoBuild --parallel
+          check-command: true
           should-run-codecov: false
           should-deploy: false
           should-validate-wrapper: false
