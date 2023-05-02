@@ -1,3 +1,15 @@
+## [0.6.0](https://github.com/nicolasfara/pulverization-framework/compare/0.5.2...0.6.0) (2023-05-02)
+
+
+### Features
+
+* add result flow on event evaluation ([964833b](https://github.com/nicolasfara/pulverization-framework/commit/964833bfd38e5da8a67919f04bff63f7abefc4a8))
+
+
+### Tests
+
+* add test for result flow ([e2c4502](https://github.com/nicolasfara/pulverization-framework/commit/e2c45026f1ce10f8f47606cd9f380b2abebacc67))
+
 ## [0.5.2](https://github.com/nicolasfara/pulverization-framework/compare/0.5.1...0.5.2) (2023-04-29)
 
 
