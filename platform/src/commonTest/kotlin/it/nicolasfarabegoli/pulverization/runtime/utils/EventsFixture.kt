@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 
 val highCpuUsageFlow = MutableSharedFlow<Double>(1)
 
-object HighCpuUsage : ReconfigurationEvent<Double> {
+object HighCpuUsage : ReconfigurationEvent<Double>() {
     override val events: Flow<Double> = highCpuUsageFlow
     override val predicate: (Double) -> Boolean = { it > 0.75 }
 }

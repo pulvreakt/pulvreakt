@@ -40,12 +40,12 @@ object Host3 : Host {
     override val capabilities: Set<Capability> = setOf(HighCpu, HighMemory)
 }
 
-object HighCpuUsage : ReconfigurationEvent<Double> {
+object HighCpuUsage : ReconfigurationEvent<Double>() {
     override val events: Flow<Double> = emptyFlow()
     override val predicate: (Double) -> Boolean = { it > 0.75 }
 }
 
-object DeviceNetworkChange : ReconfigurationEvent<Int> {
+object DeviceNetworkChange : ReconfigurationEvent<Int>() {
     override val events: Flow<Int> = emptyFlow()
     override val predicate: (Int) -> Boolean = { it > 10 }
 }

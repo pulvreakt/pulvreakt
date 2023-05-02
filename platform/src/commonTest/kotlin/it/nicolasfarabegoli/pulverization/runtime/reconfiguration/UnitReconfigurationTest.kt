@@ -15,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.TestCommunicator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.TestReconfigurator
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.DeploymentUnitRuntimeConfiguration
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.Host
+import it.nicolasfarabegoli.pulverization.runtime.dsl.model.ReconfigurationSuccess
 import it.nicolasfarabegoli.pulverization.runtime.dsl.model.reconfigurationRules
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationRuntime
 import it.nicolasfarabegoli.pulverization.runtime.spawner.SpawnerManager
@@ -43,6 +44,7 @@ import kotlinx.serialization.serializer
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class UnitReconfigurationTest : FreeSpec(), KoinTest {
@@ -132,6 +134,24 @@ class UnitReconfigurationTest : FreeSpec(), KoinTest {
                     spawner.killAll()
                     unitReconfigurator.finalize()
                 }
+            }
+            "should return a result for each processed result".config(enabled = false, timeout = 1.seconds) {
+                componentsRef.setupRefs()
+                componentsRef.setupOperationMode(config.hostComponentsStartupMap(), Host2)
+                unitReconfigurator.initialize()
+                spawner.spawn(Behaviour)
+                spawner.spawn(Sensors)
+                componentsRef.behaviourRefs.sensorsRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                componentsRef.sensorsToBehaviourRef.operationMode shouldBe ComponentRef.OperationMode.Local
+                componentsRef.behaviourRefs.sensorsRef.receiveFromComponent().first() shouldBeInRange (0..100)
+
+                highCpuUsageFlow.emit(0.95)
+                delay(100.milliseconds)
+
+                HighCpuUsage.results.first() shouldBe ReconfigurationSuccess(0.95)
+
+                spawner.killAll()
+                unitReconfigurator.finalize()
             }
         }
     }
