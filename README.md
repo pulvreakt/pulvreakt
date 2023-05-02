@@ -8,17 +8,17 @@
 
 # Pulverization Framework
 
-> A simple and lightweight Kotlin mulitplatform framework to create pulverized systems
+> A simple and lightweight Kotlin multiplatform framework to create pulverized systems
 
 📘 Documentation available [here](https://nicolasfarabegoli.it/pulverization-framework)
 
 ### Current implemented platforms
 
-|               | `core`               | `platform`           | `rabbitmq-platform`   |
-|---------------|:--------------------:|:--------------------:|:---------------------:|
-| **JVM**       | :heavy_check_mark:   | :heavy_check_mark:   | :heavy_check_mark:    |
-| **JS**        | :heavy_check_mark:   | :x:                  | :x:                   |
-| **Native***   | :heavy_check_mark:   | :x:                  | :x:                   |
+|               |       `core`       |         `platform`         | `rabbitmq-platform` |
+|---------------|:------------------:|:--------------------------:|:-------------------:|
+| **JVM**       | :heavy_check_mark: |     :heavy_check_mark:     | :heavy_check_mark:  |
+| **JS**        | :heavy_check_mark: |     :heavy_check_mark:     |         :x:         |
+| **Native***   | :heavy_check_mark: |     :heavy_check_mark:     |         :x:         |
 
 \* The current native supported platforms are: `linux X64`, `mingw X64`, `macos X64`, `macos ARM`, `iOS`, `watchOS`, `tvOS`.  
 
