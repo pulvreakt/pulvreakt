@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Documentation for the Alchemist Simulator</title>
+    <link>https://nicolasfarabegoli.it/pulverization-framework/tags/index.html</link>
+    <description>Recent content in Tags on Documentation for the Alchemist Simulator</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://nicolasfarabegoli.it/pulverization-framework/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>api docs</title>
+      <link>https://nicolasfarabegoli.it/pulverization-framework/tags/api-docs/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://nicolasfarabegoli.it/pulverization-framework/tags/api-docs/index.html</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>dokka</title>
+      <link>https://nicolasfarabegoli.it/pulverization-framework/tags/dokka/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://nicolasfarabegoli.it/pulverization-framework/tags/dokka/index.html</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>kdoc</title>
+      <link>https://nicolasfarabegoli.it/pulverization-framework/tags/kdoc/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://nicolasfarabegoli.it/pulverization-framework/tags/kdoc/index.html</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

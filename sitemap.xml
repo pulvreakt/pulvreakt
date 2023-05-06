@@ -1,1 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/archive</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/first-blog-post</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/long-blog-post</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/mdx-blog-post</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/tags</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/tags/docusaurus</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/tags/facebook</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/tags/hello</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/tags/hola</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/blog/welcome</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/markdown-page</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/category/pulverization-concepts</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/category/tutorial---rabbitmq-platform</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/intro</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/pulverization-concepts/communicator-architecture</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/pulverization-concepts/core-architecture</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/tutorial-rabbitmq-platform/components-logic</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/tutorial-rabbitmq-platform/create-components</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/tutorial-rabbitmq-platform/create-configuration</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/docs/tutorial-rabbitmq-platform/deployment</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://nicolasfarabegoli.it/pulverization-framework/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/tutorials/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/how-to-guides/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/reference/kdoc/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/explanation/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/tags/api-docs/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/categories/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/tags/dokka/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/tags/kdoc/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicolasfarabegoli.it/pulverization-framework/tags/index.html</loc>
+  </url>
+</urlset>

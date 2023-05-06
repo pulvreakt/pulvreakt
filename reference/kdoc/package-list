@@ -1,0 +1,26 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/finalize/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]finalize.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/fireMessage/#kotlin.ByteArray/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]fire-message.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/receiveMessage/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]receive-message.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/setup/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,it.nicolasfarabegoli.pulverization.dsl.model.ComponentType]#it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace?/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]setup.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqReconfigurator/receiveReconfiguration/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-reconfigurator/[native]receive-reconfiguration.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqReconfigurator/reconfigure/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,kotlin.String]/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-reconfigurator/[native]reconfigure.html
+module:core
+it.nicolasfarabegoli.pulverization.component
+it.nicolasfarabegoli.pulverization.core
+it.nicolasfarabegoli.pulverization.dsl
+it.nicolasfarabegoli.pulverization.dsl.model
+it.nicolasfarabegoli.pulverization.utils
+module:platform
+it.nicolasfarabegoli.pulverization.runtime
+it.nicolasfarabegoli.pulverization.runtime.communication
+it.nicolasfarabegoli.pulverization.runtime.componentsref
+it.nicolasfarabegoli.pulverization.runtime.context
+it.nicolasfarabegoli.pulverization.runtime.dsl
+it.nicolasfarabegoli.pulverization.runtime.dsl.model
+it.nicolasfarabegoli.pulverization.runtime.reconfiguration
+it.nicolasfarabegoli.pulverization.runtime.spawner
+it.nicolasfarabegoli.pulverization.runtime.utils
+module:rabbitmq-platform
+it.nicolasfarabegoli.pulverization.platforms.rabbitmq
