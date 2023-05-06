@@ -1,3 +1,17 @@
+## [0.6.1](https://github.com/nicolasfara/pulverization-framework/compare/0.6.0...0.6.1) (2023-05-06)
+
+
+### Dependency updates
+
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.26 ([bffeab5](https://github.com/nicolasfara/pulverization-framework/commit/bffeab56456c5b9cb7e12e515f244ef18374df95))
+* **deps:** update plugin com.gradle.enterprise to v3.13.1 ([39e9ae9](https://github.com/nicolasfara/pulverization-framework/commit/39e9ae9c410c22bbf030125112a08dde65d87e1b))
+* **deps:** update plugin kotlin-qa to v0.41.0 ([ef5ab1c](https://github.com/nicolasfara/pulverization-framework/commit/ef5ab1cf02465b456fdb93771f270aa59a5e5b47))
+
+
+### Documentation
+
+* use hugo as a documentation site ([#191](https://github.com/nicolasfara/pulverization-framework/issues/191)) ([20411dd](https://github.com/nicolasfara/pulverization-framework/commit/20411dd89effbbdaa77a38f689e7c6dc32f76978))
+
 ## [0.6.0](https://github.com/nicolasfara/pulverization-framework/compare/0.5.2...0.6.0) (2023-05-02)
 
 
