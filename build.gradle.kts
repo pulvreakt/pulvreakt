@@ -1,4 +1,5 @@
 import org.danilopianini.gradle.mavencentral.DocStyle
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.util.*
@@ -14,6 +15,7 @@ plugins {
     alias(libs.plugins.taskTree)
     alias(libs.plugins.publishOnCentral)
     alias(libs.plugins.gitSemVer)
+    alias(libs.plugins.hugo)
 }
 
 val Provider<PluginDependency>.id: String get() = get().pluginId
@@ -192,16 +194,6 @@ allprojects {
     }
 }
 
-tasks {
-    // Prevent publishing the root project (since is empty)
-    withType<AbstractPublishToMaven>().configureEach {
-        enabled = false
-    }
-    withType<GenerateModuleMetadata>().configureEach {
-        enabled = false
-    }
-}
-
 koverMerged {
     enable()
     htmlReport { onCheck.set(true) }
@@ -211,4 +203,36 @@ koverMerged {
             excludes += listOf(":")
         }
     }
+}
+
+val websiteDir = File(buildDir, "website")
+
+hugo {
+    version = Regex("gohugoio/hugo@v([\\.\\-\\+\\w]+)")
+        .find(file("deps-utils/action.yml").readText())!!.groups[1]!!.value
+}
+
+tasks {
+    // Prevent publishing the root project (since is empty)
+    withType<AbstractPublishToMaven>().configureEach {
+        enabled = false
+    }
+    withType<GenerateModuleMetadata>().configureEach {
+        enabled = false
+    }
+
+    hugoBuild {
+        outputDirectory = websiteDir
+    }
+
+    mapOf("kdoc" to dokkaHtmlMultiModule)
+        .mapValues { it.value.get() }
+        .forEach { (folder, task) ->
+            hugoBuild.configure { dependsOn(task) }
+            val copyTask = register<Copy>("copy${folder.capitalized()}IntoWebsite") {
+                from(task.outputDirectory)
+                into(File(websiteDir, "reference/$folder"))
+            }
+            hugoBuild.configure { finalizedBy(copyTask) }
+        }
 }
