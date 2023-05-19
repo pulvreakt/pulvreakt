@@ -1,14 +1,14 @@
-baseURL = 'https://nicolasfarabegoli.it/pulverization-framework'
+baseURL = 'https://pulvreakt.github.io/pulvreakt'
 languageCode = 'en-us'
 canonifyURLs = true
 defaultContentLanguage = "en"
 timeout = "5m"
 
-title = 'Pulverization framework'
+title = 'PulvReAKt framework'
 theme = "hugo-theme-relearn"
 
 [params]
-editURL = "https://github.com/nicolasfara/pulverization-framework/edit/master/docs/content/"
+editURL = "https://github.com/pulvreakt/pulvreakt/edit/master/docs/content/"
 description = "Pulverization framework"
 author = "Nicolas Farabegoli"
 showVisitedLinks = true
@@ -35,7 +35,7 @@ unsafe = true
 
 [Languages]
 [Languages.en]
-title = "Documentation for the Alchemist Simulator"
+title = "Documentation for PulvReAKt framework"
 weight = 1
 languageName = "English"
 landingPageURL = "/"
@@ -44,7 +44,7 @@ landingPageName = "<i class='fas fa-home'></i> Home"
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-fw fa-github'></i> GitHub repo"
 identifier = "ds"
-url = "https://github.com/nicolasfara/pulverization-framework"
+url = "https://github.com/pulvreakt/pulvreakt"
 weight = 10
 
 [[Languages.en.menu.shortcuts]]
