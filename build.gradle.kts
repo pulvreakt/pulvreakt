@@ -21,7 +21,7 @@ plugins {
 val Provider<PluginDependency>.id: String get() = get().pluginId
 
 allprojects {
-    group = "it.nicolasfarabegoli.${rootProject.name}"
+    group = "it.unibo.${rootProject.name}"
 
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
