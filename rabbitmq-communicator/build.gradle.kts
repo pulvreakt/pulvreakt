@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":platform"))
+                implementation(project(":runtime"))
                 implementation(rootProject.libs.kotlinx.serialization.json)
             }
         }
