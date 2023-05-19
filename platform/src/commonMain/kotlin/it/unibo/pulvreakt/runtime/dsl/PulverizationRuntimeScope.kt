@@ -1,0 +1,214 @@
+@file:Suppress("TooManyFunctions")
+
+package it.unibo.pulvreakt.runtime.dsl
+
+import it.unibo.pulvreakt.core.ActuatorsContainer
+import it.unibo.pulvreakt.core.Behaviour
+import it.unibo.pulvreakt.core.Communication
+import it.unibo.pulvreakt.core.SensorsContainer
+import it.unibo.pulvreakt.core.State
+import it.unibo.pulvreakt.runtime.communication.Communicator
+import it.unibo.pulvreakt.runtime.communication.RemotePlaceProvider
+import it.unibo.pulvreakt.runtime.dsl.model.ActuatorsRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.BehaviourRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.CommunicationRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.ComponentsRuntimeConfiguration
+import it.unibo.pulvreakt.runtime.dsl.model.ComponentsRuntimeContainer
+import it.unibo.pulvreakt.runtime.dsl.model.Host
+import it.unibo.pulvreakt.runtime.dsl.model.PartialActuatorsRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.PartialBehaviourRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.PartialCommunicationRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.PartialSensorsRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.PartialStateRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.ReconfigurationRules
+import it.unibo.pulvreakt.runtime.dsl.model.SensorsRuntimeConfig
+import it.unibo.pulvreakt.runtime.dsl.model.StateRuntimeConfig
+import it.unibo.pulvreakt.runtime.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.runtime.utils.ActuatorsLogicType
+import it.unibo.pulvreakt.runtime.utils.BehaviourLogicType
+import it.unibo.pulvreakt.runtime.utils.CommunicationLogicType
+import it.unibo.pulvreakt.runtime.utils.SensorsLogicType
+import it.unibo.pulvreakt.runtime.utils.StateLogicType
+import it.unibo.pulvreakt.runtime.utils.defaultActuatorsLogic
+import it.unibo.pulvreakt.runtime.utils.defaultBehaviourLogic
+import it.unibo.pulvreakt.runtime.utils.defaultCommunicationLogic
+import it.unibo.pulvreakt.runtime.utils.defaultSensorsLogic
+import it.unibo.pulvreakt.runtime.utils.defaultStateLogic
+
+/**
+ * Scope for configuring the device with its components.
+ */
+class PulverizationRuntimeScope<S : Any, C : Any, SS : Any, AS : Any, O : Any> {
+    private var componentsRuntime = ComponentsRuntimeContainer<S, C, SS, AS, O>(null, null, null, null, null)
+    private var allReconfigurationRules: ReconfigurationRules? = null
+    private lateinit var communicator: () -> Communicator
+    private lateinit var reconfigurator: () -> Reconfigurator
+    private lateinit var remotePlaceProvider: RemotePlaceProvider
+
+    /**
+     * Specify which [Communicator] should be used.
+     */
+    fun withCommunicator(commProvider: () -> Communicator) {
+        communicator = commProvider
+    }
+
+    /**
+     * Specify which [Reconfigurator] should be used.
+     */
+    fun withReconfigurator(reconfigProvider: () -> Reconfigurator) {
+        reconfigurator = reconfigProvider
+    }
+
+    /**
+     * Specify which [RemotePlaceProvider] should be used.
+     */
+    fun withRemotePlaceProvider(rpProvider: () -> RemotePlaceProvider) {
+        remotePlaceProvider = rpProvider()
+    }
+
+    /**
+     * Configure all the reconfiguration rules.
+     */
+    fun reconfigurationRules(config: ReconfigurationRulesScope.() -> Unit) {
+        val reconfigurationRulesScope = ReconfigurationRulesScope().apply(config)
+        allReconfigurationRules = reconfigurationRulesScope.generate()
+    }
+
+    /**
+     * Associate the [Behaviour] with its corresponding [logic].
+     */
+    infix fun Behaviour<S, C, SS, AS, O>.withLogic(
+        logic: BehaviourLogicType<S, C, SS, AS, O>,
+    ): PartialBehaviourRuntimeConfig<S, C, SS, AS, O> = PartialBehaviourRuntimeConfig(this, logic)
+
+    /**
+     * Associate the [State] with its corresponding [logic].
+     */
+    infix fun State<S>.withLogic(
+        logic: StateLogicType<S>,
+    ): PartialStateRuntimeConfig<S> = PartialStateRuntimeConfig(this, logic)
+
+    /**
+     * Associate the [Communication] with its corresponding [logic].
+     */
+    infix fun Communication<C>.withLogic(
+        logic: CommunicationLogicType<C>,
+    ): PartialCommunicationRuntimeConfig<C> = PartialCommunicationRuntimeConfig(this, logic)
+
+    /**
+     * Associate the [SensorsContainer] with its corresponding [logic].
+     */
+    infix fun SensorsContainer.withLogic(
+        logic: SensorsLogicType<SS>,
+    ): PartialSensorsRuntimeConfig<SS> = PartialSensorsRuntimeConfig(this, logic)
+
+    /**
+     * Associate the [ActuatorsContainer] with its corresponding [logic].
+     */
+    infix fun ActuatorsContainer.withLogic(
+        logic: ActuatorsLogicType<AS>,
+    ): PartialActuatorsRuntimeConfig<AS> = PartialActuatorsRuntimeConfig(this, logic)
+
+    /**
+     * Configure the [Behaviour] to start on a specific [host].
+     */
+    infix fun Behaviour<S, C, SS, AS, O>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            behaviourRuntime = BehaviourRuntimeConfig(this, ::defaultBehaviourLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [State] to start on a specific [host].
+     */
+    infix fun State<S>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            stateRuntime = StateRuntimeConfig(this, ::defaultStateLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [Communication] to start on a specific [host].
+     */
+    infix fun Communication<C>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            communicationRuntime = CommunicationRuntimeConfig(this, ::defaultCommunicationLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [SensorsContainer] to start on a specific [host].
+     */
+    infix fun SensorsContainer.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            sensorsRuntime = SensorsRuntimeConfig(this, ::defaultSensorsLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [ActuatorsContainer] to start on a specific [host].
+     */
+    infix fun ActuatorsContainer.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            actuatorsRuntime = ActuatorsRuntimeConfig(this, ::defaultActuatorsLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [Behaviour] to start on a specific [host].
+     */
+    infix fun PartialBehaviourRuntimeConfig<S, C, SS, AS, O>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            behaviourRuntime = BehaviourRuntimeConfig(behaviourComponent, behaviourLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [State] to start on a specific [host].
+     */
+    infix fun PartialStateRuntimeConfig<S>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            stateRuntime = StateRuntimeConfig(stateComponent, stateLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [Communication] to start on a specific [host].
+     */
+    infix fun PartialCommunicationRuntimeConfig<C>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            communicationRuntime = CommunicationRuntimeConfig(communicationComponent, communicationLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [SensorsContainer] to start on a specific [host].
+     */
+    infix fun PartialSensorsRuntimeConfig<SS>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            sensorsRuntime = SensorsRuntimeConfig(sensorsComponent, sensorsLogic, host),
+        )
+    }
+
+    /**
+     * Configure the [ActuatorsContainer] to start on a specific [host].
+     */
+    infix fun PartialActuatorsRuntimeConfig<AS>.startsOn(host: Host) {
+        componentsRuntime = componentsRuntime.copy(
+            actuatorsRuntime = ActuatorsRuntimeConfig(actuatorsComponent, actuatorsLogic, host),
+        )
+    }
+
+    internal fun generate(): ComponentsRuntimeConfiguration<S, C, SS, AS, O> {
+        require(::communicator.isInitialized) { "Communicator not initialized" }
+        require(::reconfigurator.isInitialized) { "Reconfigurator not initialized" }
+        require(::remotePlaceProvider.isInitialized) { "Remote place provider not initialized" }
+        return ComponentsRuntimeConfiguration(
+            componentsRuntime,
+            allReconfigurationRules,
+            communicator,
+            reconfigurator,
+            remotePlaceProvider,
+        )
+    }
+}

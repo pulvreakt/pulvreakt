@@ -25,7 +25,7 @@ gitHooks {
     createHooks()
 }
 
-rootProject.name = "pulverization-framework"
+rootProject.name = "pulvreakt"
 
 include(":core")
 include(":platform")
