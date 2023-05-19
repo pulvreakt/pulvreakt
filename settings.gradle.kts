@@ -28,5 +28,5 @@ gitHooks {
 rootProject.name = "pulvreakt"
 
 include(":core")
-include(":platform")
-include(":rabbitmq-platform")
+include(":runtime")
+include(":rabbitmq-communicator")
