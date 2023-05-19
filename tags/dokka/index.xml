@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>dokka on Documentation for the Alchemist Simulator</title>
-    <link>https://nicolasfarabegoli.it/pulverization-framework/tags/dokka/index.html</link>
-    <description>Recent content in dokka on Documentation for the Alchemist Simulator</description>
+    <title>dokka on Documentation for PulvReAKt framework</title>
+    <link>https://pulvreakt.github.io/pulvreakt/tags/dokka/index.html</link>
+    <description>Recent content in dokka on Documentation for PulvReAKt framework</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://nicolasfarabegoli.it/pulverization-framework/tags/dokka/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://pulvreakt.github.io/pulvreakt/tags/dokka/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>KDoc API</title>
-      <link>https://nicolasfarabegoli.it/pulverization-framework/reference/kdoc/index.html</link>
+      <link>https://pulvreakt.github.io/pulvreakt/reference/kdoc/index.html</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://nicolasfarabegoli.it/pulverization-framework/reference/kdoc/index.html</guid>
+      <guid>https://pulvreakt.github.io/pulvreakt/reference/kdoc/index.html</guid>
       <description>KDoc API docs</description>
     </item>
   </channel>
