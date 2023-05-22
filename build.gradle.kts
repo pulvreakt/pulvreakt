@@ -66,7 +66,8 @@ allprojects {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.koin.core)
-                    api(rootProject.libs.bundles.kermit)
+                    api(rootProject.libs.kotlinLogger)
+                    // api(rootProject.libs.bundles.kermit)
                 }
             }
             val commonTest by getting {
@@ -111,7 +112,9 @@ allprojects {
         macosX64(nativeSetup)
         macosArm64(nativeSetup)
         ios(nativeSetup)
-        watchos(nativeSetup)
+        // watchos(nativeSetup)
+        watchosArm64(nativeSetup)
+        watchosX64(nativeSetup)
         tvos(nativeSetup)
 
         targets.all {

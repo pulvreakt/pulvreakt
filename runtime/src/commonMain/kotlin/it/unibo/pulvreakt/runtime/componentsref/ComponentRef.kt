@@ -1,6 +1,5 @@
 package it.unibo.pulvreakt.runtime.componentsref
 
-import co.touchlab.kermit.Logger
 import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.runtime.communication.Communicator
 import it.unibo.pulvreakt.runtime.communication.LocalCommunicator
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import mu.KotlinLogging
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -82,7 +82,7 @@ internal class ComponentRefImpl<S : Any>(
     private val remotePlaceProvider: RemotePlaceProvider by inject()
     private val remoteCommunicator: Communicator by inject()
     private var localCommunicator: Communicator = LocalCommunicator()
-    private val logger = Logger.withTag("${binding.first}Communicator")
+    private val logger = KotlinLogging.logger("${binding.first}Communicator")
 
     private var last: S? = null
 
@@ -93,14 +93,14 @@ internal class ComponentRefImpl<S : Any>(
     }
 
     override suspend fun setup() {
-        logger.i { "Setup communicator" }
-        logger.d { "Setup remote communicator for ${binding.second} component" }
+        logger.info { "Setup communicator" }
+        logger.debug { "Setup remote communicator for ${binding.second} component" }
         localCommunicator.setup(binding, null)
         remoteCommunicator.setup(binding, remotePlaceProvider[binding.second])
     }
 
     override suspend fun sendToComponent(message: S) {
-        logger.d { "Send '$message' - operation mode: '${if (operationMode == Remote) "Remote" else "Local"}'" }
+        logger.debug { "Send '$message' - operation mode: '${if (operationMode == Remote) "Remote" else "Local"}'" }
         val communicator = if (operationMode == Local) localCommunicator else remoteCommunicator
         communicator.fireMessage(Json.encodeToString(serializer, message).encodeToByteArray())
     }
@@ -114,7 +114,9 @@ internal class ComponentRefImpl<S : Any>(
             .map { Json.decodeFromString(serializer, it.decodeToString()) }
             .onEach {
                 last = it
-                logger.d { "Received '$it' - operation mode '${if (operationMode == Remote) "Remote" else "Local"}'" }
+                logger.debug {
+                    "Received '$it' - operation mode '${if (operationMode == Remote) "Remote" else "Local"}'"
+                }
             }
     }
 

@@ -1,6 +1,5 @@
 package it.unibo.pulvreakt.runtime.reconfiguration
 
-import co.touchlab.kermit.Logger
 import it.unibo.pulvreakt.core.Initializable
 import it.unibo.pulvreakt.dsl.model.Actuators
 import it.unibo.pulvreakt.dsl.model.Behaviour
@@ -30,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -79,16 +79,16 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private val rulesJobs = mutableSetOf<Job>()
     private var incomingReconfigurationJob: Job? = null
     private var localComponents = localStartComponents
-    private val logger = Logger.withTag("UnitReconfigurator")
+    private val logger = KotlinLogging.logger("UnitReconfigurator")
 
     override fun getKoin(): Koin = PulverizationKoinModule.koinApp?.koin ?: error("Koin module not initialized")
 
     override suspend fun initialize(): Unit = coroutineScope {
-        logger.i { "Setup unit reconfigurator with local components: $localComponents" }
+        logger.info { "Setup unit reconfigurator with local components: $localComponents" }
         localComponents = localStartComponents
         reconfigurator.initialize()
         incomingReconfigurationJob = scope.launch {
-            logger.d { "Spawned listener for incoming reconfiguration events" }
+            logger.debug { "Spawned listener for incoming reconfiguration events" }
             reconfigurator.receiveReconfiguration().collect {
                 changeComponentMode(it)
             }
@@ -103,14 +103,14 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun spawnRulesObserver() {
-        logger.i { "Spawning rules listener" }
+        logger.info { "Spawning rules listener" }
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: NewConfiguration) {
             val (targetComponent, _) = newConfig
             events.collect {
                 if (targetComponent in localComponents && predicate(it)) {
                     try {
-                        logger.i { "New reconfiguration triggered" }
-                        logger.d { "Reconfiguration details: $newConfig" }
+                        logger.info { "New reconfiguration triggered" }
+                        logger.debug { "Reconfiguration details: $newConfig" }
                         changeComponentMode(newConfig)
                         reconfigurator.reconfigure(newConfig)
                         onReconfigurationEvent(ReconfigurationSuccess(it))
@@ -118,13 +118,13 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
                 } else { onReconfigurationEvent(SkipCheck(it)) }
             }
             events.filter { predicate(it) && targetComponent in localComponents }.collect {
-                logger.i { "New reconfiguration triggered" }
-                logger.d { "Reconfiguration details: $newConfig" }
+                logger.info { "New reconfiguration triggered" }
+                logger.debug { "Reconfiguration details: $newConfig" }
                 changeComponentMode(newConfig)
                 reconfigurator.reconfigure(newConfig)
             }
         }
-        logger.d { "Spawning ${rules?.deviceReconfigurationRules?.size ?: 0} listeners" }
+        logger.debug { "Spawning ${rules?.deviceReconfigurationRules?.size ?: 0} listeners" }
         rules?.deviceReconfigurationRules
             ?.filter { it.reconfiguration.second != executionContext.host.hostname } // Take only legitimate rules
             ?.forEach {
@@ -138,8 +138,8 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
     private suspend fun changeComponentMode(newConfiguration: NewConfiguration) {
         val (component, targetHost) = newConfiguration
         val moveToLocal = targetHost == executionContext.host.hostname // The component should be moved on this host?
-        logger.d { "New reconfiguration: $newConfiguration" }
-        logger.d { "The components should move to local: $moveToLocal" }
+        logger.debug { "New reconfiguration: $newConfiguration" }
+        logger.debug { "The components should move to local: $moveToLocal" }
         when (component) {
             is Behaviour -> component.manageReconfiguration(moveToLocal)
             is State -> component.manageReconfiguration(
