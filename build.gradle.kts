@@ -136,10 +136,6 @@ allprojects {
             projectDescription.set("A framework to create a pulverized system")
             licenseName.set("MIT License")
             licenseUrl.set("https://opensource.org/license/mit/")
-            repository("https://maven.pkg.github.com/pulvreakt/${rootProject.name}".lowercase()) {
-                user.set("nicolasfara")
-                password.set(System.getenv("GITHUB_TOKEN"))
-            }
             docStyle.set(DocStyle.HTML)
             publishing {
                 publications {
