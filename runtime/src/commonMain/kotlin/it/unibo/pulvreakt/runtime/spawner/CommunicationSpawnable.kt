@@ -1,6 +1,5 @@
 package it.unibo.pulvreakt.runtime.spawner
 
-import co.touchlab.kermit.Logger
 import it.unibo.pulvreakt.core.Communication
 import it.unibo.pulvreakt.runtime.componentsref.BehaviourRef
 import it.unibo.pulvreakt.runtime.utils.CommunicationLogicType
@@ -9,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
 
 internal class CommunicationSpawnable<C : Any>(
     private val communication: Communication<C>?,
@@ -17,19 +17,19 @@ internal class CommunicationSpawnable<C : Any>(
     private val scope: CoroutineScope,
 ) : Spawnable {
     private var jobRef: Job? = null
-    private val logger = Logger.withTag(this::class.simpleName!!)
+    private val logger = KotlinLogging.logger(this::class.simpleName!!)
 
     override fun spawn(): Job {
         jobRef?.cancel()
         jobRef = scope.launch {
-            logger.d { "Spawning Communication component" }
+            logger.debug { "Spawning Communication component" }
             communication?.let {
                 try {
                     it.initialize()
                     commLogic?.invoke(it, commToBehaviourRef)
                     it.finalize()
                 } catch (e: CancellationException) {
-                    logger.d(e) { "Sensor component fiber cancelled" }
+                    logger.debug(e) { "Sensor component fiber cancelled" }
                 }
             }
         }

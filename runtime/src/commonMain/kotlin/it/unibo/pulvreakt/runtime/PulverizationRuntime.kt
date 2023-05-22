@@ -92,8 +92,8 @@ class PulverizationRuntime<S : Any, C : Any, SS : Any, AS : Any, O : Any> (
             deviceId: String,
             host: String,
             runtimeConfiguration: DeploymentUnitRuntimeConfiguration<S, C, SS, AS, O>,
-        ): it.unibo.pulvreakt.runtime.PulverizationRuntime<S, C, SS, AS, O> =
-            it.unibo.pulvreakt.runtime.PulverizationRuntime(
+        ): PulverizationRuntime<S, C, SS, AS, O> =
+            PulverizationRuntime(
                 deviceId,
                 host,
                 runtimeConfiguration,
