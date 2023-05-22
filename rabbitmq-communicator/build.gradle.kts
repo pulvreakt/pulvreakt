@@ -3,7 +3,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":runtime"))
-                implementation(rootProject.libs.kotlinx.serialization.json)
             }
         }
         jvmMain {
