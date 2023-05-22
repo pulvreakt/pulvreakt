@@ -2,9 +2,7 @@ import org.danilopianini.gradle.mavencentral.DocStyle
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import java.util.*
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
@@ -31,7 +29,6 @@ allprojects {
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
         apply(plugin = kotlinx.serialization.id)
-        apply(plugin = publishOnCentral.id)
         apply(plugin = gitSemVer.id)
     }
 
@@ -67,6 +64,7 @@ allprojects {
             val commonMain by getting {
                 dependencies {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
+                    implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.koin.core)
                     api(rootProject.libs.bundles.kermit)
                 }
@@ -133,12 +131,12 @@ allprojects {
         }
 
         publishOnCentral {
-            projectUrl.set("https://github.com/nicolasfara/${rootProject.name}")
-            projectLongName.set("Framework enabling pulverization")
+            projectUrl.set("https://github.com/pulvreakt/${rootProject.name}")
+            projectLongName.set("PulvReAKt")
             projectDescription.set("A framework to create a pulverized system")
             licenseName.set("MIT License")
             licenseUrl.set("https://opensource.org/license/mit/")
-            repository("https://maven.pkg.github.com/nicolasfara/${rootProject.name}".lowercase(Locale.getDefault())) {
+            repository("https://maven.pkg.github.com/pulvreakt/${rootProject.name}".lowercase()) {
                 user.set("nicolasfara")
                 password.set(System.getenv("GITHUB_TOKEN"))
             }
@@ -151,9 +149,9 @@ allprojects {
                         }
                         pom {
                             scm {
-                                connection.set("git:git@github.com:nicolasfara/${rootProject.name}")
-                                developerConnection.set("git:git@github.com:nicolasfara/${rootProject.name}")
-                                url.set("https://github.com/nicolasfara/${rootProject.name}")
+                                connection.set("git:git@github.com:pulvreakt/${rootProject.name}")
+                                developerConnection.set("git:git@github.com:pulvreakt/${rootProject.name}")
+                                url.set("https://github.com/pulvreakt/${rootProject.name}")
                             }
                             developers {
                                 developer {
