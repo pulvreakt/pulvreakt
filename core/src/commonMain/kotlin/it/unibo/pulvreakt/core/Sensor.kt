@@ -7,7 +7,6 @@ import kotlin.reflect.KClass
 /** Models the concept of single [Sensor] in the pulverization context.
  * A [Sensor] can [sense] the environment by measuring one of its magnitudes.
  * @param T the type of the measuring after the [sense] operation.
- * @param I the identifier of the sensor.
  */
 interface Sensor<out T> : Initializable {
     /**
@@ -18,7 +17,7 @@ interface Sensor<out T> : Initializable {
 
 /**
  * Model the concept of set of [Sensor]s in the pulverization context.
- * Contains a set of [Sensor]s managed by a single [LogicalDevice].
+ * Contains a set of [Sensor]s managed by a single logical device.
  */
 abstract class SensorsContainer : PulverizedComponent<Any, Any, Any, Any, Any> {
     override val componentType: ComponentType = Sensors

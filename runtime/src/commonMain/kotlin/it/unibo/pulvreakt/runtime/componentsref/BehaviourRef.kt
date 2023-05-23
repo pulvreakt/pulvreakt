@@ -11,8 +11,7 @@ import kotlinx.serialization.serializer
 interface BehaviourRef<S : Any> : ComponentRef<S> {
     companion object {
         /**
-         * Create a new [BehaviourRef] specifying a [serializer], the other [toComponent] to communicate with and a
-         * [communicator] to be used to communicate with.
+         * Create a new [BehaviourRef] specifying a [serializer], the other [toComponent] to communicate with.
          */
         fun <S : Any> create(
             serializer: KSerializer<S>,
@@ -20,8 +19,7 @@ interface BehaviourRef<S : Any> : ComponentRef<S> {
         ): BehaviourRef<S> = BehaviourRefImpl(serializer, toComponent)
 
         /**
-         * Create a new [BehaviourRef] specifying the other [toComponent] to communicate with and a
-         * [communicator] to be used to communicate with.
+         * Create a new [BehaviourRef] specifying the other [toComponent].
          */
         inline fun <reified S : Any> create(
             toComponent: ComponentType,

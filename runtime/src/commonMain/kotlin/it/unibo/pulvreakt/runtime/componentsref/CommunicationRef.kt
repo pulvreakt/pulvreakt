@@ -11,12 +11,12 @@ import kotlinx.serialization.serializer
 interface CommunicationRef<S : Any> : ComponentRef<S> {
     companion object {
         /**
-         * Create a [CommunicationRef] specifying the [serializer] and the [communicator] to be used.
+         * Create a [CommunicationRef] specifying the [serializer].
          */
         fun <S : Any> create(serializer: KSerializer<S>): CommunicationRef<S> = CommunicationRefImpl(serializer)
 
         /**
-         * Create a [CommunicationRef] specifying the [communicator] to be used.
+         * Create a [CommunicationRef]..
          */
         inline fun <reified S : Any> create(): CommunicationRef<S> = create(serializer())
 
