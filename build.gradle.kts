@@ -147,15 +147,10 @@ allprojects {
             publishing {
                 publications {
                     withType<MavenPublication>().configureEach {
-                        if ("OSSRH" !in name) {
-                            artifact(tasks.javadocJar)
-                        }
+                        if ("OSSRH" !in name) { artifact(tasks.javadocJar) }
+                        scmConnection.set("git:git@github.com:pulvreakt/${rootProject.name}")
+                        projectUrl.set("https://github.com/pulvreakt/${rootProject.name}")
                         pom {
-                            scm {
-                                connection.set("git:git@github.com:pulvreakt/${rootProject.name}")
-                                developerConnection.set("git:git@github.com:pulvreakt/${rootProject.name}")
-                                url.set("https://github.com/pulvreakt/${rootProject.name}")
-                            }
                             developers {
                                 developer {
                                     name.set("Nicolas Farabegoli")
