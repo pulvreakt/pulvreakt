@@ -6,7 +6,6 @@ import it.unibo.pulvreakt.runtime.componentsref.CommunicationRef
 import it.unibo.pulvreakt.runtime.componentsref.SensorsRef
 import it.unibo.pulvreakt.runtime.componentsref.StateRef
 import it.unibo.pulvreakt.runtime.utils.BehaviourLogicType
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -30,14 +29,12 @@ internal class BehaviourSpawnable<S : Any, C : Any, SS : Any, AS : Any, O : Any>
         jobRef = scope.launch {
             logger.debug { "Spawning Behaviour component" }
             behaviour?.let {
-                try {
+                runCatching {
                     it.initialize()
                     behaviourLogic
                         ?.invoke(it, behaviourStateRef, behaviourCommRef, behaviourSensorsRef, behaviourActuatorsRef)
                     it.finalize()
-                } catch (e: CancellationException) {
-                    logger.debug(e) { "Behaviour component fiber cancelled" }
-                }
+                }.onFailure { e -> logger.debug(e) { "Behaviour component fiber cancelled" } }
             }
         }
         return jobRef!!

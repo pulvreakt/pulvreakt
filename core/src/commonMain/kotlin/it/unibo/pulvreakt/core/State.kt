@@ -4,12 +4,6 @@ import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.dsl.model.State
 
 /**
- * Marker interface modelling the representation of the [State].
- * Each state representation must implement this interface.
- */
-// interface StateRepresentation
-
-/**
  * Models the concept of [State] in the pulverization context.
  * @param S the type of the [State].
  */

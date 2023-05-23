@@ -3,7 +3,6 @@ package it.unibo.pulvreakt.runtime.spawner
 import it.unibo.pulvreakt.core.SensorsContainer
 import it.unibo.pulvreakt.runtime.componentsref.BehaviourRef
 import it.unibo.pulvreakt.runtime.utils.SensorsLogicType
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -24,13 +23,11 @@ internal class SensorsSpawnable<SS : Any>(
         jobRef = scope.launch {
             logger.debug { "Spawning sensor component" }
             sensors?.let {
-                try {
+                runCatching {
                     it.initialize()
                     sensorsLogic?.invoke(it, sensorsToBehaviourRef)
                     it.finalize()
-                } catch (e: CancellationException) {
-                    logger.debug(e) { "Sensor component fiber cancelled" }
-                }
+                }.onFailure { e -> logger.debug(e) { "Sensor component fiber cancelled" } }
             }
         }
         return jobRef!!

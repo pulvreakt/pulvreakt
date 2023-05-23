@@ -3,7 +3,6 @@ package it.unibo.pulvreakt.runtime.spawner
 import it.unibo.pulvreakt.core.ActuatorsContainer
 import it.unibo.pulvreakt.runtime.componentsref.BehaviourRef
 import it.unibo.pulvreakt.runtime.utils.ActuatorsLogicType
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -24,13 +23,11 @@ internal class ActuatorsSpawnable<AS : Any>(
         jobRef = scope.launch {
             logger.debug { "Spawning Actuators component" }
             actuators?.let {
-                try {
+                runCatching {
                     it.initialize()
                     actuatorsLogic?.invoke(it, actuatorsToBehaviorRef)
                     it.finalize()
-                } catch (e: CancellationException) {
-                    logger.debug(e) { "Actuators component fiber cancelled" }
-                }
+                }.onFailure { e -> logger.debug(e) { "Actuators component fiber cancelled" } }
             }
         }
         return jobRef!!

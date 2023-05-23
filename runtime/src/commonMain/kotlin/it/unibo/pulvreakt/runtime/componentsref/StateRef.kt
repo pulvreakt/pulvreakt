@@ -11,12 +11,12 @@ import kotlinx.serialization.serializer
 interface StateRef<S : Any> : ComponentRef<S> {
     companion object {
         /**
-         * Create a [StateRef] specifying the [serializer] and the [communicator] to be used.
+         * Create a [StateRef] specifying the [serializer].
          */
         fun <S : Any> create(serializer: KSerializer<S>): StateRef<S> = StateRefImpl(serializer)
 
         /**
-         * Create a [StateRef] specifying the [communicator] to be used.
+         * Create a [StateRef].
          */
         inline fun <reified S : Any> create(): StateRef<S> = create(serializer())
 

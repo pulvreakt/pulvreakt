@@ -11,12 +11,12 @@ import kotlinx.serialization.serializer
 interface SensorsRef<S : Any> : ComponentRef<S> {
     companion object {
         /**
-         * Create a [SensorsRef] specifying the [serializer] and the [communicator] to be used.
+         * Create a [SensorsRef] specifying the [serializer].
          */
         fun <S : Any> create(serializer: KSerializer<S>): SensorsRef<S> = SensorsRefImpl(serializer)
 
         /**
-         * Create a [SensorsRef] specifying the [communicator] to be used.
+         * Create a [SensorsRef].
          */
         inline fun <reified S : Any> create(): SensorsRef<S> = create(serializer())
 
