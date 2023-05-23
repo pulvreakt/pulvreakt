@@ -67,13 +67,17 @@ allprojects {
                     implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.koin.core)
                     api(rootProject.libs.kotlinLogger)
-                    // api(rootProject.libs.bundles.kermit)
                 }
             }
             val commonTest by getting {
                 dependencies {
                     implementation(rootProject.libs.bundles.kotest.common)
                     implementation(rootProject.libs.koin.test)
+                }
+            }
+            val jvmMain by getting {
+                dependencies {
+                    implementation(rootProject.libs.slf4j.simple)
                 }
             }
             val jvmTest by getting {
