@@ -67,6 +67,7 @@ allprojects {
                     implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.koin.core)
                     api(rootProject.libs.kotlinLogger)
+                    api(rootProject.libs.bundles.arrow)
                 }
             }
             val commonTest by getting {
