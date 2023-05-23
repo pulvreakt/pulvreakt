@@ -101,20 +101,19 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         incomingReconfigurationJob?.cancel()
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private suspend fun spawnRulesObserver() {
         logger.info { "Spawning rules listener" }
         suspend fun <S : Any> ReconfigurationEvent<S>.checkRule(newConfig: NewConfiguration) {
             val (targetComponent, _) = newConfig
             events.collect {
                 if (targetComponent in localComponents && predicate(it)) {
-                    try {
+                    runCatching {
                         logger.info { "New reconfiguration triggered" }
                         logger.debug { "Reconfiguration details: $newConfig" }
                         changeComponentMode(newConfig)
                         reconfigurator.reconfigure(newConfig)
                         onReconfigurationEvent(ReconfigurationSuccess(it))
-                    } catch (ex: Exception) { onReconfigurationEvent(FailOnReconfiguration(it, ex)) }
+                    }.onFailure { ex -> onReconfigurationEvent(FailOnReconfiguration(it, ex)) }
                 } else { onReconfigurationEvent(SkipCheck(it)) }
             }
             events.filter { predicate(it) && targetComponent in localComponents }.collect {

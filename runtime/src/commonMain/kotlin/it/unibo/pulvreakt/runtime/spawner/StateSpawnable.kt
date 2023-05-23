@@ -3,7 +3,6 @@ package it.unibo.pulvreakt.runtime.spawner
 import it.unibo.pulvreakt.core.State
 import it.unibo.pulvreakt.runtime.componentsref.BehaviourRef
 import it.unibo.pulvreakt.runtime.utils.StateLogicType
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -24,13 +23,11 @@ internal class StateSpawnable<S : Any>(
         jobRef = scope.launch {
             logger.debug { "Spawning State component" }
             state?.let {
-                try {
+                runCatching {
                     it.initialize()
                     stateLogic?.invoke(it, stateToBehaviourRef)
                     it.finalize()
-                } catch (e: CancellationException) {
-                    logger.debug(e) { "State component fiber cancelled" }
-                }
+                }.onFailure { e -> logger.debug(e) { "State component fiber cancelled" } }
             }
         }
         return jobRef!!
