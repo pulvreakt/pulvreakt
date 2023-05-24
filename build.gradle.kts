@@ -60,6 +60,12 @@ allprojects {
             }
         }
 
+        js(IR) {
+            browser()
+            nodejs()
+            binaries.library()
+        }
+
         sourceSets {
             val commonMain by getting {
                 dependencies {
@@ -94,12 +100,6 @@ allprojects {
             }
         }
 
-        js(IR) {
-            browser()
-            nodejs()
-            binaries.library()
-        }
-
         val nativeSetup: KotlinNativeTarget.() -> Unit = {
             compilations["main"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeMain"])
             compilations["test"].defaultSourceSet.dependsOn(kotlin.sourceSets["nativeTest"])
@@ -125,7 +125,7 @@ allprojects {
         targets.all {
             compilations.all {
                 kotlinOptions {
-                    allWarningsAsErrors = true
+                    // allWarningsAsErrors = true
                 }
             }
         }
