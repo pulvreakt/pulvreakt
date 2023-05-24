@@ -8,6 +8,7 @@ import arrow.core.right
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.context.Context
 import it.unibo.pulvreakt.core.unit.UnitManager
+import it.unibo.pulvreakt.core.utils.PulvreaktKoinComponent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -16,12 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
-abstract class AbstractComponent<T : Any> : Component<T>, KoinComponent {
+abstract class AbstractComponent<T : Any> : Component<T>, PulvreaktKoinComponent() {
     protected val context by inject<Context>()
     private val unitManager by inject<UnitManager>()
     private lateinit var communicators: Map<Component<*>, Communicator>
@@ -48,10 +48,10 @@ abstract class AbstractComponent<T : Any> : Component<T>, KoinComponent {
         links += components
     }
 
-    override suspend fun finalize(): Either<String, Unit> {
+    override suspend fun finalize(): Either<String, Unit> = either {
+        ensure(::communicators.isInitialized) { "The finalize method must be called after the initialize one" }
         if (::unitManagerJob.isInitialized) { unitManagerJob.cancel() }
         communicators.forEach { (_, communicator) -> communicator.finalize() }
-        return Unit.right()
     }
 
     final override suspend fun <P : Any, C : Component<P>> send(
@@ -59,6 +59,7 @@ abstract class AbstractComponent<T : Any> : Component<T>, KoinComponent {
         message: P,
         serializer: KSerializer<P>,
     ): Either<String, Unit> = either {
+        ensure(::communicators.isInitialized) { "The send method must be called after the initialize one" }
         val communicator = communicators.getCommunicator(componentKClass).bind()
         communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
     }
@@ -67,6 +68,7 @@ abstract class AbstractComponent<T : Any> : Component<T>, KoinComponent {
         componentKClass: KClass<C>,
         serializer: KSerializer<P>,
     ): Either<String, Flow<P>> = either {
+        ensure(::communicators.isInitialized) { "The receive method must be called after the initialize one" }
         val communicator = communicators.getCommunicator(componentKClass).bind()
         val flow = communicator.receiveFromComponent().bind()
         return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()

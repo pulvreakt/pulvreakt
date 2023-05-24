@@ -9,6 +9,7 @@ import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.component.AbstractComponent
 import it.unibo.pulvreakt.core.component.FakeUnitManager
 import it.unibo.pulvreakt.core.unit.UnitManager
+import it.unibo.pulvreakt.core.utils.PulvreaktKoinContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,9 +17,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import org.koin.core.context.startKoin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.KoinTest
 import org.koin.test.get
 
 class FakeCommunicator(private val remoteFlow: MutableSharedFlow<ByteArray>) : AbstractCommunicator() {
@@ -43,19 +43,17 @@ class C2 : AbstractComponent<Int>() {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CommunicatorTest : FreeSpec(), KoinTest {
+class CommunicatorTest : FreeSpec() {
+    private val koinModule = module {
+        single { LocalCommunicatorManager() }
+        factory<Communicator> { FakeCommunicator(MutableSharedFlow()) }
+        single<UnitManager> { FakeUnitManager() }
+    }
 
     init {
-        startKoin {
-            modules(
-                module {
-                    single { LocalCommunicatorManager() }
-                    factory<Communicator> { FakeCommunicator(MutableSharedFlow()) }
-                    single<UnitManager> { FakeUnitManager() }
-                },
-            )
-        }
         coroutineTestScope = true
+        PulvreaktKoinContext.koinApp = koinApplication { modules(koinModule) }
+        val koinApp = PulvreaktKoinContext.koinApp!!.koin
         "The Communicator" - {
             "should raise an error" - {
                 "when it is not configured and try to send a message" {
@@ -77,9 +75,9 @@ class CommunicatorTest : FreeSpec(), KoinTest {
                 val receivedMessages = mutableListOf<String>()
                 val c1 = C1()
                 val c2 = C2()
-                val manager = get<LocalCommunicatorManager>()
+                val manager = koinApp.get<LocalCommunicatorManager>()
                 val localCommunicator = manager.getLocalCommunicator("C1", "C2")
-                val communicator = get<Communicator>()
+                val communicator = koinApp.get<Communicator>()
                 communicator.communicatorSetup(c1, c2)
                 communicator.setMode(Mode.Local)
                 val job = launch(UnconfinedTestDispatcher()) {

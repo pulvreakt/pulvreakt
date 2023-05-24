@@ -4,16 +4,16 @@ import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.utils.PulvreaktKoinComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-abstract class AbstractCommunicator : Communicator, KoinComponent {
+abstract class AbstractCommunicator : Communicator, PulvreaktKoinComponent() {
     private val localCommManager by inject<LocalCommunicatorManager>()
     private var currentMode: Mode = Mode.Local
     private val logger = KotlinLogging.logger("AbstractCommunicator")
