@@ -22,7 +22,6 @@ hugo = "io.github.fstaudt.hugo:0.6.0"
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
-kotest-koin-test = { module = "io.kotest.extensions:kotest-extensions-koin", version = "1.1.0" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
@@ -40,7 +39,6 @@ kotest-common = [
   "kotest-assertions-core",
   "kotest-framework-engine",
   "kotest-framework-datatest",
-  "kotest-koin-test",
 ]
 arrow = [
   "arrow-core",
