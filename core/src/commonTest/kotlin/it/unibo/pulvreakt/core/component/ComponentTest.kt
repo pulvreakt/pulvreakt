@@ -9,6 +9,7 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.koin.KoinExtension
 import io.kotest.matchers.shouldBe
 import it.unibo.pulvreakt.core.communicator.Communicator
+import it.unibo.pulvreakt.core.communicator.Mode
 import it.unibo.pulvreakt.core.unit.NewConfiguration
 import it.unibo.pulvreakt.core.unit.UnitManager
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,7 @@ class FakeCommunicator : Communicator {
     override suspend fun receiveFromComponent(): Either<String, Flow<ByteArray>> = emptyFlow<ByteArray>().right()
     override suspend fun initialize(): Either<String, Unit> = Unit.right()
     override suspend fun finalize(): Either<String, Unit> = Unit.right()
+    override fun setMode(mode: Mode) = Unit
 }
 
 class FakeUnitManager : UnitManager {
