@@ -9,11 +9,11 @@ import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.communicator.Mode
 import it.unibo.pulvreakt.core.unit.NewConfiguration
 import it.unibo.pulvreakt.core.unit.UnitManager
+import it.unibo.pulvreakt.core.utils.PulvreaktKoinContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import org.koin.core.context.startKoin
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.KoinTest
 
 class MyComponent : AbstractComponent<Int>() {
     override val name: String = this::class.simpleName!!
@@ -38,19 +38,20 @@ class FakeUnitManager : UnitManager {
     override suspend fun finalize(): Either<String, Unit> = Unit.right()
 }
 
-class ComponentTest : FreeSpec(), KoinTest {
+class ComponentTest : FreeSpec() {
+    private val koinModule = module {
+        factory<Communicator> { FakeCommunicator() }
+        single<UnitManager> { FakeUnitManager() }
+    }
+
     init {
-        startKoin {
-            modules(
-                module {
-                    factory<Communicator> { FakeCommunicator() }
-                    single<UnitManager> { FakeUnitManager() }
-                },
-            )
-        }
+        PulvreaktKoinContext.koinApp = koinApplication { modules(koinModule) }
         "A Component" - {
             "should send messages to other linked components" {
-                val myComponent = MyComponent().apply { initialize() }
+                val myComponent = MyComponent().apply {
+                    setupComponentLink(this)
+                    initialize() shouldBe Either.Right(Unit)
+                }
                 myComponent.execute() shouldBe Either.Right(Unit)
                 myComponent.finalize()
             }
