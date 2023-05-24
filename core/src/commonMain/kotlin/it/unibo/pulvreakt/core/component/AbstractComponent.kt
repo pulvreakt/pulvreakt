@@ -3,6 +3,7 @@ package it.unibo.pulvreakt.core.component
 import arrow.core.Either
 import arrow.core.firstOrNone
 import arrow.core.raise.either
+import arrow.core.raise.ensure
 import arrow.core.right
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.context.Context
@@ -25,17 +26,26 @@ abstract class AbstractComponent<T : Any> : Component<T>, KoinComponent {
     private val unitManager by inject<UnitManager>()
     private lateinit var communicators: Map<Component<*>, Communicator>
     private lateinit var unitManagerJob: Job
+    private lateinit var links: Set<Component<*>>
 
     override suspend fun initialize(): Either<String, Unit> = coroutineScope {
-        communicators = links.map { this@AbstractComponent to it }
-            .toMap()
-            .mapValues { (source, destination) -> get<Communicator>().apply { communicatorSetup(source, destination) } }
-        unitManagerJob = launch {
-            unitManager.configurationUpdates().collect {
-                TODO("Implement reconfiguration logic mode")
+        either {
+            ensure(::links.isInitialized) { "The component must be initialized before with `setupComponentLink`" }
+            communicators = links.associateBy { this@AbstractComponent }
+                .mapValues { (source, destination) ->
+                    get<Communicator>().apply { communicatorSetup(source, destination) }
+                }
+            unitManagerJob = launch {
+                unitManager.configurationUpdates().collect {
+                    TODO("Implement reconfiguration logic mode")
+                }
             }
         }
-        Unit.right()
+    }
+
+    override fun setupComponentLink(vararg components: Component<*>) {
+        if (!::links.isInitialized) { links = emptySet() }
+        links += components
     }
 
     override suspend fun finalize(): Either<String, Unit> {
