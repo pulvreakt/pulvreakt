@@ -130,6 +130,10 @@ allprojects {
             }
         }
 
+        kotlinQA {
+            detektConfigurationFileName.set("detekt.yml")
+        }
+
         signing {
             if (System.getenv("CI") == "true") {
                 val signingKey: String? by project
