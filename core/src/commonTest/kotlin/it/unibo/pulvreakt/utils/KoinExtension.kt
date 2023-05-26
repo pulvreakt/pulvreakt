@@ -42,18 +42,16 @@ class KoinExtension(
 
     override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
         return if (testCase.isApplicable()) {
-            try {
+            val result = runCatching {
                 stopKoin()
                 startKoin {
                     if (mockProvider != null) MockProvider.register(mockProvider)
                     modules(modules)
                 }
                 execute(testCase)
-            } catch (t: Throwable) {
-                throw t
-            } finally {
-                stopKoin()
             }
+            stopKoin()
+            result.getOrThrow()
         } else {
             execute(testCase)
         }
