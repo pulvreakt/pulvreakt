@@ -120,7 +120,7 @@ jobs:
           should-validate-wrapper: false
       - name: Release website to Github Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.4.2
         with:
           BRANCH: gh-pages
           FOLDER: build/website
