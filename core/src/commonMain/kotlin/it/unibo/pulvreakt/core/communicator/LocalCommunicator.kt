@@ -6,10 +6,13 @@ import it.unibo.pulvreakt.core.component.Component
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import org.kodein.di.DI
 
 internal class LocalCommunicator(private val sharedFlow: MutableSharedFlow<ByteArray>) : Communicator {
-    override suspend fun communicatorSetup(source: Component<*>, destination: Component<*>) = Unit
+    override lateinit var di: DI
+    override suspend fun communicatorSetup(source: Component<*>, destination: Component<*>): Either<String, Unit> = Unit.right()
     override fun setMode(mode: Mode) = Unit
+    override fun setupInjector(kodein: DI) { di = kodein }
     override suspend fun sendToComponent(message: ByteArray): Either<String, Unit> {
         sharedFlow.emit(message)
         return Unit.right()
