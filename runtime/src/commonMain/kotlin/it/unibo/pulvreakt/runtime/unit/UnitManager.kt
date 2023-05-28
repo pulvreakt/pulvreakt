@@ -1,8 +1,6 @@
-package it.unibo.pulvreakt.core.unit
+package it.unibo.pulvreakt.runtime.unit
 
 import it.unibo.pulvreakt.core.component.Initializable
-import kotlinx.coroutines.flow.Flow
+import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 
-internal interface UnitManager : Initializable {
-    fun configurationUpdates(): Flow<NewConfiguration>
-}
+internal interface UnitManager : Initializable, PulvreaktInjected
