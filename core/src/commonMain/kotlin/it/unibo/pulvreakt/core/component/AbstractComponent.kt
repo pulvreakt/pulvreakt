@@ -7,8 +7,7 @@ import arrow.core.raise.ensure
 import arrow.core.right
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.unit.UnitManager
-import it.unibo.pulvreakt.core.utils.PulvreaktKoinComponent
+import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -17,31 +16,37 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import org.koin.core.component.get
-import org.koin.core.component.inject
+import org.kodein.di.DI
+import org.kodein.di.instance
+import org.kodein.di.provider
 import kotlin.reflect.KClass
 
-abstract class AbstractComponent<T : Any> : Component<T>, PulvreaktKoinComponent() {
-    protected val context by inject<Context>()
-    private val unitManager by inject<UnitManager>()
+abstract class AbstractComponent<T : Any> : Component<T> {
+    final override lateinit var di: DI
+    protected val context by instance<Context>()
+    private val unitManager by instance<ComponentModeReconfigurator>()
+    private val communicatorFactory: () -> Communicator by provider()
     private lateinit var communicators: Map<Component<*>, Communicator>
     private lateinit var unitManagerJob: Job
     private lateinit var links: Set<Component<*>>
 
     override suspend fun initialize(): Either<String, Unit> = coroutineScope {
         either {
+            ensure(::di.isInitialized) { "To use the component, the `setupInjector` method should be called first" }
             ensure(::links.isInitialized) { "The component must be initialized before with `setupComponentLink`" }
             communicators = links.associateBy { this@AbstractComponent }
                 .mapValues { (source, destination) ->
-                    get<Communicator>().apply { communicatorSetup(source, destination) }
+                    communicatorFactory().apply { communicatorSetup(source, destination) }
                 }
             unitManagerJob = launch {
-                unitManager.configurationUpdates().collect {
-                    TODO("Implement reconfiguration logic mode")
+                unitManager.receiveModeUpdates().collect { (component, mode) ->
+                    communicators[component]?.setMode(mode)
                 }
             }
         }
     }
+
+    final override fun setupInjector(kodein: DI) { di = kodein }
 
     override fun setupComponentLink(vararg components: Component<*>) {
         if (!::links.isInitialized) { links = emptySet() }
@@ -59,6 +64,7 @@ abstract class AbstractComponent<T : Any> : Component<T>, PulvreaktKoinComponent
         message: P,
         serializer: KSerializer<P>,
     ): Either<String, Unit> = either {
+        isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { "The send method must be called after the initialize one" }
         val communicator = communicators.getCommunicator(componentKClass).bind()
         communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
@@ -68,10 +74,15 @@ abstract class AbstractComponent<T : Any> : Component<T>, PulvreaktKoinComponent
         componentKClass: KClass<C>,
         serializer: KSerializer<P>,
     ): Either<String, Flow<P>> = either {
+        isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { "The receive method must be called after the initialize one" }
         val communicator = communicators.getCommunicator(componentKClass).bind()
         val flow = communicator.receiveFromComponent().bind()
         return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()
+    }
+
+    private fun isDependencyInjectionInitialized(): Either<String, Unit> = either {
+        ensure(::di.isInitialized) { "Before start using, the `setupInjector` must be called" }
     }
 
     private fun <C : Component<*>> Map<Component<*>, Communicator>.getCommunicator(
