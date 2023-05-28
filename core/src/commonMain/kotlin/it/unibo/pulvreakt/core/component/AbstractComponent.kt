@@ -36,7 +36,10 @@ abstract class AbstractComponent<T : Any> : Component<T> {
             ensure(::links.isInitialized) { "The component must be initialized before with `setupComponentLink`" }
             communicators = links.associateBy { this@AbstractComponent }
                 .mapValues { (source, destination) ->
-                    communicatorFactory().apply { communicatorSetup(source, destination) }
+                    communicatorFactory().apply {
+                        setupInjector(this@AbstractComponent.di)
+                        communicatorSetup(source, destination)
+                    }
                 }
             unitManagerJob = launch {
                 unitManager.receiveModeUpdates().collect { (component, mode) ->
@@ -46,16 +49,22 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         }
     }
 
-    final override fun setupInjector(kodein: DI) { di = kodein }
+    final override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
 
     override fun setupComponentLink(vararg components: Component<*>) {
-        if (!::links.isInitialized) { links = emptySet() }
+        if (!::links.isInitialized) {
+            links = emptySet()
+        }
         links += components
     }
 
     override suspend fun finalize(): Either<String, Unit> = either {
         ensure(::communicators.isInitialized) { "The finalize method must be called after the initialize one" }
-        if (::unitManagerJob.isInitialized) { unitManagerJob.cancel() }
+        if (::unitManagerJob.isInitialized) {
+            unitManagerJob.cancel()
+        }
         communicators.forEach { (_, communicator) -> communicator.finalize() }
     }
 
