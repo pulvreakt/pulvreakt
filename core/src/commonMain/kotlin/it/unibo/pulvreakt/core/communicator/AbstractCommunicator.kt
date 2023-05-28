@@ -25,9 +25,13 @@ abstract class AbstractCommunicator : Communicator {
         localCommunicator = localCommManager.getLocalCommunicator(source.name, destination.name)
     }
 
-    final override fun setupInjector(kodein: DI) { di = kodein }
+    final override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
 
-    final override fun setMode(mode: Mode) { currentMode = mode }
+    final override fun setMode(mode: Mode) {
+        currentMode = mode
+    }
 
     final override suspend fun sendToComponent(message: ByteArray): Either<String, Unit> = either {
         isDependencyInjectionInitialized().bind()
@@ -46,7 +50,9 @@ abstract class AbstractCommunicator : Communicator {
         merge(remoteCommunicator.map { Mode.Remote to it }, localCommunicator.map { Mode.Local to it })
             .filter { (mode, _) -> mode == currentMode }
             .map { (_, value) -> value }
-            .onEach { logger.info { "Received '$it' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'" } }
+            .onEach {
+                logger.debug { "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'" }
+            }
     }
 
     abstract suspend fun sendRemoteToComponent(message: ByteArray): Either<String, Unit>
