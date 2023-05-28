@@ -72,6 +72,7 @@ allprojects {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.koin.core)
+                    api(rootProject.libs.kodein)
                     api(rootProject.libs.kotlinLogger)
                     api(rootProject.libs.bundles.arrow)
                 }
@@ -119,7 +120,7 @@ allprojects {
         ios(nativeSetup)
         // watchos(nativeSetup)
         watchosArm64(nativeSetup)
-        watchosX64(nativeSetup)
+        // watchosX64(nativeSetup)
         tvos(nativeSetup)
 
         targets.all {
