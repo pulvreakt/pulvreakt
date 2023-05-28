@@ -1,5 +1,8 @@
 package it.unibo.pulvreakt.core.utils
 
-import org.koin.core.component.KoinComponent
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 
-abstract class PulvreaktKoinComponent : KoinComponent
+interface PulvreaktInjected : DIAware {
+    fun setupInjector(kodein: DI)
+}
