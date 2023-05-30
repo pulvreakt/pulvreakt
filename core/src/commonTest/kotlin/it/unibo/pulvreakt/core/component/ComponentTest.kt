@@ -24,12 +24,16 @@ import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
 
+object DummyComponent : ComponentType
+
 class MyComponent : AbstractComponent<Int>() {
     override val name: String = this::class.simpleName!!
+    override val type: ComponentType = DummyComponent
     override suspend fun execute(): Either<String, Unit> = either {
         send<Int, MyComponent>(10).bind()
         send<Int, MyComponent>(20).bind()
     }
+    companion object
 }
 
 class FakeCommunicator : AbstractCommunicator() {

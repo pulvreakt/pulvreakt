@@ -8,6 +8,7 @@ import kotlin.reflect.KClass
 
 interface Component<T : Any> : Initializable, PulvreaktInjected {
     val name: String
+    val type: ComponentType
 
     fun setupComponentLink(vararg components: Component<*>)
 
