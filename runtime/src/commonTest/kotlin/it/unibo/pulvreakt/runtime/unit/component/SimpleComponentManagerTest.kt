@@ -6,9 +6,12 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.component.AbstractComponent
+import it.unibo.pulvreakt.core.component.ComponentType
 
+object DummyComponent : ComponentType
 class C1 : AbstractComponent<Int>() {
     override val name: String = "C1"
+    override val type: ComponentType = DummyComponent
     override suspend fun execute(): Either<String, Unit> = Unit.right()
 }
 
