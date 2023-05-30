@@ -1,4 +1,6 @@
 
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.danilopianini.gradle.mavencentral.DocStyle
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.os.OperatingSystem
@@ -19,6 +21,10 @@ plugins {
 }
 
 val Provider<PluginDependency>.id: String get() = get().pluginId
+
+val reportMerge by tasks.registering(ReportMergeTask::class) {
+    output.set(project.layout.buildDirectory.file("reports/detekt/merge.sarif"))
+}
 
 allprojects {
     group = "it.unibo.${rootProject.name}"
@@ -195,6 +201,7 @@ allprojects {
     }
     detekt {
         config.setFrom("${rootDir.absolutePath}/detekt.yml")
+        basePath = rootProject.projectDir.absolutePath
         parallel = true
         buildUponDefaultConfig = true
         ignoreFailures = false
@@ -202,6 +209,10 @@ allprojects {
     dependencies {
         detektPlugins("com.wolt.arrow.detekt:rules:0.2.1")
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+    }
+    tasks.withType<Detekt>().configureEach { finalizedBy(reportMerge) }
+    reportMerge {
+        input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
     }
 }
 
