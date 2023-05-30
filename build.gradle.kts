@@ -201,6 +201,7 @@ allprojects {
     }
     dependencies {
         detektPlugins("com.wolt.arrow.detekt:rules:0.2.1")
+        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
     }
 }
 
