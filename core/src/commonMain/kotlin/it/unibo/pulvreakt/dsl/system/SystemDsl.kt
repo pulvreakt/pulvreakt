@@ -1,5 +1,12 @@
 package it.unibo.pulvreakt.dsl.system
 
-import it.unibo.pulvreakt.dsl.model.SystemSpecification
+import arrow.core.Either
+import it.unibo.pulvreakt.dsl.system.model.SystemSpecification
 
-fun pulverizedSystem(config: SystemSpecificationScope.() -> Unit): SystemSpecification = TODO()
+/**
+ * DSL entrypoint for the system definition.
+ */
+fun pulverizedSystem(config: SystemSpecificationScope.() -> Unit): Either<String, SystemSpecification> {
+    val scope = SystemSpecificationScope().apply(config)
+    return scope.generate()
+}

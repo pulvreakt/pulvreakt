@@ -1,32 +1,51 @@
 package it.unibo.pulvreakt.dsl.system
 
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.dsl.system.model.Capability
 import it.unibo.pulvreakt.dsl.system.model.LogicalDeviceSpecification
-import kotlin.reflect.KClass
 
+/**
+ * Configure the definition of the logical device with a [deviceName].
+ */
 class DeviceScope(private val deviceName: String) {
-    private val allocationMap: MutableMap<KClass<Component<*>>, Set<Capability>> = mutableMapOf()
+    private val allocationMap: MutableMap<ComponentType, Set<Capability>> = mutableMapOf()
 
-    inline fun <reified C : Component<*>> component(): KClass<C> = C::class
+    /**
+     * Utility DSL function to group different [Component]s.
+     */
+    infix fun ComponentType.and(other: ComponentType): Set<ComponentType> = setOf(this, other)
 
-    infix fun KClass<Component<*>>.and(other: KClass<Component<*>>): Set<KClass<Component<*>>> = setOf(this, other)
+    /**
+     * Utility DSL function to group different [Component]s.
+     */
+    infix fun Set<ComponentType>.and(other: ComponentType): Set<ComponentType> = this + other
 
-    infix fun Set<KClass<Component<*>>>.and(other: KClass<Component<*>>): Set<KClass<Component<*>>> = this + other
-
-    infix fun KClass<Component<*>>.deployableOn(capability: Capability) {
+    /**
+     * Register that the [Component] requires a [capability].
+     */
+    infix fun ComponentType.deployableOn(capability: Capability) {
         allocationMap[this] = setOf(capability)
     }
 
-    infix fun KClass<Component<*>>.deployableOn(capabilities: Set<Capability>) {
+    /**
+     * Register that the [Component] requires a set of [capabilities].
+     */
+    infix fun ComponentType.deployableOn(capabilities: Set<Capability>) {
         allocationMap[this] = capabilities
     }
 
-    infix fun Set<KClass<Component<*>>>.deployableOn(capability: Capability) {
+    /**
+     * Register that the [Component] requires a [capability].
+     */
+    infix fun Set<ComponentType>.deployableOn(capability: Capability) {
         allocationMap.putAll(this.associateWith { setOf(capability) })
     }
 
-    infix fun Set<KClass<Component<*>>>.deployableOn(capabilities: Set<Capability>) {
+    /**
+     * Register that the [Component] requires a set of [capabilities].
+     */
+    infix fun Set<ComponentType>.deployableOn(capabilities: Set<Capability>) {
         allocationMap.putAll(this.associateWith { capabilities })
     }
 
