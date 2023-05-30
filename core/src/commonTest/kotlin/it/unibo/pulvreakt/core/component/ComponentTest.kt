@@ -57,7 +57,7 @@ class ComponentTest : StringSpec(
             val myComponent = MyComponent()
             val result = either {
                 myComponent.setupComponentLink(myComponent)
-                myComponent.initialize()
+                myComponent.initialize().bind()
                 myComponent.send("Hello").bind()
             }
             when (result) {
@@ -100,6 +100,8 @@ class ComponentTest : StringSpec(
             myComponent.send<Int, MyComponent>(10) shouldBe Either.Right(Unit)
             receiveJob.join()
             receivedMessage shouldBe listOf(10)
+            myComponent.finalize() shouldBe Either.Right(Unit)
+            otherComponent.finalize() shouldBe Either.Right(Unit)
         }
     },
 )

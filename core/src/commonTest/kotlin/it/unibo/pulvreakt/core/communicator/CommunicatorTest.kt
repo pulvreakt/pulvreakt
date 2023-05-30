@@ -84,7 +84,7 @@ class CommunicatorTest : StringSpec(
             val localCommunicator = manager.getLocalCommunicator("C1", "C2")
             val communicator by diModule.instance<Communicator>()
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2)
+            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
             val job = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
@@ -112,7 +112,7 @@ class CommunicatorTest : StringSpec(
             val localComm = manager.getLocalCommunicator("C1", "C2")
             val communicator = TestCommunicator(remoteFlow)
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2)
+            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
             val localJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
@@ -147,7 +147,7 @@ class CommunicatorTest : StringSpec(
             val localComm = manager.getLocalCommunicator("C1", "C2")
             val communicator = TestCommunicator(remoteFlow)
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2)
+            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
 
             val receiveJob = launch(UnconfinedTestDispatcher()) {
