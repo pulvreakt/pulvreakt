@@ -7,22 +7,6 @@ comments:
     active: true
   UndocumentedPublicProperty:
     active: true
-  DeprecatedBlockTag:
-    active: true
-  KDocReferencesNonPublicProperty:
-    active: true
-  OutdatedDocumentation:
-    active: true
-coroutines:
-  GlobalCoroutineUsage:
-    active: true
-  SuspendFunSwallowedCancellation:
-    active: true
-  SuspendFunWithCoroutineScopeReceiver:
-    active: true
-exceptions:
-  ObjectExtendsThrowable:
-    active: true
 complexity:
   LongMethod:
     active: false
@@ -53,3 +37,7 @@ style:
     max: 10
   MaxLineLength:
     maxLineLength: 150
+
+ArrowRuleSet:
+  NoEffectScopeBindableValueAsStatement:
+    active: true
