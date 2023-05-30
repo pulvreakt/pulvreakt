@@ -1,3 +1,4 @@
+
 import org.danilopianini.gradle.mavencentral.DocStyle
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.os.OperatingSystem
@@ -6,7 +7,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
-    alias(libs.plugins.kotlin.qa)
+    // alias(libs.plugins.kotlin.qa)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kover)
@@ -24,7 +26,8 @@ allprojects {
     with(rootProject.libs.plugins) {
         apply(plugin = kotlin.multiplatform.id)
         apply(plugin = kotest.multiplatform.id)
-        apply(plugin = kotlin.qa.id)
+        // apply(plugin = kotlin.qa.id)
+        apply(plugin = detekt.id)
         apply(plugin = dokka.id)
         apply(plugin = kover.id)
         apply(plugin = publishOnCentral.id)
@@ -131,10 +134,6 @@ allprojects {
             }
         }
 
-        kotlinQA {
-            detektConfigurationFileName.set("detekt.yml")
-        }
-
         signing {
             if (System.getenv("CI") == "true") {
                 val signingKey: String? by project
@@ -194,16 +193,27 @@ allprojects {
             }
         }
     }
+    detekt {
+        config.setFrom("${rootDir.absolutePath}/detekt.yml")
+        parallel = true
+        buildUponDefaultConfig = true
+        ignoreFailures = false
+    }
+    dependencies {
+        detektPlugins("com.wolt.arrow.detekt:rules:0.2.1")
+    }
 }
 
-koverMerged {
-    enable()
-    htmlReport { onCheck.set(true) }
-    xmlReport { onCheck.set(true) }
-    filters {
-        projects {
-            excludes += listOf(":")
-        }
+dependencies {
+    kover(project(":core"))
+    kover(project(":runtime"))
+    kover(project(":rabbitmq-communicator"))
+}
+
+koverReport {
+    defaults {
+        html { onCheck = true }
+        xml { onCheck = true }
     }
 }
 
