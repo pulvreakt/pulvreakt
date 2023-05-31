@@ -59,8 +59,7 @@ fun <S : Any, C : Any, SS : Any, AS : Any> ComponentsRefsContainer<S, C, SS, AS>
     mode: ComponentRef.OperationMode,
 ) {
     when (component) {
-        is Behaviour -> { /* Do nothing here */
-        }
+        is Behaviour -> Unit // Do nothing here
 
         is State -> {
             stateToBehaviourRef.operationMode = mode; behaviourRefs.stateRef.operationMode = mode

@@ -28,7 +28,9 @@ internal class SimpleComponentManager : ComponentManager {
     }
 
     override fun stop(component: Component<*>): Either<String, Unit> = either {
-        ensure(componentContainer.containsKey(component)) { "The component ${component.name} is not registered. Unable to stop it." }
+        ensure(componentContainer.containsKey(component)) {
+            "The component ${component.name} is not registered. Unable to stop it."
+        }
         logger.debug { "Stop the execution of ${component.name}" }
         componentContainer[component]?.cancel("Deployment unit reconfigured. No more need for ${component.name}")
             ?: run {

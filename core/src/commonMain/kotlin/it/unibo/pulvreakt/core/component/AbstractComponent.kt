@@ -21,6 +21,9 @@ import org.kodein.di.instance
 import org.kodein.di.provider
 import kotlin.reflect.KClass
 
+/**
+ * Predefined [Component] which handle out-of-the-box the [Communicator] needed to interact with other components.
+ */
 abstract class AbstractComponent<T : Any> : Component<T> {
     final override lateinit var di: DI
     protected val context by instance<Context>()
@@ -103,10 +106,16 @@ abstract class AbstractComponent<T : Any> : Component<T> {
             .toEither { "Communicator not available for component ${component.simpleName}" }
 
     companion object {
+        /**
+         * Sends a message to [C] component with message type [P].
+         */
         suspend inline fun <reified P : Any, reified C : Component<P>> AbstractComponent<*>.send(
             message: P,
         ): Either<String, Unit> = send(C::class, message, serializer())
 
+        /**
+         * Receives a message from [C] component with message type [P].
+         */
         suspend inline fun <reified P : Any, reified C : Component<P>> AbstractComponent<*>.receive(): Either<String, Flow<P>> =
             receive(C::class, serializer())
     }
