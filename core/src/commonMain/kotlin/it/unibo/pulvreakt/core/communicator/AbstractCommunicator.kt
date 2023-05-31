@@ -13,6 +13,9 @@ import mu.KotlinLogging
 import org.kodein.di.DI
 import org.kodein.di.instance
 
+/**
+ * Predefined [Communicator] which handle out-of-the-box the communication between components in the same process.
+ */
 abstract class AbstractCommunicator : Communicator {
     final override lateinit var di: DI
     private val localCommManager by instance<LocalCommunicatorManager>()
@@ -51,12 +54,20 @@ abstract class AbstractCommunicator : Communicator {
             .filter { (mode, _) -> mode == currentMode }
             .map { (_, value) -> value }
             .onEach {
-                logger.debug { "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'" }
+                logger.debug {
+                    "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'"
+                }
             }
     }
 
+    /**
+     * Send a message to the component using the remote mode.
+     */
     abstract suspend fun sendRemoteToComponent(message: ByteArray): Either<String, Unit>
 
+    /**
+     * Receive a message from the component using the remote mode.
+     */
     abstract suspend fun receiveRemoteFromComponent(): Either<String, Flow<ByteArray>>
 
     private fun isDependencyInjectionInitialized(): Either<String, Unit> = either {

@@ -37,6 +37,9 @@ style:
     max: 10
   MaxLineLength:
     maxLineLength: 150
+formatting:
+  MaximumLineLength:
+    maxLineLength: 150
 
 ArrowRuleSet:
   NoEffectScopeBindableValueAsStatement:

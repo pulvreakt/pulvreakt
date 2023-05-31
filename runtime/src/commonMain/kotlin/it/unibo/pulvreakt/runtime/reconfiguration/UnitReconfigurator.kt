@@ -192,8 +192,7 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
             spawner.spawn(Behaviour)
             localComponents.forEach {
                 when (it) {
-                    is Behaviour -> { /* Do nothing here */
-                    }
+                    is Behaviour -> Unit // Do nothing here
 
                     is State -> {
                         componentsRef.stateToBehaviourRef.operationMode = Local
