@@ -1,8 +1,10 @@
 package it.unibo.pulvreakt.dsl.deployment
 
 import arrow.core.Either
+import arrow.core.NonEmptyList
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import arrow.core.raise.zipOrAccumulate
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
 import it.unibo.pulvreakt.dsl.deployment.model.DeploymentSpecification
@@ -23,9 +25,10 @@ class DeploymentDslScope {
         TODO()
     }
 
-    internal fun generate(): Either<String, DeploymentSpecification> = either {
-        ensure(::communicatorProvider.isInitialized) { "No communicator registered" }
-        ensure(::reconfiguratorProvider.isInitialized) { "No reconfigurator registered" }
-        TODO()
+    internal fun generate(): Either<NonEmptyList<String>, DeploymentSpecification> = either {
+        zipOrAccumulate(
+            { ensure(::communicatorProvider.isInitialized) { "No communicator registered" } },
+            { ensure(::reconfiguratorProvider.isInitialized) { "No reconfigurator registered" } },
+        ) { _, _ -> TODO() }
     }
 }
