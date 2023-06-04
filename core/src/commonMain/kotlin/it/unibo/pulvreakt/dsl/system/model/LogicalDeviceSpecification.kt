@@ -7,5 +7,5 @@ import it.unibo.pulvreakt.core.component.ComponentType
  */
 data class LogicalDeviceSpecification(
     val deviceName: String,
-    val componentsRequiredCapabilities: Map<ComponentType, Set<Capability>>,
+    val componentsRequiredCapabilities: Map<ComponentType<*>, Set<Capability>>,
 )
