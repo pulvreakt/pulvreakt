@@ -24,16 +24,15 @@ import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
 
-object DummyComponent : ComponentType
+val DummyComponent by ComponentTypeDelegate<Int>()
 
 class MyComponent : AbstractComponent<Int>() {
     override val name: String = this::class.simpleName!!
-    override val type: ComponentType = DummyComponent
+    override val type: ComponentType<Int> = DummyComponent
     override suspend fun execute(): Either<String, Unit> = either {
-        send<Int, MyComponent>(10).bind()
-        send<Int, MyComponent>(20).bind()
+        send(DummyComponent, 10).bind()
+        send(DummyComponent, 20).bind()
     }
-    companion object
 }
 
 class FakeCommunicator : AbstractCommunicator() {
@@ -62,7 +61,7 @@ class ComponentTest : StringSpec(
             val result = either {
                 myComponent.setupComponentLink(myComponent)
                 myComponent.initialize().bind()
-                myComponent.send("Hello").bind()
+                myComponent.send(DummyComponent, 15).bind()
             }
             when (result) {
                 is Either.Left -> result.value shouldContain "setupInjector"
@@ -72,11 +71,11 @@ class ComponentTest : StringSpec(
         "A component should raise an error if not properly initialized" {
             val myComponent = MyComponent()
             myComponent.setupInjector(diModule)
-            val sendResult = myComponent.send<Int, MyComponent>(10).leftOrNull()
+            val sendResult = myComponent.send(DummyComponent, 10).leftOrNull()
                 ?: error("The usage of the `send` method requires the initialization of the component")
             sendResult shouldContain "The send method must be called after the initialize one"
 
-            val receiveResult = myComponent.receive<Int, MyComponent>().leftOrNull()
+            val receiveResult = myComponent.receive(DummyComponent).leftOrNull()
                 ?: error("The usage of the `receive` method requires the initialization of the component")
             receiveResult shouldContain "The receive method must be called after the initialize one"
         }
@@ -93,7 +92,7 @@ class ComponentTest : StringSpec(
 
             val receiveJob = launch(UnconfinedTestDispatcher()) {
                 val result = either {
-                    val receiveFlow = otherComponent.receive<Int, MyComponent>().bind()
+                    val receiveFlow = otherComponent.receive(DummyComponent).bind()
                     receiveFlow.take(1).collect {
                         receivedMessage.add(it)
                     }
@@ -101,7 +100,7 @@ class ComponentTest : StringSpec(
                 result shouldBe Either.Right(Unit)
             }
 
-            myComponent.send<Int, MyComponent>(10) shouldBe Either.Right(Unit)
+            myComponent.send(DummyComponent, 10) shouldBe Either.Right(Unit)
             receiveJob.join()
             receivedMessage shouldBe listOf(10)
             myComponent.finalize() shouldBe Either.Right(Unit)

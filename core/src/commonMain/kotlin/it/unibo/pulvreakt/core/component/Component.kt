@@ -4,7 +4,6 @@ import arrow.core.Either
 import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.KSerializer
-import kotlin.reflect.KClass
 
 /**
  * Represents a component of the system.
@@ -13,7 +12,7 @@ import kotlin.reflect.KClass
  */
 interface Component<T : Any> : Initializable, PulvreaktInjected {
     val name: String
-    val type: ComponentType
+    val type: ComponentType<T>
 
     /**
      * Sets up the links with other components.
@@ -21,19 +20,19 @@ interface Component<T : Any> : Initializable, PulvreaktInjected {
     fun setupComponentLink(vararg components: Component<*>)
 
     /**
-     * Sends a [message] to the component with type [componentKClass] leveraging the given [serializer].
+     * Sends a [message] [toComponent] leveraging the given [serializer].
      */
-    suspend fun <P : Any, C : Component<P>> send(
-        componentKClass: KClass<C>,
+    suspend fun <P : Any> send(
+        toComponent: ComponentType<P>,
         message: P,
         serializer: KSerializer<P>,
     ): Either<String, Unit>
 
     /**
-     * Receives messages from the component with type [componentKClass] leveraging the given [serializer].
+     * Receives messages [fromComponent] leveraging the given [serializer].
      */
-    suspend fun <P : Any, C : Component<P>> receive(
-        componentKClass: KClass<C>,
+    suspend fun <P : Any> receive(
+        fromComponent: ComponentType<P>,
         serializer: KSerializer<P>,
     ): Either<String, Flow<P>>
 
