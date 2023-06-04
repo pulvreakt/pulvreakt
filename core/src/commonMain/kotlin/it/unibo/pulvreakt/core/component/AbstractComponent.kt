@@ -19,7 +19,6 @@ import kotlinx.serialization.serializer
 import org.kodein.di.DI
 import org.kodein.di.instance
 import org.kodein.di.provider
-import kotlin.reflect.KClass
 
 /**
  * Predefined [Component] which handle out-of-the-box the [Communicator] needed to interact with other components.
@@ -71,24 +70,24 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         communicators.forEach { (_, communicator) -> communicator.finalize() }
     }
 
-    final override suspend fun <P : Any, C : Component<P>> send(
-        componentKClass: KClass<C>,
+    final override suspend fun <P : Any> send(
+        toComponent: ComponentType<P>,
         message: P,
         serializer: KSerializer<P>,
     ): Either<String, Unit> = either {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { "The send method must be called after the initialize one" }
-        val communicator = communicators.getCommunicator(componentKClass).bind()
+        val communicator = communicators.getCommunicator(toComponent).bind()
         communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
     }
 
-    final override suspend fun <P : Any, C : Component<P>> receive(
-        componentKClass: KClass<C>,
+    final override suspend fun <P : Any> receive(
+        fromComponent: ComponentType<P>,
         serializer: KSerializer<P>,
     ): Either<String, Flow<P>> = either {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { "The receive method must be called after the initialize one" }
-        val communicator = communicators.getCommunicator(componentKClass).bind()
+        val communicator = communicators.getCommunicator(fromComponent).bind()
         val flow = communicator.receiveFromComponent().bind()
         return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()
     }
@@ -97,26 +96,22 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         ensure(::di.isInitialized) { "Before start using, the `setupInjector` must be called" }
     }
 
-    private fun <C : Component<*>> Map<Component<*>, Communicator>.getCommunicator(
-        component: KClass<C>,
+    private fun <P : Any> Map<Component<*>, Communicator>.getCommunicator(
+        component: ComponentType<P>,
     ): Either<String, Communicator> =
-        filterKeys { component.isInstance(it) }
+        filterKeys { it.type == component }
             .values
             .firstOrNone()
-            .toEither { "Communicator not available for component ${component.simpleName}" }
+            .toEither { "Communicator not available for component $component" }
 
     companion object {
-        /**
-         * Sends a message to [C] component with message type [P].
-         */
-        suspend inline fun <reified P : Any, reified C : Component<P>> AbstractComponent<*>.send(
-            message: P,
-        ): Either<String, Unit> = send(C::class, message, serializer())
+        suspend inline fun <reified C : Any> Component<C>.send(
+            toComponent: ComponentType<C>,
+            message: C,
+        ): Either<String, Unit> = send(toComponent, message, serializer())
 
-        /**
-         * Receives a message from [C] component with message type [P].
-         */
-        suspend inline fun <reified P : Any, reified C : Component<P>> AbstractComponent<*>.receive(): Either<String, Flow<P>> =
-            receive(C::class, serializer())
+        suspend inline fun <reified C : Any> Component<C>.receive(
+            fromComponent: ComponentType<C>,
+        ): Either<String, Flow<C>> = receive(fromComponent, serializer())
     }
 }

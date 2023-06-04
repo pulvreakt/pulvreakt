@@ -15,7 +15,9 @@ internal class SimpleComponentManager : ComponentManager {
     private var componentContainer = emptyMap<Component<*>, Job?>()
     private val logger = KotlinLogging.logger("SimpleComponentManager")
 
-    override fun register(component: Component<*>) { componentContainer += component to null }
+    override fun register(component: Component<*>) {
+        componentContainer += component to null
+    }
 
     override suspend fun start(component: Component<*>): Either<String, Unit> = coroutineScope {
         either {

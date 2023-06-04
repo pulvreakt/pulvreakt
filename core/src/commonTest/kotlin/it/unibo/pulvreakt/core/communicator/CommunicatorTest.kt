@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.component.AbstractComponent
 import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.core.component.ComponentTypeDelegate
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -35,17 +35,17 @@ class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
     override fun receiveModeUpdates(): Flow<Pair<Component<*>, Mode>> = emptyFlow()
 }
 
-object DummyComponent : ComponentType
+val DummyComponent by ComponentTypeDelegate<Int>()
 
 class C1 : AbstractComponent<Int>() {
     override val name: String = "C1"
-    override val type: ComponentType = DummyComponent
+    override val type = DummyComponent
     override suspend fun execute(): Either<String, Unit> = Unit.right()
 }
 
 class C2 : AbstractComponent<Int>() {
     override val name: String = "C2"
-    override val type: ComponentType = DummyComponent
+    override val type = DummyComponent
     override suspend fun execute(): Either<String, Unit> = Unit.right()
 }
 

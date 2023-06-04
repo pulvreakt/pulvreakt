@@ -10,7 +10,7 @@ import it.unibo.pulvreakt.dsl.deployment.model.NewConfiguration
 class ReconfigurationComponentScope {
     private lateinit var reconfiguration: NewConfiguration
 
-    infix fun ComponentType.movesTo(host: Host) {
+    infix fun ComponentType<*>.movesTo(host: Host) {
         reconfiguration = this to host
     }
 
