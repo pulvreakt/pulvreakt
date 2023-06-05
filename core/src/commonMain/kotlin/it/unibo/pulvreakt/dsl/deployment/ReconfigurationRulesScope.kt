@@ -1,21 +1,27 @@
 package it.unibo.pulvreakt.dsl.deployment
 
 import arrow.core.Either
+import arrow.core.NonEmptyList
 import arrow.core.raise.either
-import arrow.core.raise.ensure
 import it.unibo.pulvreakt.dsl.deployment.model.DeviceReconfigurationRule
 import it.unibo.pulvreakt.dsl.deployment.model.ReconfigurationRules
 
+/**
+ * Scope for the reconfiguration rules.
+ */
 class ReconfigurationRulesScope {
-    private lateinit var deviceRules: Either<String, List<DeviceReconfigurationRule>>
+    private var deviceRules: Either<NonEmptyList<String>, List<DeviceReconfigurationRule>>? = null
 
+    /**
+     * Specifies the reconfiguration rules associated to the device.
+     */
     fun onDevice(config: OnDeviceScope.() -> Unit) {
         val onDeviceScope = OnDeviceScope().apply(config)
         deviceRules = onDeviceScope.generate()
     }
 
-    internal fun generate(): Either<String, ReconfigurationRules> = either {
-        ensure(::deviceRules.isInitialized) { "No device reconfiguration rules are registered" }
-        ReconfigurationRules(deviceRules.map { it.toSet() }.bind())
+    internal fun generate(): Either<NonEmptyList<String>, ReconfigurationRules> = either {
+        val deviceRules = deviceRules?.map { it.toSet() }?.bind()
+        ReconfigurationRules(deviceRules ?: emptySet())
     }
 }
