@@ -22,7 +22,9 @@ class ComponentTypeDelegate<C : Any>(private val kClass: KClass<C>) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): ComponentType<C> = ComponentTypeImpl(property.name, kClass.simpleName!!)
 
     @Serializable
-    private data class ComponentTypeImpl<C : Any>(val name: String, val typeName: String) : ComponentType<C>
+    private data class ComponentTypeImpl<C : Any>(val name: String, val typeName: String) : ComponentType<C> {
+        override fun toString(): String = name
+    }
 
     companion object {
         /**
