@@ -4,13 +4,13 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.component.ComponentTypeDelegate
-import it.unibo.pulvreakt.dsl.system.model.Capability
+import it.unibo.pulvreakt.dsl.system.model.CapabilityDelegate
 
 val Component1 by ComponentTypeDelegate<Int>()
 val Component2 by ComponentTypeDelegate<Int>()
 
-object HighCPU : Capability
-object EmbeddedDevice : Capability
+val HighCPU by CapabilityDelegate()
+val EmbeddedDevice by CapabilityDelegate()
 
 class SystemDslTest : StringSpec(
     {
