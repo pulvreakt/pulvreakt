@@ -5,18 +5,19 @@ import arrow.core.NonEmptyList
 import arrow.core.raise.either
 import it.unibo.pulvreakt.dsl.deployment.model.DeviceReconfigurationRule
 import it.unibo.pulvreakt.dsl.deployment.model.ReconfigurationRules
+import it.unibo.pulvreakt.dsl.system.model.LogicalDeviceSpecification
 
 /**
  * Scope for the reconfiguration rules.
  */
-class ReconfigurationRulesScope {
+class ReconfigurationRulesScope(private val logicalDeviceSpecification: LogicalDeviceSpecification) {
     private var deviceRules: Either<NonEmptyList<String>, List<DeviceReconfigurationRule>>? = null
 
     /**
      * Specifies the reconfiguration rules associated to the device.
      */
     fun onDevice(config: OnDeviceScope.() -> Unit) {
-        val onDeviceScope = OnDeviceScope().apply(config)
+        val onDeviceScope = OnDeviceScope(logicalDeviceSpecification).apply(config)
         deviceRules = onDeviceScope.generate()
     }
 
