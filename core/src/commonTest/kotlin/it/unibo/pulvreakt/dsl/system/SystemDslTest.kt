@@ -1,9 +1,10 @@
 package it.unibo.pulvreakt.dsl.system
 
+import arrow.core.nonEmptyListOf
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.component.ComponentTypeDelegate
+import it.unibo.pulvreakt.dsl.system.errors.SystemDslError
 import it.unibo.pulvreakt.dsl.system.model.CapabilityDelegate
 
 val Component1 by ComponentTypeDelegate<Int>()
@@ -20,7 +21,12 @@ class SystemDslTest : StringSpec(
                 device("device-1") { }
             }
             val message = result.leftOrNull() ?: error("An error must be raised when two devices have the same name")
-            message shouldContain "Multiple device with the same name are not allowed"
+            message shouldBe nonEmptyListOf(SystemDslError.DuplicateDeviceName("device-1"))
+        }
+        "The system DSL should raise an error if an empty configuration is built" {
+            val result = pulverizedSystem { }
+            val message = result.leftOrNull() ?: error("An error must be raised when the configuration is empty")
+            message shouldBe nonEmptyListOf(SystemDslError.EmptyConfiguration)
         }
         "The system DSL should provide a configuration consistent with its usage" {
             val configResult = pulverizedSystem {
