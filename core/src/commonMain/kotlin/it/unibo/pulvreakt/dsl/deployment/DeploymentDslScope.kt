@@ -13,6 +13,10 @@ import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.dsl.deployment.errors.DeploymentDslError
+import it.unibo.pulvreakt.dsl.deployment.errors.DeploymentDslError.ComponentNotRegistered
+import it.unibo.pulvreakt.dsl.deployment.errors.DeploymentDslError.MissingCommunicator
+import it.unibo.pulvreakt.dsl.deployment.errors.DeploymentDslError.MissingReconfigurator
 import it.unibo.pulvreakt.dsl.deployment.model.ComponentsContainer
 import it.unibo.pulvreakt.dsl.deployment.model.DeploymentSpecification
 import it.unibo.pulvreakt.dsl.deployment.model.ReconfigurationRules
@@ -28,7 +32,7 @@ class DeploymentDslScope(
     private var communicatorProvider: (() -> Communicator)? = null
     private var reconfiguratorProvider: (() -> Reconfigurator)? = null
     private var componentsContainer: ComponentsContainer = emptyMap()
-    private var reconfigurationRules: Either<NonEmptyList<String>, ReconfigurationRules>? = null
+    private var reconfigurationRules: Either<NonEmptyList<DeploymentDslError>, ReconfigurationRules>? = null
 
     fun withCommunicator(provider: () -> Communicator) {
         communicatorProvider = provider
@@ -50,25 +54,24 @@ class DeploymentDslScope(
         componentsContainer = componentsContainer + (this to host)
     }
 
-    private fun allComponentsAreDeclared(): Either<NonEmptyList<String>, Unit> {
+    private fun allComponentsAreDeclared(): Either<NonEmptyList<DeploymentDslError>, Unit> {
         val systemComponents = logicalDeviceSpecification.componentsRequiredCapabilities.keys
         val registeredComponents = componentsContainer.keys.map { it.type }.toSet()
 
-        fun Raise<String>.isIn(component: ComponentType<*>) {
-            ensure(component in registeredComponents) { "Component $component is not registered" }
+        fun Raise<ComponentNotRegistered>.isIn(component: ComponentType<*>) {
+            ensure(component in registeredComponents) { ComponentNotRegistered(component) }
         }
 
         return systemComponents.mapOrAccumulate { isIn(it) }.map { }
     }
 
-    internal fun generate(): Either<NonEmptyList<String>, DeploymentSpecification> = either {
+    internal fun generate(): Either<NonEmptyList<DeploymentDslError>, DeploymentSpecification> = either {
         zipOrAccumulate(
-            { ensureNotNull(communicatorProvider) { "No communicator registered" } },
-            { ensureNotNull(reconfiguratorProvider) { "No reconfigurator registered" } },
-            { ensure(componentsContainer.isNotEmpty()) { "No components are registered" } },
+            { ensureNotNull(communicatorProvider) { MissingCommunicator } },
+            { ensureNotNull(reconfiguratorProvider) { MissingReconfigurator } },
             { reconfigurationRules?.bindNel() },
             { allComponentsAreDeclared().bindNel() },
-        ) { cprovider, rprovider, _, rules, _ ->
+        ) { cprovider, rprovider, rules, _ ->
             DeploymentSpecification(logicalDeviceSpecification, componentsContainer, rules, cprovider, rprovider, availableHosts)
         }
     }
