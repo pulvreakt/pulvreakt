@@ -2,7 +2,7 @@ package it.unibo.pulvreakt.core.infrastructure
 
 import arrow.core.NonEmptySet
 import arrow.core.nonEmptySetOf
-import it.unibo.pulvreakt.dsl.system.model.Capability
+import it.unibo.pulvreakt.dsl.model.Capability
 import kotlin.reflect.KProperty
 
 /**
@@ -27,6 +27,7 @@ class HostDelegate(private val capabilities: NonEmptySet<Capability>) {
     companion object {
         operator fun invoke(firstCapability: Capability, vararg capabilities: Capability): HostDelegate =
             HostDelegate(nonEmptySetOf(firstCapability, *capabilities))
+
         operator fun invoke(capabilities: NonEmptySet<Capability>): HostDelegate =
             HostDelegate(capabilities)
     }

@@ -1,8 +1,7 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
-import it.unibo.pulvreakt.runtime.communication.Binding
-import it.unibo.pulvreakt.runtime.communication.Communicator
-import it.unibo.pulvreakt.runtime.communication.RemotePlace
+import arrow.core.Either
+import it.unibo.pulvreakt.core.communicator.AbstractCommunicator
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -15,20 +14,20 @@ actual class RabbitmqCommunicator actual constructor(
     private val username: String,
     private val password: String,
     private val virtualHost: String,
-) : Communicator {
-    override suspend fun setup(binding: Binding, remotePlace: RemotePlace?) {
+) : AbstractCommunicator() {
+    override suspend fun sendRemoteToComponent(message: ByteArray): Either<String, Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun finalize() {
+    override suspend fun receiveRemoteFromComponent(): Either<String, Flow<ByteArray>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun fireMessage(message: ByteArray) {
+    override suspend fun initialize(): Either<String, Unit> {
         TODO("Not yet implemented")
     }
 
-    override fun receiveMessage(): Flow<ByteArray> {
+    override suspend fun finalize(): Either<String, Unit> {
         TODO("Not yet implemented")
     }
 }

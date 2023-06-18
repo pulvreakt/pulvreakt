@@ -2,6 +2,7 @@ package it.unibo.pulvreakt.core.communicator
 
 import arrow.core.Either
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.Initializable
 import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,7 @@ interface Communicator : Initializable, PulvreaktInjected {
     /**
      * Sets up the communication between the given [source] and [destination] components.
      */
-    suspend fun communicatorSetup(source: Component<*>, destination: Component<*>): Either<String, Unit>
+    suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<String, Unit>
 
     /**
      * Sets the communication mode of the communicator.

@@ -3,7 +3,7 @@ package it.unibo.pulvreakt.core.communicator
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -23,7 +23,7 @@ abstract class AbstractCommunicator : Communicator {
     private val logger = KotlinLogging.logger("AbstractCommunicator")
     private lateinit var localCommunicator: Communicator
 
-    override suspend fun communicatorSetup(source: Component<*>, destination: Component<*>): Either<String, Unit> = either {
+    override suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<String, Unit> = either {
         isDependencyInjectionInitialized().bind()
         localCommunicator = localCommManager.getLocalCommunicator(source.name, destination.name)
     }

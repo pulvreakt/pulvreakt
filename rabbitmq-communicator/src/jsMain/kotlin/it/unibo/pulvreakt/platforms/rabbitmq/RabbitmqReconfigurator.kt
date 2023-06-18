@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
-import it.unibo.pulvreakt.runtime.reconfiguration.NewConfiguration
-import it.unibo.pulvreakt.runtime.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.core.reconfiguration.ReconfigurationMessage
+import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -14,11 +14,11 @@ actual class RabbitmqReconfigurator actual constructor(
     password: String,
     virtualHost: String,
 ) : Reconfigurator {
-    override suspend fun reconfigure(newConfiguration: NewConfiguration) {
+    override suspend fun reconfigure(newConfiguration: ReconfigurationMessage) {
         TODO("Not yet implemented")
     }
 
-    override fun receiveReconfiguration(): Flow<NewConfiguration> {
+    override fun receiveConfiguration(): Flow<ReconfigurationMessage> {
         TODO("Not yet implemented")
     }
 }
