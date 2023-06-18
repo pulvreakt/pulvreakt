@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.core.reconfiguration.event
 
-import it.unibo.pulvreakt.core.Initializable
+import it.unibo.pulvreakt.core.component.Initializable
 import kotlinx.coroutines.flow.Flow
 
 /**

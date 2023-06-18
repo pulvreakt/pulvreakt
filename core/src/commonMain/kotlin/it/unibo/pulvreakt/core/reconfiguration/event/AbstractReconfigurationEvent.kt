@@ -1,5 +1,6 @@
 package it.unibo.pulvreakt.core.reconfiguration.event
 
+import arrow.core.right
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -22,9 +23,9 @@ abstract class AbstractReconfigurationEvent<T : Any> : ReconfigurationEvent<T> {
         }
     }
 
-    override suspend fun initialize() = Unit
+    override suspend fun initialize() = Unit.right()
 
-    override suspend fun finalize() = Unit
+    override suspend fun finalize() = Unit.right()
 
     /**
      * Function called by the framework when a reconfiguration is correctly performed.

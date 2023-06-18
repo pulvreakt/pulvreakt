@@ -12,5 +12,5 @@ interface ComponentModeReconfigurator {
     /**
      * Returns the new [Mode] for the given [Component].
      */
-    fun receiveModeUpdates(): Flow<Pair<Component<*>, Mode>>
+    fun receiveModeUpdates(): Flow<Pair<Component, Mode>>
 }
