@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
-import it.unibo.pulvreakt.runtime.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
 
 /**
  * Implement the [Reconfigurator] interface relying on RabbitMQ as a platform for communication.

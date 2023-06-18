@@ -1,19 +1,31 @@
 package it.unibo.pulvreakt.runtime.unit.component
 
 import arrow.core.Either
-import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.unibo.pulvreakt.core.component.AbstractComponent
-import it.unibo.pulvreakt.core.component.ComponentTypeDelegate
+import it.unibo.pulvreakt.core.component.Component
+import org.kodein.di.DI
 
-val DummyComponent by ComponentTypeDelegate<Int>()
+class C1 : Component {
+    override val di: DI
+        get() = TODO("Not yet implemented")
 
-class C1 : AbstractComponent<Int>() {
-    override val name: String = "C1"
-    override val type = DummyComponent
-    override suspend fun execute(): Either<String, Unit> = Unit.right()
+    override suspend fun execute(): Either<String, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun initialize(): Either<String, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun finalize(): Either<String, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override fun setupInjector(kodein: DI) {
+        TODO("Not yet implemented")
+    }
 }
 
 class SimpleComponentManagerTest : StringSpec(

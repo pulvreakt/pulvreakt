@@ -6,9 +6,8 @@ import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.unibo.pulvreakt.core.component.AbstractComponent
 import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentTypeDelegate
+import it.unibo.pulvreakt.core.component.ComponentOps
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -32,22 +31,12 @@ class TestCommunicator(private val remoteFlow: MutableSharedFlow<ByteArray>) : A
 }
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
-    override fun receiveModeUpdates(): Flow<Pair<Component<*>, Mode>> = emptyFlow()
+    override fun receiveModeUpdates(): Flow<Pair<Component, Mode>> = emptyFlow()
 }
 
-val DummyComponent by ComponentTypeDelegate<Int>()
+class C1 : ComponentOps<String> by ComponentOps.create()
 
-class C1 : AbstractComponent<Int>() {
-    override val name: String = "C1"
-    override val type = DummyComponent
-    override suspend fun execute(): Either<String, Unit> = Unit.right()
-}
-
-class C2 : AbstractComponent<Int>() {
-    override val name: String = "C2"
-    override val type = DummyComponent
-    override suspend fun execute(): Either<String, Unit> = Unit.right()
-}
+class C2 : ComponentOps<Int> by ComponentOps.create()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CommunicatorTest : StringSpec(
@@ -89,7 +78,7 @@ class CommunicatorTest : StringSpec(
             val localCommunicator = manager.getLocalCommunicator("C1", "C2")
             val communicator by diModule.instance<Communicator>()
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
+            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
             val job = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
@@ -117,7 +106,7 @@ class CommunicatorTest : StringSpec(
             val localComm = manager.getLocalCommunicator("C1", "C2")
             val communicator = TestCommunicator(remoteFlow)
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
+            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
             val localJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
@@ -152,7 +141,7 @@ class CommunicatorTest : StringSpec(
             val localComm = manager.getLocalCommunicator("C1", "C2")
             val communicator = TestCommunicator(remoteFlow)
             communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1, c2) shouldBe Either.Right(Unit)
+            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
 
             val receiveJob = launch(UnconfinedTestDispatcher()) {
