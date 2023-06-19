@@ -1,5 +1,11 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/finalize/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]finalize.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/fireMessage/#kotlin.ByteArray/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]fire-message.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/receiveMessage/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]receive-message.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/setup/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,it.nicolasfarabegoli.pulverization.dsl.model.ComponentType]#it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace?/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]setup.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttReconfigurator/receiveReconfiguration/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-reconfigurator/[native]receive-reconfiguration.html
+$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttReconfigurator/reconfigure/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,kotlin.String]/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-reconfigurator/[native]reconfigure.html
 $dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/finalize/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]finalize.html
 $dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/fireMessage/#kotlin.ByteArray/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]fire-message.html
 $dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/receiveMessage/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]receive-message.html
@@ -12,6 +18,8 @@ it.nicolasfarabegoli.pulverization.core
 it.nicolasfarabegoli.pulverization.dsl
 it.nicolasfarabegoli.pulverization.dsl.model
 it.nicolasfarabegoli.pulverization.utils
+module:mqtt-platform
+it.nicolasfarabegoli.pulverization.platforms.mqtt
 module:platform
 it.nicolasfarabegoli.pulverization.runtime
 it.nicolasfarabegoli.pulverization.runtime.communication
