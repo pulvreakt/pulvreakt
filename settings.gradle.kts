@@ -30,3 +30,4 @@ rootProject.name = "pulverization-framework"
 include(":core")
 include(":platform")
 include(":rabbitmq-platform")
+include(":mqtt-platform")
