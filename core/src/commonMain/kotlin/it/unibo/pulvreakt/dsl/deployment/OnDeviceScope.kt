@@ -3,8 +3,8 @@ package it.unibo.pulvreakt.dsl.deployment
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
-import it.unibo.pulvreakt.dsl.model.ComponentName
-import it.unibo.pulvreakt.dsl.model.NewConfiguration
+import it.unibo.pulvreakt.dsl.model.old.ComponentName
+import it.unibo.pulvreakt.dsl.model.old.NewConfiguration
 
 /**
  * Scope for the reconfiguration of a device.
