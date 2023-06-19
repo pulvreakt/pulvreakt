@@ -1,3 +1,50 @@
+## [0.7.0](https://github.com/pulvreakt/pulvreakt/compare/0.6.1...0.7.0) (2023-06-19)
+
+
+### Features
+
+* add mqtt communicator ([e633db5](https://github.com/pulvreakt/pulvreakt/commit/e633db53ba6ab8b1969d09a686e0e2eb69f2e558))
+
+
+### General maintenance
+
+* **docs:** change url to point to the new repository ([9343243](https://github.com/pulvreakt/pulvreakt/commit/9343243db49da4c52ce8ea6f0db10d964f4455d6))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.5 ([f371ced](https://github.com/pulvreakt/pulvreakt/commit/f371ced7660ed6fcbccf09e1bf99ee3f59a40aed))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.6 ([daad17f](https://github.com/pulvreakt/pulvreakt/commit/daad17f64198d7d45cd9606a328526254e372c27))
+* **deps:** update jamesives/github-pages-deploy-action action to v4.4.2 ([eb22b44](https://github.com/pulvreakt/pulvreakt/commit/eb22b442ac1cfebf0054f9a802bb3dd25c0da3d3))
+* fix documentation version ([11c6684](https://github.com/pulvreakt/pulvreakt/commit/11c66843fe2cc73138e754978921fc7ca429bfb6))
+
+
+### Dependency updates
+
+* **deps:** update gohugoio/hugo action to v0.112.0 ([ba8cb96](https://github.com/pulvreakt/pulvreakt/commit/ba8cb96975e53a73170b382202879ef0641098ff))
+* **deps:** update gohugoio/hugo action to v0.112.2 ([0ad1f21](https://github.com/pulvreakt/pulvreakt/commit/0ad1f21bfb1d8d6dff91138b9e82c73e85dce847))
+* **deps:** update gohugoio/hugo action to v0.112.3 ([90d4a0e](https://github.com/pulvreakt/pulvreakt/commit/90d4a0ed3514da672e6124b56e970b57a4e6e830))
+* **deps:** update plugin com.gradle.enterprise to v3.13.2 ([27f8799](https://github.com/pulvreakt/pulvreakt/commit/27f8799615fb40e92a4e307a3b71531f1f3ba879))
+* **deps:** update plugin kotlin-qa to v0.42.0 ([dd5b1ab](https://github.com/pulvreakt/pulvreakt/commit/dd5b1abc2dd8865a1fc54616700bcaa94bc8ce5c))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.9 ([6ada6ee](https://github.com/pulvreakt/pulvreakt/commit/6ada6ee72cd2c61e82258b3383828998fc7c1942))
+* **deps:** update site/themes/hugo-theme-relearn digest to 02b1ed9 ([8961e53](https://github.com/pulvreakt/pulvreakt/commit/8961e5331976da35735bc4b17257d028a8bd42ed))
+* **deps:** update site/themes/hugo-theme-relearn digest to 109ace0 ([de191d4](https://github.com/pulvreakt/pulvreakt/commit/de191d4895e9c4b1131e1805b1e3e04341b38fd0))
+* **deps:** update site/themes/hugo-theme-relearn digest to 4076eab ([0aba5f8](https://github.com/pulvreakt/pulvreakt/commit/0aba5f8a101cc06cc86cd1bbdad93c05022869eb))
+* **deps:** update site/themes/hugo-theme-relearn digest to 446482a ([f2b2c5c](https://github.com/pulvreakt/pulvreakt/commit/f2b2c5c424b1c6e8164151cd761aa6a8ad406712))
+* **deps:** update site/themes/hugo-theme-relearn digest to 4bdbb9e ([b864136](https://github.com/pulvreakt/pulvreakt/commit/b864136ad2120899ae23d90109dd1e80a220f88a))
+* **deps:** update site/themes/hugo-theme-relearn digest to 5099b5b ([7e25fd8](https://github.com/pulvreakt/pulvreakt/commit/7e25fd83491ffb2f8444eca57fbec89ab53aba25))
+* **deps:** update site/themes/hugo-theme-relearn digest to 69a5aa5 ([a8e106d](https://github.com/pulvreakt/pulvreakt/commit/a8e106d0378f6a1897eb745f1953481e50fc69a8))
+* **deps:** update site/themes/hugo-theme-relearn digest to 7833773 ([4865ce6](https://github.com/pulvreakt/pulvreakt/commit/4865ce60171fefee0abd6715d6a29abe7a5f4a1c))
+* **deps:** update site/themes/hugo-theme-relearn digest to 7875bfc ([5e6ac0f](https://github.com/pulvreakt/pulvreakt/commit/5e6ac0f7d78029cf117738404878e9c870f795af))
+* **deps:** update site/themes/hugo-theme-relearn digest to 806de0b ([3a23ed8](https://github.com/pulvreakt/pulvreakt/commit/3a23ed80b054197ba19df66315f4545b5bc742c2))
+* **deps:** update site/themes/hugo-theme-relearn digest to a135b2a ([82cc535](https://github.com/pulvreakt/pulvreakt/commit/82cc535af5072ddbeb54e9e3c48ab063d79e8830))
+* **deps:** update site/themes/hugo-theme-relearn digest to aca6027 ([672b487](https://github.com/pulvreakt/pulvreakt/commit/672b487f302c76b7d360067239fac06e50d6659f))
+* **deps:** update site/themes/hugo-theme-relearn digest to c25bc2a ([aa5afe8](https://github.com/pulvreakt/pulvreakt/commit/aa5afe884d5e088810a542a245a778addc81bfd3))
+* **deps:** update site/themes/hugo-theme-relearn digest to c3a67fa ([c10c45a](https://github.com/pulvreakt/pulvreakt/commit/c10c45aa4d96c28bd14566f919fc7fe0fd4b436b))
+* **deps:** update site/themes/hugo-theme-relearn digest to da634d6 ([20dfbf0](https://github.com/pulvreakt/pulvreakt/commit/20dfbf0cd761f599eaab2624d19163a27e8a2b20))
+* **deps:** update site/themes/hugo-theme-relearn digest to dc695da ([212668c](https://github.com/pulvreakt/pulvreakt/commit/212668cca1316a3f28b83404c42ae58cab8c62a0))
+* **deps:** update site/themes/hugo-theme-relearn digest to fbc32b1 ([75fff33](https://github.com/pulvreakt/pulvreakt/commit/75fff33512bbc197fd4544e933b3d84470870f8d))
+
 ## [0.6.1](https://github.com/nicolasfara/pulverization-framework/compare/0.6.0...0.6.1) (2023-05-06)
 
 
