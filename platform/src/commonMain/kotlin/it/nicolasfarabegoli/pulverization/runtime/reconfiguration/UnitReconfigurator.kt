@@ -192,6 +192,12 @@ class UnitReconfigurator<S : Any, C : Any, SS : Any, AS : Any, O : Any>(
         if (this !in localComponents && moveToLocal) { // Activation of local instance of the behaviour
             localComponents = localComponents + this
             spawner.spawn(Behaviour)
+            if (localStartComponents.isEmpty()) {
+                componentsRef.behaviourRefs.sensorsRef.operationMode = Remote
+                componentsRef.behaviourRefs.actuatorsRef.operationMode = Remote
+                componentsRef.behaviourRefs.stateRef.operationMode = Remote
+                componentsRef.behaviourRefs.communicationRef.operationMode = Remote
+            }
             localComponents.forEach {
                 when (it) {
                     is Behaviour -> { /* Do nothing here */
