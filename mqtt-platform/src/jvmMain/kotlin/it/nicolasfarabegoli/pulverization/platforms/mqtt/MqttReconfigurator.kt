@@ -70,7 +70,7 @@ actual class MqttReconfigurator actual constructor(
     }
 
     override suspend fun initialize() {
-        reconfigurationTopic = "reconfiguration/${executionContext.host.hostname}/${executionContext.deviceID}"
+        reconfigurationTopic = "reconfiguration/${executionContext.deviceID}"
         logger.d {
             "Connection parameters: [hostname=$hostname, port=$port, username=$username]"
         }
