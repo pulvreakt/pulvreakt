@@ -1,3 +1,23 @@
+## [0.7.1](https://github.com/pulvreakt/pulvreakt/compare/0.7.0...0.7.1) (2023-06-22)
+
+
+### Dependency updates
+
+* **deps:** update dependency org.jetbrains.kotlin.plugin.serialization to v1.8.22 ([d753e22](https://github.com/pulvreakt/pulvreakt/commit/d753e220fa317e13b6a0120278de625b7e7f1d2b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.37 ([38456f1](https://github.com/pulvreakt/pulvreakt/commit/38456f1a87b84135c1e922c46f78a875c8e0dd43))
+* **deps:** update plugin publishoncentral to v5.0.7 ([46e45a3](https://github.com/pulvreakt/pulvreakt/commit/46e45a3c98a9f2ea0982ddc989b70c31682cbb31))
+
+
+### Bug Fixes
+
+* fix mqtt topic for reconfiguration to act host-independent ([4c129fc](https://github.com/pulvreakt/pulvreakt/commit/4c129fc4a2b42e9c19a7b89033759d6f3387d8fa))
+* solve a bug that prevent a correct reconfiguration when the behaviour in moved alone into a host which is not executing any other component ([f077549](https://github.com/pulvreakt/pulvreakt/commit/f077549817671186342764905353363ca4fb3c8b))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.5.3 ([2fcd898](https://github.com/pulvreakt/pulvreakt/commit/2fcd8981c93917a9b075acb54dbe9e8596acf9df))
+
 ## [0.7.0](https://github.com/pulvreakt/pulvreakt/compare/0.6.1...0.7.0) (2023-06-19)
 
 
