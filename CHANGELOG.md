@@ -1,3 +1,11 @@
+## [0.7.2](https://github.com/pulvreakt/pulvreakt/compare/0.7.1...0.7.2) (2023-06-23)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.dokka to v1.8.20 ([74849c8](https://github.com/pulvreakt/pulvreakt/commit/74849c8f4269297f3ae5dd8171ab83bca8eb311b))
+* **deps:** update plugin kotlin-qa to v0.43.0 ([0584cc7](https://github.com/pulvreakt/pulvreakt/commit/0584cc71d8ef600247b7d1af2d9bf07a399f1fca))
+
 ## [0.7.1](https://github.com/pulvreakt/pulvreakt/compare/0.7.0...0.7.1) (2023-06-22)
 
 
