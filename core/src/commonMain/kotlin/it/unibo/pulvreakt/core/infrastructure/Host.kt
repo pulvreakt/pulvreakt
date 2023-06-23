@@ -13,7 +13,10 @@ sealed interface Host {
     val capabilities: NonEmptySet<Capability>
 
     companion object {
-        operator fun invoke(hostname: String, capabilities: NonEmptySet<Capability>): Host = HostImpl(hostname, capabilities)
+        operator fun invoke(hostname: String, capabilities: NonEmptySet<Capability>): Host =
+            HostImpl(hostname, capabilities)
+        operator fun invoke(hostname: String, capability: Capability, vararg otherCapabilities: Capability): Host =
+            HostImpl(hostname, nonEmptySetOf(capability, *otherCapabilities))
     }
 
     private data class HostImpl(override val hostname: String, override val capabilities: NonEmptySet<Capability>) : Host {
