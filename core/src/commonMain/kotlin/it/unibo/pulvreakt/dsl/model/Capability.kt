@@ -5,12 +5,12 @@ import kotlin.reflect.KProperty
 /**
  * Express a capacity that a Component requires to be executed.
  */
-sealed interface Capability
+sealed interface Capability {
+    companion object {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): Capability = CapabilityImpl(property.name)
 
-class CapabilityDelegate {
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): Capability = CapabilityImpl(property.name)
-
-    private data class CapabilityImpl(val name: String) : Capability {
-        override fun toString(): String = name
+        private data class CapabilityImpl(val name: String) : Capability {
+            override fun toString(): String = name
+        }
     }
 }
