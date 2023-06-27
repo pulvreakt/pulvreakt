@@ -80,7 +80,7 @@ allprojects {
                 dependencies {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
-                    api(rootProject.libs.koin.core)
+                    // api(rootProject.libs.koin.core)
                     api(rootProject.libs.kodein)
                     api(rootProject.libs.kotlinLogger)
                     api(rootProject.libs.bundles.arrow)
@@ -89,7 +89,7 @@ allprojects {
             val commonTest by getting {
                 dependencies {
                     implementation(rootProject.libs.bundles.kotest.common)
-                    implementation(rootProject.libs.koin.test)
+                    // implementation(rootProject.libs.koin.test)
                 }
             }
             val jvmMain by getting {
