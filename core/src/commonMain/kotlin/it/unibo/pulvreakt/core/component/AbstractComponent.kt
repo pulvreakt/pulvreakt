@@ -1,10 +1,22 @@
 package it.unibo.pulvreakt.core.component
 
+import arrow.core.Either
+import arrow.core.right
 import it.unibo.pulvreakt.core.communicator.Communicator
+import org.kodein.di.DI
 
 /**
  * Predefined [Component] which handle out-of-the-box the [Communicator] needed to interact with other components.
  */
+abstract class AbstractComponent : Component {
+    override lateinit var di: DI
+
+    override suspend fun finalize(): Either<String, Unit> = Unit.right()
+
+    override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
+}
 // abstract class AbstractComponent<T : Any> : Component<T> {
 //    final override lateinit var di: DI
 //    protected val context by instance<Context>()

@@ -8,13 +8,16 @@ import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
 data class NewConfiguration(val component: ComponentName, val destinationHost: Host)
 
 data class DeviceReconfigurationRule(val event: ReconfigurationEvent<*>, val newConfiguration: NewConfiguration)
+typealias OnDeviceRules = Set<DeviceReconfigurationRule>
 
 typealias ComponentStartupHost = Map<Component, Host>
+
+data class ReconfigurationRules(val onDeviceRules: OnDeviceRules?)
 
 data class DeviceRuntimeConfiguration(
     val deviceName: String,
     val componentStartupHost: ComponentStartupHost,
-    val reconfigurationRules: Set<DeviceReconfigurationRule>,
+    val reconfigurationRules: ReconfigurationRules?,
 )
 
 typealias ConfiguredDevicesRuntimeConfiguration = NonEmptySet<DeviceRuntimeConfiguration>
