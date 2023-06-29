@@ -7,8 +7,11 @@ sealed interface ConfigurationError
 
 sealed interface DeploymentConfigurationError : ConfigurationError {
     data class NoDeviceFound(val deviceName: String) : DeploymentConfigurationError
+    object MismatchWithSystemConfiguration : DeploymentConfigurationError
     data class ComponentNotRegistered(val component: ComponentName) : DeploymentConfigurationError
     data class InvalidReconfiguration(val component: ComponentName, val host: Host) : DeploymentConfigurationError
+    data class InvalidStartupHost(val component: ComponentName, val host: Host) : DeploymentConfigurationError
+    object EmptyOnDeviceReconfiguration : DeploymentConfigurationError
     data class UnknownComponent(val component: ComponentName) : DeploymentConfigurationError
     object MissingCommunicator : DeploymentConfigurationError
     object MissingReconfigurator : DeploymentConfigurationError

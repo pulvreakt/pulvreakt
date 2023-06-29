@@ -13,3 +13,5 @@ data class DeviceStructure(
 )
 
 typealias ConfiguredDeviceStructure = NonEmptySet<DeviceStructure>
+
+operator fun ConfiguredDeviceStructure.get(deviceName: String): DeviceStructure? = find { it.deviceName == deviceName }
