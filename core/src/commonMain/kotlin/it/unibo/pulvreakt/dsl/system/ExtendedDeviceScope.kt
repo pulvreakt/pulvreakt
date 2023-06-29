@@ -3,13 +3,13 @@ package it.unibo.pulvreakt.dsl.system
 import arrow.core.Either
 import arrow.core.Nel
 import arrow.core.NonEmptySet
+import arrow.core.nonEmptyListOf
 import arrow.core.nonEmptySetOf
 import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptyListOrNull
-import it.unibo.pulvreakt.core.component.ComponentOps
+import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
@@ -25,7 +25,11 @@ class ExtendedDeviceScope(private val deviceName: String) {
     private val componentsGraph = mutableMapOf<ComponentName, Set<ComponentName>>()
     private val requiredCapabilities = mutableMapOf<ComponentName, Set<Capability>>()
 
-    inline fun <reified C : ComponentOps<*>> component(): ComponentName = C::class.simpleName!!
+    inline fun <reified C : Component> component(): ComponentName {
+        val componentName = C::class.simpleName!!
+        addComponent(componentName)
+        return componentName
+    }
 
     infix fun String.wiredTo(others: NonEmptySet<ComponentName>) {
         componentsGraph[this] = others
@@ -43,17 +47,21 @@ class ExtendedDeviceScope(private val deviceName: String) {
         requiredCapabilities[this] = capabilities
     }
 
-    private fun Raise<Nel<UnspecifiedCapabilities>>.validate(): RequiredCapabilities {
+    fun addComponent(component: ComponentName) {
+        componentsGraph[component] ?: run { componentsGraph[component] = emptySet() }
+    }
+
+    private fun Raise<Nel<UnspecifiedCapabilities>>.validateCapabilities(): RequiredCapabilities {
         val components = componentsGraph.keys
+        ensure(requiredCapabilities.isNotEmpty()) { components.map { UnspecifiedCapabilities(it) }.toNonEmptyListOrNull()!! }
         val missing = requiredCapabilities.keys - components
         missing.map { UnspecifiedCapabilities(it) }.toNonEmptyListOrNull()?.let { raise(it) }
         return requiredCapabilities
     }
 
     internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> = either {
-        zipOrAccumulate(
-            { ensure(componentsGraph.isNotEmpty()) { EmptyDeviceConfiguration } },
-            { validate() },
-        ) { _, capabilities -> DeviceStructure(deviceName, componentsGraph, capabilities) }
+        ensure(componentsGraph.isNotEmpty()) { nonEmptyListOf(EmptyDeviceConfiguration) }
+        val capabilities = validateCapabilities()
+        DeviceStructure(deviceName, componentsGraph, capabilities)
     }
 }

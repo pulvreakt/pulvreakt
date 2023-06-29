@@ -1,6 +1,7 @@
 package it.unibo.pulvreakt.core.component
 
 import arrow.core.Either
+import arrow.core.right
 import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 
 /**
@@ -33,6 +34,10 @@ interface Component : Initializable, PulvreaktInjected {
 //        fromComponent: ComponentType<P>,
 //        serializer: KSerializer<P>,
 //    ): Either<String, Flow<P>>
+
+    override suspend fun finalize(): Either<String, Unit> = Unit.right()
+
+    override suspend fun initialize(): Either<String, Unit> = Unit.right()
 
     /**
      * Executes the component logic.

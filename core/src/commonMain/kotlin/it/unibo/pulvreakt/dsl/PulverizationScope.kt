@@ -10,7 +10,6 @@ import arrow.core.raise.zipOrAccumulate
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.dsl.deployment.DeploymentSpecificationScope
 import it.unibo.pulvreakt.dsl.errors.ConfigurationError
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.EmptyDeploymentConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptySystemConfiguration
@@ -25,7 +24,7 @@ import it.unibo.pulvreakt.dsl.system.SystemSpecificationScope
 class PulverizationScope {
     private lateinit var systemConfigurations: Either<Nel<SystemConfigurationError>, ConfiguredDeviceStructure>
     private lateinit var deploymentConfigurations:
-        Either<Nel<DeploymentConfigurationError>, ConfiguredDevicesRuntimeConfiguration>
+        Either<Nel<ConfigurationError>, ConfiguredDevicesRuntimeConfiguration>
     private lateinit var commProvider: CommunicatorProvider
     private lateinit var reconfigProvider: ReconfiguratorProvider
 
@@ -41,8 +40,12 @@ class PulverizationScope {
     ) {
         commProvider = communicatorProvider
         reconfigProvider = reconfiguratorProvider
-        val deploymentScope = DeploymentSpecificationScope().apply(deploymentConfig)
-        deploymentConfigurations = deploymentScope.generate()
+        val result = either {
+            val systemConf = systemConfigurations.bind()
+            val deploymentScope = DeploymentSpecificationScope(systemConf).apply(deploymentConfig)
+            deploymentScope.generate().bind()
+        }
+        deploymentConfigurations = result
     }
 
     private fun getConfiguration(): Either<Nel<ConfigurationError>, Pair<ConfiguredDeviceStructure, ConfiguredDevicesRuntimeConfiguration>> = either {
