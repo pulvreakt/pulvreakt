@@ -6,8 +6,9 @@ import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentOps
+import it.unibo.pulvreakt.core.component.AbstractComponent
+import it.unibo.pulvreakt.core.component.ComponentRef
+import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -31,12 +32,16 @@ class TestCommunicator(private val remoteFlow: MutableSharedFlow<ByteArray>) : A
 }
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
-    override fun receiveModeUpdates(): Flow<Pair<Component, Mode>> = emptyFlow()
+    override fun receiveModeUpdates(): Flow<Pair<ComponentRef<*>, Mode>> = emptyFlow()
 }
 
-class C1 : ComponentOps<String> by ComponentOps.create()
+class C1 : AbstractComponent<Int>() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
 
-class C2 : ComponentOps<Int> by ComponentOps.create()
+class C2 : AbstractComponent<Int>() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CommunicatorTest : StringSpec(

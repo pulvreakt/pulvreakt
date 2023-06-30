@@ -3,15 +3,31 @@ package it.unibo.pulvreakt.core.component
 import arrow.core.Either
 import arrow.core.right
 import it.unibo.pulvreakt.core.communicator.Communicator
+import it.unibo.pulvreakt.core.component.errors.ComponentError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.KSerializer
 import org.kodein.di.DI
 
 /**
  * Predefined [Component] which handle out-of-the-box the [Communicator] needed to interact with other components.
  */
-abstract class AbstractComponent : Component {
+abstract class AbstractComponent<T : Any> : Component<T> {
     override lateinit var di: DI
 
+    override suspend fun initialize(): Either<String, Unit> = Unit.right()
     override suspend fun finalize(): Either<String, Unit> = Unit.right()
+
+    override fun setupWiring(vararg components: ComponentRef<*>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun send(toComponent: ComponentRef<*>, message: T, serializer: KSerializer<T>): Either<ComponentError, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun <P : Any> receive(fromComponent: ComponentRef<P>, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> {
+        TODO("Not yet implemented")
+    }
 
     override fun setupInjector(kodein: DI) {
         di = kodein

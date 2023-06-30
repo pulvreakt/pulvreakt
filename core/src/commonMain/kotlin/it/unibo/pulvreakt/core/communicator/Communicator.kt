@@ -3,7 +3,7 @@ package it.unibo.pulvreakt.core.communicator
 import arrow.core.Either
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.Initializable
+import it.unibo.pulvreakt.core.utils.Initializable
 import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 import kotlinx.coroutines.flow.Flow
 
