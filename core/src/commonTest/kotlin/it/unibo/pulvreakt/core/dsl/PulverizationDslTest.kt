@@ -162,4 +162,41 @@ class PulverizationDslTest : StringSpec({
             }
         } ?: error("The configuration should be present")
     }
+    "The DSL should configure a device with the classical model" {
+        val configResult = pulverization {
+            system {
+                logicDevice("my device") {
+                    val component1 = withBehaviour<TestComponent1>()
+                    val component2 = withCommunication<TestComponent2>()
+                    component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
+                    component2 requires embeddedDeviceCapability
+                }
+            }
+            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+                device("my device") {
+                    TestComponent1() startsOn smartphoneHost
+                    TestComponent2() startsOn smartphoneHost
+                    reconfigurationRules {
+                        onDevice {
+                            TestReconfigurationEvent1() reconfigures (ctypeOf<TestComponent1>() movesTo serverHost)
+                        }
+                    }
+                }
+            }
+        }
+        configResult.isRight() shouldBe true
+        configResult.getOrNull()!!.let { config ->
+            config["my device"] shouldNotBe null
+            config["my device"]!!.let { deviceSpec ->
+                deviceSpec.componentsConfiguration shouldBe mapOf(
+                    ctypeOf<TestComponent1>() to setOf(ctypeOf<TestComponent2>()),
+                    ctypeOf<TestComponent2>() to setOf(ctypeOf<TestComponent1>()),
+                )
+                deviceSpec.requiredCapabilities shouldBe mapOf(
+                    ctypeOf<TestComponent1>() to nonEmptySetOf(embeddedDeviceCapability, serverCapability),
+                    ctypeOf<TestComponent2>() to nonEmptySetOf(embeddedDeviceCapability),
+                )
+            }
+        }
+    }
 })
