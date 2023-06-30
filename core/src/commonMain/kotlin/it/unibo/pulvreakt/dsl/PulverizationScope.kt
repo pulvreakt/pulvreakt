@@ -65,9 +65,9 @@ class PulverizationScope {
             { ensure(sConf.size == dConf.size) { TODO() } },
             { ensure(sConf.map { it.deviceName } == dConf.map { it.deviceName }) { TODO() } },
         ) { _, _ ->
-            val deviceConfigs = sConf.map { (deviceName, deviceSpec) ->
+            val deviceConfigs = sConf.map { (deviceName, deviceSpec, capabilities) ->
                 val deviceRuntimeConfiguration = dConf.find { it.deviceName == deviceName }!!
-                deviceName to DeviceSpecification(deviceName, deviceSpec, deviceRuntimeConfiguration)
+                deviceName to DeviceSpecification(deviceName, deviceSpec, capabilities, deviceRuntimeConfiguration)
             }.toMap()
             PulvreaktConfiguration(deviceConfigs, commProvider, reconfigProvider)
         }
