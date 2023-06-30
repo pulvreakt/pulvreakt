@@ -2,6 +2,7 @@ package it.unibo.pulvreakt.dsl.deployment
 
 import arrow.core.Either
 import arrow.core.Nel
+import arrow.core.NonEmptySet
 import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
@@ -13,30 +14,32 @@ import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.ComponentNotRegistered
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.InvalidStartupHost
 import it.unibo.pulvreakt.dsl.model.Capability
-import it.unibo.pulvreakt.dsl.model.ComponentName
+import it.unibo.pulvreakt.dsl.model.ComponentType.Companion.getType
 import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.ReconfigurationRules
 
-class DeviceDeploymentSpecificationScope(private val deviceName: String, private val deviceStructure: DeviceStructure) {
+class DeviceDeploymentSpecificationScope(
+    private val deviceName: String,
+    private val deviceStructure: DeviceStructure,
+    private val infrastructure: NonEmptySet<Host>,
+) {
     private val componentsStartupHosts = mutableListOf<Either<InvalidStartupHost, Pair<Component, Host>>>()
     private var deviceReconfigurationRules: Either<Nel<DeploymentConfigurationError>, ReconfigurationRules>? = null
 
-    private fun Component.toName(): ComponentName = this::class.simpleName!!
-
     infix fun Component.startsOn(host: Host) {
-        val componentName = this::class.simpleName!!
-        val deviceCapabilities = deviceStructure.requiredCapabilities[componentName]!!
+        val componentType = this.getType()
+        val deviceCapabilities = deviceStructure.requiredCapabilities[componentType]!!
         val hostCapabilities = host.capabilities
         val result = either {
-            ensure(containCapability(deviceCapabilities, hostCapabilities)) { InvalidStartupHost(componentName, host) }
+            ensure(containCapability(deviceCapabilities, hostCapabilities)) { InvalidStartupHost(componentType, host) }
             this@startsOn to host
         }
         componentsStartupHosts += result
     }
 
     fun reconfigurationRules(config: ReconfigurationRulesScope.() -> Unit) {
-        val scope = ReconfigurationRulesScope().apply(config)
+        val scope = ReconfigurationRulesScope(deviceStructure, infrastructure).apply(config)
         deviceReconfigurationRules = scope.generate()
     }
 
@@ -47,7 +50,7 @@ class DeviceDeploymentSpecificationScope(private val deviceName: String, private
         registeredComponents: List<Pair<Component, Host>>,
     ): List<Pair<Component, Host>> {
         val allComponents = deviceStructure.componentsGraph.keys + deviceStructure.componentsGraph.values.flatten()
-        val nonConfiguredComponents = allComponents - registeredComponents.map { it.first.toName() }.toSet()
+        val nonConfiguredComponents = allComponents - registeredComponents.map { it.first.getType() }.toSet()
         ensure(nonConfiguredComponents.isEmpty()) {
             nonConfiguredComponents.map { ComponentNotRegistered(it) }.toNonEmptyListOrNull()!!
         }

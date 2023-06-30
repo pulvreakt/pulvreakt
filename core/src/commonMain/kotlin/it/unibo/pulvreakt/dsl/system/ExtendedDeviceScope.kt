@@ -14,7 +14,7 @@ import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
-import it.unibo.pulvreakt.dsl.model.ComponentName
+import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.RequiredCapabilities
 
@@ -22,32 +22,34 @@ import it.unibo.pulvreakt.dsl.model.RequiredCapabilities
  * Configure the definition of the logical device with a [deviceName].
  */
 class ExtendedDeviceScope(private val deviceName: String) {
-    private val componentsGraph = mutableMapOf<ComponentName, Set<ComponentName>>()
-    private val requiredCapabilities = mutableMapOf<ComponentName, Set<Capability>>()
+    private val componentsGraph = mutableMapOf<ComponentType, Set<ComponentType>>()
+    private val requiredCapabilities = mutableMapOf<ComponentType, Set<Capability>>()
 
-    inline fun <reified C : Component> component(): ComponentName {
-        val componentName = C::class.simpleName!!
-        addComponent(componentName)
-        return componentName
-    }
+//    inline fun <reified C : Component> component(): ComponentType {
+//        val componentName = C::class.simpleName!!
+//        addComponent(componentName)
+//        return componentName
+//    }
+    inline fun <reified C : Component> withComponent(): ComponentType =
+        ComponentType.ctypeOf<C>().also { addComponent(it) }
 
-    infix fun String.wiredTo(others: NonEmptySet<ComponentName>) {
+    infix fun ComponentType.wiredTo(others: NonEmptySet<ComponentType>) {
         componentsGraph[this] = others
     }
 
-    infix fun String.wiredTo(other: ComponentName) {
+    infix fun ComponentType.wiredTo(other: ComponentType) {
         componentsGraph[this] = nonEmptySetOf(other)
     }
 
-    infix fun ComponentName.requires(capability: Capability) {
+    infix fun ComponentType.requires(capability: Capability) {
         requiredCapabilities[this] = nonEmptySetOf(capability)
     }
 
-    infix fun ComponentName.requires(capabilities: NonEmptySet<Capability>) {
+    infix fun ComponentType.requires(capabilities: NonEmptySet<Capability>) {
         requiredCapabilities[this] = capabilities
     }
 
-    fun addComponent(component: ComponentName) {
+    fun addComponent(component: ComponentType) {
         componentsGraph[component] ?: run { componentsGraph[component] = emptySet() }
     }
 
