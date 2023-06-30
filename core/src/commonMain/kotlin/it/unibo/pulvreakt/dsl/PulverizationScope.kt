@@ -42,7 +42,7 @@ class PulverizationScope {
         reconfigProvider = reconfiguratorProvider
         val result = either {
             val systemConf = systemConfigurations.bind()
-            val deploymentScope = DeploymentSpecificationScope(systemConf).apply(deploymentConfig)
+            val deploymentScope = DeploymentSpecificationScope(systemConf, infrastructure).apply(deploymentConfig)
             deploymentScope.generate().bind()
         }
         deploymentConfigurations = result
