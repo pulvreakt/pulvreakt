@@ -9,6 +9,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.toNonEmptyListOrNull
+import arrow.core.toNonEmptySetOrNull
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
@@ -58,7 +59,7 @@ class ExtendedDeviceScope(private val deviceName: String) {
         ensure(requiredCapabilities.isNotEmpty()) { components.map { UnspecifiedCapabilities(it) }.toNonEmptyListOrNull()!! }
         val missing = requiredCapabilities.keys - components
         missing.map { UnspecifiedCapabilities(it) }.toNonEmptyListOrNull()?.let { raise(it) }
-        return requiredCapabilities
+        return requiredCapabilities.mapValues { (_, value) -> value.toNonEmptySetOrNull()!! }
     }
 
     internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> = either {

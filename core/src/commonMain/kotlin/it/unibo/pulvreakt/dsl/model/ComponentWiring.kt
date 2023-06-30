@@ -4,7 +4,6 @@ import arrow.core.NonEmptySet
 import it.unibo.pulvreakt.core.component.Component
 import kotlin.reflect.KClass
 
-// typealias ComponentType = String
 sealed interface ComponentType {
     companion object {
         fun ctypeOf(component: KClass<out Component>): ComponentType = ComponentTypeImpl(component)
@@ -14,7 +13,7 @@ sealed interface ComponentType {
     }
 }
 typealias ComponentsGraph = Map<ComponentType, Set<ComponentType>>
-typealias RequiredCapabilities = Map<ComponentType, Set<Capability>>
+typealias RequiredCapabilities = Map<ComponentType, NonEmptySet<Capability>>
 
 data class DeviceStructure(
     val deviceName: String,
