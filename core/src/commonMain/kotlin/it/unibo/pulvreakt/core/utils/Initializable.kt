@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.component
+package it.unibo.pulvreakt.core.utils
 
 import arrow.core.Either
 

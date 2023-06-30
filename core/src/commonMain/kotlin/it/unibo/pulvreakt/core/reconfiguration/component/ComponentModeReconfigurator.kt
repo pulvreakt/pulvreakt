@@ -2,6 +2,7 @@ package it.unibo.pulvreakt.core.reconfiguration.component
 
 import it.unibo.pulvreakt.core.communicator.Mode
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,5 +13,5 @@ interface ComponentModeReconfigurator {
     /**
      * Returns the new [Mode] for the given [Component].
      */
-    fun receiveModeUpdates(): Flow<Pair<Component, Mode>>
+    fun receiveModeUpdates(): Flow<Pair<ComponentRef<*>, Mode>>
 }

@@ -1,17 +1,26 @@
 package it.unibo.pulvreakt.core.component
 
 import io.kotest.core.spec.style.StringSpec
+import it.unibo.pulvreakt.core.communicator.Communicator
+import it.unibo.pulvreakt.core.communicator.LocalCommunicatorManager
+import it.unibo.pulvreakt.core.component.fixture.FakeCommunicator
+import it.unibo.pulvreakt.core.component.fixture.FakeComponentModeReconfigurator
+import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.provider
+import org.kodein.di.singleton
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ComponentTest : StringSpec(
     {
         coroutineTestScope = true
-//        val diModule = DI {
-//            bind<Communicator> { provider { FakeCommunicator() } }
-//            bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
-//            bind<LocalCommunicatorManager> { singleton { LocalCommunicatorManager() } }
-//        }
+        val diModule = DI {
+            bind<Communicator> { provider { FakeCommunicator() } }
+            bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
+            bind<LocalCommunicatorManager> { singleton { LocalCommunicatorManager() } }
+        }
 
         "A Component should raise an error if the DI module is not initialized" {
             error("Not implemented yet")

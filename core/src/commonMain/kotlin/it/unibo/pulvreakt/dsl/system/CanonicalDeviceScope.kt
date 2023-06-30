@@ -23,31 +23,31 @@ class CanonicalDeviceScope(private val deviceName: String) {
     private var sensorsCapability: Pair<ComponentType, Set<Capability>>? = null
     private var actuatorsCapability: Pair<ComponentType, Set<Capability>>? = null
 
-    inline fun <reified State : Component> withState(): ComponentType = ctypeOf<State>().also {
+    inline fun <reified State : Component<*>> withState(): ComponentType = ctypeOf<State>().also {
         addComponent(
             "state",
             it,
         )
     }
-    inline fun <reified Behaviour : Component> withBehaviour(): ComponentType = ctypeOf<Behaviour>().also {
+    inline fun <reified Behaviour : Component<*>> withBehaviour(): ComponentType = ctypeOf<Behaviour>().also {
         addComponent(
             "behaviour",
             it,
         )
     }
-    inline fun <reified Sensors : Component> withSensors(): ComponentType = ctypeOf<Sensors>().also {
+    inline fun <reified Sensors : Component<*>> withSensors(): ComponentType = ctypeOf<Sensors>().also {
         addComponent(
             "sensors",
             it,
         )
     }
-    inline fun <reified Actuators : Component> withActuators(): ComponentType = ctypeOf<Actuators>().also {
+    inline fun <reified Actuators : Component<*>> withActuators(): ComponentType = ctypeOf<Actuators>().also {
         addComponent(
             "actuators",
             it,
         )
     }
-    inline fun <reified Comm : Component> withCommunication(): ComponentType = ctypeOf<Comm>().also {
+    inline fun <reified Comm : Component<*>> withCommunication(): ComponentType = ctypeOf<Comm>().also {
         addComponent(
             "comm",
             it,

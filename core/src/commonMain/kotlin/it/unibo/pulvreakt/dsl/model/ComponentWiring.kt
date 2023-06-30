@@ -6,10 +6,10 @@ import kotlin.reflect.KClass
 
 sealed interface ComponentType {
     companion object {
-        fun ctypeOf(component: KClass<out Component>): ComponentType = ComponentTypeImpl(component)
-        inline fun <reified C : Component> ctypeOf(): ComponentType = ctypeOf(C::class)
-        fun Component.getType(): ComponentType = ComponentTypeImpl(this::class)
-        private data class ComponentTypeImpl(val componentType: KClass<out Component>) : ComponentType
+        fun ctypeOf(component: KClass<out Component<*>>): ComponentType = ComponentTypeImpl(component)
+        inline fun <reified C : Component<*>> ctypeOf(): ComponentType = ctypeOf(C::class)
+        fun Component<*>.getType(): ComponentType = ComponentTypeImpl(this::class)
+        private data class ComponentTypeImpl(val componentType: KClass<out Component<*>>) : ComponentType
     }
 }
 typealias ComponentsGraph = Map<ComponentType, Set<ComponentType>>
