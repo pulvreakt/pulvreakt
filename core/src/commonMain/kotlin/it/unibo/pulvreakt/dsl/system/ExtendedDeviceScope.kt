@@ -31,7 +31,7 @@ class ExtendedDeviceScope(private val deviceName: String) {
 //        addComponent(componentName)
 //        return componentName
 //    }
-    inline fun <reified C : Component> withComponent(): ComponentType =
+    inline fun <reified C : Component<*>> withComponent(): ComponentType =
         ComponentType.ctypeOf<C>().also { addComponent(it) }
 
     infix fun ComponentType.wiredTo(others: NonEmptySet<ComponentType>) {

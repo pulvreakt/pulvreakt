@@ -10,7 +10,7 @@ data class NewConfiguration(val component: ComponentType, val destinationHost: H
 data class DeviceReconfigurationRule(val event: ReconfigurationEvent<*>, val newConfiguration: NewConfiguration)
 typealias OnDeviceRules = Set<DeviceReconfigurationRule>
 
-typealias ComponentStartupHost = Map<Component, Host>
+typealias ComponentStartupHost = Map<Component<*>, Host>
 
 data class ReconfigurationRules(val onDeviceRules: OnDeviceRules?)
 

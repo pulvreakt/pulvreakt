@@ -24,10 +24,10 @@ class DeviceDeploymentSpecificationScope(
     private val deviceStructure: DeviceStructure,
     private val infrastructure: NonEmptySet<Host>,
 ) {
-    private val componentsStartupHosts = mutableListOf<Either<InvalidStartupHost, Pair<Component, Host>>>()
+    private val componentsStartupHosts = mutableListOf<Either<InvalidStartupHost, Pair<Component<*>, Host>>>()
     private var deviceReconfigurationRules: Either<Nel<DeploymentConfigurationError>, ReconfigurationRules>? = null
 
-    infix fun Component.startsOn(host: Host) {
+    infix fun Component<*>.startsOn(host: Host) {
         val componentType = this.getType()
         val deviceCapabilities = deviceStructure.requiredCapabilities[componentType]!!
         val hostCapabilities = host.capabilities
@@ -47,8 +47,8 @@ class DeviceDeploymentSpecificationScope(
         compCapability.intersect(hostCapability).isNotEmpty()
 
     private fun Raise<Nel<ComponentNotRegistered>>.ensureAllInstancesAreGiven(
-        registeredComponents: List<Pair<Component, Host>>,
-    ): List<Pair<Component, Host>> {
+        registeredComponents: List<Pair<Component<*>, Host>>,
+    ): List<Pair<Component<*>, Host>> {
         val allComponents = deviceStructure.componentsGraph.keys + deviceStructure.componentsGraph.values.flatten()
         val nonConfiguredComponents = allComponents - registeredComponents.map { it.first.getType() }.toSet()
         ensure(nonConfiguredComponents.isEmpty()) {

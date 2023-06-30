@@ -1,46 +1,33 @@
 package it.unibo.pulvreakt.core.component
 
 import arrow.core.Either
-import arrow.core.right
+import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.core.utils.Initializable
 import it.unibo.pulvreakt.core.utils.PulvreaktInjected
+import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.KSerializer
 
 /**
  * Represents a component of the system.
- * @param T the type of the component.
- * Each component is characterized by a [name] and a [type].
  */
-interface Component : Initializable, PulvreaktInjected {
-//    val name: String
-//    val type: ComponentType<T>
-//
-//    /**
-//     * Sets up the links with other components.
-//     */
-//    fun setupComponentLink(vararg components: Component<*>)
-//
-//    /**
-//     * Sends a [message] [toComponent] leveraging the given [serializer].
-//     */
-//    suspend fun <P : Any> send(
-//        toComponent: ComponentType<P>,
-//        message: P,
-//        serializer: KSerializer<P>,
-//    ): Either<String, Unit>
-//
-//    /**
-//     * Receives messages [fromComponent] leveraging the given [serializer].
-//     */
-//    suspend fun <P : Any> receive(
-//        fromComponent: ComponentType<P>,
-//        serializer: KSerializer<P>,
-//    ): Either<String, Flow<P>>
+interface Component<T : Any> : Initializable, PulvreaktInjected {
+    fun setupWiring(vararg components: ComponentRef<*>)
 
-    override suspend fun finalize(): Either<String, Unit> = Unit.right()
+    fun getRef(): ComponentRef<T> = ComponentRef.create(this)
 
-    override suspend fun initialize(): Either<String, Unit> = Unit.right()
+    suspend fun send(
+        toComponent: ComponentRef<*>,
+        message: T,
+        serializer: KSerializer<T>,
+    ): Either<ComponentError, Unit>
+
+    suspend fun <P : Any> receive(
+        fromComponent: ComponentRef<P>,
+        serializer: KSerializer<P>,
+    ): Either<ComponentError, Flow<P>>
 
     /**
      * Executes the component logic.
      */
-    suspend fun execute(): Either<String, Unit>
+    suspend fun execute(): Either<ComponentError, Unit>
 }
