@@ -1,10 +1,20 @@
 package it.unibo.pulvreakt.dsl.model
 
 import arrow.core.NonEmptySet
+import it.unibo.pulvreakt.core.component.Component
+import kotlin.reflect.KClass
 
-typealias ComponentName = String
-typealias ComponentsGraph = Map<ComponentName, Set<ComponentName>>
-typealias RequiredCapabilities = Map<ComponentName, Set<Capability>>
+// typealias ComponentType = String
+sealed interface ComponentType {
+    companion object {
+        fun ctypeOf(component: KClass<out Component>): ComponentType = ComponentTypeImpl(component)
+        inline fun <reified C : Component> ctypeOf(): ComponentType = ctypeOf(C::class)
+        fun Component.getType(): ComponentType = ComponentTypeImpl(this::class)
+        private data class ComponentTypeImpl(val componentType: KClass<out Component>) : ComponentType
+    }
+}
+typealias ComponentsGraph = Map<ComponentType, Set<ComponentType>>
+typealias RequiredCapabilities = Map<ComponentType, Set<Capability>>
 
 data class DeviceStructure(
     val deviceName: String,
