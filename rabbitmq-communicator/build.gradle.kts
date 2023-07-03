@@ -3,6 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":runtime"))
+                implementation(project(":core"))
             }
         }
         jvmMain {
