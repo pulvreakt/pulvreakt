@@ -86,6 +86,8 @@ jobs:
       - uses: DanySK/build-check-deploy-gradle-action@2.2.8
         with:
           # Dry-deployment
+          check-command: >-
+            ./gradlew check detektMetadataCommonMain --parallel
           deploy-command: |
             NEXT_VERSION="${{ needs.staging-repo.outputs.next-version }}"
             OVERRIDE_VERSION=$([[ "$NEXT_VERSION" != "" ]] && echo "-PforceVersion=$(echo $NEXT_VERSION)" || echo "")
