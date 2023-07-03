@@ -14,10 +14,10 @@ kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 # kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.41.0"
 detekt = "io.gitlab.arturbosch.detekt:1.23.0"
-kover = "org.jetbrains.kotlinx.kover:0.7.0"
+kover = "org.jetbrains.kotlinx.kover:0.7.2"
 taskTree = "com.dorongold.task-tree:2.1.1"
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.10"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.10"
-gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.9"
 hugo = "io.github.fstaudt.hugo:0.6.0"
 
 [libraries]

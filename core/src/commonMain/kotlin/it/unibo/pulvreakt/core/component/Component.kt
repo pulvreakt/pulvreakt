@@ -10,7 +10,7 @@ import kotlinx.serialization.KSerializer
 /**
  * Represents a component of the system.
  */
-interface Component<T : Any> : Initializable, PulvreaktInjected {
+interface Component<T : Any> : Initializable<ComponentError>, PulvreaktInjected {
     fun setupWiring(vararg components: ComponentRef<*>)
 
     fun getRef(): ComponentRef<T> = ComponentRef.create(this)
