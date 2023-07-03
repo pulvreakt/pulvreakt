@@ -2,7 +2,7 @@
 dokka = "1.8.20"
 kotest = "5.6.2"
 kotlin = "1.8.22"
-coroutines = "1.7.1"
+coroutines = "1.7.2"
 arrow = "1.2.0-RC"
 
 [plugins]
@@ -12,10 +12,10 @@ kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 # kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.41.0"
 detekt = "io.gitlab.arturbosch.detekt:1.23.0"
-kover = "org.jetbrains.kotlinx.kover:0.7.0"
+kover = "org.jetbrains.kotlinx.kover:0.7.2"
 taskTree = "com.dorongold.task-tree:2.1.1"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.5"
-gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.9"
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.10"
 hugo = "io.github.fstaudt.hugo:0.6.0"
 
 [libraries]

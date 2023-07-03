@@ -5,15 +5,18 @@ import arrow.core.raise.either
 import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
+import it.unibo.pulvreakt.core.communicator.errors.CommunicatorError
 import it.unibo.pulvreakt.core.component.AbstractComponent
+import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.core.context.Context
+import it.unibo.pulvreakt.core.protocol.Entity
+import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
+import it.unibo.pulvreakt.core.utils.TestProtocol
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -23,13 +26,6 @@ import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.provider
 import org.kodein.di.singleton
-
-class TestCommunicator(private val remoteFlow: MutableSharedFlow<ByteArray>) : AbstractCommunicator() {
-    override suspend fun sendRemoteToComponent(message: ByteArray): Either<String, Unit> = remoteFlow.emit(message).right()
-    override suspend fun receiveRemoteFromComponent(): Either<String, Flow<ByteArray>> = remoteFlow.asSharedFlow().right()
-    override suspend fun initialize(): Either<String, Unit> = Unit.right()
-    override suspend fun finalize(): Either<String, Unit> = Unit.right()
-}
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
     override fun receiveModeUpdates(): Flow<Pair<ComponentRef<*>, Mode>> = emptyFlow()
@@ -47,33 +43,42 @@ class C2 : AbstractComponent<Int>() {
 class CommunicatorTest : StringSpec(
     {
         coroutineTestScope = true
+        val deviceId = 1
         val diModule = DI {
             bind { singleton { LocalCommunicatorManager() } }
-            bind<Communicator> { provider { TestCommunicator(MutableSharedFlow()) } }
+            bind<Communicator> { provider { CommunicatorImpl() } }
             bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
+            bind<Context> {
+                singleton {
+                    object : Context {
+                        override val deviceId: Int = deviceId
+                    }
+                }
+            }
+            bind<Protocol> { singleton { TestProtocol() } }
         }
+
+        fun Component<*>.toEntity(): Entity = Entity(this.getRef().name, deviceId.toString())
 
         "The Communicator should raise an error when the DI injector is not initialized" {
             val communicator by diModule.instance<Communicator>()
             val result = communicator.sendToComponent("fail to send".encodeToByteArray()).leftOrNull()
                 ?: error("The communicator must be initialized with the DI module before its usage")
-            result shouldContain "setupInjector"
+            result shouldBe CommunicatorError.InjectorNotInitialized
         }
         "The Communicator should raise an error when it is not configured and try to send a message" {
-            val remoteFlow = MutableSharedFlow<ByteArray>()
-            val communicator = TestCommunicator(remoteFlow)
+            val communicator = CommunicatorImpl()
             communicator.setupInjector(diModule)
             val error = communicator.sendToComponent("test".encodeToByteArray()).leftOrNull()
                 ?: error("An error should be raised when used with no setup")
-            error shouldContain "Local communicator not initialized"
+            error shouldBe CommunicatorError.CommunicatorNotInitialized
         }
         "The Communicator should raise an error when it is not configured and try to receive messages" {
-            val remoteFlow = MutableSharedFlow<ByteArray>()
-            val communicator = TestCommunicator(remoteFlow)
+            val communicator = CommunicatorImpl()
             communicator.setupInjector(diModule)
             val error = communicator.receiveFromComponent().leftOrNull()
                 ?: error("An error should be raised when used with no setup")
-            error shouldContain "Local communicator not initialized"
+            error shouldBe CommunicatorError.CommunicatorNotInitialized
         }
         "The Communicator should work in Local mode" {
             val receivedMessages = mutableListOf<String>()
@@ -105,11 +110,11 @@ class CommunicatorTest : StringSpec(
         "The Communicator can send messages to the right communicator depending on the set Mode" {
             val receivedMessage = mutableListOf<String>()
             val manager by diModule.instance<LocalCommunicatorManager>()
+            val remoteProtocol by diModule.instance<Protocol>()
             val c1 = C1()
             val c2 = C2()
-            val remoteFlow = MutableSharedFlow<ByteArray>()
             val localComm = manager.getLocalCommunicator("C1", "C2")
-            val communicator = TestCommunicator(remoteFlow)
+            val communicator = CommunicatorImpl()
             communicator.setupInjector(diModule)
             communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
@@ -130,7 +135,10 @@ class CommunicatorTest : StringSpec(
             communicator.setMode(Mode.Remote)
 
             val remoteJob = launch(UnconfinedTestDispatcher()) {
-                remoteFlow.take(1).collect { receivedMessage.add(it.decodeToString()) }
+                communicator.receiveFromComponent()
+                val channel = remoteProtocol.readFromChannel(c2.toEntity()).getOrNull()
+                    ?: error("The channel to the `c2` component must be available!")
+                channel.take(1).collect { receivedMessage.add(it.decodeToString()) }
             }
             val remoteResult = either { communicator.sendToComponent("message 2".encodeToByteArray()).bind() }
             remoteResult shouldBe Either.Right(Unit)
@@ -140,11 +148,11 @@ class CommunicatorTest : StringSpec(
         "The Communicator should receive messages according to the operation Mode without re-collect" {
             val receivedMessages = mutableListOf<String>()
             val manager by diModule.instance<LocalCommunicatorManager>()
+            val remoteProtocol by diModule.instance<Protocol>()
             val c1 = C1()
             val c2 = C2()
-            val remoteFlow = MutableSharedFlow<ByteArray>()
             val localComm = manager.getLocalCommunicator("C1", "C2")
-            val communicator = TestCommunicator(remoteFlow)
+            val communicator = CommunicatorImpl()
             communicator.setupInjector(diModule)
             communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Local)
@@ -161,7 +169,8 @@ class CommunicatorTest : StringSpec(
             localComm.sendToComponent("local message".encodeToByteArray()) shouldBe Either.Right(Unit)
             communicator.setMode(Mode.Remote)
             localComm.sendToComponent("this should not be received".encodeToByteArray()) shouldBe Either.Right(Unit)
-            remoteFlow.emit("remote message".encodeToByteArray())
+            val result = remoteProtocol.writeToChannel(c2.toEntity(), "remote message".encodeToByteArray())
+            result.isRight() shouldBe true
             receiveJob.join()
             receivedMessages shouldBe listOf("local message", "remote message")
         }
