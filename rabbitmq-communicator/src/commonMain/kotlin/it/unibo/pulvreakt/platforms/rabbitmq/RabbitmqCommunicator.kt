@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
-import it.unibo.pulvreakt.core.communicator.AbstractCommunicator
 import it.unibo.pulvreakt.core.communicator.Communicator
+import it.unibo.pulvreakt.core.communicator.CommunicatorImpl
 
 /**
  * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
@@ -12,7 +12,7 @@ expect class RabbitmqCommunicator(
     username: String = "guest",
     password: String = "guest",
     virtualHost: String = "/",
-) : AbstractCommunicator
+) : CommunicatorImpl
 
 // /**
 // * Default representation for a [RemotePlaceProvider] used by the [RabbitmqCommunicator].

@@ -1,6 +1,7 @@
 package it.unibo.pulvreakt.core.communicator
 
 import arrow.core.Either
+import it.unibo.pulvreakt.core.communicator.errors.CommunicatorError
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.utils.Initializable
@@ -25,11 +26,11 @@ sealed interface Mode {
 /**
  * Represents the ability of a [Component] to communicate with another one.
  */
-interface Communicator : Initializable, PulvreaktInjected {
+interface Communicator : Initializable<Nothing>, PulvreaktInjected {
     /**
      * Sets up the communication between the given [source] and [destination] components.
      */
-    suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<String, Unit>
+    suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<CommunicatorError, Unit>
 
     /**
      * Sets the communication mode of the communicator.
@@ -39,10 +40,10 @@ interface Communicator : Initializable, PulvreaktInjected {
     /**
      * Sends a [message] to the component.
      */
-    suspend fun sendToComponent(message: ByteArray): Either<String, Unit>
+    suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit>
 
     /**
      * Receives messages from the component.
      */
-    suspend fun receiveFromComponent(): Either<String, Flow<ByteArray>>
+    suspend fun receiveFromComponent(): Either<CommunicatorError, Flow<ByteArray>>
 }

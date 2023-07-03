@@ -43,6 +43,6 @@ internal class SimpleComponentManager : ComponentManager {
     }
 
     override fun alive(): Set<Component<*>> = componentContainer.filterValues { it != null }.keys
-    override suspend fun initialize(): Either<String, Unit> = Unit.right()
-    override suspend fun finalize(): Either<String, Unit> = Unit.right()
+    override suspend fun initialize(): Either<Nothing, Unit> = Unit.right()
+    override suspend fun finalize(): Either<Nothing, Unit> = Unit.right()
 }

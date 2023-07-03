@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Represents an event source that can trigger a reconfiguration.
  */
-interface ReconfigurationEvent<T : Any> : Initializable {
+interface ReconfigurationEvent<T : Any> : Initializable<Nothing> {
     /**
      * Represents the flow of events that must be monitored for triggering the reconfiguration.
      */
