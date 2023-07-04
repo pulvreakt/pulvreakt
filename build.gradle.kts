@@ -1,5 +1,6 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.danilopianini.gradle.mavencentral.DocStyle
 import org.gradle.configurationcache.extensions.capitalized
@@ -47,6 +48,19 @@ allprojects {
     }
 
     val os = OperatingSystem.current()
+
+    plugins.withType<DetektPlugin> {
+        val check by tasks.getting
+        val detektAll by tasks.creating { group = "verification" }
+        tasks.withType<Detekt>()
+            .matching { task ->
+                task.name.let { it.endsWith("Main") || it.endsWith("Test") } && !task.name.contains("Baseline")
+            }
+            .all {
+                check.dependsOn(this)
+                detektAll.dependsOn(this)
+            }
+    }
 
     kotlin {
         jvm {
