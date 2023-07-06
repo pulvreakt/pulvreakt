@@ -77,10 +77,10 @@ class CommunicatorImpl : Communicator {
     override suspend fun finalize(): Either<Nothing, Unit> = Unit.right()
 
     private suspend fun sendRemoteToComponent(message: ByteArray): Either<CommunicatorError, Unit> =
-        remoteProtocol.writeToChannel(destinationComponent.toEntity(), message).mapLeft { CommunicatorError.LiftProtocolError(it) }
+        remoteProtocol.writeToChannel(destinationComponent.toEntity(), message).mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun receiveRemoteFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
-        remoteProtocol.readFromChannel(destinationComponent.toEntity()).mapLeft { CommunicatorError.LiftProtocolError(it) }
+        remoteProtocol.readFromChannel(destinationComponent.toEntity()).mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> = either {
         ensure(::di.isInitialized) { CommunicatorError.InjectorNotInitialized }
