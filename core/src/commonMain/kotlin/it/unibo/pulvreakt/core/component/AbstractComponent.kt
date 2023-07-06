@@ -42,7 +42,7 @@ abstract class AbstractComponent<T : Any> : Component<T> {
                 with(communicator) {
                     setupInjector(this@AbstractComponent.di)
                     communicatorSetup(this@AbstractComponent.getRef(), component)
-                        .mapLeft { ComponentError.LiftCommunicatorError(it) }
+                        .mapLeft { ComponentError.WrapCommunicatorError(it) }
                         .bind()
                 }
                 communicator
@@ -78,7 +78,7 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
         val communicator = communicators.getCommunicator(fromComponent).bind()
-        val flow = communicator.receiveFromComponent().mapLeft { ComponentError.LiftCommunicatorError(it) }.bind()
+        val flow = communicator.receiveFromComponent().mapLeft { ComponentError.WrapCommunicatorError(it) }.bind()
         return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()
     }
 
