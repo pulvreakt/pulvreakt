@@ -199,4 +199,39 @@ class PulverizationDslTest : StringSpec({
             }
         }
     }
+    "The DSL should admit a mixed configuration with simple device and extended one" {
+        val configResult = pulverization {
+            system {
+                logicDevice("device 1") {
+                    val component1 = withBehaviour<TestComponent1>()
+                    val component2 = withCommunication<TestComponent2>()
+                    component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
+                    component2 requires embeddedDeviceCapability
+                }
+                extendedLogicDevice("device 2") {
+                    val component1 = withComponent<TestComponent1>()
+                    val component2 = withComponent<TestComponent2>()
+                    component1 requires embeddedDeviceCapability
+                    component2 requires embeddedDeviceCapability
+                    component1 wiredTo component2
+                    component2 wiredTo component1
+                }
+            }
+            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+                device("device 1") {
+                    TestComponent1() startsOn smartphoneHost
+                    TestComponent2() startsOn smartphoneHost
+                }
+                device("device 2") {
+                    TestComponent1() startsOn smartphoneHost
+                    TestComponent2() startsOn smartphoneHost
+                }
+            }
+        }
+        configResult.isRight() shouldBe true
+        configResult.getOrNull()!!.let { config ->
+            config["device 1"] shouldNotBe null
+            config["device 2"] shouldNotBe null
+        }
+    }
 })
