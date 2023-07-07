@@ -26,30 +26,43 @@ class ExtendedDeviceScope(private val deviceName: String) {
     private val componentsGraph = mutableMapOf<ComponentType, Set<ComponentType>>()
     private val requiredCapabilities = mutableMapOf<ComponentType, Set<Capability>>()
 
-//    inline fun <reified C : Component> component(): ComponentType {
-//        val componentName = C::class.simpleName!!
-//        addComponent(componentName)
-//        return componentName
-//    }
+    /**
+     * Register a [Component] in the device and return its [ComponentType].
+     */
     inline fun <reified C : Component<*>> withComponent(): ComponentType =
         ComponentType.ctypeOf<C>().also { addComponent(it) }
 
+    /**
+     * Links a component to other components.
+     */
     infix fun ComponentType.wiredTo(others: NonEmptySet<ComponentType>) {
         componentsGraph[this] = others
     }
 
+    /**
+     * Links a component to another component.
+     */
     infix fun ComponentType.wiredTo(other: ComponentType) {
         componentsGraph[this] = nonEmptySetOf(other)
     }
 
+    /**
+     * Specifies that a component requires a capability.
+     */
     infix fun ComponentType.requires(capability: Capability) {
         requiredCapabilities[this] = nonEmptySetOf(capability)
     }
 
+    /**
+     * Specifies that a component requires a set of capabilities.
+     */
     infix fun ComponentType.requires(capabilities: NonEmptySet<Capability>) {
         requiredCapabilities[this] = capabilities
     }
 
+    /**
+     * Register a component in the device.
+     */
     fun addComponent(component: ComponentType) {
         componentsGraph[component] ?: run { componentsGraph[component] = emptySet() }
     }

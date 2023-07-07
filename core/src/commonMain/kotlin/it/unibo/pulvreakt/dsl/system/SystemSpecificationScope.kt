@@ -20,11 +20,17 @@ import it.unibo.pulvreakt.dsl.model.DeviceStructure
 class SystemSpecificationScope {
     private val devices = mutableListOf<Either<Nel<SystemConfigurationError>, DeviceStructure>>()
 
+    /**
+     * Configure an extended logical device with a [name] via [config] block.
+     */
     fun extendedLogicDevice(name: String, config: ExtendedDeviceScope.() -> Unit) {
         val deviceScope = ExtendedDeviceScope(name).apply(config)
         devices.add(deviceScope.generate())
     }
 
+    /**
+     * Configure a canonical logical device with a [name] via [config] block.
+     */
     fun logicDevice(name: String, config: CanonicalDeviceScope.() -> Unit) {
         val deviceScope = CanonicalDeviceScope(name).apply(config)
         devices.add(deviceScope.generate())
