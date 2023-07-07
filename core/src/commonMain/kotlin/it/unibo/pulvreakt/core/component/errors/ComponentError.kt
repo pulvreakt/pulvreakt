@@ -12,22 +12,22 @@ sealed interface ComponentError {
     /**
      * Represents the error that occurs when the wiring of the components is not initialized.
      */
-    data object WiringNotInitialized : ComponentError
+    object WiringNotInitialized : ComponentError
 
     /**
      * Represents the error that occurs when the injector is not initialized.
      */
-    data object InjectorNotInitialized : ComponentError
+    object InjectorNotInitialized : ComponentError
 
     /**
      * Represents the error that occurs when the component is finalized before the initialization.
      */
-    data object FinalizedBeforeInitialization : ComponentError
+    object FinalizedBeforeInitialization : ComponentError
 
     /**
      * Represents the error that occurs when the component is trying to be used before the initialization.
      */
-    data object ComponentNotInitialized : ComponentError
+    object ComponentNotInitialized : ComponentError
 
     /**
      * Represents the error that occurs when try to communicate with a [component] that is not registered.
