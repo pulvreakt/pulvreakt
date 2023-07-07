@@ -15,12 +15,12 @@ sealed interface Mode {
     /**
      * Represents the local mode.
      */
-    data object Local : Mode
+    object Local : Mode
 
     /**
      * Represents the remote mode.
      */
-    data object Remote : Mode
+    object Remote : Mode
 }
 
 /**
