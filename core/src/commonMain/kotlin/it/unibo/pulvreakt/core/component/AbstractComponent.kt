@@ -98,11 +98,17 @@ abstract class AbstractComponent<T : Any> : Component<T> {
     }
 
     companion object {
+        /**
+         * Helper method to send a [message] [toComponent] without specifying the serialization.
+         */
         suspend inline fun <reified C : Any> Component<C>.send(
             toComponent: ComponentRef<C>,
             message: C,
         ): Either<ComponentError, Unit> = send(toComponent, message, serializer())
 
+        /**
+         * Helper method to receive messages [fromComponent] without specifying the serialization.
+         */
         suspend inline fun <reified C : Any> Component<C>.receive(
             fromComponent: ComponentRef<C>,
         ): Either<ComponentError, Flow<C>> = receive(fromComponent, serializer())
