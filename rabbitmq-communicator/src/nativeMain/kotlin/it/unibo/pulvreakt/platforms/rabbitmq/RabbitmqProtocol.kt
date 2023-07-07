@@ -6,6 +6,9 @@ import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
+ */
 actual class RabbitmqProtocol actual constructor(
     hostname: String,
     port: Int,
