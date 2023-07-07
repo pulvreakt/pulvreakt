@@ -21,6 +21,9 @@ import it.unibo.pulvreakt.dsl.model.PulvreaktConfiguration
 import it.unibo.pulvreakt.dsl.model.ReconfiguratorProvider
 import it.unibo.pulvreakt.dsl.system.SystemSpecificationScope
 
+/**
+ * Configuration DSL scope for configuring the pulverization.
+ */
 class PulverizationScope {
     private lateinit var systemConfigurations: Either<Nel<SystemConfigurationError>, ConfiguredDeviceStructure>
     private lateinit var deploymentConfigurations:
@@ -28,10 +31,16 @@ class PulverizationScope {
     private lateinit var commProvider: CommunicatorProvider
     private lateinit var reconfigProvider: ReconfiguratorProvider
 
+    /**
+     * DSL scope for configuring the pulverization system.
+     */
     fun system(systemConfig: SystemSpecificationScope.() -> Unit) {
         systemConfigurations = SystemSpecificationScope().apply(systemConfig).generate()
     }
 
+    /**
+     * DSL scope for configuring the pulverization deployment.
+     */
     fun deployment(
         infrastructure: NonEmptySet<Host>,
         communicatorProvider: CommunicatorProvider,

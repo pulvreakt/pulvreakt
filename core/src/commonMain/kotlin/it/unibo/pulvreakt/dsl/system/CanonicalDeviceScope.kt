@@ -16,6 +16,9 @@ import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.dsl.model.ComponentType.Companion.ctypeOf
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 
+/**
+ * Scope for the system configuration using a canonical pulverization specification.
+ */
 class CanonicalDeviceScope(private val deviceName: String) {
     private var behaviourCapability: Pair<ComponentType, Set<Capability>>? = null
     private var stateCapability: Pair<ComponentType, Set<Capability>>? = null
@@ -23,37 +26,45 @@ class CanonicalDeviceScope(private val deviceName: String) {
     private var sensorsCapability: Pair<ComponentType, Set<Capability>>? = null
     private var actuatorsCapability: Pair<ComponentType, Set<Capability>>? = null
 
+    /**
+     * Register a [State] component in the device.
+     */
     inline fun <reified State : Component<*>> withState(): ComponentType = ctypeOf<State>().also {
-        addComponent(
-            "state",
-            it,
-        )
-    }
-    inline fun <reified Behaviour : Component<*>> withBehaviour(): ComponentType = ctypeOf<Behaviour>().also {
-        addComponent(
-            "behaviour",
-            it,
-        )
-    }
-    inline fun <reified Sensors : Component<*>> withSensors(): ComponentType = ctypeOf<Sensors>().also {
-        addComponent(
-            "sensors",
-            it,
-        )
-    }
-    inline fun <reified Actuators : Component<*>> withActuators(): ComponentType = ctypeOf<Actuators>().also {
-        addComponent(
-            "actuators",
-            it,
-        )
-    }
-    inline fun <reified Comm : Component<*>> withCommunication(): ComponentType = ctypeOf<Comm>().also {
-        addComponent(
-            "comm",
-            it,
-        )
+        addComponent("state", it)
     }
 
+    /**
+     * Register a [Behaviour] component in the device.
+     */
+    inline fun <reified Behaviour : Component<*>> withBehaviour(): ComponentType = ctypeOf<Behaviour>().also {
+        addComponent("behaviour", it)
+    }
+
+    /**
+     * Register a [Sensors] component in the device.
+     */
+    inline fun <reified Sensors : Component<*>> withSensors(): ComponentType = ctypeOf<Sensors>().also {
+        addComponent("sensors", it)
+    }
+
+    /**
+     * Register a [Actuators] component in the device.
+     */
+    inline fun <reified Actuators : Component<*>> withActuators(): ComponentType = ctypeOf<Actuators>().also {
+        addComponent("actuators", it)
+    }
+
+    /**
+     * Register a [Comm] component in the device.
+     */
+    inline fun <reified Comm : Component<*>> withCommunication(): ComponentType = ctypeOf<Comm>().also {
+        addComponent("comm", it)
+    }
+
+    /**
+     * Register a new [component] with the given [tag].
+     * This method, even if it is public, should not be used directly.
+     */
     fun addComponent(tag: String, component: ComponentType) {
         when (tag) {
             "behaviour" -> behaviourCapability = component to emptySet()
@@ -65,6 +76,9 @@ class CanonicalDeviceScope(private val deviceName: String) {
         }
     }
 
+    /**
+     * Specifies that a component needs a [capability] to be executed.
+     */
     infix fun ComponentType.requires(capability: Capability) {
         when (this) {
             behaviourCapability?.first -> behaviourCapability = behaviourCapability!!.first to setOf(capability)
@@ -76,6 +90,9 @@ class CanonicalDeviceScope(private val deviceName: String) {
         }
     }
 
+    /**
+     * Specifies that a component needs a set of [capabilities] to be executed.
+     */
     infix fun ComponentType.requires(capabilities: NonEmptySet<Capability>) {
         when (this) {
             behaviourCapability?.first -> behaviourCapability = behaviourCapability!!.first to capabilities.toSet()
