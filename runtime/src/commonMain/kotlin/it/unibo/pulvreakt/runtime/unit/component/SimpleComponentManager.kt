@@ -22,7 +22,9 @@ internal class SimpleComponentManager : ComponentManager {
     override suspend fun start(component: Component<*>): Either<String, Unit> = coroutineScope {
         either {
             val isComponentRegistered = componentContainer.containsKey(component)
-            ensure(isComponentRegistered) { "The component ${component::class.simpleName} is not registered. Unable to execute it." }
+            ensure(isComponentRegistered) {
+                "The component ${component::class.simpleName} is not registered. Unable to execute it."
+            }
             logger.debug { "Starting the execution of ${component::class.simpleName}" }
             val jobRef = launch { component.execute() }
             componentContainer += component to jobRef
@@ -34,7 +36,8 @@ internal class SimpleComponentManager : ComponentManager {
             "The component ${component::class.simpleName} is not registered. Unable to stop it."
         }
         logger.debug { "Stop the execution of ${component::class.simpleName}" }
-        componentContainer[component]?.cancel("Deployment unit reconfigured. No more need for ${component::class.simpleName}")
+        componentContainer[component]
+            ?.cancel("Deployment unit reconfigured. No more need for ${component::class.simpleName}")
             ?: run {
                 logger.warn { "Tried to cancel a non-running component" }
                 logger.debug { "Tried to cancel the ${component::class.simpleName} but it was not running" }
