@@ -149,7 +149,7 @@ allprojects {
         targets.all {
             compilations.all {
                 kotlinOptions {
-                    // allWarningsAsErrors = true
+                    allWarningsAsErrors = true
                 }
             }
         }
@@ -227,6 +227,16 @@ allprojects {
     tasks.withType<Detekt>().configureEach { finalizedBy(reportMerge) }
     reportMerge {
         input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
+    }
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion(rootProject.libs.versions.kotlin.get())
+            }
+            if (requested.group == "org.jetbrains.kotlinx" && requested.name.contains("kotlinx-coroutines")) {
+                useVersion(rootProject.libs.versions.coroutines.get())
+            }
+        }
     }
 }
 
