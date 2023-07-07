@@ -11,8 +11,8 @@ import arrow.core.raise.zipOrAccumulate
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.InvalidReconfigurationComponent
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.InvalidReconfigurationHost
+import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.UnknownComponent
 import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.dsl.model.DeviceReconfigurationRule
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
@@ -34,7 +34,7 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
 
         val result = either<Nel<DeploymentConfigurationError>, DeviceReconfigurationRule> {
             zipOrAccumulate(
-                { ensure(componentType in components) { InvalidReconfigurationComponent(componentType) } },
+                { ensure(componentType in components) { UnknownComponent(componentType) } },
                 { ensure(host in infrastructure) { InvalidReconfigurationHost(host) } },
                 {
                     val componentCapabilities = deviceStructure.requiredCapabilities[componentType]!!

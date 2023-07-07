@@ -19,6 +19,9 @@ import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.ReconfigurationRules
 
+/**
+ * Scope for the deployment configuration of a device.
+ */
 class DeviceDeploymentSpecificationScope(
     private val deviceName: String,
     private val deviceStructure: DeviceStructure,
@@ -27,6 +30,9 @@ class DeviceDeploymentSpecificationScope(
     private val componentsStartupHosts = mutableListOf<Either<InvalidStartupHost, Pair<Component<*>, Host>>>()
     private var deviceReconfigurationRules: Either<Nel<DeploymentConfigurationError>, ReconfigurationRules>? = null
 
+    /**
+     * Configures a component of the device that starts on the given [host].
+     */
     infix fun Component<*>.startsOn(host: Host) {
         val componentType = this.getType()
         val deviceCapabilities = deviceStructure.requiredCapabilities[componentType]!!
@@ -38,6 +44,9 @@ class DeviceDeploymentSpecificationScope(
         componentsStartupHosts += result
     }
 
+    /**
+     * Configures the reconfiguration rules of the device.
+     */
     fun reconfigurationRules(config: ReconfigurationRulesScope.() -> Unit) {
         val scope = ReconfigurationRulesScope(deviceStructure, infrastructure).apply(config)
         deviceReconfigurationRules = scope.generate()

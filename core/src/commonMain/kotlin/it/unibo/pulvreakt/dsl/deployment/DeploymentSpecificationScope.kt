@@ -19,10 +19,17 @@ import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 /**
  * Scope for the deployment DSL configuration.
  */
-class DeploymentSpecificationScope(private val systemConfiguration: ConfiguredDeviceStructure, private val infrastructure: NonEmptySet<Host>) {
+class DeploymentSpecificationScope(
+    private val systemConfiguration: ConfiguredDeviceStructure,
+    private val infrastructure: NonEmptySet<Host>,
+) {
     private val devicesConfiguration =
         mutableListOf<Either<Nel<DeploymentConfigurationError>, DeviceRuntimeConfiguration>>()
 
+    /**
+     * Configures a (logical) device with the given [name].
+     * [config] is the configuration scope for configuring the device.
+     */
     fun device(name: String, config: DeviceDeploymentSpecificationScope.() -> Unit) {
         val configuration = either {
             val deviceConfig = systemConfiguration.firstOrNull { it.deviceName == name }
