@@ -10,7 +10,6 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-# kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.41.0"
 detekt = "io.gitlab.arturbosch.detekt:1.23.0"
 kover = "org.jetbrains.kotlinx.kover:0.7.2"
 taskTree = "com.dorongold.task-tree:2.1.1"
@@ -27,8 +26,6 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
 kodein = { module = "org.kodein.di:kodein-di", version = "7.20.2" }
-#koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-#koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
 kotlinLogger = { module = "io.github.oshai:kotlin-logging", version = "4.0.0" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.7" }
