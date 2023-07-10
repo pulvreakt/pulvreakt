@@ -29,10 +29,10 @@ class CommunicatorImpl : Communicator {
     private lateinit var localCommunicator: Communicator
     private val remoteProtocol by instance<Protocol>()
     private val context by instance<Context>()
-    private lateinit var sourceComponent: ComponentRef<*>
-    private lateinit var destinationComponent: ComponentRef<*>
+    private lateinit var sourceComponent: ComponentRef
+    private lateinit var destinationComponent: ComponentRef
 
-    override suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<CommunicatorError, Unit> = either {
+    override suspend fun communicatorSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit> = either {
         isDependencyInjectionInitialized().bind()
         localCommunicator = localCommManager.getLocalCommunicator(source.name, destination.name)
         sourceComponent = source
@@ -92,5 +92,5 @@ class CommunicatorImpl : Communicator {
         ensure(::localCommunicator.isInitialized) { CommunicatorError.CommunicatorNotInitialized }
     }
 
-    private fun ComponentRef<*>.toEntity(): Entity = Entity(this.name, context.deviceId.toString())
+    private fun ComponentRef.toEntity(): Entity = Entity(this.name, context.deviceId.toString())
 }

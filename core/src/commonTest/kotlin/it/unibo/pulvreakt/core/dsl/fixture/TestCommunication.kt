@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import org.kodein.di.DI
 
 class TestCommunicator : Communicator {
-    override suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<CommunicatorError, Unit> {
+    override suspend fun communicatorSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit> {
         TODO("Not yet implemented")
     }
 

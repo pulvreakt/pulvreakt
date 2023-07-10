@@ -10,27 +10,25 @@ import kotlinx.serialization.KSerializer
 /**
  * Represents a component of the system.
  */
-interface Component<T : Any> : Initializable<ComponentError>, PulvreaktInjected {
+interface Component : Initializable<ComponentError>, PulvreaktInjected {
     /**
      * Setup all the other [components] to which this component will communicate.
      */
-    fun setupWiring(vararg components: ComponentRef<*>)
+    fun setupWiring(vararg components: ComponentRef)
 
     /**
      * Returns a symbolic reference to this component.
      * This method is used internally by the runtime and should not be called by the user.
-     *
-     * To get a reference to a component from a type, use [ComponentRef.create].
      */
-    fun getRef(): ComponentRef<T> = ComponentRef.create(this)
+    fun getRef(): ComponentRef
 
     /**
      * Sends a [message] [toComponent] by serializing it with the given [serializer].
      */
-    suspend fun send(
-        toComponent: ComponentRef<*>,
-        message: T,
-        serializer: KSerializer<T>,
+    suspend fun <P : Any> send(
+        toComponent: ComponentRef,
+        message: P,
+        serializer: KSerializer<P>,
     ): Either<ComponentError, Unit>
 
     /**
@@ -38,7 +36,7 @@ interface Component<T : Any> : Initializable<ComponentError>, PulvreaktInjected 
      * @param P the type of the message to receive.
      */
     suspend fun <P : Any> receive(
-        fromComponent: ComponentRef<P>,
+        fromComponent: ComponentRef,
         serializer: KSerializer<P>,
     ): Either<ComponentError, Flow<P>>
 

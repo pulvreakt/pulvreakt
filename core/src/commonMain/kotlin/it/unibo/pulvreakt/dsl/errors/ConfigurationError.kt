@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.dsl.errors
 
+import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.dsl.model.ComponentType
 
 /**
  * Represents an error that can occur during the configuration of the system using the DSL.
@@ -26,22 +26,22 @@ sealed interface DeploymentConfigurationError : ConfigurationError {
      * Error raised when in the system configuration a [component] is registered but in the deployment configuration
      * it is not provided its instance.
      */
-    data class ComponentNotRegistered(val component: ComponentType) : DeploymentConfigurationError
+    data class ComponentNotRegistered(val component: ComponentRef) : DeploymentConfigurationError
 
     /**
      * Error raised when a [component] cannot be moved to the specified [host].
      */
-    data class InvalidReconfiguration(val component: ComponentType, val host: Host) : DeploymentConfigurationError
+    data class InvalidReconfiguration(val component: ComponentRef, val host: Host) : DeploymentConfigurationError
 
     /**
      * Error raised when a [component] cannot be started on the specified [host].
      */
-    data class InvalidStartupHost(val component: ComponentType, val host: Host) : DeploymentConfigurationError
+    data class InvalidStartupHost(val component: ComponentRef, val host: Host) : DeploymentConfigurationError
 
     /**
      * Error raised when a [component] is configured for a reconfiguration, but it does not belong to the device.
      */
-    data class UnknownComponent(val component: ComponentType) : DeploymentConfigurationError
+    data class UnknownComponent(val component: ComponentRef) : DeploymentConfigurationError
 
     /**
      * Error raised when a component is moved to an [host] that is not in the infrastructure.
@@ -81,5 +81,5 @@ sealed interface SystemConfigurationError : ConfigurationError {
     /**
      * Error raised if a [component] is registered without specifying its capabilities.
      */
-    data class UnspecifiedCapabilities(val component: ComponentType) : SystemConfigurationError
+    data class UnspecifiedCapabilities(val component: ComponentRef) : SystemConfigurationError
 }

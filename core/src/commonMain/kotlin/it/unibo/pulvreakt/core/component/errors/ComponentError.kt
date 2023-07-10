@@ -32,7 +32,7 @@ sealed interface ComponentError {
     /**
      * Represents the error that occurs when try to communicate with a [component] that is not registered.
      */
-    data class ComponentNotRegistered(val component: ComponentRef<*>) : ComponentError
+    data class ComponentNotRegistered(val component: ComponentRef) : ComponentError
 
     /**
      * Represents a generic error that occurs during the execution of the component.

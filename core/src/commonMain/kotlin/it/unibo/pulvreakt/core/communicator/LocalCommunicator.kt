@@ -11,7 +11,7 @@ import org.kodein.di.DI
 
 internal class LocalCommunicator(private val sharedFlow: MutableSharedFlow<ByteArray>) : Communicator {
     override lateinit var di: DI
-    override suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<CommunicatorError, Unit> = Unit.right()
+    override suspend fun communicatorSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit> = Unit.right()
     override fun setMode(mode: Mode) = Unit
     override fun setupInjector(kodein: DI) {
         di = kodein

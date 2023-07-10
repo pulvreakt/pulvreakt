@@ -3,69 +3,78 @@ package it.unibo.pulvreakt.dsl.system
 import arrow.core.Either
 import arrow.core.Nel
 import arrow.core.NonEmptySet
+import arrow.core.nonEmptySetOf
 import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptySetOrNull
-import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
+import it.unibo.pulvreakt.core.component.pulverisation.Actuators
+import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
+import it.unibo.pulvreakt.core.component.pulverisation.Communication
+import it.unibo.pulvreakt.core.component.pulverisation.Sensors
+import it.unibo.pulvreakt.core.component.pulverisation.State
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
-import it.unibo.pulvreakt.dsl.model.ComponentType
-import it.unibo.pulvreakt.dsl.model.ComponentType.Companion.ctypeOf
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
+import it.unibo.pulvreakt.core.component.ComponentType.Actuator as ActuatorsType
+import it.unibo.pulvreakt.core.component.ComponentType.Behaviour as BehaviourType
+import it.unibo.pulvreakt.core.component.ComponentType.Communication as CommunicationType
+import it.unibo.pulvreakt.core.component.ComponentType.Sensor as SensorsType
+import it.unibo.pulvreakt.core.component.ComponentType.State as StateType
 
 /**
  * Scope for the system configuration using a canonical pulverization specification.
  */
 class CanonicalDeviceScope(private val deviceName: String) {
-    private var behaviourCapability: Pair<ComponentType, Set<Capability>>? = null
-    private var stateCapability: Pair<ComponentType, Set<Capability>>? = null
-    private var commCapability: Pair<ComponentType, Set<Capability>>? = null
-    private var sensorsCapability: Pair<ComponentType, Set<Capability>>? = null
-    private var actuatorsCapability: Pair<ComponentType, Set<Capability>>? = null
+    private var behaviourCapability: Pair<ComponentRef, Set<Capability>>? = null
+    private var stateCapability: Pair<ComponentRef, Set<Capability>>? = null
+    private var commCapability: Pair<ComponentRef, Set<Capability>>? = null
+    private var sensorsCapability: Pair<ComponentRef, Set<Capability>>? = null
+    private var actuatorsCapability: Pair<ComponentRef, Set<Capability>>? = null
 
     /**
      * Register a [State] component in the device.
      */
-    inline fun <reified State : Component<*>> withState(): ComponentType = ctypeOf<State>().also {
+    inline fun <reified S : State<*>> withState(): ComponentRef = ComponentRef.create<S>(StateType).also {
         addComponent("state", it)
     }
 
     /**
      * Register a [Behaviour] component in the device.
      */
-    inline fun <reified Behaviour : Component<*>> withBehaviour(): ComponentType = ctypeOf<Behaviour>().also {
+    inline fun <reified B : Behaviour<*, *, *, *>> withBehaviour(): ComponentRef = ComponentRef.create<B>(BehaviourType).also {
         addComponent("behaviour", it)
     }
 
     /**
      * Register a [Sensors] component in the device.
      */
-    inline fun <reified Sensors : Component<*>> withSensors(): ComponentType = ctypeOf<Sensors>().also {
+    inline fun <reified SS : Sensors<*>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsType).also {
         addComponent("sensors", it)
     }
 
     /**
      * Register a [Actuators] component in the device.
      */
-    inline fun <reified Actuators : Component<*>> withActuators(): ComponentType = ctypeOf<Actuators>().also {
+    inline fun <reified AS : Actuators<*>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsType).also {
         addComponent("actuators", it)
     }
 
     /**
      * Register a [Comm] component in the device.
      */
-    inline fun <reified Comm : Component<*>> withCommunication(): ComponentType = ctypeOf<Comm>().also {
-        addComponent("comm", it)
-    }
+    inline fun <reified Comm : Communication<*>> withCommunication(): ComponentRef = ComponentRef.create<Comm>(
+        CommunicationType,
+    ).also { addComponent("comm", it) }
 
     /**
      * Register a new [component] with the given [tag].
      * This method, even if it is public, should not be used directly.
      */
-    fun addComponent(tag: String, component: ComponentType) {
+    fun addComponent(tag: String, component: ComponentRef) {
         when (tag) {
             "behaviour" -> behaviourCapability = component to emptySet()
             "state" -> stateCapability = component to emptySet()
@@ -79,21 +88,12 @@ class CanonicalDeviceScope(private val deviceName: String) {
     /**
      * Specifies that a component needs a [capability] to be executed.
      */
-    infix fun ComponentType.requires(capability: Capability) {
-        when (this) {
-            behaviourCapability?.first -> behaviourCapability = behaviourCapability!!.first to setOf(capability)
-            stateCapability?.first -> stateCapability = stateCapability!!.first to setOf(capability)
-            commCapability?.first -> commCapability = commCapability!!.first to setOf(capability)
-            sensorsCapability?.first -> sensorsCapability = sensorsCapability!!.first to setOf(capability)
-            actuatorsCapability?.first -> actuatorsCapability = actuatorsCapability!!.first to setOf(capability)
-            else -> Unit
-        }
-    }
+    infix fun ComponentRef.requires(capability: Capability) = requires(nonEmptySetOf(capability))
 
     /**
      * Specifies that a component needs a set of [capabilities] to be executed.
      */
-    infix fun ComponentType.requires(capabilities: NonEmptySet<Capability>) {
+    infix fun ComponentRef.requires(capabilities: NonEmptySet<Capability>) {
         when (this) {
             behaviourCapability?.first -> behaviourCapability = behaviourCapability!!.first to capabilities.toSet()
             stateCapability?.first -> stateCapability = stateCapability!!.first to capabilities.toSet()
