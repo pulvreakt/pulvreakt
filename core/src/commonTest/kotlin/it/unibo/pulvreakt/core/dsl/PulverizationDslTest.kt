@@ -10,12 +10,11 @@ import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
 import it.unibo.pulvreakt.core.dsl.fixture.CommTest
-import it.unibo.pulvreakt.core.dsl.fixture.TestCommunicator
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent1
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent2
+import it.unibo.pulvreakt.core.dsl.fixture.TestProtocol
 import it.unibo.pulvreakt.core.dsl.fixture.TestReconfigurationEvent1
 import it.unibo.pulvreakt.core.dsl.fixture.TestReconfigurationEvent2
-import it.unibo.pulvreakt.core.dsl.fixture.TestReconfigurator
 import it.unibo.pulvreakt.core.dsl.fixture.embeddedDeviceCapability
 import it.unibo.pulvreakt.core.dsl.fixture.serverCapability
 import it.unibo.pulvreakt.core.dsl.fixture.serverHost
@@ -54,7 +53,7 @@ class PulverizationDslTest : StringSpec({
                     withComponent<TestComponent1>()
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     TestComponent1() startsOn smartphoneHost
                 }
@@ -74,7 +73,7 @@ class PulverizationDslTest : StringSpec({
                     component2 wiredTo component1
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") { }
             }
         }
@@ -97,7 +96,7 @@ class PulverizationDslTest : StringSpec({
                     component2 wiredTo component1
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     TestComponent1() startsOn smartphoneHost
                     TestComponent2() startsOn smartphoneHost
@@ -126,7 +125,7 @@ class PulverizationDslTest : StringSpec({
                     component1 requires embeddedDeviceCapability
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     TestComponent1() startsOn smartphoneHost
                 }
@@ -147,7 +146,7 @@ class PulverizationDslTest : StringSpec({
                     component1 requires embeddedDeviceCapability
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     BehaviourTest() startsOn smartphoneHost
                     reconfigurationRules {
@@ -177,7 +176,7 @@ class PulverizationDslTest : StringSpec({
                     component2 wiredTo component1
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     TestComponent1() startsOn smartphoneHost
                     TestComponent2() startsOn smartphoneHost
@@ -223,7 +222,7 @@ class PulverizationDslTest : StringSpec({
                     component2 requires embeddedDeviceCapability
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("my device") {
                     BehaviourTest() startsOn smartphoneHost
                     CommTest() startsOn smartphoneHost
@@ -268,7 +267,7 @@ class PulverizationDslTest : StringSpec({
                     component2 wiredTo component1
                 }
             }
-            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+            deployment(testInfrastructure, TestProtocol()) {
                 device("device 1") {
                     BehaviourTest() startsOn smartphoneHost
                     CommTest() startsOn smartphoneHost
