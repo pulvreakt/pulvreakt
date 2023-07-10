@@ -30,7 +30,7 @@ interface Communicator : Initializable<Nothing>, PulvreaktInjected {
     /**
      * Sets up the communication between the given [source] and [destination] components.
      */
-    suspend fun communicatorSetup(source: ComponentRef<*>, destination: ComponentRef<*>): Either<CommunicatorError, Unit>
+    suspend fun communicatorSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit>
 
     /**
      * Sets the communication mode of the communicator.

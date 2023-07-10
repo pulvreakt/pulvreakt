@@ -2,6 +2,7 @@ package it.unibo.pulvreakt.dsl.model
 
 import arrow.core.NonEmptySet
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
 
@@ -9,7 +10,7 @@ import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
  * Models a new configuration in the system.
  * The [component] is moved to the [destinationHost].
  */
-data class NewConfiguration(val component: ComponentType, val destinationHost: Host)
+data class NewConfiguration(val component: ComponentRef, val destinationHost: Host)
 
 /**
  * Models a reconfiguration rule for a device.
@@ -18,7 +19,7 @@ data class NewConfiguration(val component: ComponentType, val destinationHost: H
 data class DeviceReconfigurationRule(val event: ReconfigurationEvent<*>, val newConfiguration: NewConfiguration)
 typealias OnDeviceRules = Set<DeviceReconfigurationRule>
 
-typealias ComponentStartupHost = Map<Component<*>, Host>
+typealias ComponentStartupHost = Map<Component, Host>
 
 /**
  * Models the reconfiguration rules of the device.

@@ -6,6 +6,10 @@ import arrow.core.nonEmptySetOf
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import it.unibo.pulvreakt.core.component.ComponentRef
+import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
+import it.unibo.pulvreakt.core.dsl.fixture.CommTest
 import it.unibo.pulvreakt.core.dsl.fixture.TestCommunicator
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent1
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent2
@@ -17,13 +21,13 @@ import it.unibo.pulvreakt.core.dsl.fixture.serverCapability
 import it.unibo.pulvreakt.core.dsl.fixture.serverHost
 import it.unibo.pulvreakt.core.dsl.fixture.smartphoneHost
 import it.unibo.pulvreakt.core.dsl.fixture.testInfrastructure
+import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.ComponentNotRegistered
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.EmptyDeploymentConfiguration
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.InvalidReconfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptySystemConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
-import it.unibo.pulvreakt.dsl.model.ComponentType.Companion.ctypeOf
 import it.unibo.pulvreakt.dsl.model.DeviceReconfigurationRule
 import it.unibo.pulvreakt.dsl.model.NewConfiguration
 import it.unibo.pulvreakt.dsl.pulverization
@@ -56,7 +60,7 @@ class PulverizationDslTest : StringSpec({
                 }
             }
         }
-        config shouldBe Either.Left(nonEmptyListOf(UnspecifiedCapabilities(ctypeOf<TestComponent1>())))
+        config shouldBe Either.Left(nonEmptyListOf(UnspecifiedCapabilities(ComponentRef.create<TestComponent1>())))
     }
     "The DSL should raise an error if the deployment do not match the system configuration for the same device" {
         val config = pulverization {
@@ -76,8 +80,8 @@ class PulverizationDslTest : StringSpec({
         }
         config shouldBe Either.Left(
             nonEmptyListOf(
-                ComponentNotRegistered(ctypeOf<TestComponent1>()),
-                ComponentNotRegistered(ctypeOf<TestComponent2>()),
+                ComponentNotRegistered(ComponentRef.create<TestComponent1>()),
+                ComponentNotRegistered(ComponentRef.create<TestComponent2>()),
             ),
         )
     }
@@ -99,8 +103,8 @@ class PulverizationDslTest : StringSpec({
                     TestComponent2() startsOn smartphoneHost
                     reconfigurationRules {
                         onDevice {
-                            TestReconfigurationEvent1() reconfigures (ctypeOf<TestComponent1>() movesTo serverHost)
-                            TestReconfigurationEvent2() reconfigures (ctypeOf<TestComponent2>() movesTo serverHost)
+                            TestReconfigurationEvent1() reconfigures (ComponentRef.create<TestComponent1>() movesTo serverHost)
+                            TestReconfigurationEvent2() reconfigures (ComponentRef.create<TestComponent2>() movesTo serverHost)
                         }
                     }
                 }
@@ -109,8 +113,55 @@ class PulverizationDslTest : StringSpec({
         config.isLeft() shouldBe true
         config shouldBe Either.Left(
             nonEmptyListOf(
-                InvalidReconfiguration(ctypeOf<TestComponent1>(), serverHost),
-                InvalidReconfiguration(ctypeOf<TestComponent2>(), serverHost),
+                InvalidReconfiguration(ComponentRef.create<TestComponent1>(), serverHost),
+                InvalidReconfiguration(ComponentRef.create<TestComponent2>(), serverHost),
+            ),
+        )
+    }
+    "The DSL should produce an error if an unknown component is registered in the deployment" {
+        val config = pulverization {
+            system {
+                logicDevice("my device") {
+                    val component1 = withBehaviour<BehaviourTest>()
+                    component1 requires embeddedDeviceCapability
+                }
+            }
+            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+                device("my device") {
+                    TestComponent1() startsOn smartphoneHost
+                }
+            }
+        }
+        config.isLeft() shouldBe true
+        config shouldBe Either.Left(
+            nonEmptyListOf(
+                DeploymentConfigurationError.UnknownComponent(ComponentRef.create<TestComponent1>()),
+            ),
+        )
+    }
+    "The DSL should raise an error is an unknown component is moved in a reconfiguration rule" {
+        val config = pulverization {
+            system {
+                logicDevice("my device") {
+                    val component1 = withBehaviour<BehaviourTest>()
+                    component1 requires embeddedDeviceCapability
+                }
+            }
+            deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
+                device("my device") {
+                    BehaviourTest() startsOn smartphoneHost
+                    reconfigurationRules {
+                        onDevice {
+                            TestReconfigurationEvent1() reconfigures (ComponentRef.create<TestComponent1>() movesTo serverHost)
+                        }
+                    }
+                }
+            }
+        }
+        config.isLeft() shouldBe true
+        config shouldBe Either.Left(
+            nonEmptyListOf(
+                DeploymentConfigurationError.UnknownComponent(ComponentRef.create<TestComponent1>()),
             ),
         )
     }
@@ -132,7 +183,7 @@ class PulverizationDslTest : StringSpec({
                     TestComponent2() startsOn smartphoneHost
                     reconfigurationRules {
                         onDevice {
-                            TestReconfigurationEvent1() reconfigures (ctypeOf<TestComponent1>() movesTo serverHost)
+                            TestReconfigurationEvent1() reconfigures (theComponent<TestComponent1>() movesTo serverHost)
                         }
                     }
                 }
@@ -143,8 +194,8 @@ class PulverizationDslTest : StringSpec({
             config["my device"] shouldNotBe null
             config["my device"]!!.let { deviceSpec ->
                 deviceSpec.componentsConfiguration shouldBe mapOf(
-                    ctypeOf<TestComponent1>() to setOf(ctypeOf<TestComponent2>()),
-                    ctypeOf<TestComponent2>() to setOf(ctypeOf<TestComponent1>()),
+                    ComponentRef.create<TestComponent1>() to setOf(ComponentRef.create<TestComponent2>()),
+                    ComponentRef.create<TestComponent2>() to setOf(ComponentRef.create<TestComponent1>()),
                 )
                 deviceSpec.runtimeConfiguration.componentStartupHost shouldBe mapOf(
                     TestComponent1() to smartphoneHost,
@@ -155,7 +206,7 @@ class PulverizationDslTest : StringSpec({
                     reconfigRules.onDeviceRules shouldBe setOf(
                         DeviceReconfigurationRule(
                             TestReconfigurationEvent1(),
-                            NewConfiguration(ctypeOf<TestComponent1>(), serverHost),
+                            NewConfiguration(ComponentRef.create<TestComponent1>(), serverHost),
                         ),
                     )
                 }
@@ -166,19 +217,19 @@ class PulverizationDslTest : StringSpec({
         val configResult = pulverization {
             system {
                 logicDevice("my device") {
-                    val component1 = withBehaviour<TestComponent1>()
-                    val component2 = withCommunication<TestComponent2>()
+                    val component1 = withBehaviour<BehaviourTest>()
+                    val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
                     component2 requires embeddedDeviceCapability
                 }
             }
             deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
                 device("my device") {
-                    TestComponent1() startsOn smartphoneHost
-                    TestComponent2() startsOn smartphoneHost
+                    BehaviourTest() startsOn smartphoneHost
+                    CommTest() startsOn smartphoneHost
                     reconfigurationRules {
                         onDevice {
-                            TestReconfigurationEvent1() reconfigures (ctypeOf<TestComponent1>() movesTo serverHost)
+                            TestReconfigurationEvent1() reconfigures (theBehaviour<BehaviourTest>() movesTo serverHost)
                         }
                     }
                 }
@@ -189,12 +240,12 @@ class PulverizationDslTest : StringSpec({
             config["my device"] shouldNotBe null
             config["my device"]!!.let { deviceSpec ->
                 deviceSpec.componentsConfiguration shouldBe mapOf(
-                    ctypeOf<TestComponent1>() to setOf(ctypeOf<TestComponent2>()),
-                    ctypeOf<TestComponent2>() to setOf(ctypeOf<TestComponent1>()),
+                    ComponentRef.create<BehaviourTest>(ComponentType.Behaviour) to setOf(ComponentRef.create<CommTest>(ComponentType.Communication)),
+                    ComponentRef.create<CommTest>(ComponentType.Communication) to setOf(ComponentRef.create<BehaviourTest>(ComponentType.Behaviour)),
                 )
                 deviceSpec.requiredCapabilities shouldBe mapOf(
-                    ctypeOf<TestComponent1>() to nonEmptySetOf(embeddedDeviceCapability, serverCapability),
-                    ctypeOf<TestComponent2>() to nonEmptySetOf(embeddedDeviceCapability),
+                    ComponentRef.create<BehaviourTest>(ComponentType.Behaviour) to nonEmptySetOf(embeddedDeviceCapability, serverCapability),
+                    ComponentRef.create<CommTest>(ComponentType.Communication) to nonEmptySetOf(embeddedDeviceCapability),
                 )
             }
         }
@@ -203,8 +254,8 @@ class PulverizationDslTest : StringSpec({
         val configResult = pulverization {
             system {
                 logicDevice("device 1") {
-                    val component1 = withBehaviour<TestComponent1>()
-                    val component2 = withCommunication<TestComponent2>()
+                    val component1 = withBehaviour<BehaviourTest>()
+                    val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
                     component2 requires embeddedDeviceCapability
                 }
@@ -219,8 +270,8 @@ class PulverizationDslTest : StringSpec({
             }
             deployment(testInfrastructure, { TestCommunicator() }, { TestReconfigurator() }) {
                 device("device 1") {
-                    TestComponent1() startsOn smartphoneHost
-                    TestComponent2() startsOn smartphoneHost
+                    BehaviourTest() startsOn smartphoneHost
+                    CommTest() startsOn smartphoneHost
                 }
                 device("device 2") {
                     TestComponent1() startsOn smartphoneHost

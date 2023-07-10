@@ -28,14 +28,14 @@ import org.kodein.di.provider
 import org.kodein.di.singleton
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
-    override fun receiveModeUpdates(): Flow<Pair<ComponentRef<*>, Mode>> = emptyFlow()
+    override fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>> = emptyFlow()
 }
 
-class C1 : AbstractComponent<Int>() {
+class C1 : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C2 : AbstractComponent<Int>() {
+class C2 : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
@@ -58,7 +58,7 @@ class CommunicatorTest : StringSpec(
             bind<Protocol> { singleton { TestProtocol() } }
         }
 
-        fun Component<*>.toEntity(): Entity = Entity(this.getRef().name, deviceId.toString())
+        fun Component.toEntity(): Entity = Entity(this.getRef().name, deviceId.toString())
 
         "The Communicator should raise an error when the DI injector is not initialized" {
             val communicator by diModule.instance<Communicator>()
