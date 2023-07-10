@@ -11,11 +11,12 @@ import arrow.core.raise.ensure
 import arrow.core.toNonEmptyListOrNull
 import arrow.core.toNonEmptySetOrNull
 import it.unibo.pulvreakt.core.component.Component
+import it.unibo.pulvreakt.core.component.ComponentRef
+import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
-import it.unibo.pulvreakt.dsl.model.ComponentType
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.RequiredCapabilities
 
@@ -23,47 +24,47 @@ import it.unibo.pulvreakt.dsl.model.RequiredCapabilities
  * Configure the definition of the logical device with a [deviceName].
  */
 class ExtendedDeviceScope(private val deviceName: String) {
-    private val componentsGraph = mutableMapOf<ComponentType, Set<ComponentType>>()
-    private val requiredCapabilities = mutableMapOf<ComponentType, Set<Capability>>()
+    private val componentsGraph = mutableMapOf<ComponentRef, Set<ComponentRef>>()
+    private val requiredCapabilities = mutableMapOf<ComponentRef, Set<Capability>>()
 
     /**
      * Register a [Component] in the device and return its [ComponentType].
      */
-    inline fun <reified C : Component<*>> withComponent(): ComponentType =
-        ComponentType.ctypeOf<C>().also { addComponent(it) }
+    inline fun <reified C : Component> withComponent(): ComponentRef =
+        ComponentRef.create<C>(ComponentType.Generic).also { addComponent(it) }
 
     /**
      * Links a component to other components.
      */
-    infix fun ComponentType.wiredTo(others: NonEmptySet<ComponentType>) {
+    infix fun ComponentRef.wiredTo(others: NonEmptySet<ComponentRef>) {
         componentsGraph[this] = others
     }
 
     /**
      * Links a component to another component.
      */
-    infix fun ComponentType.wiredTo(other: ComponentType) {
+    infix fun ComponentRef.wiredTo(other: ComponentRef) {
         componentsGraph[this] = nonEmptySetOf(other)
     }
 
     /**
      * Specifies that a component requires a capability.
      */
-    infix fun ComponentType.requires(capability: Capability) {
+    infix fun ComponentRef.requires(capability: Capability) {
         requiredCapabilities[this] = nonEmptySetOf(capability)
     }
 
     /**
      * Specifies that a component requires a set of capabilities.
      */
-    infix fun ComponentType.requires(capabilities: NonEmptySet<Capability>) {
+    infix fun ComponentRef.requires(capabilities: NonEmptySet<Capability>) {
         requiredCapabilities[this] = capabilities
     }
 
     /**
      * Register a component in the device.
      */
-    fun addComponent(component: ComponentType) {
+    fun addComponent(component: ComponentRef) {
         componentsGraph[component] ?: run { componentsGraph[component] = emptySet() }
     }
 

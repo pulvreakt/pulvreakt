@@ -18,7 +18,7 @@ import it.unibo.pulvreakt.dsl.model.ReconfigurationRules
  */
 class ReconfigurationRulesScope(
     private val deviceStructure: DeviceStructure,
-    private val infrastructure: NonEmptySet<Host>
+    private val infrastructure: NonEmptySet<Host>,
 ) {
 
     private var onDeviceRules: Either<Nel<DeploymentConfigurationError>, OnDeviceRules>? = null

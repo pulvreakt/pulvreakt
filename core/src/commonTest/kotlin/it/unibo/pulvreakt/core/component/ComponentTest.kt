@@ -64,7 +64,7 @@ class ComponentTest : StringSpec(
                 ?: error("The usage of the `send` method requires the initialization of the component")
             sendResult shouldBe ComponentError.ComponentNotInitialized
 
-            val receiveResult = component.receive(component.getRef()).leftOrNull()
+            val receiveResult = component.receive<Int>(component.getRef()).leftOrNull()
                 ?: error("The usage of the `receive` method requires the initialization of the component")
             receiveResult shouldBe ComponentError.ComponentNotInitialized
         }
@@ -81,7 +81,7 @@ class ComponentTest : StringSpec(
 
             val receiveJob = launch(UnconfinedTestDispatcher()) {
                 val result = either {
-                    val receiveFlow = otherComponent.receive(myComponent.getRef()).bind()
+                    val receiveFlow = otherComponent.receive<Int>(myComponent.getRef()).bind()
                     receiveFlow.take(1).collect {
                         receivedMessage.add(it)
                     }

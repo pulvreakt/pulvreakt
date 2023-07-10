@@ -24,14 +24,16 @@ import org.kodein.di.provider
 /**
  * Predefined [Component] which handle out-of-the-box the [Communicator] needed to interact with other components.
  */
-abstract class AbstractComponent<T : Any> : Component<T> {
+abstract class AbstractComponent : Component {
     override lateinit var di: DI
     protected val context by instance<Context>()
     private val unitManager by instance<ComponentModeReconfigurator>()
     private val communicatorFactory: () -> Communicator by provider()
-    private lateinit var communicators: Map<ComponentRef<*>, Communicator>
+    private lateinit var communicators: Map<ComponentRef, Communicator>
     private lateinit var unitManagerJob: Job
-    private val links = mutableSetOf<ComponentRef<*>>()
+    private val links = mutableSetOf<ComponentRef>()
+
+    override fun getRef(): ComponentRef = ComponentRef.create(this)
 
     override suspend fun initialize(): Either<ComponentError, Unit> = coroutineScope {
         either {
@@ -63,18 +65,18 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         communicators.forEach { (_, communicator) -> communicator.finalize() }
     }
 
-    override fun setupWiring(vararg components: ComponentRef<*>) {
+    override fun setupWiring(vararg components: ComponentRef) {
         links += components.toSet()
     }
 
-    override suspend fun send(toComponent: ComponentRef<*>, message: T, serializer: KSerializer<T>): Either<ComponentError, Unit> = either {
+    override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<P>): Either<ComponentError, Unit> = either {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
         val communicator = communicators.getCommunicator(toComponent).bind()
         communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
     }
 
-    override suspend fun <P : Any> receive(fromComponent: ComponentRef<P>, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> = either {
+    override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> = either {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
         val communicator = communicators.getCommunicator(fromComponent).bind()
@@ -86,8 +88,8 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         di = kodein
     }
 
-    private fun <P : Any> Map<ComponentRef<*>, Communicator>.getCommunicator(
-        component: ComponentRef<P>,
+    private fun Map<ComponentRef, Communicator>.getCommunicator(
+        component: ComponentRef,
     ): Either<ComponentError, Communicator> = filterKeys { it == component }
         .values
         .firstOrNone()
@@ -101,16 +103,16 @@ abstract class AbstractComponent<T : Any> : Component<T> {
         /**
          * Helper method to send a [message] [toComponent] without specifying the serialization.
          */
-        suspend inline fun <reified C : Any> Component<C>.send(
-            toComponent: ComponentRef<C>,
-            message: C,
+        suspend inline fun <reified P : Any> Component.send(
+            toComponent: ComponentRef,
+            message: P,
         ): Either<ComponentError, Unit> = send(toComponent, message, serializer())
 
         /**
          * Helper method to receive messages [fromComponent] without specifying the serialization.
          */
-        suspend inline fun <reified C : Any> Component<C>.receive(
-            fromComponent: ComponentRef<C>,
-        ): Either<ComponentError, Flow<C>> = receive(fromComponent, serializer())
+        suspend inline fun <reified P : Any> Component.receive(
+            fromComponent: ComponentRef,
+        ): Either<ComponentError, Flow<P>> = receive(fromComponent, serializer())
     }
 }

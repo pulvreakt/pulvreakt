@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 class TestComponentModeReconfigurator : ComponentModeReconfigurator {
-    override fun receiveModeUpdates(): Flow<Pair<ComponentRef<*>, Mode>> = emptyFlow()
+    override fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>> = emptyFlow()
 }
