@@ -31,7 +31,7 @@ abstract class AbstractComponent : Component {
     private val communicatorFactory: () -> Communicator by provider()
     private lateinit var communicators: Map<ComponentRef, Communicator>
     private lateinit var unitManagerJob: Job
-    private val links = mutableSetOf<ComponentRef>()
+    protected val links = mutableSetOf<ComponentRef>()
 
     override fun getRef(): ComponentRef = ComponentRef.create(this)
 
@@ -69,14 +69,15 @@ abstract class AbstractComponent : Component {
         links += components.toSet()
     }
 
-    override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<P>): Either<ComponentError, Unit> = either {
-        isDependencyInjectionInitialized().bind()
-        ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
-        val communicator = communicators.getCommunicator(toComponent).bind()
-        communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
-    }
+    final override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<P>): Either<ComponentError, Unit> =
+        either {
+            isDependencyInjectionInitialized().bind()
+            ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
+            val communicator = communicators.getCommunicator(toComponent).bind()
+            communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
+        }
 
-    override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> = either {
+    final override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> = either {
         isDependencyInjectionInitialized().bind()
         ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
         val communicator = communicators.getCommunicator(fromComponent).bind()
