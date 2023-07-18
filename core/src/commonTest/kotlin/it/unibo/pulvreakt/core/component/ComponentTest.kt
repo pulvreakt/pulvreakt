@@ -4,14 +4,20 @@ import arrow.core.Either
 import arrow.core.raise.either
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.communicator.CommunicatorImpl
 import it.unibo.pulvreakt.core.communicator.LocalCommunicatorManager
 import it.unibo.pulvreakt.core.component.AbstractComponent.Companion.receive
 import it.unibo.pulvreakt.core.component.AbstractComponent.Companion.send
 import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.core.component.fixture.TestActuators
+import it.unibo.pulvreakt.core.component.fixture.TestBehaviour
+import it.unibo.pulvreakt.core.component.fixture.TestCommunication
 import it.unibo.pulvreakt.core.component.fixture.TestComponentModeReconfigurator
+import it.unibo.pulvreakt.core.component.fixture.TestSensors
 import it.unibo.pulvreakt.core.component.fixture.TestSensorsComponent
+import it.unibo.pulvreakt.core.component.fixture.TestState
 import it.unibo.pulvreakt.core.context.Context
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
@@ -94,6 +100,41 @@ class ComponentTest : StringSpec(
             receivedMessage shouldBe listOf(10)
             myComponent.finalize() shouldBe Either.Right(Unit)
             otherComponent.finalize() shouldBe Either.Right(Unit)
+        }
+        "The Behaviour component should have linked all the other components, otherwise it should raise an error" {
+            val behaviour = TestBehaviour().apply { setupInjector(diModule) }
+            val state = TestState().apply { setupInjector(diModule) }
+            behaviour.setupWiring(state.getRef())
+            state.setupWiring(behaviour.getRef())
+
+            behaviour.initialize() shouldBe Either.Right(Unit)
+            state.initialize() shouldBe Either.Right(Unit)
+
+            when (val error = behaviour.execute().leftOrNull() ?: error("An error must be raised")) {
+                is ComponentError.ExecutionError -> error.message shouldContain "No component of type"
+                else -> error("The error raised must be an `ExecutionError`")
+            }
+        }
+        "The Behaviour should execute its logic without error when properly configured" {
+            val behaviour = TestBehaviour().apply { setupInjector(diModule) }
+            val state = TestState().apply { setupInjector(diModule) }
+            val sensors = TestSensors().apply { setupInjector(diModule) }
+            val actuators = TestActuators().apply { setupInjector(diModule) }
+            val comm = TestCommunication().apply { setupInjector(diModule) }
+
+            behaviour.setupWiring(state.getRef(), sensors.getRef(), actuators.getRef(), comm.getRef())
+            state.setupWiring(behaviour.getRef())
+            sensors.setupWiring(behaviour.getRef())
+            actuators.setupWiring(behaviour.getRef())
+            comm.setupWiring(behaviour.getRef())
+
+            behaviour.initialize() shouldBe Either.Right(Unit)
+            state.initialize() shouldBe Either.Right(Unit)
+            sensors.initialize() shouldBe Either.Right(Unit)
+            actuators.initialize() shouldBe Either.Right(Unit)
+            comm.initialize() shouldBe Either.Right(Unit)
+
+            behaviour.execute() shouldBe Either.Right(Unit)
         }
     },
 )
