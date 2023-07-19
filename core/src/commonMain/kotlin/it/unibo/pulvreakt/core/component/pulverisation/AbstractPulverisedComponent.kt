@@ -7,9 +7,12 @@ import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 
+/**
+ * Abstract class for components that are part of the pulverisation model in the strict setup.
+ */
 abstract class AbstractPulverisedComponent : AbstractComponent() {
     protected fun getComponentByType(type: ComponentType): Either<ComponentError.ExecutionError, ComponentRef> {
-        return this.links.firstOrNull { it.type == type }.toOption().toEither {
+        return links.firstOrNull { it.type == type }.toOption().toEither {
             ComponentError.ExecutionError(
                 """
                     No component of type $type found".
