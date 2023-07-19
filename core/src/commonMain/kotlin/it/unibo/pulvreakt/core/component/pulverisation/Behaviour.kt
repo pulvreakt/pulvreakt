@@ -6,6 +6,7 @@ import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.component.time.TimeDistribution
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -24,6 +25,7 @@ abstract class Behaviour<State : Any, Comm : Any, Sensors : Any, Actuators : Any
 ) : AbstractPulverisedComponent() {
 
     private val deviceId by lazy { context.deviceId }
+    private val myRef by lazy { ComponentRef.create(this, ComponentType.Behaviour) }
 
     /**
      * Execute the behaviour logic with the given [state], [comm] and [sensors].
@@ -31,7 +33,7 @@ abstract class Behaviour<State : Any, Comm : Any, Sensors : Any, Actuators : Any
      */
     abstract operator fun invoke(state: State, comm: List<Comm>, sensors: Sensors): BehaviourOutput<State, Comm, Actuators>
 
-    final override fun getRef(): ComponentRef = ComponentRef.create(this, ComponentType.Behaviour)
+    final override fun getRef(): ComponentRef = myRef
 
     override suspend fun execute(): Either<ComponentError, Unit> = coroutineScope {
         either {
@@ -57,26 +59,28 @@ abstract class Behaviour<State : Any, Comm : Any, Sensors : Any, Actuators : Any
 
             // Loop with a user-specific policy
             while (!timeDistribution.isCompleted()) {
-                send(stateRef, StateOps.GetState(null), stateSerializer).bind()
+                send(stateRef, GetState as StateOps<State>, stateSerializer).bind()
                 when (val state = receive(stateRef, stateSerializer).bind().first()) {
-                    is StateOps.SetState -> {
-                        val (newState, newComm, newActuators) = invoke(
-                            state.content,
-                            receivedNeighboursMessages.map { it.payload },
-                            lastSensorsRead!!,
-                        )
-                        send(stateRef, StateOps.SetState(newState), stateSerializer).bind()
-                        send(commRef, CommunicationPayload(deviceId, newComm), commSerializer).bind()
-                        send(actuatorsRef, newActuators, actuatorsSerializer).bind()
+                    is SetState -> {
+                        if (lastSensorsRead != null) {
+                            val (newState, newComm, newActuators) = invoke(
+                                state.content,
+                                receivedNeighboursMessages.map { it.payload },
+                                lastSensorsRead!!,
+                            )
+                            send(stateRef, SetState(newState), stateSerializer).bind()
+                            send(commRef, CommunicationPayload(deviceId, newComm), commSerializer).bind()
+                            send(actuatorsRef, newActuators, actuatorsSerializer).bind()
+                        }
                     }
 
-                    is StateOps.GetState<*, *> -> Unit
+                    is GetState -> Unit
                 }
                 delay(timeDistribution.nextTimeInstant())
             }
 
-            commJob.join()
-            sensorsJob.join()
+            commJob.cancelAndJoin()
+            sensorsJob.cancelAndJoin()
         }
     }
 }
