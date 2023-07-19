@@ -34,9 +34,10 @@ class CommunicatorImpl : Communicator {
 
     override suspend fun communicatorSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit> = either {
         isDependencyInjectionInitialized().bind()
-        localCommunicator = localCommManager.getLocalCommunicator(source.name, destination.name)
+        localCommunicator = localCommManager.getLocalCommunicator(source, destination)
         sourceComponent = source
         destinationComponent = destination
+        remoteProtocol.setupChannel(source.toEntity())
         remoteProtocol.setupChannel(destination.toEntity())
     }
 
@@ -81,7 +82,7 @@ class CommunicatorImpl : Communicator {
             .mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun receiveRemoteFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
-        remoteProtocol.readFromChannel(destinationComponent.toEntity())
+        remoteProtocol.readFromChannel(sourceComponent.toEntity())
             .mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> = either {
