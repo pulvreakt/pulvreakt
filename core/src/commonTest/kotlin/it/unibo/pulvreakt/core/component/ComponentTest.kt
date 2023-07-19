@@ -3,6 +3,7 @@ package it.unibo.pulvreakt.core.component
 import arrow.core.Either
 import arrow.core.raise.either
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import it.unibo.pulvreakt.core.communicator.Communicator
@@ -23,6 +24,7 @@ import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -31,7 +33,7 @@ import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 class ComponentTest : StringSpec(
     {
         coroutineTestScope = true
@@ -85,7 +87,7 @@ class ComponentTest : StringSpec(
 
             val receivedMessage = mutableListOf<Int>()
 
-            val receiveJob = launch(UnconfinedTestDispatcher()) {
+            val receiveJob = launch(UnconfinedTestDispatcher(testCoroutineScheduler)) {
                 val result = either {
                     val receiveFlow = otherComponent.receive<Int>(myComponent.getRef()).bind()
                     receiveFlow.take(1).collect {
@@ -134,7 +136,24 @@ class ComponentTest : StringSpec(
             actuators.initialize() shouldBe Either.Right(Unit)
             comm.initialize() shouldBe Either.Right(Unit)
 
+            val sensJob = launch(UnconfinedTestDispatcher(testCoroutineScheduler)) {
+                sensors.execute() shouldBe Either.Right(Unit)
+            }
+            val stateJob = launch(UnconfinedTestDispatcher(testCoroutineScheduler)) {
+                state.execute() shouldBe Either.Right(Unit)
+            }
+            val actJob = launch(UnconfinedTestDispatcher(testCoroutineScheduler)) {
+                actuators.execute() shouldBe Either.Right(Unit)
+            }
+            val commJob = launch(UnconfinedTestDispatcher(testCoroutineScheduler)) {
+                comm.execute() shouldBe Either.Right(Unit)
+            }
+
             behaviour.execute() shouldBe Either.Right(Unit)
+            stateJob.cancelAndJoin()
+            actJob.cancelAndJoin()
+            commJob.cancelAndJoin()
+            sensJob.cancelAndJoin()
         }
     },
 )

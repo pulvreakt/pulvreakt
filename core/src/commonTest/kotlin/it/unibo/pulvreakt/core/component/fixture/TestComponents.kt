@@ -9,7 +9,9 @@ import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
 import it.unibo.pulvreakt.core.component.pulverisation.BehaviourOutput
 import it.unibo.pulvreakt.core.component.pulverisation.Communication
 import it.unibo.pulvreakt.core.component.pulverisation.CommunicationPayload
+import it.unibo.pulvreakt.core.component.pulverisation.GetState
 import it.unibo.pulvreakt.core.component.pulverisation.Sensors
+import it.unibo.pulvreakt.core.component.pulverisation.SetState
 import it.unibo.pulvreakt.core.component.pulverisation.State
 import it.unibo.pulvreakt.core.component.pulverisation.StateOps
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +22,13 @@ class TestSensorsComponent : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(OneShotTimeDistribution(), serializer(), serializer(), serializer(), serializer()) {
+class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(
+    OneShotTimeDistribution(),
+    serializer(),
+    serializer(),
+    serializer(),
+    serializer(),
+) {
     override fun invoke(state: Int, comm: List<Unit>, sensors: Unit): BehaviourOutput<Int, Unit, Unit> {
         return BehaviourOutput(1, Unit, Unit)
     }
@@ -29,13 +37,13 @@ class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(OneShotTimeDistribution()
 class TestState : State<Int>(serializer()) {
     override fun queryState(query: StateOps<Int>): Int {
         return when (query) {
-            is StateOps.GetState<*, *> -> 1
-            is StateOps.SetState -> 1
+            is GetState -> 1
+            is SetState -> 1
         }
     }
 }
 
-class TestSensors : Sensors<Unit>(SimpleTimeDistribution(), serializer()) {
+class TestSensors : Sensors<Unit>(OneShotTimeDistribution(), serializer()) {
     override suspend fun sense() = Unit
 }
 
