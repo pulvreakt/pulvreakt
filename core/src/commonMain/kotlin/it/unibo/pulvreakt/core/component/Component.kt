@@ -28,7 +28,7 @@ interface Component : Initializable<ComponentError>, PulvreaktInjected {
     suspend fun <P : Any> send(
         toComponent: ComponentRef,
         message: P,
-        serializer: KSerializer<P>,
+        serializer: KSerializer<in P>,
     ): Either<ComponentError, Unit>
 
     /**
@@ -37,7 +37,7 @@ interface Component : Initializable<ComponentError>, PulvreaktInjected {
      */
     suspend fun <P : Any> receive(
         fromComponent: ComponentRef,
-        serializer: KSerializer<P>,
+        serializer: KSerializer<out P>,
     ): Either<ComponentError, Flow<P>>
 
     /**

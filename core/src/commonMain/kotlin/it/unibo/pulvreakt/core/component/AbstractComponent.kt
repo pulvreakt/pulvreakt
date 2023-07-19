@@ -69,7 +69,7 @@ abstract class AbstractComponent : Component {
         links += components.toSet()
     }
 
-    final override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<P>): Either<ComponentError, Unit> =
+    final override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<in P>): Either<ComponentError, Unit> =
         either {
             isDependencyInjectionInitialized().bind()
             ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
@@ -77,13 +77,14 @@ abstract class AbstractComponent : Component {
             communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
         }
 
-    final override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<P>): Either<ComponentError, Flow<P>> = either {
-        isDependencyInjectionInitialized().bind()
-        ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
-        val communicator = communicators.getCommunicator(fromComponent).bind()
-        val flow = communicator.receiveFromComponent().mapLeft { ComponentError.WrapCommunicatorError(it) }.bind()
-        return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()
-    }
+    final override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<out P>): Either<ComponentError, Flow<P>> =
+        either {
+            isDependencyInjectionInitialized().bind()
+            ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
+            val communicator = communicators.getCommunicator(fromComponent).bind()
+            val flow = communicator.receiveFromComponent().mapLeft { ComponentError.WrapCommunicatorError(it) }.bind()
+            return flow.map { Json.decodeFromString(serializer, it.decodeToString()) }.right()
+        }
 
     override fun setupInjector(kodein: DI) {
         di = kodein
