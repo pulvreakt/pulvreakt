@@ -4,7 +4,7 @@ import it.unibo.pulvreakt.core.component.time.TimeDistribution
 
 class SimpleTimeDistribution : TimeDistribution {
     override fun nextTimeInstant(): Long = 1000
-    override fun isCompleted(): Boolean = true
+    override fun isCompleted(): Boolean = false
 }
 
 class OneShotTimeDistribution : TimeDistribution {
