@@ -14,9 +14,11 @@ class LocalCommunicatorManagerTest : StringSpec({
     coroutineTestScope = true
     "The LocalCommunicatorManager should create a communicator between two components" {
         val messagesResult = mutableListOf<String>()
+        val c1Ref = C1().getRef()
+        val c2Ref = C2().getRef()
         val manager = LocalCommunicatorManager()
-        val comm1 = manager.getLocalCommunicator("component1", "component2")
-        val comm2 = manager.getLocalCommunicator("component1", "component2")
+        val comm1 = manager.getLocalCommunicator(c1Ref, c2Ref)
+        val comm2 = manager.getLocalCommunicator(c2Ref, c1Ref)
         val receiveResult = async(UnconfinedTestDispatcher()) {
             either {
                 val receiveFlow = comm1.receiveFromComponent().bind()
@@ -36,9 +38,12 @@ class LocalCommunicatorManagerTest : StringSpec({
     "The LocalCommunicatorManager should create independent communicators for non-related components" {
         val resultList = mutableListOf<String>()
         val manager = LocalCommunicatorManager()
-        val comm1 = manager.getLocalCommunicator("foo", "bar")
-        val comm2 = manager.getLocalCommunicator("foo", "bar")
-        val nonRelated = manager.getLocalCommunicator("foo", "foobar")
+        val fooRef = C1().getRef()
+        val barRef = C2().getRef()
+        val foobarRef = C3().getRef()
+        val comm1 = manager.getLocalCommunicator(fooRef, barRef)
+        val comm2 = manager.getLocalCommunicator(barRef, fooRef)
+        val nonRelated = manager.getLocalCommunicator(fooRef, foobarRef)
         val receiveResult = async(UnconfinedTestDispatcher()) {
             either {
                 val flow = comm1.receiveFromComponent().bind()

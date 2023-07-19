@@ -7,11 +7,9 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import it.unibo.pulvreakt.core.communicator.errors.CommunicatorError
 import it.unibo.pulvreakt.core.component.AbstractComponent
-import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.protocol.Entity
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
@@ -39,6 +37,22 @@ class C2 : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
+class C3 : AbstractComponent() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
+
+class C4 : AbstractComponent() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
+
+class C5 : AbstractComponent() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
+
+class C6 : AbstractComponent() {
+    override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class CommunicatorTest : StringSpec(
     {
@@ -57,9 +71,6 @@ class CommunicatorTest : StringSpec(
             }
             bind<Protocol> { singleton { TestProtocol() } }
         }
-
-        fun Component.toEntity(): Entity = Entity(this.getRef().name, deviceId.toString())
-
         "The Communicator should raise an error when the DI injector is not initialized" {
             val communicator by diModule.instance<Communicator>()
             val result = communicator.sendToComponent("fail to send".encodeToByteArray()).leftOrNull()
@@ -82,97 +93,136 @@ class CommunicatorTest : StringSpec(
         }
         "The Communicator should work in Local mode" {
             val receivedMessages = mutableListOf<String>()
-            val c1 = C1()
-            val c2 = C2()
-            val manager by diModule.instance<LocalCommunicatorManager>()
-            val localCommunicator = manager.getLocalCommunicator("C1", "C2")
-            val communicator by diModule.instance<Communicator>()
-            communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
-            communicator.setMode(Mode.Local)
-            val job = launch(UnconfinedTestDispatcher()) {
+            val c1Ref = C1().getRef()
+            val c2Ref = C2().getRef()
+            val c1Communicator by diModule.instance<Communicator>()
+            val c2Communicator by diModule.instance<Communicator>()
+
+            with(c1Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c1Ref, c2Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
+
+            with(c2Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c2Ref, c1Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
+
+            val c2ReceiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = localCommunicator.receiveFromComponent().bind()
+                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
                     receiveFlow.take(2).collect {
                         receivedMessages.add(it.decodeToString())
                     }
                 }
                 resultCollect shouldBe Either.Right(Unit)
             }
+
             val resultSend = either {
-                communicator.sendToComponent("test 1".encodeToByteArray()).bind()
-                communicator.sendToComponent("test 2".encodeToByteArray()).bind()
+                c1Communicator.sendToComponent("test 1".encodeToByteArray()).bind()
+                c1Communicator.sendToComponent("test 2".encodeToByteArray()).bind()
             }
             resultSend shouldBe Either.Right(Unit)
-            job.join()
+            c2ReceiveJob.join()
             receivedMessages shouldBe listOf("test 1", "test 2")
         }
         "The Communicator can send messages to the right communicator depending on the set Mode" {
             val receivedMessage = mutableListOf<String>()
-            val manager by diModule.instance<LocalCommunicatorManager>()
-            val remoteProtocol by diModule.instance<Protocol>()
-            val c1 = C1()
-            val c2 = C2()
-            val localComm = manager.getLocalCommunicator("C1", "C2")
-            val communicator = CommunicatorImpl()
-            communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
-            communicator.setMode(Mode.Local)
-            val localJob = launch(UnconfinedTestDispatcher()) {
+            val c3Ref = C3().getRef()
+            val c4Ref = C4().getRef()
+            val c1Communicator by diModule.instance<Communicator>()
+            val c2Communicator by diModule.instance<Communicator>()
+
+            with(c1Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c3Ref, c4Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
+
+            with(c2Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c4Ref, c3Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
+
+            val localReceiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = localComm.receiveFromComponent().bind()
+                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
                     receiveFlow.take(1).collect {
                         receivedMessage.add(it.decodeToString())
                     }
                 }
                 resultCollect shouldBe Either.Right(Unit)
             }
-            val localSendResult = either { communicator.sendToComponent("message 1".encodeToByteArray()).bind() }
+
+            val localSendResult = either { c1Communicator.sendToComponent("message 1".encodeToByteArray()).bind() }
             localSendResult shouldBe Either.Right(Unit)
-            localJob.join()
+            localReceiveJob.join()
+
             receivedMessage shouldBe listOf("message 1")
 
-            communicator.setMode(Mode.Remote)
+            // Start Remote communication
+            c1Communicator.setMode(Mode.Remote)
+            c2Communicator.setMode(Mode.Remote)
 
-            val remoteJob = launch(UnconfinedTestDispatcher()) {
-                communicator.receiveFromComponent()
-                val channel = remoteProtocol.readFromChannel(c2.toEntity()).getOrNull()
-                    ?: error("The channel to the `c2` component must be available!")
-                channel.take(1).collect { receivedMessage.add(it.decodeToString()) }
+            val remoteReceiveJob = launch(UnconfinedTestDispatcher()) {
+                val resultCollect = either {
+                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
+                    receiveFlow.take(1).collect {
+                        receivedMessage.add(it.decodeToString())
+                    }
+                }
+                resultCollect shouldBe Either.Right(Unit)
             }
-            val remoteResult = either { communicator.sendToComponent("message 2".encodeToByteArray()).bind() }
-            remoteResult shouldBe Either.Right(Unit)
-            remoteJob.join()
+
+            val remoteSendResult = either { c1Communicator.sendToComponent("message 2".encodeToByteArray()).bind() }
+            remoteSendResult shouldBe Either.Right(Unit)
+            remoteReceiveJob.join()
+
             receivedMessage shouldBe listOf("message 1", "message 2")
         }
         "The Communicator should receive messages according to the operation Mode without re-collect" {
             val receivedMessages = mutableListOf<String>()
-            val manager by diModule.instance<LocalCommunicatorManager>()
-            val remoteProtocol by diModule.instance<Protocol>()
-            val c1 = C1()
-            val c2 = C2()
-            val localComm = manager.getLocalCommunicator("C1", "C2")
-            val communicator = CommunicatorImpl()
-            communicator.setupInjector(diModule)
-            communicator.communicatorSetup(c1.getRef(), c2.getRef()) shouldBe Either.Right(Unit)
-            communicator.setMode(Mode.Local)
+            val c5Ref = C5().getRef()
+            val c6Ref = C6().getRef()
+
+            val c5Communicator by diModule.instance<Communicator>()
+            val c6Communicator by diModule.instance<Communicator>()
+
+            with(c5Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c5Ref, c6Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
+
+            with(c6Communicator) {
+                setupInjector(diModule)
+                communicatorSetup(c6Ref, c5Ref) shouldBe Either.Right(Unit)
+                setMode(Mode.Local)
+            }
 
             val receiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = communicator.receiveFromComponent().bind()
+                    val receiveFlow = c6Communicator.receiveFromComponent().bind()
                     receiveFlow.take(2).collect {
                         receivedMessages.add(it.decodeToString())
                     }
                 }
                 resultCollect shouldBe Either.Right(Unit)
             }
-            localComm.sendToComponent("local message".encodeToByteArray()) shouldBe Either.Right(Unit)
-            communicator.setMode(Mode.Remote)
-            localComm.sendToComponent("this should not be received".encodeToByteArray()) shouldBe Either.Right(Unit)
-            val result = remoteProtocol.writeToChannel(c2.toEntity(), "remote message".encodeToByteArray())
-            result.isRight() shouldBe true
+
+            val sendResult = either {
+                c5Communicator.sendToComponent("test 1".encodeToByteArray()).bind()
+                // Switch to Remote mode
+                c5Communicator.setMode(Mode.Remote)
+                c6Communicator.setMode(Mode.Remote)
+                c5Communicator.sendToComponent("test 2".encodeToByteArray()).bind()
+            }
+            sendResult shouldBe Either.Right(Unit)
             receiveJob.join()
-            receivedMessages shouldBe listOf("local message", "remote message")
+            receivedMessages shouldBe listOf("test 1", "test 2")
         }
     },
 )
