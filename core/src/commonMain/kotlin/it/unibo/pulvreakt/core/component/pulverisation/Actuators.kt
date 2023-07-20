@@ -1,11 +1,10 @@
-package it.unibo.pulvreakt.core.component.pulverisation.actuators
+package it.unibo.pulvreakt.core.component.pulverisation
 
 import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.component.errors.ComponentError
-import it.unibo.pulvreakt.core.component.pulverisation.AbstractPulverisedComponent
 import kotlinx.serialization.KSerializer
 
 /**

@@ -7,12 +7,15 @@ class SimpleTimeDistribution : TimeDistribution {
     override fun isCompleted(): Boolean = false
 }
 
-class OneShotTimeDistribution : TimeDistribution {
-    private var completed = false
+class FiniteShotTimeDistribution(
+    private val count: Int,
+    private val time: Long = 1000,
+) : TimeDistribution {
+    private var currentCount = 0
     override fun nextTimeInstant(): Long {
-        completed = true
-        return 1000
+        currentCount++
+        return time
     }
 
-    override fun isCompleted(): Boolean = completed
+    override fun isCompleted(): Boolean = currentCount == count
 }

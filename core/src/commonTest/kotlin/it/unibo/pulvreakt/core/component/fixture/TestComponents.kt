@@ -23,13 +23,13 @@ class TestSensorsComponent : AbstractComponent() {
 }
 
 class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(
-    OneShotTimeDistribution(),
+    FiniteShotTimeDistribution(2),
     serializer(),
     serializer(),
     serializer(),
     serializer(),
 ) {
-    override fun invoke(state: Int, comm: List<Unit>, sensors: Unit): BehaviourOutput<Int, Unit, Unit> {
+    override fun invoke(state: Int?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Int, Unit, Unit> {
         return BehaviourOutput(1, Unit, Unit)
     }
 }
@@ -43,7 +43,7 @@ class TestState : State<Int>(serializer()) {
     }
 }
 
-class TestSensors : Sensors<Unit>(OneShotTimeDistribution(), serializer()) {
+class TestSensors : Sensors<Unit>(FiniteShotTimeDistribution(1), serializer()) {
     override suspend fun sense() = Unit
 }
 
