@@ -1,10 +1,11 @@
-package it.unibo.pulvreakt.core.component.pulverisation
+package it.unibo.pulvreakt.core.component.pulverisation.sensors
 
 import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
 import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.core.component.pulverisation.AbstractPulverisedComponent
 import it.unibo.pulvreakt.core.component.time.TimeDistribution
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer

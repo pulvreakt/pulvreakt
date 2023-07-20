@@ -21,4 +21,8 @@ abstract class AbstractPulverisedComponent : AbstractComponent() {
             )
         }
     }
+
+    protected fun getComponentByTypeOrNull(type: ComponentType): ComponentRef? {
+        return links.firstOrNull { it.type == type }
+    }
 }
