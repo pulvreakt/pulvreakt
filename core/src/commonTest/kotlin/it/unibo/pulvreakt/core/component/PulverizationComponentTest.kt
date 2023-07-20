@@ -25,7 +25,9 @@ import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PulverizationComponentTest {
     private val diModule = DI {
         bind<Communicator> { provider { CommunicatorImpl() } }
@@ -41,9 +43,8 @@ class PulverizationComponentTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun integrateFivePulverizedComponentTest() = runTest {
+    fun integrateFivePulverizedComponentTest() = runTest(timeout = 10.seconds) {
         val behaviour = TestBehaviour().apply { setupInjector(diModule) }
         val state = TestState().apply { setupInjector(diModule) }
         val sensors = TestSensors().apply { setupInjector(diModule) }
@@ -79,6 +80,25 @@ class PulverizationComponentTest {
         stateJob.cancelAndJoin()
         actJob.cancelAndJoin()
         commJob.cancelAndJoin()
+        sensJob.cancelAndJoin()
+    }
+
+    @Test
+    fun partiallyConnectedDeviceTest() = runTest(timeout = 10.seconds) {
+        val behaviour = TestBehaviour().apply { setupInjector(diModule) }
+        val sensors = TestSensors().apply { setupInjector(diModule) }
+
+        behaviour.setupWiring(sensors.getRef())
+        sensors.setupWiring(behaviour.getRef())
+
+        behaviour.initialize() shouldBe Either.Right(Unit)
+        sensors.initialize() shouldBe Either.Right(Unit)
+
+        val sensJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+            sensors.execute() shouldBe Either.Right(Unit)
+        }
+
+        behaviour.execute() shouldBe Either.Right(Unit)
         sensJob.cancelAndJoin()
     }
 }

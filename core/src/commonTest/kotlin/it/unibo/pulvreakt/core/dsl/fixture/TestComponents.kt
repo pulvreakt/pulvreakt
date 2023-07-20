@@ -51,7 +51,7 @@ class CommTest : Communication<Unit>(serializer()) {
 }
 
 class BehaviourTest : Behaviour<Unit, Unit, Unit, Unit>(SimpleTimeDistribution(), serializer(), serializer(), serializer(), serializer()) {
-    override fun invoke(state: Unit, comm: List<Unit>, sensors: Unit): BehaviourOutput<Unit, Unit, Unit> {
+    override fun invoke(state: Unit?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Unit, Unit, Unit> {
         TODO("Not yet implemented")
     }
 
