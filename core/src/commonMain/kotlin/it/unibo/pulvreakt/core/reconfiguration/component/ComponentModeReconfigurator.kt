@@ -14,4 +14,9 @@ interface ComponentModeReconfigurator {
      * Returns the new [Mode] for the given [Component].
      */
     fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>>
+
+    /**
+     * Sets the new [Mode] for the given [Component].
+     */
+    suspend fun setMode(component: ComponentRef, mode: Mode)
 }
