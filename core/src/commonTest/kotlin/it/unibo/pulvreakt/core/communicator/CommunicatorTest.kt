@@ -10,9 +10,11 @@ import it.unibo.pulvreakt.core.component.AbstractComponent
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.context.Context
+import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
+import it.unibo.pulvreakt.dsl.model.Capability
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -27,6 +29,7 @@ import org.kodein.di.singleton
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
     override fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>> = emptyFlow()
+    override suspend fun setMode(component: ComponentRef, mode: Mode) = Unit
 }
 
 class C1 : AbstractComponent() {
@@ -58,17 +61,12 @@ class CommunicatorTest : StringSpec(
     {
         coroutineTestScope = true
         val deviceId = 1
+        val cap by Capability
         val diModule = DI {
             bind { singleton { LocalCommunicatorManager() } }
             bind<Communicator> { provider { CommunicatorImpl() } }
             bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
-            bind<Context> {
-                singleton {
-                    object : Context {
-                        override val deviceId: Int = deviceId
-                    }
-                }
-            }
+            bind<Context> { singleton { Context(deviceId, Host("foo", cap)) } }
             bind<Protocol> { singleton { TestProtocol() } }
         }
         "The Communicator should raise an error when the DI injector is not initialized" {
