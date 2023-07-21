@@ -12,9 +12,11 @@ import it.unibo.pulvreakt.core.component.fixture.TestComponentModeReconfigurator
 import it.unibo.pulvreakt.core.component.fixture.TestSensors
 import it.unibo.pulvreakt.core.component.fixture.TestState
 import it.unibo.pulvreakt.core.context.Context
+import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
+import it.unibo.pulvreakt.dsl.model.Capability
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -29,18 +31,13 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PulverizationComponentTest {
+    private val cap by Capability
     private val diModule = DI {
         bind<Communicator> { provider { CommunicatorImpl() } }
         bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
         bind<LocalCommunicatorManager> { singleton { LocalCommunicatorManager() } }
         bind<Protocol> { singleton { TestProtocol() } }
-        bind<Context> {
-            singleton {
-                object : Context {
-                    override val deviceId: Int = 1
-                }
-            }
-        }
+        bind<Context> { singleton { Context(1, Host("localhost", cap)) } }
     }
 
     @Test

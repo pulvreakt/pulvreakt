@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.emptyFlow
 
 class TestComponentModeReconfigurator : ComponentModeReconfigurator {
     override fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>> = emptyFlow()
+    override suspend fun setMode(component: ComponentRef, mode: Mode) = Unit
 }

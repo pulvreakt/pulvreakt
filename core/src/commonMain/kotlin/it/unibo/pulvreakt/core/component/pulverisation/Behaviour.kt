@@ -12,14 +12,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 /**
  * Represents the Behaviour component in the pulverization model.
  */
 abstract class Behaviour<State : Any, Comm : Any, Sensors : Any, Actuators : Any>(
     private val timeDistribution: TimeDistribution,
-    private val stateSerializer: KSerializer<StateOps<State>>,
-    private val commSerializer: KSerializer<CommunicationPayload<Comm>>,
+    private val stateSerializer: KSerializer<StateOps<State>> = serializer(),
+    private val commSerializer: KSerializer<CommunicationPayload<Comm>> = serializer(),
     private val sensorsSerializer: KSerializer<Sensors>,
     private val actuatorsSerializer: KSerializer<Actuators>,
 ) : AbstractPulverisedComponent() {

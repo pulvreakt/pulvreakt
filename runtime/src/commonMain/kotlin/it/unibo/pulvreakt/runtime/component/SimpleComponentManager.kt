@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.runtime.unit.component
+package it.unibo.pulvreakt.runtime.component
 
 import arrow.core.Either
 import arrow.core.raise.either
@@ -8,11 +8,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.errors.ComponentError
-import it.unibo.pulvreakt.runtime.unit.component.errors.ComponentManagerError
-import it.unibo.pulvreakt.runtime.unit.component.errors.ComponentNotRegistered
+import it.unibo.pulvreakt.runtime.component.errors.ComponentManagerError
+import it.unibo.pulvreakt.runtime.component.errors.ComponentNotRegistered
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 
 internal class SimpleComponentManager : ComponentManager {
@@ -34,18 +34,21 @@ internal class SimpleComponentManager : ComponentManager {
         }
     }
 
-    override fun stop(component: ComponentRef): Either<ComponentManagerError, Unit> = either {
+    override suspend fun stop(component: ComponentRef): Either<ComponentManagerError, Unit> = either {
         val candidateComponent = componentContainer.keys.firstOrNull { it.getRef() == component }
         ensureNotNull(candidateComponent) { ComponentNotRegistered(component) }
         logger.debug { "Stop the execution of ${component::class.simpleName}" }
         componentContainer[candidateComponent]
-            ?.cancel("Deployment unit reconfigured. No more need for ${component::class.simpleName}")
+            ?.cancelAndJoin()
             ?: run {
                 logger.warn { "Tried to cancel a non-running component" }
                 logger.debug { "Tried to cancel the ${component::class.simpleName} but it was not running" }
             }
         componentContainer += candidateComponent to null
     }
+
+    override suspend fun stopAll(): Either<ComponentManagerError, Unit> =
+        componentContainer.keys.map { it.getRef() }.forEach { stop(it) }.right()
 
     override fun alive(): Set<ComponentRef> = componentContainer
         .filterValues { it != null }

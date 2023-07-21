@@ -1,9 +1,9 @@
-package it.unibo.pulvreakt.runtime.unit.component
+package it.unibo.pulvreakt.runtime.component
 
 import arrow.core.Either
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import it.unibo.pulvreakt.runtime.unit.component.errors.ComponentNotRegistered
+import it.unibo.pulvreakt.runtime.component.errors.ComponentNotRegistered
 
 class SimpleComponentManagerTest : StringSpec({
     coroutineTestScope = true
@@ -55,5 +55,17 @@ class SimpleComponentManagerTest : StringSpec({
         componentManager.start(component.getRef()).isRight() shouldBe true
         componentManager.stop(component.getRef()) shouldBe Either.Right(Unit)
         componentManager.stop(component.getRef()) shouldBe Either.Right(Unit)
+    }
+    "The ComponentManager should stop all running instances when stopAll is called" {
+        val componentManager = SimpleComponentManager()
+        val component1 = TestComponent1()
+        val component2 = TestComponent2()
+        componentManager.register(component1)
+        componentManager.register(component2)
+        componentManager.start(component1.getRef()).isRight() shouldBe true
+        componentManager.start(component2.getRef()).isRight() shouldBe true
+        componentManager.alive() shouldBe setOf(component1.getRef(), component2.getRef())
+        componentManager.stopAll() shouldBe Either.Right(Unit)
+        componentManager.alive() shouldBe emptySet()
     }
 })
