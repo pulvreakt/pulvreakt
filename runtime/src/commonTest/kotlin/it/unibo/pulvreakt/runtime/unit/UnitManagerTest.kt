@@ -26,5 +26,6 @@ class UnitManagerTest : StringSpec({
         val unitManager = UnitManager(deviceConfig).apply { setupInjector(diModule) }
         unitManager.initialize().isRight() shouldBe true
         unitManager.start().isRight() shouldBe true
+        unitManager.stop().isRight() shouldBe true
     }
 })
