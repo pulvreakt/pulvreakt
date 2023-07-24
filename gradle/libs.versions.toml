@@ -30,6 +30,7 @@ kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
 kodein = { module = "org.kodein.di:kodein-di", version = "7.20.2" }
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
+paho-mqtt = { module = "org.eclipse.paho:org.eclipse.paho.mqttv5.client", version = "1.2.5" }
 kotlinLogger = { module = "io.github.oshai:kotlin-logging", version = "4.0.0" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.7" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }

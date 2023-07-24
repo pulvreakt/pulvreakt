@@ -32,4 +32,5 @@ rootProject.name = "pulvreakt"
 
 include(":core")
 include(":runtime")
-include(":rabbitmq-communicator")
+include(":rabbitmq-protocol")
+include(":mqtt-protocol")
