@@ -20,6 +20,7 @@ import it.unibo.pulvreakt.runtime.errors.DeviceConfigurationNotFound
 import it.unibo.pulvreakt.runtime.errors.RuntimeError
 import it.unibo.pulvreakt.runtime.errors.UnitManagerNotInitialized
 import it.unibo.pulvreakt.runtime.errors.UnitReconfiguratorNotInitialized
+import it.unibo.pulvreakt.runtime.errors.WrapProtocolError
 import it.unibo.pulvreakt.runtime.errors.WrapUnitManagerError
 import it.unibo.pulvreakt.runtime.errors.WrapUnitReconfiguratorError
 import it.unibo.pulvreakt.runtime.reconfigurator.UnitReconfigurator
@@ -76,15 +77,24 @@ internal class PulvreaktRuntimeImpl(
             bind<Context> { provider { Context(id, host) } }
         }
 
+        with(config.protocol) {
+            setupInjector(diModule)
+            initialize().mapLeft { WrapProtocolError(it) }.bind()
+        }
+
         logger.debug { "Create and setup UnitManager" }
 
         unitManager = UnitManager(deviceConfiguration)
-        unitManager.setupInjector(diModule)
-        unitManager.initialize().mapLeft { WrapUnitManagerError(it) }.bind()
+        with(unitManager) {
+            setupInjector(diModule)
+            initialize().mapLeft { WrapUnitManagerError(it) }.bind()
+        }
 
         unitReconfigurator = UnitReconfigurator()
-        unitReconfigurator.setupInjector(diModule)
-        unitReconfigurator.initialize().mapLeft { err -> WrapUnitReconfiguratorError(err) }.bind()
+        with(unitReconfigurator) {
+            setupInjector(diModule)
+            initialize().mapLeft { err -> WrapUnitReconfiguratorError(err) }.bind()
+        }
 
         logger.debug { "PulvreaktRuntime initialized" }
     }

@@ -1,23 +1,24 @@
-package it.unibo.pulvreakt.platforms.rabbitmq
+package it.unibo.pulvreakt.mqtt
 
 import arrow.core.Either
 import it.unibo.pulvreakt.core.protocol.Entity
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.DI
 
 /**
- * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
+ * Represents the MQTT protocol used in PulvReAKt.
  */
-actual class RabbitmqProtocol actual constructor(
-    hostname: String,
-    port: Int,
-    username: String,
-    password: String,
-    virtualHost: String,
+@Suppress("UnusedPrivateProperty")
+actual class MqttProtocol actual constructor(
+    private val host: String,
+    private val port: Int,
+    private val username: String?,
+    private val password: String?,
+    private val coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
-
     override lateinit var di: DI
 
     override fun setupInjector(kodein: DI) {
