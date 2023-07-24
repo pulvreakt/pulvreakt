@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.serializer
+import org.kodein.di.DI
 
 class Infinite : TimeDistribution {
     override fun nextTimeInstant(): Long = 0L
@@ -46,6 +47,12 @@ class FixtureState : State<Int>(serializer()) {
 }
 
 class TestProtocol : Protocol {
+    override lateinit var di: DI
+
+    override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
+
     override suspend fun setupChannel(entity: Entity) {
         TODO("Not yet implemented")
     }
