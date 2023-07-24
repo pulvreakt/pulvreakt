@@ -5,8 +5,15 @@ import it.unibo.pulvreakt.core.protocol.Entity
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import kotlinx.coroutines.flow.Flow
+import org.kodein.di.DI
 
 class TestProtocol : Protocol {
+    override lateinit var di: DI
+
+    override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
+
     override suspend fun setupChannel(entity: Entity) {
         TODO("Not yet implemented")
     }

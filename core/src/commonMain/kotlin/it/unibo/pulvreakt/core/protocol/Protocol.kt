@@ -3,6 +3,7 @@ package it.unibo.pulvreakt.core.protocol
 import arrow.core.Either
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import it.unibo.pulvreakt.core.utils.Initializable
+import it.unibo.pulvreakt.core.utils.PulvreaktInjected
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -17,7 +18,7 @@ data class Entity(val entityName: String, val id: String? = null, val metadata: 
  * Represents the low-level operations needed to communicate with another entity.
  * The communication is done through a channel that is set up by the [Protocol].
  */
-interface Protocol : Initializable<ProtocolError> {
+interface Protocol : Initializable<ProtocolError>, PulvreaktInjected {
     /**
      * Sets up the communication channel with the given [entity].
      */

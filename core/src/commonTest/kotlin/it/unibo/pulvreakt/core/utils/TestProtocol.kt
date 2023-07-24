@@ -9,8 +9,15 @@ import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import org.kodein.di.DI
 
 class TestProtocol : Protocol {
+    override lateinit var di: DI
+
+    override fun setupInjector(kodein: DI) {
+        di = kodein
+    }
+
     private val channels = mutableMapOf<Entity, MutableSharedFlow<ByteArray>>()
     override suspend fun setupChannel(entity: Entity) {
         channels[entity] = MutableSharedFlow()
