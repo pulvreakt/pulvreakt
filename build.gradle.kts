@@ -243,7 +243,7 @@ allprojects {
 dependencies {
     kover(project(":core"))
     kover(project(":runtime"))
-    kover(project(":rabbitmq-communicator"))
+    kover(project(":rabbitmq-protocol"))
 }
 
 koverReport {
