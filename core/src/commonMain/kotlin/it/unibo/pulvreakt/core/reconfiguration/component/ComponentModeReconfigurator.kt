@@ -19,4 +19,11 @@ interface ComponentModeReconfigurator {
      * Sets the new [Mode] for the given [Component].
      */
     suspend fun setMode(component: ComponentRef, mode: Mode)
+
+    companion object {
+        /**
+         * Smart constructor for [ComponentModeReconfigurator].
+         */
+        operator fun invoke(): ComponentModeReconfigurator = ComponentModeReconfiguratorImpl()
+    }
 }
