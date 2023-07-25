@@ -8,7 +8,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation(rootProject.libs.paho.mqtt)
+                api(rootProject.libs.paho.mqtt)
             }
         }
     }

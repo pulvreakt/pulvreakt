@@ -20,17 +20,17 @@ data class Entity(val entityName: String, val id: String? = null, val metadata: 
  */
 interface Protocol : Initializable<ProtocolError>, PulvreaktInjected {
     /**
-     * Sets up the communication channel with the given [entity].
+     * Sets up the communication channel with the given [source].
      */
-    suspend fun setupChannel(entity: Entity)
+    suspend fun setupChannel(source: Entity, destination: Entity)
 
     /**
      * Writes the given [message] to the channel of the given [to] entity.
      */
-    suspend fun writeToChannel(to: Entity, message: ByteArray): Either<ProtocolError, Unit>
+    suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit>
 
     /**
      * Reads from the channel of the given [from] entity.
      */
-    fun readFromChannel(from: Entity): Either<ProtocolError, Flow<ByteArray>>
+    fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>>
 }

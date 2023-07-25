@@ -10,17 +10,24 @@ import it.unibo.pulvreakt.core.protocol.Entity
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import org.eclipse.paho.mqttv5.client.IMqttToken
 import org.eclipse.paho.mqttv5.client.MqttAsyncClient
+import org.eclipse.paho.mqttv5.client.MqttCallback
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions
+import org.eclipse.paho.mqttv5.client.MqttDisconnectResponse
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence
+import org.eclipse.paho.mqttv5.common.MqttException
 import org.eclipse.paho.mqttv5.common.MqttMessage
-import org.eclipse.paho.mqttv5.common.MqttSubscription
+import org.eclipse.paho.mqttv5.common.packet.MqttProperties
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -28,8 +35,8 @@ import org.kodein.di.instance
  * MQTT Protocol implementation on JVM side.
  */
 actual class MqttProtocol actual constructor(
-    host: String,
-    port: Int,
+    private val host: String,
+    private val port: Int,
     private val username: String?,
     private val password: String?,
     private val coroutineDispatcher: CoroutineDispatcher,
@@ -40,50 +47,82 @@ actual class MqttProtocol actual constructor(
     private val deviceId by lazy { context.deviceId }
     private val logger = KotlinLogging.logger("MqttProtocol")
 
-    private val registeredTopics = mutableMapOf<Entity, String>()
-    private val mqttClient = MqttAsyncClient("tcp://$host:$port", "MqttProtocol[$deviceId]", MemoryPersistence())
+    private val registeredTopics = mutableMapOf<Pair<Entity, Entity>, String>()
+    private val topicChannels = mutableMapOf<String, MutableSharedFlow<ByteArray>>()
+    private lateinit var mqttClient: MqttAsyncClient
+    private lateinit var listenerJob: Job
     private val connectionOptions = MqttConnectionOptions().apply {
         isCleanStart = false
         userName = username
         password = this@MqttProtocol.password?.encodeToByteArray()
     }
 
-    override suspend fun setupChannel(entity: Entity) {
-        registeredTopics += entity to entity.toTopics()
+    override suspend fun setupChannel(source: Entity, destination: Entity) {
+        logger.debug { "Setting up channel for entity $source" }
+        registeredTopics += (source to destination) to toTopics(source, destination)
+        registeredTopics += (destination to source) to toTopics(destination, source)
+        topicChannels += toTopics(source, destination) to MutableSharedFlow(1)
+        topicChannels += toTopics(destination, source) to MutableSharedFlow(1)
     }
 
-    override suspend fun writeToChannel(to: Entity, message: ByteArray): Either<ProtocolError, Unit> = coroutineScope {
+    override suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit> = coroutineScope {
         either {
-            val topic = registeredTopics[to]
+            val topic = registeredTopics[Pair(from, to)]
+            logger.debug { "Writing message $message to topic $topic" }
             ensureNotNull(topic) { ProtocolError.EntityNotRegistered(to) }
             val mqttMessage = MqttMessage(message).apply { qos = 2 }
-            val catchResult = Either.catch {
-                async(coroutineDispatcher) {
-                    mqttClient.publish(topic, mqttMessage).waitForCompletion()
-                }.await()
-            }
-            catchResult.mapLeft { ProtocolError.ProtocolException(it) }.bind()
-        }
-    }
-
-    override fun readFromChannel(from: Entity): Either<ProtocolError, Flow<ByteArray>> = either {
-        val candidateTopic = registeredTopics[from]
-        ensureNotNull(candidateTopic) { ProtocolError.EntityNotRegistered(from) }
-        val subscription = MqttSubscription(candidateTopic, 2)
-        callbackFlow {
-            mqttClient.subscribe(subscription) { _, message ->
-                trySend(message.payload).onFailure { logger.error("Fail to emit message on the flow: ${it?.message}") }
-            }
-            awaitClose { mqttClient.unsubscribe(candidateTopic) }
-        }
-    }
-
-    override suspend fun initialize(): Either<ProtocolError, Unit> = coroutineScope {
-        Either.catch {
             async(coroutineDispatcher) {
-                mqttClient.connect(connectionOptions).waitForCompletion()
-            }.await()
-        }.mapLeft { ProtocolError.ProtocolException(it) }
+                Either.catch { mqttClient.publish(topic, mqttMessage).waitForCompletion() }
+                    .mapLeft { ProtocolError.ProtocolException(it) }
+            }.await().bind()
+        }
+    }
+
+    override fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>> = either {
+        val candidateTopic = registeredTopics[Pair(from, to)]
+        val channel = topicChannels[candidateTopic]
+        ensureNotNull(candidateTopic) { ProtocolError.EntityNotRegistered(from) }
+        ensureNotNull(channel) { ProtocolError.EntityNotRegistered(from) }
+        logger.debug { "Reading from topic $candidateTopic" }
+        channel.asSharedFlow()
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override suspend fun initialize(): Either<ProtocolError, Unit> = coroutineScope {
+        either {
+            Either.catch {
+                mqttClient = MqttAsyncClient(
+                    "tcp://$host:$port",
+                    "PulvreaktMqttProtocol[$deviceId]-${context.host.hostname}",
+                    MemoryPersistence(),
+                )
+            }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
+            async(coroutineDispatcher) {
+                Either.catch { mqttClient.connect(connectionOptions).waitForCompletion() }
+                    .mapLeft { ProtocolError.ProtocolException(it) }
+            }.await().bind()
+            listenerJob = GlobalScope.launch {
+                val callback = object : MqttCallback {
+                    override fun disconnected(disconnectResponse: MqttDisconnectResponse?) = Unit
+                    override fun mqttErrorOccurred(exception: MqttException?) {
+                        logger.error(exception) { "Mqtt error" }
+                    }
+
+                    override fun messageArrived(topic: String?, message: MqttMessage?) {
+                        logger.debug { "New message arrived on topic $topic" }
+                        requireNotNull(message?.payload) { "Message cannot be null" }
+                        topicChannels[topic]?.tryEmit(message?.payload!!) ?: run { logger.warn { "Nothing was emitted" } }
+                    }
+
+                    override fun deliveryComplete(token: IMqttToken?) = Unit
+                    override fun connectComplete(reconnect: Boolean, serverURI: String?) = Unit
+                    override fun authPacketArrived(reasonCode: Int, properties: MqttProperties?) = Unit
+                }
+                mqttClient.setCallback(callback)
+                async { mqttClient.subscribe(arrayOf("pulvreakt/+/+/+"), arrayOf(2).toIntArray()).waitForCompletion() }.await()
+                logger.debug { "Callback setupped" }
+            }
+        }
     }
 
     override suspend fun finalize(): Either<ProtocolError, Unit> {
@@ -99,11 +138,11 @@ actual class MqttProtocol actual constructor(
      * Creates the MQTT topic for the given entity.
      * @return the topic where the entity will receive messages.
      */
-    private fun Entity.toTopics(): String {
-        return if (this.id != null) {
-            "inbox/${this.entityName}/${this.id}"
+    private fun toTopics(source: Entity, destination: Entity): String {
+        return if (source.id != null && destination.id != null) {
+            "pulvreakt/${source.entityName}/${destination.entityName}/${destination.id}"
         } else {
-            "inbox/${this.entityName}"
+            "pulvreakt/${source.entityName}/${destination.entityName}"
         }
     }
 }

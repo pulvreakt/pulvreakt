@@ -5,10 +5,12 @@ import arrow.core.right
 import it.unibo.pulvreakt.core.component.AbstractComponent
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.component.fixture.SimpleTimeDistribution
+import it.unibo.pulvreakt.core.component.pulverisation.Actuators
 import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
 import it.unibo.pulvreakt.core.component.pulverisation.BehaviourOutput
 import it.unibo.pulvreakt.core.component.pulverisation.Communication
 import it.unibo.pulvreakt.core.component.pulverisation.CommunicationPayload
+import it.unibo.pulvreakt.core.component.pulverisation.Sensors
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.serializer
 
@@ -50,8 +52,42 @@ class CommTest : Communication<Unit>(serializer()) {
     }
 }
 
-class BehaviourTest : Behaviour<Unit, Unit, Unit, Unit>(SimpleTimeDistribution(), serializer(), serializer(), serializer(), serializer()) {
+class BehaviourTest : Behaviour<Unit, Unit, Unit, Unit>(
+    SimpleTimeDistribution(),
+    serializer(),
+    serializer(),
+    serializer(),
+    serializer(),
+) {
     override fun invoke(state: Unit?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Unit, Unit, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return !(other == null || this::class != other::class)
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
+}
+
+class TestSensors : Sensors<Unit>(SimpleTimeDistribution(), serializer()) {
+    override suspend fun sense() = Unit
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return !(other == null || this::class != other::class)
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
+}
+
+class TestActuators : Actuators<Unit>(serializer()) {
+    override suspend fun actuate(actuation: Unit) {
         TODO("Not yet implemented")
     }
 
