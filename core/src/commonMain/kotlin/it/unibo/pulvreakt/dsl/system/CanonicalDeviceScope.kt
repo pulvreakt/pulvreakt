@@ -120,6 +120,7 @@ class CanonicalDeviceScope(private val deviceName: String) {
             it.first to setOf(
                 stateCapability?.first,
                 commCapability?.first,
+                sensorsCapability?.first,
                 actuatorsCapability?.first,
             ).filterNotNull().toSet()
         }
@@ -132,7 +133,10 @@ class CanonicalDeviceScope(private val deviceName: String) {
         val sensorsWiring = sensorsCapability?.let {
             it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
         }
-        val graph = listOfNotNull(behaviourWiring, stateWiring, commWiring, sensorsWiring).toMap()
+        val actuatorsWiring = actuatorsCapability?.let {
+            it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
+        }
+        val graph = listOfNotNull(behaviourWiring, stateWiring, commWiring, sensorsWiring, actuatorsWiring).toMap()
         val requiredCapabilities = setOfNotNull(
             behaviourCapability,
             stateCapability,

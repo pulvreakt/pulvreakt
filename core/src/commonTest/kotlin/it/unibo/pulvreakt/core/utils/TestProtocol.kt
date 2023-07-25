@@ -19,15 +19,15 @@ class TestProtocol : Protocol {
     }
 
     private val channels = mutableMapOf<Entity, MutableSharedFlow<ByteArray>>()
-    override suspend fun setupChannel(entity: Entity) {
-        channels[entity] = MutableSharedFlow()
+    override suspend fun setupChannel(source: Entity, destination: Entity) {
+        channels[source] = MutableSharedFlow()
     }
 
-    override suspend fun writeToChannel(to: Entity, message: ByteArray): Either<ProtocolError, Unit> = either {
+    override suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit> = either {
         channels[to]?.emit(message) ?: raise(ProtocolError.EntityNotRegistered(to))
     }
 
-    override fun readFromChannel(from: Entity): Either<ProtocolError, Flow<ByteArray>> = either {
+    override fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>> = either {
         channels[from]?.asSharedFlow() ?: raise(ProtocolError.EntityNotRegistered(from))
     }
 

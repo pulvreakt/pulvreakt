@@ -5,10 +5,13 @@ import arrow.core.firstOrNone
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.right
+import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.context.Context
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -27,14 +30,16 @@ import org.kodein.di.provider
 abstract class AbstractComponent : Component {
     override lateinit var di: DI
     protected val context by instance<Context>()
-    private val unitManager by instance<ComponentModeReconfigurator>()
+    private val reconfigurator by instance<ComponentModeReconfigurator>()
     private val communicatorFactory: () -> Communicator by provider()
     private lateinit var communicators: Map<ComponentRef, Communicator>
     private lateinit var unitManagerJob: Job
     protected val links = mutableSetOf<ComponentRef>()
+    private val logger = KotlinLogging.logger(this::class.simpleName!!)
 
     override fun getRef(): ComponentRef = ComponentRef.create(this)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun initialize(): Either<ComponentError, Unit> = coroutineScope {
         either {
             ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
@@ -49,11 +54,14 @@ abstract class AbstractComponent : Component {
                 }
                 communicator
             }
-            unitManagerJob = launch {
-                unitManager.receiveModeUpdates().collect { (component, mode) ->
+            unitManagerJob = GlobalScope.launch {
+                logger.debug { "Starting collecting new update" }
+                reconfigurator.receiveModeUpdates().collect { (component, mode) ->
+                    logger.debug { "Received mode update for $component: $mode" }
                     communicators[component]?.setMode(mode)
                 }
             }
+            logger.debug { "Component [${this@AbstractComponent::class.simpleName}] initialization concluded" }
         }
     }
 

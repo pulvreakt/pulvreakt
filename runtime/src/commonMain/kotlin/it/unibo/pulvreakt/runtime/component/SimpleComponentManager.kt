@@ -20,14 +20,16 @@ internal class SimpleComponentManager : ComponentManager {
     private val logger = KotlinLogging.logger("SimpleComponentManager")
 
     override fun register(component: Component) {
+        logger.debug { "Registered component: $component" }
         componentContainer += component to null
     }
 
     override suspend fun start(component: ComponentRef): Either<ComponentManagerError, Deferred<Either<ComponentError, Unit>>> = coroutineScope {
         either {
+            logger.debug { "components: $componentContainer - $component" }
             val candidateComponent = componentContainer.keys.firstOrNull { it.getRef() == component }
             ensureNotNull(candidateComponent) { ComponentNotRegistered(component) }
-            logger.debug { "Starting the execution of ${component::class.simpleName}" }
+            logger.debug { "Starting the execution of $component" }
             val jobRef = async { candidateComponent.execute() }
             componentContainer += candidateComponent to jobRef
             jobRef

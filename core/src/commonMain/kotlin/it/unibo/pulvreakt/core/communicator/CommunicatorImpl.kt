@@ -37,8 +37,7 @@ class CommunicatorImpl : Communicator {
         localCommunicator = localCommManager.getLocalCommunicator(source, destination)
         sourceComponent = source
         destinationComponent = destination
-        remoteProtocol.setupChannel(source.toEntity())
-        remoteProtocol.setupChannel(destination.toEntity())
+        remoteProtocol.setupChannel(source.toEntity(), destination.toEntity())
     }
 
     override fun setupInjector(kodein: DI) {
@@ -52,6 +51,7 @@ class CommunicatorImpl : Communicator {
     override suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit> = either {
         isDependencyInjectionInitialized().bind()
         isLocalCommunicatorInitialized().bind()
+        logger.debug { "Send ${message.decodeToString()} [Mode: $currentMode]" }
         when (currentMode) {
             is Mode.Local -> localCommunicator.sendToComponent(message).bind()
             is Mode.Remote -> sendRemoteToComponent(message).bind()
@@ -78,11 +78,11 @@ class CommunicatorImpl : Communicator {
     override suspend fun finalize(): Either<Nothing, Unit> = Unit.right()
 
     private suspend fun sendRemoteToComponent(message: ByteArray): Either<CommunicatorError, Unit> =
-        remoteProtocol.writeToChannel(destinationComponent.toEntity(), message)
+        remoteProtocol.writeToChannel(sourceComponent.toEntity(), destinationComponent.toEntity(), message)
             .mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun receiveRemoteFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
-        remoteProtocol.readFromChannel(sourceComponent.toEntity())
+        remoteProtocol.readFromChannel(destinationComponent.toEntity(), sourceComponent.toEntity())
             .mapLeft { CommunicatorError.WrapProtocolError(it) }
 
     private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> = either {
