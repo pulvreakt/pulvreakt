@@ -15,7 +15,7 @@ import kotlinx.serialization.KSerializer
  * This type can be a "compound" type, i.e. a type that contains all the types handled by the sensors.
  * This component is executed according to the given [timeDistribution].
  */
-abstract class Sensors<SS : Any>(
+abstract class Sensors<out SS : Any>(
     private val timeDistribution: TimeDistribution,
     private val serializer: KSerializer<SS>,
 ) : AbstractPulverisedComponent() {

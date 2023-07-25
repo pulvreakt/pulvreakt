@@ -12,7 +12,7 @@ import kotlinx.serialization.KSerializer
  * @param AS represents the type handled by the actuators component.
  * This type can be a "compound" type, i.e. a type that contains all the types handled by the actuators.
  */
-abstract class Actuators<AS : Any>(
+abstract class Actuators<in AS : Any>(
     private val serializer: KSerializer<AS>,
 ) : AbstractPulverisedComponent() {
     /**
