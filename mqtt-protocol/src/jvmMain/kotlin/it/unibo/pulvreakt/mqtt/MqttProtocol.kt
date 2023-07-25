@@ -79,10 +79,8 @@ actual class MqttProtocol actual constructor(
     }
 
     override fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>> = either {
-        val candidateTopic = registeredTopics[Pair(from, to)]
-        val channel = topicChannels[candidateTopic]
-        ensureNotNull(candidateTopic) { ProtocolError.EntityNotRegistered(from) }
-        ensureNotNull(channel) { ProtocolError.EntityNotRegistered(from) }
+        val candidateTopic = ensureNotNull(registeredTopics[Pair(from, to)]) { ProtocolError.EntityNotRegistered(from) }
+        val channel = ensureNotNull(topicChannels[candidateTopic]) { ProtocolError.EntityNotRegistered(from) }
         logger.debug { "Reading from topic $candidateTopic" }
         channel.asSharedFlow()
     }
@@ -110,8 +108,9 @@ actual class MqttProtocol actual constructor(
 
                     override fun messageArrived(topic: String?, message: MqttMessage?) {
                         logger.debug { "New message arrived on topic $topic" }
-                        requireNotNull(message?.payload) { "Message cannot be null" }
-                        topicChannels[topic]?.tryEmit(message?.payload!!) ?: run { logger.warn { "Nothing was emitted" } }
+                        val payload = message?.payload
+                        requireNotNull(payload) { "Message cannot be null" }
+                        topicChannels[topic]?.tryEmit(payload) ?: run { logger.warn { "Nothing was emitted" } }
                     }
 
                     override fun deliveryComplete(token: IMqttToken?) = Unit
@@ -119,7 +118,7 @@ actual class MqttProtocol actual constructor(
                     override fun authPacketArrived(reasonCode: Int, properties: MqttProperties?) = Unit
                 }
                 mqttClient.setCallback(callback)
-                async { mqttClient.subscribe(arrayOf("pulvreakt/+/+/+"), arrayOf(2).toIntArray()).waitForCompletion() }.await()
+                async { mqttClient.subscribe(arrayOf("pulvreakt/+/+/+"), intArrayOf(1)).waitForCompletion() }.await()
                 logger.debug { "Callback setupped" }
             }
         }
