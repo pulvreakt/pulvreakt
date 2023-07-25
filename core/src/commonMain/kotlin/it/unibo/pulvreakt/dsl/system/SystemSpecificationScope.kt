@@ -31,8 +31,11 @@ class SystemSpecificationScope {
     /**
      * Configure a canonical logical device with a [name] via [config] block.
      */
-    fun logicDevice(name: String, config: CanonicalDeviceScope.() -> Unit) {
-        val deviceScope = CanonicalDeviceScope(name).apply(config)
+    fun <State : Any, Comm : Any, SS : Any, AS : Any> logicDevice(
+        name: String,
+        config: CanonicalDeviceScope<State, Comm, SS, AS>.() -> Unit,
+    ) {
+        val deviceScope = CanonicalDeviceScope<State, Comm, SS, AS>(name).apply(config)
         devices.add(deviceScope.generate())
     }
 
