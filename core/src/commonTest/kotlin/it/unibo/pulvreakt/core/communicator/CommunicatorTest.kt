@@ -130,16 +130,16 @@ class CommunicatorTest : StringSpec(
             val receivedMessage = mutableListOf<String>()
             val c3Ref = C3().getRef()
             val c4Ref = C4().getRef()
-            val c1Communicator by diModule.instance<Communicator>()
-            val c2Communicator by diModule.instance<Communicator>()
+            val c3Communicator by diModule.instance<Communicator>()
+            val c4Communicator by diModule.instance<Communicator>()
 
-            with(c1Communicator) {
+            with(c3Communicator) {
                 setupInjector(diModule)
                 communicatorSetup(c3Ref, c4Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
 
-            with(c2Communicator) {
+            with(c4Communicator) {
                 setupInjector(diModule)
                 communicatorSetup(c4Ref, c3Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
@@ -147,7 +147,7 @@ class CommunicatorTest : StringSpec(
 
             val localReceiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
+                    val receiveFlow = c4Communicator.receiveFromComponent().bind()
                     receiveFlow.take(1).collect {
                         receivedMessage.add(it.decodeToString())
                     }
@@ -155,19 +155,19 @@ class CommunicatorTest : StringSpec(
                 resultCollect shouldBe Either.Right(Unit)
             }
 
-            val localSendResult = either { c1Communicator.sendToComponent("message 1".encodeToByteArray()).bind() }
+            val localSendResult = either { c3Communicator.sendToComponent("message 1".encodeToByteArray()).bind() }
             localSendResult shouldBe Either.Right(Unit)
             localReceiveJob.join()
 
             receivedMessage shouldBe listOf("message 1")
 
             // Start Remote communication
-            c1Communicator.setMode(Mode.Remote)
-            c2Communicator.setMode(Mode.Remote)
+            c3Communicator.setMode(Mode.Remote)
+            c4Communicator.setMode(Mode.Remote)
 
             val remoteReceiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
+                    val receiveFlow = c4Communicator.receiveFromComponent().bind()
                     receiveFlow.take(1).collect {
                         receivedMessage.add(it.decodeToString())
                     }
@@ -175,7 +175,7 @@ class CommunicatorTest : StringSpec(
                 resultCollect shouldBe Either.Right(Unit)
             }
 
-            val remoteSendResult = either { c1Communicator.sendToComponent("message 2".encodeToByteArray()).bind() }
+            val remoteSendResult = either { c3Communicator.sendToComponent("message 2".encodeToByteArray()).bind() }
             remoteSendResult shouldBe Either.Right(Unit)
             remoteReceiveJob.join()
 
