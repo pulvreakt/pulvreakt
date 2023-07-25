@@ -28,7 +28,7 @@ import it.unibo.pulvreakt.core.component.ComponentType.State as StateType
 /**
  * Scope for the system configuration using a canonical pulverization specification.
  */
-class CanonicalDeviceScope(private val deviceName: String) {
+class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private val deviceName: String) {
     private var behaviourCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var stateCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var commCapability: Pair<ComponentRef, Set<Capability>>? = null
@@ -38,35 +38,36 @@ class CanonicalDeviceScope(private val deviceName: String) {
     /**
      * Register a [State] component in the device.
      */
-    inline fun <reified S : State<*>> withState(): ComponentRef = ComponentRef.create<S>(StateType).also {
+    inline fun <reified S : State<St>> withState(): ComponentRef = ComponentRef.create<S>(StateType).also {
         addComponent("state", it)
     }
 
     /**
      * Register a [Behaviour] component in the device.
      */
-    inline fun <reified B : Behaviour<*, *, *, *>> withBehaviour(): ComponentRef = ComponentRef.create<B>(BehaviourType).also {
-        addComponent("behaviour", it)
-    }
+    inline fun <reified B : Behaviour<St, Co, Sens, Act>> withBehaviour(): ComponentRef =
+        ComponentRef.create<B>(BehaviourType).also {
+            addComponent("behaviour", it)
+        }
 
     /**
      * Register a [Sensors] component in the device.
      */
-    inline fun <reified SS : Sensors<*>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsType).also {
+    inline fun <reified SS : Sensors<Sens>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsType).also {
         addComponent("sensors", it)
     }
 
     /**
      * Register a [Actuators] component in the device.
      */
-    inline fun <reified AS : Actuators<*>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsType).also {
+    inline fun <reified AS : Actuators<Act>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsType).also {
         addComponent("actuators", it)
     }
 
     /**
      * Register a [Comm] component in the device.
      */
-    inline fun <reified Comm : Communication<*>> withCommunication(): ComponentRef = ComponentRef.create<Comm>(
+    inline fun <reified Comm : Communication<Co>> withCommunication(): ComponentRef = ComponentRef.create<Comm>(
         CommunicationType,
     ).also { addComponent("comm", it) }
 
