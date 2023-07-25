@@ -19,15 +19,15 @@ actual class MqttProtocol actual constructor(
     private val password: String?,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
-    override suspend fun setupChannel(entity: Entity) {
+    override suspend fun setupChannel(source: Entity, destination: Entity) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun writeToChannel(to: Entity, message: ByteArray): Either<ProtocolError, Unit> {
+    override suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit> {
         TODO("Not yet implemented")
     }
 
-    override fun readFromChannel(from: Entity): Either<ProtocolError, Flow<ByteArray>> {
+    override fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>> {
         TODO("Not yet implemented")
     }
 

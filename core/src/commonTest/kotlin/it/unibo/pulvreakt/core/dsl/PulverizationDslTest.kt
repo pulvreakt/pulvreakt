@@ -8,8 +8,11 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.core.component.fixture.TestBehaviour
+import it.unibo.pulvreakt.core.component.fixture.TestSensors
 import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
 import it.unibo.pulvreakt.core.dsl.fixture.CommTest
+import it.unibo.pulvreakt.core.dsl.fixture.TestActuators
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent1
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent2
 import it.unibo.pulvreakt.core.dsl.fixture.TestProtocol
@@ -282,6 +285,41 @@ class PulverizationDslTest : StringSpec({
         configResult.getOrNull()!!.let { config ->
             config["device 1"] shouldNotBe null
             config["device 2"] shouldNotBe null
+        }
+    }
+    "Regression test: Behaviour, Sensors and Actuators" {
+        val configResult = pulverization {
+            system {
+                logicDevice("device") {
+                    withBehaviour<TestBehaviour>() requires serverCapability
+                    withSensors<TestSensors>() requires embeddedDeviceCapability
+                    withActuators<TestActuators>() requires embeddedDeviceCapability
+                }
+            }
+            deployment(testInfrastructure, TestProtocol()) {
+                device("device") {
+                    TestBehaviour() startsOn serverHost
+                    TestSensors() startsOn smartphoneHost
+                    TestActuators() startsOn smartphoneHost
+                }
+            }
+        }
+        configResult.isRight() shouldBe true
+        configResult.getOrNull()!!.let { config ->
+            config["device"] shouldNotBe null
+            val deviceSpec = config["device"]!!
+            deviceSpec.componentsConfiguration shouldBe mapOf(
+                ComponentRef.create<TestBehaviour>(ComponentType.Behaviour) to setOf(
+                    ComponentRef.create<TestSensors>(ComponentType.Sensor),
+                    ComponentRef.create<TestActuators>(ComponentType.Actuator),
+                ),
+                ComponentRef.create<TestSensors>(ComponentType.Sensor) to setOf(
+                    ComponentRef.create<TestBehaviour>(ComponentType.Behaviour),
+                ),
+                ComponentRef.create<TestActuators>(ComponentType.Actuator) to setOf(
+                    ComponentRef.create<TestBehaviour>(ComponentType.Behaviour),
+                ),
+            )
         }
     }
 })
