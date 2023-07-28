@@ -10,14 +10,12 @@ val host = Host("name", cap)
 val infrastructure = nonEmptySetOf(host)
 
 val configuration = pulverization {
-    system {
-        logicDevice("dev") {
-            withBehaviour<FixtureBehaviour>() requires cap
-            withState<FixtureState>() requires cap
-        }
+    val dev by logicDevice {
+        withBehaviour<FixtureBehaviour>() requires cap
+        withState<FixtureState>() requires cap
     }
     deployment(infrastructure, TestProtocol()) {
-        device("dev") {
+        device(dev) {
             FixtureBehaviour() startsOn host
             FixtureState() startsOn host
         }
