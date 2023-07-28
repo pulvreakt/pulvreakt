@@ -2,46 +2,38 @@ package it.unibo.pulvreakt.dsl.deployment
 
 import arrow.core.Either
 import arrow.core.Nel
-import arrow.core.NonEmptySet
 import arrow.core.nonEmptyListOf
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import arrow.core.raise.ensureNotNull
 import arrow.core.toNonEmptySetOrNull
-import it.unibo.pulvreakt.core.infrastructure.Host
+import it.unibo.pulvreakt.dsl.LogicDeviceType
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.MismatchWithSystemConfiguration
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.NoDeviceFound
-import it.unibo.pulvreakt.dsl.model.ConfiguredDeviceStructure
+import it.unibo.pulvreakt.dsl.errors.EmptyDeploymentConfiguration
 import it.unibo.pulvreakt.dsl.model.ConfiguredDevicesRuntimeConfiguration
 import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 
 /**
  * Scope for the deployment DSL configuration.
  */
-class DeploymentSpecificationScope(
-    private val systemConfiguration: ConfiguredDeviceStructure,
-    private val infrastructure: NonEmptySet<Host>,
-) {
+class DeploymentSpecificationScope {
     private val devicesConfiguration =
         mutableListOf<Either<Nel<DeploymentConfigurationError>, DeviceRuntimeConfiguration>>()
 
     /**
-     * Configures a (logical) device with the given [name].
+     * Configures a (logical) device with the given [logicDeviceType].
      * [config] is the configuration scope for configuring the device.
      */
-    fun device(name: String, config: DeviceDeploymentSpecificationScope.() -> Unit) {
+    fun device(logicDeviceType: LogicDeviceType, config: DeviceDeploymentSpecificationScope.() -> Unit) {
         val configuration = either {
-            val deviceConfig = systemConfiguration.firstOrNull { it.deviceName == name }
-            ensureNotNull(deviceConfig) { nonEmptyListOf(NoDeviceFound(name)) }
-            val scope = DeviceDeploymentSpecificationScope(name, deviceConfig, infrastructure).apply(config)
+            val scope = DeviceDeploymentSpecificationScope(logicDeviceType.name).apply(config)
             scope.generate().bind()
         }
         devicesConfiguration += configuration
     }
 
     internal fun generate(): Either<Nel<DeploymentConfigurationError>, ConfiguredDevicesRuntimeConfiguration> = either {
-        ensure(systemConfiguration.size == devicesConfiguration.size) { nonEmptyListOf(MismatchWithSystemConfiguration) }
-        devicesConfiguration.bindAll()
-    }.map { it.toNonEmptySetOrNull()!! }
+        val devicesDeploymentConfig = either { devicesConfiguration.bindAll() }.bind()
+        ensure(devicesDeploymentConfig.isNotEmpty()) { nonEmptyListOf(EmptyDeploymentConfiguration) }
+        devicesDeploymentConfig.toNonEmptySetOrNull()!!
+    }
 }

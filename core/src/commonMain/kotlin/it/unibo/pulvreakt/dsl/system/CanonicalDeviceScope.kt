@@ -16,7 +16,7 @@ import it.unibo.pulvreakt.core.component.pulverisation.Communication
 import it.unibo.pulvreakt.core.component.pulverisation.Sensors
 import it.unibo.pulvreakt.core.component.pulverisation.State
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
-import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
+import it.unibo.pulvreakt.dsl.errors.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.core.component.ComponentType.Actuator as ActuatorsType

@@ -3,28 +3,6 @@ package it.unibo.pulvreakt.dsl.model
 import arrow.core.NonEmptySet
 import it.unibo.pulvreakt.core.component.ComponentRef
 
-// /**
-// * Represents the type of a component.
-// */
-// sealed interface ComponentType {
-//    companion object {
-//        /**
-//         * Creates a component type from the [component].
-//         */
-//        fun ctypeOf(component: KClass<out Component>): ComponentType = ComponentTypeImpl(component)
-//
-//        /**
-//         * Creates a component type from the class [C] of the component.
-//         */
-//        inline fun <reified C : Component> ctypeOf(): ComponentType = ctypeOf(C::class)
-//
-//        /**
-//         * Extension function to get the [ComponentType] from a component.
-//         */
-//        fun Component.getType(): ComponentType = ComponentTypeImpl(this::class)
-//        private data class ComponentTypeImpl(val componentType: KClass<out Component>) : ComponentType
-//    }
-// }
 typealias ComponentsGraph = Map<ComponentRef, Set<ComponentRef>>
 typealias RequiredCapabilities = Map<ComponentRef, NonEmptySet<Capability>>
 

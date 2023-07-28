@@ -13,9 +13,9 @@ import arrow.core.toNonEmptySetOrNull
 import it.unibo.pulvreakt.core.component.Component
 import it.unibo.pulvreakt.core.component.ComponentRef
 import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.dsl.errors.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
-import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.EmptyDeviceConfiguration
-import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError.UnspecifiedCapabilities
+import it.unibo.pulvreakt.dsl.errors.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.RequiredCapabilities

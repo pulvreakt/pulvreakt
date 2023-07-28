@@ -20,8 +20,9 @@ import it.unibo.pulvreakt.core.component.pulverisation.State
 import it.unibo.pulvreakt.core.infrastructure.Host
 import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.InvalidReconfigurationHost
-import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError.UnknownComponent
+import it.unibo.pulvreakt.dsl.errors.InvalidReconfiguration
+import it.unibo.pulvreakt.dsl.errors.InvalidReconfigurationHost
+import it.unibo.pulvreakt.dsl.errors.UnknownComponent
 import it.unibo.pulvreakt.dsl.model.DeviceReconfigurationRule
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
 import it.unibo.pulvreakt.dsl.model.NewConfiguration
@@ -86,7 +87,7 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
                         ?: raise(nonEmptyListOf(UnknownComponent(componentType)))
                     val hostCapability = host.capabilities
                     val isCompatible = componentCapabilities.intersect(hostCapability).isNotEmpty()
-                    ensure(isCompatible) { DeploymentConfigurationError.InvalidReconfiguration(componentType, host) }
+                    ensure(isCompatible) { InvalidReconfiguration(componentType, host) }
                 },
             ) { _, _, _, _ -> DeviceReconfigurationRule(this@reconfigures, newConfiguration) }
         }
