@@ -108,7 +108,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should produce an error if an unknown component is registered in the deployment" {
             val config = pulverization {
-                val myDevice by logicDevice {
+                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     component1 requires embeddedDeviceCapability
                 }
@@ -129,7 +129,7 @@ class PulverizationDslTest : StringSpec(
             enabled = false,
         ) {
             val config = pulverization {
-                val myDevice by logicDevice {
+                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     component1 requires embeddedDeviceCapability
                 }
@@ -199,7 +199,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should configure a device with the classical model".config(enabled = false) {
             val configResult = pulverization {
-                val myDevice by logicDevice {
+                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
@@ -243,7 +243,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should admit a mixed configuration with simple device and extended one" {
             val configResult = pulverization {
-                val device1 by logicDevice {
+                val device1 by logicDevice<Unit, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
@@ -276,7 +276,7 @@ class PulverizationDslTest : StringSpec(
         }
         "Regression test: Behaviour, Sensors and Actuators" {
             val configResult = pulverization {
-                val device by logicDevice {
+                val device by logicDevice<Int, Unit, Unit, Unit> {
                     withBehaviour<TestBehaviour>() requires serverCapability
                     withSensors<TestSensors>() requires embeddedDeviceCapability
                     withActuators<TestActuators>() requires embeddedDeviceCapability
