@@ -1,34 +1,48 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/finalize/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]finalize.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/fireMessage/#kotlin.ByteArray/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]fire-message.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/receiveMessage/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]receive-message.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttCommunicator/setup/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,it.nicolasfarabegoli.pulverization.dsl.model.ComponentType]#it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace?/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-communicator/[native]setup.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttReconfigurator/receiveReconfiguration/#/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-reconfigurator/[native]receive-reconfiguration.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.mqtt/MqttReconfigurator/reconfigure/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,kotlin.String]/PointingToDeclaration/mqtt-platform/it.nicolasfarabegoli.pulverization.platforms.mqtt/-mqtt-reconfigurator/[native]reconfigure.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/finalize/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]finalize.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/fireMessage/#kotlin.ByteArray/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]fire-message.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/receiveMessage/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]receive-message.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqCommunicator/setup/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,it.nicolasfarabegoli.pulverization.dsl.model.ComponentType]#it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace?/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-communicator/[native]setup.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqReconfigurator/receiveReconfiguration/#/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-reconfigurator/[native]receive-reconfiguration.html
-$dokka.location:it.nicolasfarabegoli.pulverization.platforms.rabbitmq/RabbitmqReconfigurator/reconfigure/#kotlin.Pair[it.nicolasfarabegoli.pulverization.dsl.model.ComponentType,kotlin.String]/PointingToDeclaration/rabbitmq-platform/it.nicolasfarabegoli.pulverization.platforms.rabbitmq/-rabbitmq-reconfigurator/[native]reconfigure.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/di/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]di.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/finalize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]finalize.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/initialize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]initialize.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/readFromChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]read-from-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-injector.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/writeToChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]write-to-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/di/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]di.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/finalize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]finalize.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/initialize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]initialize.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/readFromChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]read-from-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/setupChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]setup-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]setup-injector.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/writeToChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]write-to-channel.html
 module:core
-it.nicolasfarabegoli.pulverization.component
-it.nicolasfarabegoli.pulverization.core
-it.nicolasfarabegoli.pulverization.dsl
-it.nicolasfarabegoli.pulverization.dsl.model
-it.nicolasfarabegoli.pulverization.utils
-module:mqtt-platform
-it.nicolasfarabegoli.pulverization.platforms.mqtt
-module:platform
-it.nicolasfarabegoli.pulverization.runtime
-it.nicolasfarabegoli.pulverization.runtime.communication
-it.nicolasfarabegoli.pulverization.runtime.componentsref
-it.nicolasfarabegoli.pulverization.runtime.context
-it.nicolasfarabegoli.pulverization.runtime.dsl
-it.nicolasfarabegoli.pulverization.runtime.dsl.model
-it.nicolasfarabegoli.pulverization.runtime.reconfiguration
-it.nicolasfarabegoli.pulverization.runtime.spawner
-it.nicolasfarabegoli.pulverization.runtime.utils
-module:rabbitmq-platform
-it.nicolasfarabegoli.pulverization.platforms.rabbitmq
+it.unibo.pulvreakt.core.communicator
+it.unibo.pulvreakt.core.communicator.errors
+it.unibo.pulvreakt.core.component
+it.unibo.pulvreakt.core.component.errors
+it.unibo.pulvreakt.core.component.pulverisation
+it.unibo.pulvreakt.core.component.time
+it.unibo.pulvreakt.core.context
+it.unibo.pulvreakt.core.infrastructure
+it.unibo.pulvreakt.core.protocol
+it.unibo.pulvreakt.core.protocol.errors
+it.unibo.pulvreakt.core.reconfiguration
+it.unibo.pulvreakt.core.reconfiguration.component
+it.unibo.pulvreakt.core.reconfiguration.event
+it.unibo.pulvreakt.core.utils
+it.unibo.pulvreakt.dsl
+it.unibo.pulvreakt.dsl.deployment
+it.unibo.pulvreakt.dsl.errors
+it.unibo.pulvreakt.dsl.model
+it.unibo.pulvreakt.dsl.system
+module:mqtt-protocol
+it.unibo.pulvreakt.mqtt
+module:rabbitmq-protocol
+it.unibo.pulvreakt.platforms.rabbitmq
+module:runtime
+it.unibo.pulvreakt.runtime
+it.unibo.pulvreakt.runtime.component.errors
+it.unibo.pulvreakt.runtime.errors
+it.unibo.pulvreakt.runtime.reconfigurator
+it.unibo.pulvreakt.runtime.reconfigurator.errors
+it.unibo.pulvreakt.runtime.unit
+it.unibo.pulvreakt.runtime.unit.errors
