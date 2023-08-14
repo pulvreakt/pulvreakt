@@ -13,7 +13,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt = "io.gitlab.arturbosch.detekt:1.23.1"
-kover = "org.jetbrains.kotlinx.kover:0.7.2"
+kover = "org.jetbrains.kotlinx.kover:0.7.3"
 taskTree = "com.dorongold.task-tree:2.1.1"
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.10"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.11"
