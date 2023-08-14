@@ -2,7 +2,7 @@
 dokka = "1.8.20"
 kermit = "2.0.0-RC5"
 koin = "3.4.3"
-kotest = "5.6.1"
+kotest = "5.6.2"
 kotlin = "1.9.0"
 
 [plugins]
