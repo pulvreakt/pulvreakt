@@ -221,7 +221,7 @@ allprojects {
         ignoreFailures = false
     }
     dependencies {
-        detektPlugins("com.wolt.arrow.detekt:rules:0.2.1")
+        detektPlugins("com.wolt.arrow.detekt:rules:0.3.0")
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
     }
     tasks.withType<Detekt>().configureEach { finalizedBy(reportMerge) }
