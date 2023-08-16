@@ -11,12 +11,12 @@ sealed interface CommunicatorError {
     /**
      * Error raised because the [Communicator] has the dependency injection module not initialized.
      */
-    object InjectorNotInitialized : CommunicatorError
+    data object InjectorNotInitialized : CommunicatorError
 
     /**
      * Error raised because the [Communicator] has not been initialized.
      */
-    object CommunicatorNotInitialized : CommunicatorError
+    data object CommunicatorNotInitialized : CommunicatorError
 
     /**
      * Rethrow the [error] raised by the [Protocol] in the context of the [Communicator].

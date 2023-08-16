@@ -19,11 +19,6 @@ sealed interface DeploymentConfigurationError : ConfigurationError
 data class NoDeviceFound(val deviceName: String) : DeploymentConfigurationError
 
 /**
- * Error raised if the deployment configuration does not match the system configuration.
- */
-object MismatchWithSystemConfiguration : DeploymentConfigurationError
-
-/**
  * Error raised when in the system configuration a [component] belonging to a [deviceType] is registered but in the deployment configuration
  * it is not provided its instance.
  */
@@ -55,14 +50,9 @@ data class UnknownComponent(val component: ComponentRef) : DeploymentConfigurati
 data class InvalidReconfigurationHost(val host: Host) : DeploymentConfigurationError
 
 /**
- * Error raised when the reconfiguration rules scope is empty.
- */
-object EmptyOnDeviceReconfiguration : DeploymentConfigurationError
-
-/**
  * Error raised when the deployment configuration is empty.
  */
-object EmptyDeploymentConfiguration : DeploymentConfigurationError
+data object EmptyDeploymentConfiguration : DeploymentConfigurationError
 
 /**
  * Represents an error that can occur during the configuration of the system using the DSL.
@@ -77,12 +67,12 @@ data class DuplicateDeviceName(val deviceName: String) : SystemConfigurationErro
 /**
  * Error raised if the system configuration is empty.
  */
-object EmptySystemConfiguration : SystemConfigurationError
+data object EmptySystemConfiguration : SystemConfigurationError
 
 /**
  * Error raised if the system configuration does not contain a device configuration.
  */
-object EmptyDeviceConfiguration : SystemConfigurationError
+data object EmptyDeviceConfiguration : SystemConfigurationError
 
 /**
  * Error raised if a [component] is registered without specifying its capabilities.

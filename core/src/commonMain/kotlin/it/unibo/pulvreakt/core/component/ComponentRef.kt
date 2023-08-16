@@ -7,32 +7,32 @@ sealed interface ComponentType {
     /**
      * Beheaviour component.
      */
-    object Behaviour : ComponentType
+    data object Behaviour : ComponentType
 
     /**
      * State component.
      */
-    object State : ComponentType
+    data object State : ComponentType
 
     /**
      * Communication component.
      */
-    object Communication : ComponentType
+    data object Communication : ComponentType
 
     /**
      * Sensor component.
      */
-    object Sensor : ComponentType
+    data object Sensor : ComponentType
 
     /**
      * Actuator component.
      */
-    object Actuator : ComponentType
+    data object Actuator : ComponentType
 
     /**
      * Generic component.
      */
-    object Generic : ComponentType
+    data object Generic : ComponentType
 }
 
 /**
