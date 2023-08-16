@@ -1,3 +1,24 @@
+## [0.8.1](https://github.com/pulvreakt/pulvreakt/compare/0.8.0...0.8.1) (2023-08-16)
+
+
+### Dependency updates
+
+* **deps:** update coroutines to v1.7.3 ([d1f11ca](https://github.com/pulvreakt/pulvreakt/commit/d1f11ca9e0c7bbf32cc4ffde851fa6f04b372c76))
+* **deps:** update dependency com.wolt.arrow.detekt:rules to v0.3.0 ([4c0fc61](https://github.com/pulvreakt/pulvreakt/commit/4c0fc617526469ee01b145e1495829d02fa93ecd))
+* **deps:** update dependency io.github.oshai:kotlin-logging to v5 ([77c647d](https://github.com/pulvreakt/pulvreakt/commit/77c647d1c971cb5bd2356e03dc23c7efc0b423b7))
+* **deps:** update plugin kover to v0.7.3 ([1ec482e](https://github.com/pulvreakt/pulvreakt/commit/1ec482e7ef4b6ec37a0e1a45ad731b57d246ec2e))
+* **deps:** update plugin publishoncentral to v5.0.11 ([0f0922b](https://github.com/pulvreakt/pulvreakt/commit/0f0922b29f1ce5fcb6439243f91508cba8c2cae7))
+
+
+### Bug Fixes
+
+* use data object introduced in kotlin 1.9.0 ([b6333cf](https://github.com/pulvreakt/pulvreakt/commit/b6333cf8d57871157af0e24369fa749e094522ef))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/setup-node action to v3.8.0 ([7597490](https://github.com/pulvreakt/pulvreakt/commit/759749039f8ae5b892029d271dcc19a385eff9f5))
+
 ## [0.8.0](https://github.com/pulvreakt/pulvreakt/compare/0.7.2...0.8.0) (2023-08-14)
 
 
