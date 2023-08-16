@@ -32,13 +32,17 @@ style:
   ForbiddenComment:
     allowedPatterns: 'TODO:'
   MagicNumber:
-    ignoreNumbers: ['-2', '-1', '0', '0.5', '1', '2', '3', '4', '5', '10', '100', '360.0', '1000']
+    ignoreNumbers: [ '-2', '-1', '0', '0.5', '1', '2', '3', '4', '5', '10', '100', '360.0', '1000' ]
   ThrowsCount:
     max: 10
   MaxLineLength:
     maxLineLength: 150
 formatting:
   MaximumLineLength:
+    maxLineLength: 150
+  ArgumentListWrapping:
+    maxLineLength: 150
+  ParameterListWrapping:
     maxLineLength: 150
 
 ArrowRuleSet:
