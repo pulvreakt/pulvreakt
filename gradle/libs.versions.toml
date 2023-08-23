@@ -29,7 +29,7 @@ kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", versi
 kotlin-test-annotation-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.0" }
 kodein = { module = "org.kodein.di:kodein-di", version = "7.20.2" }
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
 paho-mqtt = { module = "org.eclipse.paho:org.eclipse.paho.mqttv5.client", version = "1.2.5" }
