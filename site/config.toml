@@ -8,7 +8,7 @@ title = 'PulvReAKt framework'
 theme = "hugo-theme-relearn"
 
 [params]
-editURL = "https://github.com/pulvreakt/pulvreakt/edit/master/docs/content/"
+editURL = "https://github.com/pulvreakt/pulvreakt/edit/master/site/content/"
 description = "Pulverization framework"
 author = "Nicolas Farabegoli"
 showVisitedLinks = true
