@@ -322,11 +322,11 @@ dd {
     z-index: 70;
 }
 
-#body img:not(.lightbox-image),
-#body img.center,
+#body img,
 #body .video-container {
     display: block;
-    margin: 1.5rem auto;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
 }
 
@@ -340,7 +340,7 @@ dd {
 
 #body img.border,
 #body .video-container.border {
-    border: 2px solid rgba( 134, 134, 134, .125 );
+    border: 1px solid rgba( 134, 134, 134, .333 );
 }
 
 #body img.shadow,
@@ -563,33 +563,39 @@ div.box > .box-content {
     padding-right: 1rem;
 }
 
-#body table th > :first-child,
-#body table th > :first-child :first-child,
-#body table td > :first-child,
-#body table td > :first-child :first-child,
-#body div.box > .box-content > :first-child,
-#body div.box > .box-content > :first-child :first-child,
-#body div.expand > .expand-content-text > :first-child,
-#body div.expand > .expand-content-text > :first-child :first-child,
-#body div.tab-content > .tab-content-text > :first-child,
-#body div.tab-content > .tab-content-text > :first-child :first-child {
+p:empty {
+    /* in case of image render hook, Hugo may generate empty <p>s that we want to ignore */
+    display: none;
+}
+
+/* in case of image render hook, Hugo may generate empty <p>s that we want to ignore aswell, so a simple :first-child or :last-child is not enough */
+#body table th > :nth-child(1 of :not(:empty)),
+#body table th > :nth-child(1 of :not(:empty)) :nth-child(1 of :not(:empty)),
+#body table td > :nth-child(1 of :not(:empty)),
+#body table td > :nth-child(1 of :not(:empty)) :nth-child(1 of :not(:empty)),
+#body div.box > .box-content > :nth-child(1 of :not(:empty)),
+#body div.box > .box-content > :nth-child(1 of :not(:empty)) :nth-child(1 of :not(:empty)),
+#body div.expand > .expand-content-text > :nth-child(1 of :not(:empty)),
+#body div.expand > .expand-content-text > :nth-child(1 of :not(:empty)) :nth-child(1 of :not(:empty)),
+#body div.tab-content > .tab-content-text > :nth-child(1 of :not(:empty)),
+#body div.tab-content > .tab-content-text > :nth-child(1 of :not(:empty)) :nth-child(1 of :not(:empty)) {
     margin-top: 0;
 }
 
-#body table th > :last-child,
-#body table th > :last-child :last-child,
+#body table th > :nth-last-child(1 of :not(:empty)),
+#body table th > :nth-last-child(1 of :not(:empty)) :nth-last-child(1 of :not(:empty)),
 #body table th > div.highlight:last-child pre,
-#body table td > :last-child,
-#body table td > :last-child :last-child,
+#body table td > :nth-last-child(1 of :not(:empty)),
+#body table td > :nth-last-child(1 of :not(:empty)) :nth-last-child(1 of :not(:empty)),
 #body table td > div:last-child pre,
-#body div.box > .box-content > :last-child,
-#body div.box > .box-content > :last-child :last-child,
+#body div.box > .box-content > :nth-last-child(1 of :not(:empty)),
+#body div.box > .box-content > :nth-last-child(1 of :not(:empty)) :nth-last-child(1 of :not(:empty)),
 #body div.box > .box-content > div:last-child pre,
-#body div.expand > .expand-content-text > :last-child,
-#body div.expand > .expand-content-text > :last-child :last-child,
+#body div.expand > .expand-content-text > :nth-last-child(1 of :not(:empty)),
+#body div.expand > .expand-content-text > :nth-last-child(1 of :not(:empty)) :nth-last-child(1 of :not(:empty)),
 #body div.expand > .expand-content-text > div:last-child pre,
-#body div.tab-content > .tab-content-text > :last-child,
-#body div.tab-content > .tab-content-text > :last-child :last-child,
+#body div.tab-content > .tab-content-text > :nth-last-child(1 of :not(:empty)),
+#body div.tab-content > .tab-content-text > :nth-last-child(1 of :not(:empty)) :nth-last-child(1 of :not(:empty)),
 #body div.tab-content > .tab-content-text > div:last-child pre {
     margin-bottom: 0;
 }
@@ -1780,7 +1786,7 @@ article ul > li > input[type="checkbox"]:checked::before {
 }
 
 /* CSS Lightbox https://codepen.io/gschier/pen/kyRXVx */
-.lightbox {
+.lightbox-back {
     align-items: center;
     background: rgba( 0, 0, 0, .8 );
     bottom: 0;
@@ -1795,11 +1801,11 @@ article ul > li > input[type="checkbox"]:checked::before {
     z-index: 1999;
 }
 
-.lightbox:target {
+.lightbox-back:target {
     display: flex;
 }
 
-.lightbox img {
+.lightbox-back img {
     max-height: 95%;
     max-width: 95%;
     overflow: auto;
