@@ -1,12 +1,10 @@
 ---
 title: "Tutorials"
-chapter: true
+archetype: "chapter"
 pre: <b>1. </b>
 weight: 1
 summary: TODO
 ---
-
-# Tutorials
 
 ## Contents
 

@@ -1,8 +1,5 @@
 +++
-chapter = true
-pre = ""
+archetype = "home"
+menuPre = ""
 title = "Pulverization framework"
-weight = 5
 +++
-
-# hello

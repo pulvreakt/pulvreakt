@@ -17,13 +17,13 @@ disableNextPrev = false
 disableLandingPageButton = false
 disableMermaid = false
 titleSeparator = "::"
-themeVariant = "relearn"
+themeVariant = "auto"
 disableSeoHiddenPages = true
 disableLanguageSwitchingButton = true
 version = "!development preview!"
 
 [outputs]
-home = ["HTML", "RSS", "JSON"] # add JSON to the home page to support lunr search
+home = ["HTML", "RSS", "SEARCH"] # add JSON to the home page to support lunr search
 
 [markup]
 [markup.highlight]
@@ -38,7 +38,7 @@ unsafe = true
 title = "Documentation for PulvReAKt framework"
 weight = 1
 languageName = "English"
-landingPageURL = "/"
+[Languages.en.params]
 landingPageName = "<i class='fas fa-home'></i> Home"
 
 [[Languages.en.menu.shortcuts]]

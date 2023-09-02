@@ -1,12 +1,10 @@
 ---
 title: Reference
 pre: <b>4. </b>
-chapter: true
+archetype: "chapter"
 weight: 4
 summary: TODO
 ---
-
-# Reference
 
 ## Contents
 

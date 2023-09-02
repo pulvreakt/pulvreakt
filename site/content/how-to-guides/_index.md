@@ -1,12 +1,10 @@
 ---
 title: How-to Guides
 pre: <b>2. </b>
-chapter: true
+archetype: "chapter"
 weight: 2
 summary: TODO
 ---
-
-# How-to Guides
 
 ## Contents
 

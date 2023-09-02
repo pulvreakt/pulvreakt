@@ -1,12 +1,10 @@
 ---
 title: Explanation
 pre: <b>3. </b>
-chapter: true
+archetype: "chapter"
 weight: 3
 summary: TODO
 ---
-
-# Explanation
 
 ## Contents
 
