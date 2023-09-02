@@ -37,10 +37,6 @@ var psm;
 var pst;
 var elc = document.querySelector('#body-inner');
 
-function regexEscape( s ){
-    return s.replace( /[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&' );
-}
-
 function documentFocus(){
     elc.focus();
     psc && psc.scrollbarY.focus();
@@ -117,8 +113,6 @@ function switchTab(tabGroup, tabId) {
 
     allTabItems && allTabItems.forEach( function( e ){ e.classList.remove( 'active' ); });
     targetTabItems && targetTabItems.forEach( function( e ){ e.classList.add( 'active' ); });
-
-    initMermaid( true );
 
     if(isButtonEvent){
       // reset screen to the same position relative to clicked button to prevent page jump
@@ -215,9 +209,6 @@ function initMermaid( update, attrs ) {
 
             var graph = serializeGraph( parse );
             element.innerHTML = graph;
-            if( element.offsetParent !== null ){
-                element.classList.add( 'mermaid-render' );
-            }
             var new_element = document.createElement( 'div' );
             new_element.classList.add( 'mermaid-container' );
             new_element.innerHTML = '<div class="mermaid-code">' + graph + '</div>' + element.outerHTML;
@@ -234,19 +225,10 @@ function initMermaid( update, attrs ) {
             var code = e.querySelector( '.mermaid-code' );
             var parse = parseGraph( decodeHTML( code.innerHTML ) );
 
-            if( element.classList.contains( 'mermaid-render' ) ){
-                if( parse.yaml.relearn_user_theme || parse.dir.relearn_user_theme ){
-                    return;
-                }
-                if( parse.yaml.theme == theme || parse.dir.theme == theme ){
-                    return;
-                }
+            if( parse.yaml.relearn_user_theme || parse.dir.relearn_user_theme ){
+                return;
             }
-            if( element.offsetParent !== null ){
-                element.classList.add( 'mermaid-render' );
-            }
-            else{
-                element.classList.remove( 'mermaid-render' );
+            if( parse.yaml.theme == theme || parse.dir.theme == theme ){
                 return;
             }
             is_initialized = true;
@@ -310,7 +292,7 @@ function initMermaid( update, attrs ) {
                     svg.call( zoom );
                 });
             },
-            querySelector: '.mermaid.mermaid-render',
+            querySelector: '.mermaid',
             suppressErrors: true
         });
     }
@@ -1005,11 +987,7 @@ function initSwipeHandler(){
 }
 
 function initImage(){
-    document.querySelectorAll( '.lightbox-back' ).forEach( function(e){ e.addEventListener( 'keydown', imageEscapeHandler ); });
-}
-
-function initExpand(){
-    document.querySelectorAll( '.expand > input' ).forEach( function(e){ e.addEventListener( 'change', initMermaid.bind( null, true, null ) ); });
+    document.querySelectorAll( '.lightbox' ).forEach( function(e){ e.addEventListener("keydown", imageEscapeHandler); }, false);
 }
 
 function clearHistory() {
@@ -1086,7 +1064,6 @@ function scrollToPositions() {
 
     var search = sessionStorage.getItem( baseUriFull+'search-value' );
     if( search && search.length ){
-        search = regexEscape( search );
         var found = elementContains( search, elc );
         var searchedElem = found.length && found[ 0 ];
         if( searchedElem ){
@@ -1121,7 +1098,7 @@ function mark() {
 		topbarLinks[i].classList.add( 'highlight' );
 	}
 
-	var bodyInnerLinks = document.querySelectorAll( '#body-inner a:not(.lightbox-link):not(.btn):not(.lightbox-back)' );
+	var bodyInnerLinks = document.querySelectorAll( '#body-inner a:not(.lightbox-link):not(.btn):not(.lightbox)' );
 	for( var i = 0; i < bodyInnerLinks.length; i++ ){
 		bodyInnerLinks[i].classList.add( 'highlight' );
 	}
@@ -1174,7 +1151,7 @@ function highlight( es, words, options ){
         return word != '';
     });
     words = words.map( function( word, i ){
-        return regexEscape( word );
+        return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     });
     if( words.length == 0 ){ return this; }
 
@@ -1378,7 +1355,6 @@ ready( function(){
     initHistory();
     initSearch();
     initImage();
-    initExpand();
     initScrollPositionSaver();
     scrollToPositions();
 });

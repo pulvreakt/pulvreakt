@@ -16,9 +16,6 @@
     <loc>https://pulvreakt.github.io/pulvreakt/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://pulvreakt.github.io/pulvreakt/index.html</loc>
-  </url>
-  <url>
     <loc>https://pulvreakt.github.io/pulvreakt/tags/api-docs/index.html</loc>
   </url>
   <url>
@@ -29,6 +26,9 @@
   </url>
   <url>
     <loc>https://pulvreakt.github.io/pulvreakt/tags/kdoc/index.html</loc>
+  </url>
+  <url>
+    <loc>https://pulvreakt.github.io/pulvreakt/index.html</loc>
   </url>
   <url>
     <loc>https://pulvreakt.github.io/pulvreakt/tags/index.html</loc>

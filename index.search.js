@@ -1,13 +1,13 @@
-[
+var relearn_search_index = [
   {
-    "content": "Tutorials Contents ",
+    "content": "Contents ",
     "description": "",
     "tags": null,
     "title": "Tutorials",
     "uri": "/tutorials/index.html"
   },
   {
-    "content": "How-to Guides Contents ",
+    "content": "Contents ",
     "description": "",
     "tags": null,
     "title": "How-to Guides",
@@ -25,25 +25,18 @@
     "uri": "/reference/kdoc/index.html"
   },
   {
-    "content": "Explanation Contents ",
+    "content": "Contents ",
     "description": "",
     "tags": null,
     "title": "Explanation",
     "uri": "/explanation/index.html"
   },
   {
-    "content": "Reference Contents KDoc APIKDoc API docs\n",
+    "content": "Contents KDoc APIKDoc API docs\n",
     "description": "",
     "tags": null,
     "title": "Reference",
     "uri": "/reference/index.html"
-  },
-  {
-    "content": "hello ",
-    "description": "",
-    "tags": null,
-    "title": "Pulverization framework",
-    "uri": "/index.html"
   },
   {
     "content": "",
@@ -72,6 +65,13 @@
     "tags": null,
     "title": "Tag :: kdoc",
     "uri": "/tags/kdoc/index.html"
+  },
+  {
+    "content": "",
+    "description": "",
+    "tags": null,
+    "title": "Pulverization framework",
+    "uri": "/index.html"
   },
   {
     "content": "",
