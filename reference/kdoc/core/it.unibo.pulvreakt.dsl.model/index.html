@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>it.unibo.pulvreakt.dsl.model</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
-<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
@@ -29,26 +32,32 @@
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../index.html">
-<span>pulvreakt</span>            </a>    </div>
-    <div>0.8.1-dev0y+92b850018
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            pulvreakt
+                    </a>            </div>
+            <div class="library-version">0.8.1-dev0z+c32242218
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":core:dokkaHtmlPartial/commonMain">common</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="core::it.unibo.pulvreakt.dsl.model////PointingToDeclaration//-2011752812">
   <div class="breadcrumbs"><a href="../index.html">core</a><span class="delimiter">/</span><span class="current">it.unibo.pulvreakt.dsl.model</span></div>
   <div class="cover ">
@@ -78,13 +87,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-782688566%2FClasslikes%2F-2011752812"><span>Components</span><wbr><span><span>Graph</span></span></a></div>
+                  <div><a href="-components-graph/index.html"><span>Components</span><wbr><span><span>Graph</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-782688566%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-782688566%2FClasslikes%2F-2011752812">ComponentsGraph</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-components-graph/index.html">ComponentsGraph</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -93,13 +102,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#1226116056%2FClasslikes%2F-2011752812"><span>Component</span><wbr><span>Startup</span><wbr><span><span>Host</span></span></a></div>
+                  <div><a href="-component-startup-host/index.html"><span>Component</span><wbr><span>Startup</span><wbr><span><span>Host</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1226116056%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#1226116056%2FClasslikes%2F-2011752812">ComponentStartupHost</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component/index.html">Component</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.infrastructure/-host/index.html">Host</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-component-startup-host/index.html">ComponentStartupHost</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component/index.html">Component</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.infrastructure/-host/index.html">Host</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -108,13 +117,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-44153819%2FClasslikes%2F-2011752812"><span>Configured</span><wbr><span>Devices</span><wbr><span>Runtime</span><wbr><span><span>Configuration</span></span></a></div>
+                  <div><a href="-configured-devices-runtime-configuration/index.html"><span>Configured</span><wbr><span>Devices</span><wbr><span>Runtime</span><wbr><span><span>Configuration</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-44153819%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-44153819%2FClasslikes%2F-2011752812">ConfiguredDevicesRuntimeConfiguration</a><span class="token operator"> = </span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-configured-devices-runtime-configuration/index.html">ConfiguredDevicesRuntimeConfiguration</a><span class="token operator"> = </span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -123,13 +132,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-1948998237%2FClasslikes%2F-2011752812"><span>Configured</span><wbr><span>Device</span><wbr><span><span>Structure</span></span></a></div>
+                  <div><a href="-configured-device-structure/index.html"><span>Configured</span><wbr><span>Device</span><wbr><span><span>Structure</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1948998237%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-1948998237%2FClasslikes%2F-2011752812">ConfiguredDeviceStructure</a><span class="token operator"> = </span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-structure/index.html">DeviceStructure</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-configured-device-structure/index.html">ConfiguredDeviceStructure</a><span class="token operator"> = </span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-structure/index.html">DeviceStructure</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -159,7 +168,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentStartupHost<span class="token operator">: </span><a href="index.html#1226116056%2FClasslikes%2F-2011752812">ComponentStartupHost</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reconfigurationRules<span class="token operator">: </span><a href="-reconfiguration-rules/index.html">ReconfigurationRules</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Models the runtime configuration of a device. <a href="-device-runtime-configuration/device-name.html">deviceName</a> is the name of the device. <a href="-device-runtime-configuration/component-startup-host.html">componentStartupHost</a> is the map that associates a component to the host on which it is started. <a href="-device-runtime-configuration/reconfiguration-rules.html">reconfigurationRules</a> are the reconfiguration rules of the device.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentStartupHost<span class="token operator">: </span><a href="-component-startup-host/index.html">ComponentStartupHost</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reconfigurationRules<span class="token operator">: </span><a href="-reconfiguration-rules/index.html">ReconfigurationRules</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Models the runtime configuration of a device. <a href="-device-runtime-configuration/device-name.html">deviceName</a> is the name of the device. <a href="-device-runtime-configuration/component-startup-host.html">componentStartupHost</a> is the map that associates a component to the host on which it is started. <a href="-device-runtime-configuration/reconfiguration-rules.html">reconfigurationRules</a> are the reconfiguration rules of the device.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -168,13 +177,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-1531774361%2FClasslikes%2F-2011752812"><span>Devices</span><wbr><span><span>Configuration</span></span></a></div>
+                  <div><a href="-devices-configuration/index.html"><span>Devices</span><wbr><span><span>Configuration</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1531774361%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-1531774361%2FClasslikes%2F-2011752812">DevicesConfiguration</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-device-specification/index.html">DeviceSpecification</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-devices-configuration/index.html">DevicesConfiguration</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-device-specification/index.html">DeviceSpecification</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -189,7 +198,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-specification/index.html">DeviceSpecification</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentsConfiguration<span class="token operator">: </span><a href="index.html#-782688566%2FClasslikes%2F-2011752812">ComponentsGraph</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredCapabilities<span class="token operator">: </span><a href="index.html#-1916143605%2FClasslikes%2F-2011752812">RequiredCapabilities</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>runtimeConfiguration<span class="token operator">: </span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the device specification. It is characterized by a <a href="-device-specification/device-name.html">deviceName</a>, a <a href="-device-specification/components-configuration.html">componentsConfiguration</a> that describes the links between the components of the device, the <a href="-device-specification/required-capabilities.html">requiredCapabilities</a> of each component, and the <a href="-device-specification/runtime-configuration.html">runtimeConfiguration</a> of the device.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-specification/index.html">DeviceSpecification</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentsConfiguration<span class="token operator">: </span><a href="-components-graph/index.html">ComponentsGraph</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredCapabilities<span class="token operator">: </span><a href="-required-capabilities/index.html">RequiredCapabilities</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>runtimeConfiguration<span class="token operator">: </span><a href="-device-runtime-configuration/index.html">DeviceRuntimeConfiguration</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the device specification. It is characterized by a <a href="-device-specification/device-name.html">deviceName</a>, a <a href="-device-specification/components-configuration.html">componentsConfiguration</a> that describes the links between the components of the device, the <a href="-device-specification/required-capabilities.html">requiredCapabilities</a> of each component, and the <a href="-device-specification/runtime-configuration.html">runtimeConfiguration</a> of the device.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -204,7 +213,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-structure/index.html">DeviceStructure</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentsGraph<span class="token operator">: </span><a href="index.html#-782688566%2FClasslikes%2F-2011752812">ComponentsGraph</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredCapabilities<span class="token operator">: </span><a href="index.html#-1916143605%2FClasslikes%2F-2011752812">RequiredCapabilities</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the structure of a device characterized by a <a href="-device-structure/device-name.html">deviceName</a>, a <a href="-device-structure/components-graph.html">componentsGraph</a> that describes the links between the components of the device, and the <a href="-device-structure/required-capabilities.html">requiredCapabilities</a> of each component.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-device-structure/index.html">DeviceStructure</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentsGraph<span class="token operator">: </span><a href="-components-graph/index.html">ComponentsGraph</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredCapabilities<span class="token operator">: </span><a href="-required-capabilities/index.html">RequiredCapabilities</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the structure of a device characterized by a <a href="-device-structure/device-name.html">deviceName</a>, a <a href="-device-structure/components-graph.html">componentsGraph</a> that describes the links between the components of the device, and the <a href="-device-structure/required-capabilities.html">requiredCapabilities</a> of each component.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -228,13 +237,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-190764736%2FClasslikes%2F-2011752812"><span>On</span><wbr><span>Device</span><wbr><span><span>Rules</span></span></a></div>
+                  <div><a href="-on-device-rules/index.html"><span>On</span><wbr><span>Device</span><wbr><span><span>Rules</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-190764736%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-190764736%2FClasslikes%2F-2011752812">OnDeviceRules</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-reconfiguration-rule/index.html">DeviceReconfigurationRule</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-on-device-rules/index.html">OnDeviceRules</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-device-reconfiguration-rule/index.html">DeviceReconfigurationRule</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -249,7 +258,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-pulvreakt-configuration/index.html">PulvreaktConfiguration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>devicesConfiguration<span class="token operator">: </span><a href="index.html#-1531774361%2FClasslikes%2F-2011752812">DevicesConfiguration</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>protocol<span class="token operator">: </span><a href="../it.unibo.pulvreakt.core.protocol/-protocol/index.html">Protocol</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the container of configurations and additional information for the communication. <a href="-pulvreakt-configuration/devices-configuration.html">devicesConfiguration</a> is the map that associates a device name to its specification. <a href="-pulvreakt-configuration/protocol.html">protocol</a> is the <a href="../it.unibo.pulvreakt.core.protocol/-protocol/index.html">Protocol</a> that will be used for the communication.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-pulvreakt-configuration/index.html">PulvreaktConfiguration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>devicesConfiguration<span class="token operator">: </span><a href="-devices-configuration/index.html">DevicesConfiguration</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>protocol<span class="token operator">: </span><a href="../it.unibo.pulvreakt.core.protocol/-protocol/index.html">Protocol</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Represents the container of configurations and additional information for the communication. <a href="-pulvreakt-configuration/devices-configuration.html">devicesConfiguration</a> is the map that associates a device name to its specification. <a href="-pulvreakt-configuration/protocol.html">protocol</a> is the <a href="../it.unibo.pulvreakt.core.protocol/-protocol/index.html">Protocol</a> that will be used for the communication.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -264,7 +273,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reconfiguration-rules/index.html">ReconfigurationRules</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>onDeviceRules<span class="token operator">: </span><a href="index.html#-190764736%2FClasslikes%2F-2011752812">OnDeviceRules</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Models the reconfiguration rules of the device. <a href="-reconfiguration-rules/on-device-rules.html">onDeviceRules</a> are the rules that are triggered by events that occur on the device. <a href="-reconfiguration-rules/on-device-rules.html">onDeviceRules</a> will be <code class="lang-kotlin">null</code> if no reconfiguration rules are specified for the device.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reconfiguration-rules/index.html">ReconfigurationRules</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>onDeviceRules<span class="token operator">: </span><a href="-on-device-rules/index.html">OnDeviceRules</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Models the reconfiguration rules of the device. <a href="-reconfiguration-rules/on-device-rules.html">onDeviceRules</a> are the rules that are triggered by events that occur on the device. <a href="-reconfiguration-rules/on-device-rules.html">onDeviceRules</a> will be <code class="lang-kotlin">null</code> if no reconfiguration rules are specified for the device.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -273,13 +282,13 @@
           <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#-1916143605%2FClasslikes%2F-2011752812"><span>Required</span><wbr><span><span>Capabilities</span></span></a></div>
+                  <div><a href="-required-capabilities/index.html"><span>Required</span><wbr><span><span>Capabilities</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1916143605%2FClasslikes%2F-2011752812"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-1916143605%2FClasslikes%2F-2011752812">RequiredCapabilities</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-capability/index.html">Capability</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-required-capabilities/index.html">RequiredCapabilities</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../it.unibo.pulvreakt.core.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="arrow.core/NonEmptySet///PointingToDeclaration/">NonEmptySet</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-capability/index.html">Capability</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -298,7 +307,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="index.html#-1948998237%2FClasslikes%2F-2011752812">ConfiguredDeviceStructure</a><span class="token punctuation">.</span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-device-structure/index.html">DeviceStructure</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Extension function to get a <a href="-device-structure/index.html">DeviceStructure</a> from a <a href="index.html#-1948998237%2FClasslikes%2F-2011752812">ConfiguredDeviceStructure</a> by its <a href="get.html">deviceName</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-configured-device-structure/index.html">ConfiguredDeviceStructure</a><span class="token punctuation">.</span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">deviceName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-device-structure/index.html">DeviceStructure</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Extension function to get a <a href="-device-structure/index.html">DeviceStructure</a> from a <a href="-configured-device-structure/index.html">ConfiguredDeviceStructure</a> by its <a href="get.html">deviceName</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -311,8 +320,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 
