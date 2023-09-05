@@ -1,3 +1,52 @@
+## [0.8.2](https://github.com/pulvreakt/pulvreakt/compare/0.8.1...0.8.2) (2023-09-05)
+
+
+### Dependency updates
+
+* **core-deps:** update dependency org.jetbrains.dokka to v1.9.0 ([c322422](https://github.com/pulvreakt/pulvreakt/commit/c3224221859ed8f98c41540a50b525386cbc0537))
+* **deps:** update dependency gradle to v8.3 ([16da844](https://github.com/pulvreakt/pulvreakt/commit/16da8448a3754fb029a04ea0fdcb1b6c81d6326c))
+* **deps:** update dependency io.gitlab.arturbosch.detekt:detekt-formatting to v1.23.1 ([e67b9b0](https://github.com/pulvreakt/pulvreakt/commit/e67b9b0d237bbdaa6c3cd8c588ff89473c98e42d))
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-serialization-json to v1.6.0 ([8a220ee](https://github.com/pulvreakt/pulvreakt/commit/8a220ee173e614b6b2caf605d0d040fa1e1fad86))
+* **deps:** update dependency org.slf4j:slf4j-simple to v2.0.9 ([92b8500](https://github.com/pulvreakt/pulvreakt/commit/92b8500182e65385f96aa19dec783c5782dccefd))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.44 ([57695ec](https://github.com/pulvreakt/pulvreakt/commit/57695ecdf50217c8d300aa76bd76d01cf1e974cc))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.45 ([892dbd3](https://github.com/pulvreakt/pulvreakt/commit/892dbd3660ec01a7637fc5486266670f2c535bbf))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.46 ([4f4f463](https://github.com/pulvreakt/pulvreakt/commit/4f4f463145cce9ab030bc3825c9656599b1c8e67))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.47 ([e857db3](https://github.com/pulvreakt/pulvreakt/commit/e857db37008d0bc23c80354b58dd725b5abaab1d))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.48 ([31f3f60](https://github.com/pulvreakt/pulvreakt/commit/31f3f606e5bbda956e7a84b9c8d0d5bee4d7150d))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.49 ([37b959d](https://github.com/pulvreakt/pulvreakt/commit/37b959d3a2eddc9487e344c907d2a54555347822))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.50 ([eeedd8a](https://github.com/pulvreakt/pulvreakt/commit/eeedd8ab6ebc139b123d3a662271e99c0a1c7382))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.52 ([27d7b02](https://github.com/pulvreakt/pulvreakt/commit/27d7b0268106121e369d3f1e201bafe9318237a7))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.53 ([7f01fb9](https://github.com/pulvreakt/pulvreakt/commit/7f01fb9981d0b5bb6baeabc0ea1c61b04400e6a5))
+* **deps:** update gohugoio/hugo action to v0.118.2 ([f4f2c61](https://github.com/pulvreakt/pulvreakt/commit/f4f2c619b80b1d7a1d2eaf33160873d2237486b8))
+* **deps:** update kotest to v5.7.0 ([07f1a18](https://github.com/pulvreakt/pulvreakt/commit/07f1a18a454086d4e4a1f66f087c18d7f4e6eb63))
+* **deps:** update kotest to v5.7.1 ([333c7f7](https://github.com/pulvreakt/pulvreakt/commit/333c7f7ad3cbbb1690f45bbc5b3384b1521fa0d2))
+* **deps:** update plugin hugo to v0.6.1 ([62e98f4](https://github.com/pulvreakt/pulvreakt/commit/62e98f4f538b7ee65ecd5cd088bdade3d445cdcf))
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v1.1.10 ([592c2e9](https://github.com/pulvreakt/pulvreakt/commit/592c2e94990b155acba73cdac1da31af0b35d092))
+* **deps:** update plugin org.gradle.toolchains.foojay-resolver-convention to v0.7.0 ([34d0598](https://github.com/pulvreakt/pulvreakt/commit/34d059803598624f785adb31ddea30a8e4bd679e))
+* **deps:** update plugin publishoncentral to v5.0.12 ([aad8801](https://github.com/pulvreakt/pulvreakt/commit/aad88018f535ccaf322f777b0febd794408feb21))
+* **deps:** update plugin publishoncentral to v5.0.13 ([1ce084a](https://github.com/pulvreakt/pulvreakt/commit/1ce084ab49c4c1ac931d20883aac9224de512c43))
+* **deps:** update site/themes/hugo-theme-relearn digest to 5d0a1cf ([d54d662](https://github.com/pulvreakt/pulvreakt/commit/d54d6624ac8fafbc5516c3299bcdfa01f2512e1c))
+* **deps:** update site/themes/hugo-theme-relearn digest to 82d3a9a ([192169f](https://github.com/pulvreakt/pulvreakt/commit/192169f703b672aee92c8fa043e6d4d17fa2b8a4))
+* **deps:** update site/themes/hugo-theme-relearn digest to 937af72 ([0cc5698](https://github.com/pulvreakt/pulvreakt/commit/0cc569834c9d3f00ab1cd7cfde37cd1cf0bccc84))
+* **deps:** update site/themes/hugo-theme-relearn digest to d9c59a1 ([21d3f9d](https://github.com/pulvreakt/pulvreakt/commit/21d3f9db28ff02eb4e33171399a1a499bc8a50c4))
+* **deps:** update site/themes/hugo-theme-relearn digest to e6b5012 ([2f1e6ab](https://github.com/pulvreakt/pulvreakt/commit/2f1e6ab7bad4cd7dde3531660308478afea7b6d0))
+* **deps:** update site/themes/hugo-theme-relearn digest to ed1715d ([c817124](https://github.com/pulvreakt/pulvreakt/commit/c817124b07bab4ce5be34b51910aaa6df2070270))
+* **deps:** update site/themes/hugo-theme-relearn digest to fb22b50 ([a637dc5](https://github.com/pulvreakt/pulvreakt/commit/a637dc516a4aace9eb34352dd716252893b9baa7))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v3.6.0 ([5c00f3e](https://github.com/pulvreakt/pulvreakt/commit/5c00f3e898c82bb119808b343bbb1b2ea348d379))
+* **deps:** update actions/setup-node action to v3.8.1 ([63e2850](https://github.com/pulvreakt/pulvreakt/commit/63e2850882efc633151cc1c61901f22f7aa50c4e))
+
+
+### General maintenance
+
+* fix edit url path ([0225eb5](https://github.com/pulvreakt/pulvreakt/commit/0225eb529f8457af571fc289392394ffcf908ad3))
+* make 150 line ([74f5efb](https://github.com/pulvreakt/pulvreakt/commit/74f5efba7af37ed572b904ad8039aa8fe41655c3))
+* **site:** add logo avatar ([3d4104c](https://github.com/pulvreakt/pulvreakt/commit/3d4104c8af42f618654f25fa89d2ad8133ee90e1))
+* **site:** make changes to adpat to new version of the theme ([83160b5](https://github.com/pulvreakt/pulvreakt/commit/83160b523112456434fa9578dcf064f946928930))
+
 ## [0.8.1](https://github.com/pulvreakt/pulvreakt/compare/0.8.0...0.8.1) (2023-08-16)
 
 
