@@ -1,5 +1,6 @@
 var relearn_search_index = [
   {
+    "breadcrumb": "Pulverization framework",
     "content": "Contents ",
     "description": "",
     "tags": null,
@@ -7,6 +8,7 @@ var relearn_search_index = [
     "uri": "/tutorials/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework",
     "content": "Contents ",
     "description": "",
     "tags": null,
@@ -14,6 +16,7 @@ var relearn_search_index = [
     "uri": "/how-to-guides/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework \u003e Reference",
     "content": "",
     "description": "",
     "tags": [
@@ -25,6 +28,7 @@ var relearn_search_index = [
     "uri": "/reference/kdoc/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework",
     "content": "Contents ",
     "description": "",
     "tags": null,
@@ -32,6 +36,7 @@ var relearn_search_index = [
     "uri": "/explanation/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework",
     "content": "Contents KDoc APIKDoc API docs\n",
     "description": "",
     "tags": null,
@@ -39,6 +44,7 @@ var relearn_search_index = [
     "uri": "/reference/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework \u003e Tags",
     "content": "",
     "description": "",
     "tags": null,
@@ -46,6 +52,7 @@ var relearn_search_index = [
     "uri": "/tags/api-docs/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework",
     "content": "",
     "description": "",
     "tags": null,
@@ -53,6 +60,7 @@ var relearn_search_index = [
     "uri": "/categories/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework \u003e Tags",
     "content": "",
     "description": "",
     "tags": null,
@@ -60,6 +68,7 @@ var relearn_search_index = [
     "uri": "/tags/dokka/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework \u003e Tags",
     "content": "",
     "description": "",
     "tags": null,
@@ -67,6 +76,7 @@ var relearn_search_index = [
     "uri": "/tags/kdoc/index.html"
   },
   {
+    "breadcrumb": "",
     "content": "",
     "description": "",
     "tags": null,
@@ -74,6 +84,7 @@ var relearn_search_index = [
     "uri": "/index.html"
   },
   {
+    "breadcrumb": "Pulverization framework",
     "content": "",
     "description": "",
     "tags": null,

@@ -826,6 +826,9 @@ td {
     border: 1px solid rgba( 134, 134, 134, .333 );
     padding: 0.5rem;
 }
+tbody > tr:nth-child(even) > td {
+    background-color: rgba( 134, 134, 134, .045 );
+}
 
 .tooltipped {
     position: relative;
@@ -1742,10 +1745,20 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     height: 0;
 }
 
+#R-searchresults .autocomplete-suggestion > .breadcrumbs {
+    font-size: .9rem;
+    font-weight: 400;
+    margin-top: .167em;
+    padding-left: .2em;
+    padding-right: .2em;
+}
+
 #R-searchresults .autocomplete-suggestion > .context {
     font-size: 1rem;
     font-weight: 300;
-    margin-top: .66rem;
+    margin-top: .66em;
+    padding-left: .1em;
+    padding-right: .1em;
 }
 
 .badge {
@@ -2149,4 +2162,8 @@ html[dir="rtl"] #R-sidebar ul.collapsible-menu > li > label > i.fa-chevron-right
 
 #R-menu-footer {
     padding-bottom: 1rem;
+}
+
+#R-topics {
+    padding-top: 1rem;
 }
