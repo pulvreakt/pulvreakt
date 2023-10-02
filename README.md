@@ -14,13 +14,13 @@
 
 ## Getting Started
 
-```
-implementation("it.unibo.pulvreakt:core:0.8.0")
-implementation("it.unibo.pulvreakt:runtime:0.8.0")
+```kotlin
+implementation("it.unibo.pulvreakt:core:<version>")
+implementation("it.unibo.pulvreakt:runtime:<version>")
 
 // Specific protocols based on the communicator you want to use
-implementation("it.unibo.pulvreakt:rabbitmq-communicator:0.8.0")
-implementation("it.unibo.pulvreakt:mqtt-communicator:0.8.0")
+implementation("it.unibo.pulvreakt:rabbitmq-communicator:<version>")
+implementation("it.unibo.pulvreakt:mqtt-communicator:<version>")
 ```
 
 ## Usage
