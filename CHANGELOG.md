@@ -1,3 +1,53 @@
+## [0.8.3](https://github.com/pulvreakt/pulvreakt/compare/0.8.2...0.8.3) (2023-10-02)
+
+
+### Dependency updates
+
+* **deps:** update arrow to v1.2.1 ([fb2f456](https://github.com/pulvreakt/pulvreakt/commit/fb2f4566f34778b6930ac4844587a2d64d14d0cc))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.55 ([2721743](https://github.com/pulvreakt/pulvreakt/commit/27217435200b953f1670e9153a92be0c70885d4b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.56 ([206533c](https://github.com/pulvreakt/pulvreakt/commit/206533c9d84a7f7cf2bd60273b610130cfbca6c8))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.59 ([35bef8e](https://github.com/pulvreakt/pulvreakt/commit/35bef8e9453194aafe9bff25bd5e1ce5535e789a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.60 ([7f9fbd0](https://github.com/pulvreakt/pulvreakt/commit/7f9fbd0109af6deb274e0aea462b1c867683c8eb))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.61 ([1623edb](https://github.com/pulvreakt/pulvreakt/commit/1623edb792d7628943d5eb24b0c93ce80c4195cd))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.62 ([136d01a](https://github.com/pulvreakt/pulvreakt/commit/136d01a128a3743bbac2792f27969ebc9f1f5041))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.63 ([4023493](https://github.com/pulvreakt/pulvreakt/commit/4023493de6107b5e65fc96def4ec2e50cd43fce4))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.64 ([2af99c6](https://github.com/pulvreakt/pulvreakt/commit/2af99c6d2b70dce7cb1a0f334a8293a3c067b1d5))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.65 ([69fcbaa](https://github.com/pulvreakt/pulvreakt/commit/69fcbaa09f5e5c8c57a72f9a29ca8da0f87ffec6))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.66 ([1d18e61](https://github.com/pulvreakt/pulvreakt/commit/1d18e614bc5ee8a4dc5ca9f4bdd77efe719207f8))
+* **deps:** update gohugoio/hugo action to v0.119.0 ([62fcdef](https://github.com/pulvreakt/pulvreakt/commit/62fcdefac7410880fda4b26420df4a313f2b3597))
+* **deps:** update kotest to v5.7.2 ([7df10c6](https://github.com/pulvreakt/pulvreakt/commit/7df10c65e4d4551b29c6f0ad4f3cccfafc28a6ad))
+* **deps:** update node.js to 18.18 ([26edfe4](https://github.com/pulvreakt/pulvreakt/commit/26edfe425cba278315f85dd50a253e8405ea57ee))
+* **deps:** update plugin com.gradle.enterprise to v3.15 ([a3ddae3](https://github.com/pulvreakt/pulvreakt/commit/a3ddae3bf866d718ad77e81bccf65da132c1e0a0))
+* **deps:** update plugin publishoncentral to v5.0.14 ([cb56d13](https://github.com/pulvreakt/pulvreakt/commit/cb56d136e3d5b998e46c05a102ef7b1ec60b5357))
+* **deps:** update site/themes/hugo-theme-relearn digest to 156985f ([fb4dfea](https://github.com/pulvreakt/pulvreakt/commit/fb4dfeaaa113a0d7dc03b175b3a10d8af613cec1))
+* **deps:** update site/themes/hugo-theme-relearn digest to 1876463 ([cf31325](https://github.com/pulvreakt/pulvreakt/commit/cf313253a3dd0441716c74781a9b01d5873260eb))
+* **deps:** update site/themes/hugo-theme-relearn digest to 196188b ([35df385](https://github.com/pulvreakt/pulvreakt/commit/35df385ecae4ca357495bfc53ccf5646d2221c3f))
+* **deps:** update site/themes/hugo-theme-relearn digest to 2c3c9d1 ([82613d6](https://github.com/pulvreakt/pulvreakt/commit/82613d649dab286c5a8d01e04fcf80d6cc33052c))
+* **deps:** update site/themes/hugo-theme-relearn digest to 45113ef ([f703c92](https://github.com/pulvreakt/pulvreakt/commit/f703c92fabc935ea34d3632e534e8567a21c9220))
+* **deps:** update site/themes/hugo-theme-relearn digest to 4921ec0 ([a3735e5](https://github.com/pulvreakt/pulvreakt/commit/a3735e5edad268f5368ead5c33aa8567d6fbefa8))
+* **deps:** update site/themes/hugo-theme-relearn digest to 6138eb1 ([0c0b406](https://github.com/pulvreakt/pulvreakt/commit/0c0b406a17262bd3ead096ba361dda4408633949))
+* **deps:** update site/themes/hugo-theme-relearn digest to 660fd1c ([fb92371](https://github.com/pulvreakt/pulvreakt/commit/fb92371c58bdf19b5f323f97461a66c2f8035733))
+* **deps:** update site/themes/hugo-theme-relearn digest to 6cd5a93 ([3048ba9](https://github.com/pulvreakt/pulvreakt/commit/3048ba9d43265a56a170a5c2e2511c71852bf73c))
+* **deps:** update site/themes/hugo-theme-relearn digest to 827d2fd ([f47d89e](https://github.com/pulvreakt/pulvreakt/commit/f47d89ef788eba154511a1ca8144ef34c6700e61))
+* **deps:** update site/themes/hugo-theme-relearn digest to 84cd619 ([fc78347](https://github.com/pulvreakt/pulvreakt/commit/fc78347d0f96866ec7870401f1bf7f699def1809))
+* **deps:** update site/themes/hugo-theme-relearn digest to 862d8bb ([06a130c](https://github.com/pulvreakt/pulvreakt/commit/06a130cd53f9804a007898f2125aa23db83e0457))
+* **deps:** update site/themes/hugo-theme-relearn digest to bb68b7b ([5a76e0b](https://github.com/pulvreakt/pulvreakt/commit/5a76e0bcc08774793c5afd934353b69d68fe9075))
+* **deps:** update site/themes/hugo-theme-relearn digest to c25c48c ([e8f50db](https://github.com/pulvreakt/pulvreakt/commit/e8f50db4e6a5ff2d8536331253e618228b3323bb))
+* **deps:** update site/themes/hugo-theme-relearn digest to d4fed0a ([5e0b374](https://github.com/pulvreakt/pulvreakt/commit/5e0b374f562c312ac16221ec92a27735e63a9c9b))
+* **deps:** update site/themes/hugo-theme-relearn digest to f8d0ec0 ([4a6c880](https://github.com/pulvreakt/pulvreakt/commit/4a6c8801e022d5c20279e08c3c45282179b88df0))
+
+
+### Documentation
+
+* update readme dependency code block ([d43538f](https://github.com/pulvreakt/pulvreakt/commit/d43538fd2ac68d647139f6814eb375cde366400f))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4 ([374df40](https://github.com/pulvreakt/pulvreakt/commit/374df40016afc3f30ba2dc7f0ac0a6917c4ba50b))
+* **deps:** update actions/checkout action to v4.1.0 ([f62c882](https://github.com/pulvreakt/pulvreakt/commit/f62c882bd8c7de082dcfa5442b38d01882354a9e))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.9 ([b143d0e](https://github.com/pulvreakt/pulvreakt/commit/b143d0e81a875223282e4fd2c4b1545fd9fa3a5e))
+
 ## [0.8.2](https://github.com/pulvreakt/pulvreakt/compare/0.8.1...0.8.2) (2023-09-05)
 
 
