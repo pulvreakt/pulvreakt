@@ -5,7 +5,8 @@
     <link>https://pulvreakt.github.io/pulvreakt/tags/index.html</link>
     <description>Recent content in Tags on Documentation for PulvReAKt framework</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://pulvreakt.github.io/pulvreakt/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <atom:link href="https://pulvreakt.github.io/pulvreakt/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>api docs</title>
       <link>https://pulvreakt.github.io/pulvreakt/tags/api-docs/index.html</link>

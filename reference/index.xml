@@ -5,7 +5,8 @@
     <link>https://pulvreakt.github.io/pulvreakt/reference/index.html</link>
     <description>Recent content in Reference on Documentation for PulvReAKt framework</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://pulvreakt.github.io/pulvreakt/reference/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <atom:link href="https://pulvreakt.github.io/pulvreakt/reference/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>KDoc API</title>
       <link>https://pulvreakt.github.io/pulvreakt/reference/kdoc/index.html</link>
