@@ -15,7 +15,7 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt = "io.gitlab.arturbosch.detekt:1.23.1"
 kover = "org.jetbrains.kotlinx.kover:0.7.4"
 taskTree = "com.dorongold.task-tree:2.1.1"
-gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:1.1.15"
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:2.0.0"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.16"
 hugo = "io.github.fstaudt.hugo:0.6.1"
 
