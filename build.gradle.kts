@@ -1,4 +1,3 @@
-
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
@@ -172,7 +171,9 @@ allprojects {
             publishing {
                 publications {
                     withType<MavenPublication>().configureEach {
-                        if ("OSSRH" !in name) { artifact(tasks.javadocJar) }
+                        if ("OSSRH" !in name) {
+                            artifact(tasks.javadocJar)
+                        }
                         scmConnection.set("git:git@github.com:pulvreakt/${rootProject.name}")
                         projectUrl.set("https://github.com/pulvreakt/${rootProject.name}")
                         pom {
@@ -228,7 +229,7 @@ allprojects {
     reportMerge {
         input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
     }
-    configurations.all {
+    configurations.matching { it.name != "detekt" }.all {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlin") {
                 useVersion(rootProject.libs.versions.kotlin.get())
