@@ -93,16 +93,14 @@ allprojects {
                 dependencies {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
-                    // api(rootProject.libs.koin.core)
                     api(rootProject.libs.kodein)
-                    api(rootProject.libs.kotlinLogger)
+                    api(rootProject.libs.kotlin.logging)
                     api(rootProject.libs.bundles.arrow)
                 }
             }
             val commonTest by getting {
                 dependencies {
                     implementation(rootProject.libs.bundles.kotest.common)
-                    // implementation(rootProject.libs.koin.test)
                 }
             }
             val jvmMain by getting {
@@ -121,6 +119,12 @@ allprojects {
             val nativeTest by creating {
                 dependsOn(commonTest)
             }
+
+//            all {
+//                languageSettings {
+//                    languageVersion = "2.0"
+//                }
+//            }
         }
 
         val nativeSetup: KotlinNativeTarget.() -> Unit = {
@@ -132,23 +136,30 @@ allprojects {
             }
         }
 
+        applyDefaultHierarchyTemplate()
+
         linuxX64(nativeSetup)
-        // linuxArm64(nativeSetup)
+        linuxArm64(nativeSetup)
 
         mingwX64(nativeSetup)
 
         macosX64(nativeSetup)
         macosArm64(nativeSetup)
-        ios(nativeSetup)
-        // watchos(nativeSetup)
+        iosArm64(nativeSetup)
+        iosSimulatorArm64(nativeSetup)
+        iosX64(nativeSetup)
         watchosArm64(nativeSetup)
+        watchosSimulatorArm64(nativeSetup)
+        // watchosArm32(nativeSetup)
         // watchosX64(nativeSetup)
-        tvos(nativeSetup)
+        tvosArm64(nativeSetup)
+        tvosSimulatorArm64(nativeSetup)
 
         targets.all {
             compilations.all {
                 kotlinOptions {
                     allWarningsAsErrors = true
+                    freeCompilerArgs += listOf("-Xexpect-actual-classes")
                 }
             }
         }
