@@ -20,7 +20,7 @@ taskTree = "com.dorongold.task-tree:2.1.1"
 [libraries]
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
-kodein = { module = "org.kodein.di:kodein-di", version = "7.20.2" }
+kodein = { module = "org.kodein.di:kodein-di", version = "7.21.0" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
