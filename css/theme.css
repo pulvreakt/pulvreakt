@@ -406,7 +406,10 @@ dd {
 .topbar-content a:focus,
 article a:hover,
 article a:active,
-article a:focus {
+article a:focus,
+article a:hover .copy-to-clipboard,
+article a:active .copy-to-clipboard,
+article a:focus .copy-to-clipboard {
     outline: none;
     text-decoration: underline;
 }
@@ -1629,6 +1632,13 @@ html[dir="rtl"] .menu-control span {
     appearance: none;
     width: 100%;
 }
+.menu-control button:active,
+.menu-control button:focus,
+.menu-control select:active,
+.menu-control select:focus{
+    outline-style: auto;
+}
+
 .menu-control select {
     background-color: transparent;
     background-image: none;
