@@ -10,10 +10,10 @@ import it.unibo.pulvreakt.core.protocol.Entity
 import it.unibo.pulvreakt.core.protocol.Protocol
 import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,6 +46,7 @@ actual class MqttProtocol actual constructor(
     private val context by instance<Context>()
     private val deviceId by lazy { context.deviceId }
     private val logger = KotlinLogging.logger("MqttProtocol")
+    private val scope = CoroutineScope(coroutineDispatcher + Job())
 
     private val registeredTopics = mutableMapOf<Pair<Entity, Entity>, String>()
     private val topicChannels = mutableMapOf<String, MutableSharedFlow<ByteArray>>()
@@ -85,7 +86,6 @@ actual class MqttProtocol actual constructor(
         channel.asSharedFlow()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun initialize(): Either<ProtocolError, Unit> = coroutineScope {
         either {
             Either.catch {
@@ -95,11 +95,11 @@ actual class MqttProtocol actual constructor(
                     MemoryPersistence(),
                 )
             }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
-            async(coroutineDispatcher) {
+            scope.async(coroutineDispatcher) {
                 Either.catch { mqttClient.connect(connectionOptions).waitForCompletion() }
                     .mapLeft { ProtocolError.ProtocolException(it) }
             }.await().bind()
-            listenerJob = GlobalScope.launch {
+            listenerJob = scope.launch {
                 val callback = object : MqttCallback {
                     override fun disconnected(disconnectResponse: MqttDisconnectResponse?) = Unit
                     override fun mqttErrorOccurred(exception: MqttException?) {
@@ -126,6 +126,7 @@ actual class MqttProtocol actual constructor(
 
     override suspend fun finalize(): Either<ProtocolError, Unit> {
         mqttClient.close()
+        scope.coroutineContext.cancelChildren()
         return Unit.right()
     }
 

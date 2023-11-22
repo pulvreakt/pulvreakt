@@ -10,9 +10,10 @@ import it.unibo.pulvreakt.core.communicator.Communicator
 import it.unibo.pulvreakt.core.component.errors.ComponentError
 import it.unibo.pulvreakt.core.context.Context
 import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -36,10 +37,10 @@ abstract class AbstractComponent : Component {
     private lateinit var unitManagerJob: Job
     protected val links = mutableSetOf<ComponentRef>()
     private val logger = KotlinLogging.logger(this::class.simpleName!!)
+    private val scope = CoroutineScope(Dispatchers.Default + Job())
 
     override fun getRef(): ComponentRef = ComponentRef.create(this)
 
-    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun initialize(): Either<ComponentError, Unit> = coroutineScope {
         either {
             ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
@@ -54,7 +55,7 @@ abstract class AbstractComponent : Component {
                 }
                 communicator
             }
-            unitManagerJob = GlobalScope.launch {
+            unitManagerJob = scope.launch {
                 logger.debug { "Starting collecting new update" }
                 reconfigurator.receiveModeUpdates().collect { (component, mode) ->
                     logger.debug { "Received mode update for $component: $mode" }
@@ -70,6 +71,7 @@ abstract class AbstractComponent : Component {
         if (::unitManagerJob.isInitialized) {
             unitManagerJob.cancel()
         }
+        scope.coroutineContext.cancelChildren()
         communicators.forEach { (_, communicator) -> communicator.finalize() }
     }
 
