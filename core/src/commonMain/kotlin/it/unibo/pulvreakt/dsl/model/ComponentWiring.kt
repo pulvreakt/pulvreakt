@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.dsl.model
 
 import arrow.core.NonEmptySet
-import it.unibo.pulvreakt.core.component.ComponentRef
+import it.unibo.pulvreakt.api.component.ComponentRef
 
 typealias ComponentsGraph = Map<ComponentRef, Set<ComponentRef>>
 typealias RequiredCapabilities = Map<ComponentRef, NonEmptySet<Capability>>

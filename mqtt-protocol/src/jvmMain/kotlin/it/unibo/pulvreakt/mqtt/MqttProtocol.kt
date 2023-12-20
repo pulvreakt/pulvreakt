@@ -5,10 +5,10 @@ import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
-import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.protocol.Entity
-import it.unibo.pulvreakt.core.protocol.Protocol
-import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
+import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.protocol.Entity
+import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

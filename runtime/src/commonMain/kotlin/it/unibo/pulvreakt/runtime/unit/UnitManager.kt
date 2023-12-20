@@ -1,15 +1,15 @@
 package it.unibo.pulvreakt.runtime.unit
 
 import arrow.core.Either
-import it.unibo.pulvreakt.core.utils.Initializable
-import it.unibo.pulvreakt.core.utils.PulvreaktInjected
+import it.unibo.pulvreakt.api.initializable.InjectAwareResource
+import it.unibo.pulvreakt.api.initializable.ManagedResource
 import it.unibo.pulvreakt.dsl.model.DeviceSpecification
 import it.unibo.pulvreakt.runtime.unit.errors.UnitManagerError
 
 /**
  * Represents the manager of the deployment unit.
  */
-interface UnitManager : Initializable<UnitManagerError>, PulvreaktInjected {
+interface UnitManager : ManagedResource<UnitManagerError>, InjectAwareResource {
     /**
      * Starts the deployment unit.
      */

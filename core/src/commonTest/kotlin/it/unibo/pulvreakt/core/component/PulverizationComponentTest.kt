@@ -2,19 +2,19 @@ package it.unibo.pulvreakt.core.component
 
 import arrow.core.Either
 import io.kotest.matchers.shouldBe
-import it.unibo.pulvreakt.core.communicator.Communicator
-import it.unibo.pulvreakt.core.communicator.CommunicatorImpl
-import it.unibo.pulvreakt.core.communicator.LocalCommunicatorManager
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.ChannelImpl
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.infrastructure.Host
+import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.component.fixture.TestActuators
 import it.unibo.pulvreakt.core.component.fixture.TestBehaviour
 import it.unibo.pulvreakt.core.component.fixture.TestCommunication
 import it.unibo.pulvreakt.core.component.fixture.TestComponentModeReconfigurator
 import it.unibo.pulvreakt.core.component.fixture.TestSensors
 import it.unibo.pulvreakt.core.component.fixture.TestState
-import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.core.protocol.Protocol
-import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
 import it.unibo.pulvreakt.dsl.model.Capability
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,9 +33,9 @@ import kotlin.time.Duration.Companion.seconds
 class PulverizationComponentTest {
     private val cap by Capability
     private val diModule = DI {
-        bind<Communicator> { provider { CommunicatorImpl() } }
+        bind<Channel> { provider { ChannelImpl() } }
         bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
-        bind<LocalCommunicatorManager> { singleton { LocalCommunicatorManager() } }
+        bind<LocalChannelManager> { singleton { LocalChannelManager() } }
         bind<Protocol> { singleton { TestProtocol() } }
         bind<Context> { singleton { Context(1, Host("localhost", cap)) } }
     }

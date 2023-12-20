@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.core.component.fixture
 
-import it.unibo.pulvreakt.core.component.time.TimeDistribution
+import it.unibo.pulvreakt.api.scheduler.TimeDistribution
 
 class SimpleTimeDistribution : TimeDistribution {
     override fun nextTimeInstant(): Long = 1000

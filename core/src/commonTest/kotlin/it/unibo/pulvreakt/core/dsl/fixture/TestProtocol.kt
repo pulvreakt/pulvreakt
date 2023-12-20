@@ -1,9 +1,9 @@
 package it.unibo.pulvreakt.core.dsl.fixture
 
 import arrow.core.Either
-import it.unibo.pulvreakt.core.protocol.Entity
-import it.unibo.pulvreakt.core.protocol.Protocol
-import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
+import it.unibo.pulvreakt.api.protocol.Entity
+import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.DI
 

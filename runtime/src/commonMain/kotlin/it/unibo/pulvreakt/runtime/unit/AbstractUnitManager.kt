@@ -1,8 +1,8 @@
 package it.unibo.pulvreakt.runtime.unit
 
-import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
-import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
+import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.runtime.component.ComponentManager
 import org.kodein.di.DI
 import org.kodein.di.instance

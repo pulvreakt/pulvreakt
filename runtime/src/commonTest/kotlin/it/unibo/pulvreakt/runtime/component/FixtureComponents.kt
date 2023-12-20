@@ -2,8 +2,8 @@ package it.unibo.pulvreakt.runtime.component
 
 import arrow.core.Either
 import arrow.core.right
-import it.unibo.pulvreakt.core.component.AbstractComponent
-import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.api.component.AbstractComponent
+import it.unibo.pulvreakt.errors.component.ComponentError
 
 class TestComponent1 : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()

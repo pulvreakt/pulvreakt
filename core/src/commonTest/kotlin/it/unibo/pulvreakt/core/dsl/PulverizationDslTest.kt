@@ -6,8 +6,8 @@ import arrow.core.nonEmptySetOf
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.api.component.ComponentKind
+import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.core.component.fixture.TestBehaviour
 import it.unibo.pulvreakt.core.component.fixture.TestSensors
 import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
@@ -121,7 +121,7 @@ class PulverizationDslTest : StringSpec(
             config.isLeft() shouldBe true
             config shouldBe Either.Left(
                 nonEmptyListOf(
-                    ComponentNotRegistered("myDevice", ComponentRef.create<BehaviourTest>(ComponentType.Behaviour)),
+                    ComponentNotRegistered("myDevice", ComponentRef.create<BehaviourTest>(ComponentKind.Behavior)),
                 ),
             )
         }
@@ -222,19 +222,19 @@ class PulverizationDslTest : StringSpec(
                 config["my device"] shouldNotBe null
                 config["my device"]!!.let { deviceSpec ->
                     deviceSpec.componentsConfiguration shouldBe mapOf(
-                        ComponentRef.create<BehaviourTest>(ComponentType.Behaviour) to setOf(
-                            ComponentRef.create<CommTest>(ComponentType.Communication),
+                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to setOf(
+                            ComponentRef.create<CommTest>(ComponentKind.Communication),
                         ),
-                        ComponentRef.create<CommTest>(ComponentType.Communication) to setOf(
-                            ComponentRef.create<BehaviourTest>(ComponentType.Behaviour),
+                        ComponentRef.create<CommTest>(ComponentKind.Communication) to setOf(
+                            ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
                         ),
                     )
                     deviceSpec.requiredCapabilities shouldBe mapOf(
-                        ComponentRef.create<BehaviourTest>(ComponentType.Behaviour) to nonEmptySetOf(
+                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to nonEmptySetOf(
                             embeddedDeviceCapability,
                             serverCapability,
                         ),
-                        ComponentRef.create<CommTest>(ComponentType.Communication) to nonEmptySetOf(
+                        ComponentRef.create<CommTest>(ComponentKind.Communication) to nonEmptySetOf(
                             embeddedDeviceCapability,
                         ),
                     )
@@ -294,15 +294,15 @@ class PulverizationDslTest : StringSpec(
                 config["device"] shouldNotBe null
                 val deviceSpec = config["device"]!!
                 deviceSpec.componentsConfiguration shouldBe mapOf(
-                    ComponentRef.create<TestBehaviour>(ComponentType.Behaviour) to setOf(
-                        ComponentRef.create<TestSensors>(ComponentType.Sensor),
-                        ComponentRef.create<TestActuators>(ComponentType.Actuator),
+                    ComponentRef.create<TestBehaviour>(ComponentKind.Behavior) to setOf(
+                        ComponentRef.create<TestSensors>(ComponentKind.Sensor),
+                        ComponentRef.create<TestActuators>(ComponentKind.Actuator),
                     ),
-                    ComponentRef.create<TestSensors>(ComponentType.Sensor) to setOf(
-                        ComponentRef.create<TestBehaviour>(ComponentType.Behaviour),
+                    ComponentRef.create<TestSensors>(ComponentKind.Sensor) to setOf(
+                        ComponentRef.create<TestBehaviour>(ComponentKind.Behavior),
                     ),
-                    ComponentRef.create<TestActuators>(ComponentType.Actuator) to setOf(
-                        ComponentRef.create<TestBehaviour>(ComponentType.Behaviour),
+                    ComponentRef.create<TestActuators>(ComponentKind.Actuator) to setOf(
+                        ComponentRef.create<TestBehaviour>(ComponentKind.Behavior),
                     ),
                 )
             }

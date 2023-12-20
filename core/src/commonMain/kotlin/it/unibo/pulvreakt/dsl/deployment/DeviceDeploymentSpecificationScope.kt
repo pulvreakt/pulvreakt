@@ -3,8 +3,8 @@ package it.unibo.pulvreakt.dsl.deployment
 import arrow.core.Either
 import arrow.core.Nel
 import arrow.core.raise.either
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.infrastructure.Host
+import it.unibo.pulvreakt.api.component.Component
+import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
 import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 import it.unibo.pulvreakt.dsl.model.ReconfigurationRules

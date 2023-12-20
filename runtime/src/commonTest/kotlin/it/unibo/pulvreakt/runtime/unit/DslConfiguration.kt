@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.runtime.unit
 
 import arrow.core.nonEmptySetOf
-import it.unibo.pulvreakt.core.infrastructure.Host
+import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.dsl.pulverization
 

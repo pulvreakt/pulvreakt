@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import arrow.fx.coroutines.parMap
 import io.github.oshai.kotlinlogging.KotlinLogging
-import it.unibo.pulvreakt.core.communicator.Mode
+import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.dsl.model.DeviceSpecification
 import it.unibo.pulvreakt.runtime.unit.errors.UnitManagerError
 import it.unibo.pulvreakt.runtime.unit.errors.WrapComponentError

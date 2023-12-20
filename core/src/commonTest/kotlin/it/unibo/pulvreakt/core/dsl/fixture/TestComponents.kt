@@ -2,15 +2,15 @@ package it.unibo.pulvreakt.core.dsl.fixture
 
 import arrow.core.Either
 import arrow.core.right
-import it.unibo.pulvreakt.core.component.AbstractComponent
-import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.api.component.AbstractComponent
+import it.unibo.pulvreakt.api.component.pulverization.Actuators
+import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
+import it.unibo.pulvreakt.api.component.pulverization.Communication
+import it.unibo.pulvreakt.api.component.pulverization.CommunicationPayload
+import it.unibo.pulvreakt.api.component.pulverization.Sensors
 import it.unibo.pulvreakt.core.component.fixture.SimpleTimeDistribution
-import it.unibo.pulvreakt.core.component.pulverisation.Actuators
-import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
-import it.unibo.pulvreakt.core.component.pulverisation.BehaviourOutput
-import it.unibo.pulvreakt.core.component.pulverisation.Communication
-import it.unibo.pulvreakt.core.component.pulverisation.CommunicationPayload
-import it.unibo.pulvreakt.core.component.pulverisation.Sensors
+import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.serializer
 
