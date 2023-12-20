@@ -5,14 +5,14 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.ensureNotNull
 import io.github.oshai.kotlinlogging.KotlinLogging
-import it.unibo.pulvreakt.core.communicator.Communicator
-import it.unibo.pulvreakt.core.communicator.CommunicatorImpl
-import it.unibo.pulvreakt.core.communicator.LocalCommunicatorManager
-import it.unibo.pulvreakt.core.context.Context
-import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.core.protocol.Protocol
-import it.unibo.pulvreakt.core.reconfiguration.Reconfigurator
-import it.unibo.pulvreakt.core.reconfiguration.component.ComponentModeReconfigurator
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.ChannelImpl
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.infrastructure.Host
+import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.reconfiguration.Reconfigurator
+import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.PulvreaktConfiguration
 import it.unibo.pulvreakt.runtime.component.ComponentManager
 import it.unibo.pulvreakt.runtime.component.SimpleComponentManager
@@ -69,8 +69,8 @@ internal class PulvreaktRuntimeImpl(
         // Setup DI
         val diModule = DI {
             bind<Protocol> { provider { config.protocol } }
-            bind<Communicator> { provider { CommunicatorImpl() } }
-            bind<LocalCommunicatorManager> { singleton { LocalCommunicatorManager() } }
+            bind<Channel> { provider { ChannelImpl() } }
+            bind<LocalChannelManager> { singleton { LocalChannelManager() } }
             bind<Reconfigurator> { singleton { Reconfigurator() } }
             bind<ComponentModeReconfigurator> { singleton { ComponentModeReconfigurator() } }
             bind<ComponentManager> { singleton { SimpleComponentManager() } }

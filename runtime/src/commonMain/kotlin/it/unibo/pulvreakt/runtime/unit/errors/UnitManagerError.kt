@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.runtime.unit.errors
 
-import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.errors.component.ComponentError
 import it.unibo.pulvreakt.runtime.component.ComponentManager
 import it.unibo.pulvreakt.runtime.component.errors.ComponentManagerError
 

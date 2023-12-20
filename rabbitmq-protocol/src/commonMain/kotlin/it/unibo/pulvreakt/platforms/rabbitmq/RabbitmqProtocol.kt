@@ -1,10 +1,10 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
-import it.unibo.pulvreakt.core.communicator.Communicator
-import it.unibo.pulvreakt.core.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.protocol.Protocol
 
 /**
- * Implement the [Communicator] interface relying on RabbitMQ as a platform for communications.
+ * Implement the [Channel] interface relying on RabbitMQ as a platform for communications.
  */
 expect class RabbitmqProtocol(
     hostname: String = "localhost",

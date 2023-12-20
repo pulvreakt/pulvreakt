@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.runtime.errors
 
-import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
+import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import it.unibo.pulvreakt.runtime.reconfigurator.UnitReconfigurator
 import it.unibo.pulvreakt.runtime.reconfigurator.errors.UnitReconfiguratorError
 import it.unibo.pulvreakt.runtime.unit.UnitManager

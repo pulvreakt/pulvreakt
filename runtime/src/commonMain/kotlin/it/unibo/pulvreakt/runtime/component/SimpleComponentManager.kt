@@ -5,9 +5,9 @@ import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.errors.ComponentError
+import it.unibo.pulvreakt.api.component.Component
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.errors.component.ComponentError
 import it.unibo.pulvreakt.runtime.component.errors.ComponentManagerError
 import it.unibo.pulvreakt.runtime.component.errors.ComponentNotRegistered
 import kotlinx.coroutines.Deferred
@@ -56,6 +56,7 @@ internal class SimpleComponentManager : ComponentManager {
         .filterValues { it != null }
         .keys.map { it.getRef() }
         .toSet()
+
     override suspend fun initialize(): Either<Nothing, Unit> = Unit.right()
     override suspend fun finalize(): Either<Nothing, Unit> = Unit.right()
 }

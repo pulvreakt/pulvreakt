@@ -1,10 +1,10 @@
 package it.unibo.pulvreakt.dsl.model
 
 import arrow.core.NonEmptySet
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
+import it.unibo.pulvreakt.api.component.Component
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.infrastructure.Host
+import it.unibo.pulvreakt.api.reconfiguration.event.ReconfigurationEvent
 
 /**
  * Models a new configuration in the system.

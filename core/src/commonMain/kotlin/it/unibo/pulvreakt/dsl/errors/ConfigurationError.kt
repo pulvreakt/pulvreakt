@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.dsl.errors
 
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.infrastructure.Host
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.infrastructure.Host
 
 /**
  * Represents an error that can occur during the configuration of the system using the DSL.

@@ -6,7 +6,7 @@ import arrow.core.NonEmptySet
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.toNonEmptyListOrNull
-import it.unibo.pulvreakt.core.infrastructure.Host
+import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.dsl.model.ConfiguredDeviceStructure
 import it.unibo.pulvreakt.dsl.model.ConfiguredDevicesRuntimeConfiguration
 

@@ -10,9 +10,9 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.toNonEmptyListOrNull
 import arrow.core.toNonEmptySetOrNull
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.ComponentType
+import it.unibo.pulvreakt.api.component.Component
+import it.unibo.pulvreakt.api.component.ComponentKind
+import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.dsl.errors.EmptyDeviceConfiguration
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.UnspecifiedCapabilities
@@ -28,10 +28,10 @@ class ExtendedDeviceScope(private val deviceName: String) {
     private val requiredCapabilities = mutableMapOf<ComponentRef, Set<Capability>>()
 
     /**
-     * Register a [Component] in the device and return its [ComponentType].
+     * Register a [Component] in the device and return its [ComponentKind].
      */
     inline fun <reified C : Component> withComponent(): ComponentRef =
-        ComponentRef.create<C>(ComponentType.Generic).also { addComponent(it) }
+        ComponentRef.create<C>(ComponentKind.Generic).also { addComponent(it) }
 
     /**
      * Links a component to other components.

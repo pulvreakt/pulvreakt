@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.core.dsl.fixture
 
-import it.unibo.pulvreakt.core.reconfiguration.event.AbstractReconfigurationEvent
+import it.unibo.pulvreakt.api.reconfiguration.event.AbstractReconfigurationEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

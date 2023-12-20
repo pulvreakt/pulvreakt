@@ -9,16 +9,16 @@ import arrow.core.nonEmptyListOf
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.zipOrAccumulate
-import it.unibo.pulvreakt.core.component.Component
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.ComponentType
-import it.unibo.pulvreakt.core.component.pulverisation.Actuators
-import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
-import it.unibo.pulvreakt.core.component.pulverisation.Communication
-import it.unibo.pulvreakt.core.component.pulverisation.Sensors
-import it.unibo.pulvreakt.core.component.pulverisation.State
-import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.core.reconfiguration.event.ReconfigurationEvent
+import it.unibo.pulvreakt.api.component.Component
+import it.unibo.pulvreakt.api.component.ComponentKind
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.component.pulverization.Actuators
+import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Communication
+import it.unibo.pulvreakt.api.component.pulverization.Sensors
+import it.unibo.pulvreakt.api.component.pulverization.State
+import it.unibo.pulvreakt.api.infrastructure.Host
+import it.unibo.pulvreakt.api.reconfiguration.event.ReconfigurationEvent
 import it.unibo.pulvreakt.dsl.errors.DeploymentConfigurationError
 import it.unibo.pulvreakt.dsl.errors.InvalidReconfiguration
 import it.unibo.pulvreakt.dsl.errors.InvalidReconfigurationHost
@@ -38,31 +38,31 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
      * Specifies which Behaviour component should be reconfigured.
      */
     inline fun <reified B : Behaviour<*, *, *, *>> theBehaviour(): ComponentRef =
-        ComponentRef.create<B>(ComponentType.Behaviour)
+        ComponentRef.create<B>(ComponentKind.Behavior)
 
     /**
      * Specifies which State component should be reconfigured.
      */
     inline fun <reified S : State<*>> theState(): ComponentRef =
-        ComponentRef.create<S>(ComponentType.State)
+        ComponentRef.create<S>(ComponentKind.State)
 
     /**
      * Specifies which Communication component should be reconfigured.
      */
     inline fun <reified C : Communication<*>> theCommunication(): ComponentRef =
-        ComponentRef.create<C>(ComponentType.Communication)
+        ComponentRef.create<C>(ComponentKind.Communication)
 
     /**
      * Specifies which Sensors component should be reconfigured.
      */
     inline fun <reified SS : Sensors<*>> theSensors(): ComponentRef =
-        ComponentRef.create<SS>(ComponentType.Sensor)
+        ComponentRef.create<SS>(ComponentKind.Sensor)
 
     /**
      * Specifies which Actuators component should be reconfigured.
      */
     inline fun <reified AS : Actuators<*>> theActuators(): ComponentRef =
-        ComponentRef.create<AS>(ComponentType.Actuator)
+        ComponentRef.create<AS>(ComponentKind.Actuator)
 
     /**
      * Specifies which generic component should be reconfigured.

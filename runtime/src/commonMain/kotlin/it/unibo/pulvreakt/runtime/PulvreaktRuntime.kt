@@ -2,15 +2,15 @@ package it.unibo.pulvreakt.runtime
 
 import arrow.core.Either
 import arrow.core.raise.either
-import it.unibo.pulvreakt.core.infrastructure.Host
-import it.unibo.pulvreakt.core.utils.Initializable
+import it.unibo.pulvreakt.api.infrastructure.Host
+import it.unibo.pulvreakt.api.initializable.ManagedResource
 import it.unibo.pulvreakt.dsl.model.PulvreaktConfiguration
 import it.unibo.pulvreakt.runtime.errors.RuntimeError
 
 /**
  * The [PulvreaktRuntime] is the main entry point of the runtime.
  */
-interface PulvreaktRuntime : Initializable<RuntimeError> {
+interface PulvreaktRuntime : ManagedResource<RuntimeError> {
     /**
      * Starts the runtime.
      */

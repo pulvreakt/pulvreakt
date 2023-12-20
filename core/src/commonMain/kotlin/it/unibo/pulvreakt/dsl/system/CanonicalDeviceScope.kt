@@ -9,21 +9,21 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptySetOrNull
-import it.unibo.pulvreakt.core.component.ComponentRef
-import it.unibo.pulvreakt.core.component.pulverisation.Actuators
-import it.unibo.pulvreakt.core.component.pulverisation.Behaviour
-import it.unibo.pulvreakt.core.component.pulverisation.Communication
-import it.unibo.pulvreakt.core.component.pulverisation.Sensors
-import it.unibo.pulvreakt.core.component.pulverisation.State
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.component.pulverization.Actuators
+import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Communication
+import it.unibo.pulvreakt.api.component.pulverization.Sensors
+import it.unibo.pulvreakt.api.component.pulverization.State
 import it.unibo.pulvreakt.dsl.errors.SystemConfigurationError
 import it.unibo.pulvreakt.dsl.errors.UnspecifiedCapabilities
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.dsl.model.DeviceStructure
-import it.unibo.pulvreakt.core.component.ComponentType.Actuator as ActuatorsType
-import it.unibo.pulvreakt.core.component.ComponentType.Behaviour as BehaviourType
-import it.unibo.pulvreakt.core.component.ComponentType.Communication as CommunicationType
-import it.unibo.pulvreakt.core.component.ComponentType.Sensor as SensorsType
-import it.unibo.pulvreakt.core.component.ComponentType.State as StateType
+import it.unibo.pulvreakt.api.component.ComponentKind.Actuator as ActuatorsKind
+import it.unibo.pulvreakt.api.component.ComponentKind.Behavior as BehaviourKind
+import it.unibo.pulvreakt.api.component.ComponentKind.Communication as CommunicationKind
+import it.unibo.pulvreakt.api.component.ComponentKind.Sensor as SensorsKind
+import it.unibo.pulvreakt.api.component.ComponentKind.State as StateKind
 
 /**
  * Scope for the system configuration using a canonical pulverization specification.
@@ -38,7 +38,7 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
     /**
      * Register a [State] component in the device.
      */
-    inline fun <reified S : State<St>> withState(): ComponentRef = ComponentRef.create<S>(StateType).also {
+    inline fun <reified S : State<St>> withState(): ComponentRef = ComponentRef.create<S>(StateKind).also {
         addComponent("state", it)
     }
 
@@ -46,21 +46,21 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
      * Register a [Behaviour] component in the device.
      */
     inline fun <reified B : Behaviour<St, Co, Sens, Act>> withBehaviour(): ComponentRef =
-        ComponentRef.create<B>(BehaviourType).also {
+        ComponentRef.create<B>(BehaviourKind).also {
             addComponent("behaviour", it)
         }
 
     /**
      * Register a [Sensors] component in the device.
      */
-    inline fun <reified SS : Sensors<Sens>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsType).also {
+    inline fun <reified SS : Sensors<Sens>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsKind).also {
         addComponent("sensors", it)
     }
 
     /**
      * Register a [Actuators] component in the device.
      */
-    inline fun <reified AS : Actuators<Act>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsType).also {
+    inline fun <reified AS : Actuators<Act>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsKind).also {
         addComponent("actuators", it)
     }
 
@@ -68,7 +68,7 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
      * Register a [Comm] component in the device.
      */
     inline fun <reified Comm : Communication<Co>> withCommunication(): ComponentRef = ComponentRef.create<Comm>(
-        CommunicationType,
+        CommunicationKind,
     ).also { addComponent("comm", it) }
 
     /**

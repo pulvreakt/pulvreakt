@@ -3,9 +3,9 @@ package it.unibo.pulvreakt.core.utils
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.right
-import it.unibo.pulvreakt.core.protocol.Entity
-import it.unibo.pulvreakt.core.protocol.Protocol
-import it.unibo.pulvreakt.core.protocol.errors.ProtocolError
+import it.unibo.pulvreakt.api.protocol.Entity
+import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
