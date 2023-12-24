@@ -9,8 +9,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
-    // alias(libs.plugins.kotlin.qa)
-    alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlin.qa)
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kover)
