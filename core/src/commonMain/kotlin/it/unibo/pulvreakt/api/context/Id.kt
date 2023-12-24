@@ -30,5 +30,3 @@ class IntId(val value: Int) : Id, Comparable<IntId> {
         fun IntId.toInt(): Int = value
     }
 }
-
-

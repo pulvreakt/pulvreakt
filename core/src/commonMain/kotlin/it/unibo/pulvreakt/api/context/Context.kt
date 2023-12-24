@@ -58,6 +58,7 @@ interface Context {
             private val metadata: MutableMap<String, Any> = mutableMapOf()
             override val deviceId: Id = deviceId
             override val host: Host = host
+
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> get(key: String): T? = metadata[key] as? T
             override fun <T : Any> set(key: String, value: T) {
