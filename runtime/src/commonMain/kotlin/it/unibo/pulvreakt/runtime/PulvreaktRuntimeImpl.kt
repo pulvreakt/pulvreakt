@@ -9,6 +9,7 @@ import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.communication.ChannelImpl
 import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.Reconfigurator
@@ -74,7 +75,7 @@ internal class PulvreaktRuntimeImpl(
             bind<Reconfigurator> { singleton { Reconfigurator() } }
             bind<ComponentModeReconfigurator> { singleton { ComponentModeReconfigurator() } }
             bind<ComponentManager> { singleton { SimpleComponentManager() } }
-            bind<Context> { provider { Context(id, host) } }
+            bind<Context> { provider { Context(id.toId(), host) } }
         }
 
         with(config.protocol) {
