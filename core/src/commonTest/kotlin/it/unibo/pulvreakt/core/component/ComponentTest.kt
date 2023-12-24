@@ -10,6 +10,7 @@ import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.component.AbstractComponent.Companion.receive
 import it.unibo.pulvreakt.api.component.AbstractComponent.Companion.send
 import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
@@ -37,7 +38,7 @@ class ComponentTest : StringSpec(
             bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
             bind<LocalChannelManager> { singleton { LocalChannelManager() } }
             bind<Protocol> { singleton { TestProtocol() } }
-            bind<Context> { singleton { Context(1, Host("foo", cap)) } }
+            bind<Context> { singleton { Context(1.toId(), Host("foo", cap)) } }
         }
 
         "A Component should raise an error if the DI module is not initialized" {

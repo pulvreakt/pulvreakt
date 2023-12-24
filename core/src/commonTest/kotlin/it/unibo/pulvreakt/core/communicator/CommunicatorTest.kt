@@ -12,6 +12,7 @@ import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.component.AbstractComponent
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
@@ -64,7 +65,7 @@ class C6 : AbstractComponent() {
 class CommunicatorTest : StringSpec(
     {
         coroutineTestScope = true
-        val deviceId = 1
+        val deviceId = 1.toId()
         val cap by Capability
         val diModule = DI {
             bind { singleton { LocalChannelManager() } }

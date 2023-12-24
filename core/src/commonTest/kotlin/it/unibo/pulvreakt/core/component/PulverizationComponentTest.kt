@@ -6,6 +6,7 @@ import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.communication.ChannelImpl
 import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
@@ -37,7 +38,7 @@ class PulverizationComponentTest {
         bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
         bind<LocalChannelManager> { singleton { LocalChannelManager() } }
         bind<Protocol> { singleton { TestProtocol() } }
-        bind<Context> { singleton { Context(1, Host("localhost", cap)) } }
+        bind<Context> { singleton { Context(1.toId(), Host("localhost", cap)) } }
     }
 
     @Test
