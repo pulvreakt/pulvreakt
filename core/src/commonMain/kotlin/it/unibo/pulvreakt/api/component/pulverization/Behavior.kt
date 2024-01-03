@@ -15,7 +15,9 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
 /**
- * Represents the Behaviour component in the pulverization model.
+ * Represents the Behavior component in the pulverization model.
+ * The behavior can manage the [State] of the component, the [Communication] with the other devices, the [Sensors] and the [Actuators].
+ * The behavior is executed according to the [ExecutionScheduler].
  */
 abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
     private val executionScheduler: ExecutionScheduler,
@@ -29,8 +31,8 @@ abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators
     private val myRef by lazy { ComponentRef.create(this, ComponentKind.Behavior) }
 
     /**
-     * Execute the behaviour logic with the given [state], [comm] and [sensors].
-     * @return the new state, the communication to be sent and the prescriptive actions to be performed.
+     * This method implements the logic of the device taking the [state], [comm] and [sensors].
+     * Returns a [BehaviourOutput] containing the new [State], the [Communication] to be sent and the [Actuators] to be performed.
      */
     abstract operator fun invoke(state: State?, comm: List<Comm>, sensors: Sensors?): BehaviourOutput<State, Comm, Actuators>
 
@@ -93,13 +95,13 @@ abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators
 
     /**
      * Executes the given [block] if the given [value] is not null.
-     * @return the result of the block execution or null if the value is null.
+     * Returns the result of the block execution or null if the value is null.
      */
     private suspend fun <T, P> executeIfNotNull(value: T?, block: suspend (T) -> P): P? = value?.let { block(it) }
 
     /**
      * Executes the given [block] if the given [value1] and [value2] are not null.
-     * @return the result of the block execution or null if one of the values is null.
+     * Returns the result of the block execution or null if one of the values is null.
      */
     private suspend fun <T, R, P> executeIfNotNull(value1: T?, value2: R?, block: suspend (T, R) -> P): P? =
         value1?.let { v1 -> value2?.let { v2 -> block(v1, v2) } }
