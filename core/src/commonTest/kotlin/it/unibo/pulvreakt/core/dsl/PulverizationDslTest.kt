@@ -8,11 +8,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.core.component.fixture.TestBehaviour
-import it.unibo.pulvreakt.core.component.fixture.TestSensors
+import it.unibo.pulvreakt.core.dsl.fixture.ActuatorsTest
 import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
 import it.unibo.pulvreakt.core.dsl.fixture.CommTest
-import it.unibo.pulvreakt.core.dsl.fixture.TestActuators
+import it.unibo.pulvreakt.core.dsl.fixture.SensorsTest
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent1
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent2
 import it.unibo.pulvreakt.core.dsl.fixture.TestProtocol
@@ -108,7 +107,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should produce an error if an unknown component is registered in the deployment" {
             val config = pulverization {
-                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
+                val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     component1 requires embeddedDeviceCapability
                 }
@@ -129,7 +128,7 @@ class PulverizationDslTest : StringSpec(
             enabled = false,
         ) {
             val config = pulverization {
-                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
+                val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     component1 requires embeddedDeviceCapability
                 }
@@ -199,7 +198,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should configure a device with the classical model".config(enabled = false) {
             val configResult = pulverization {
-                val myDevice by logicDevice<Unit, Unit, Unit, Unit> {
+                val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
@@ -243,7 +242,7 @@ class PulverizationDslTest : StringSpec(
         }
         "The DSL should admit a mixed configuration with simple device and extended one" {
             val configResult = pulverization {
-                val device1 by logicDevice<Unit, Unit, Unit, Unit> {
+                val device1 by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviourTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
@@ -277,15 +276,15 @@ class PulverizationDslTest : StringSpec(
         "Regression test: Behaviour, Sensors and Actuators" {
             val configResult = pulverization {
                 val device by logicDevice<Int, Unit, Unit, Unit> {
-                    withBehaviour<TestBehaviour>() requires serverCapability
-                    withSensors<TestSensors>() requires embeddedDeviceCapability
-                    withActuators<TestActuators>() requires embeddedDeviceCapability
+                    withBehaviour<BehaviourTest>() requires serverCapability
+                    withSensors<SensorsTest>() requires embeddedDeviceCapability
+                    withActuators<ActuatorsTest>() requires embeddedDeviceCapability
                 }
                 deployment(testInfrastructure, TestProtocol()) {
                     device(device) {
-                        TestBehaviour() startsOn serverHost
-                        TestSensors() startsOn smartphoneHost
-                        TestActuators() startsOn smartphoneHost
+                        BehaviourTest() startsOn serverHost
+                        SensorsTest() startsOn smartphoneHost
+                        ActuatorsTest() startsOn smartphoneHost
                     }
                 }
             }
@@ -294,15 +293,15 @@ class PulverizationDslTest : StringSpec(
                 config["device"] shouldNotBe null
                 val deviceSpec = config["device"]!!
                 deviceSpec.componentsConfiguration shouldBe mapOf(
-                    ComponentRef.create<TestBehaviour>(ComponentKind.Behavior) to setOf(
-                        ComponentRef.create<TestSensors>(ComponentKind.Sensor),
-                        ComponentRef.create<TestActuators>(ComponentKind.Actuator),
+                    ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to setOf(
+                        ComponentRef.create<SensorsTest>(ComponentKind.Sensor),
+                        ComponentRef.create<ActuatorsTest>(ComponentKind.Actuator),
                     ),
-                    ComponentRef.create<TestSensors>(ComponentKind.Sensor) to setOf(
-                        ComponentRef.create<TestBehaviour>(ComponentKind.Behavior),
+                    ComponentRef.create<SensorsTest>(ComponentKind.Sensor) to setOf(
+                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
                     ),
-                    ComponentRef.create<TestActuators>(ComponentKind.Actuator) to setOf(
-                        ComponentRef.create<TestBehaviour>(ComponentKind.Behavior),
+                    ComponentRef.create<ActuatorsTest>(ComponentKind.Actuator) to setOf(
+                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
                     ),
                 )
             }

@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.utils
+package it.unibo.pulvreakt.runtime.utils
 
 import arrow.core.Either
 import arrow.core.raise.either

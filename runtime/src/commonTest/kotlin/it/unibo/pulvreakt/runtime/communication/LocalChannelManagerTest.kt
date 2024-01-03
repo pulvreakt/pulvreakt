@@ -1,10 +1,9 @@
-package it.unibo.pulvreakt.core.communication
+package it.unibo.pulvreakt.runtime.communication
 
 import arrow.core.Either
 import arrow.core.raise.either
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take

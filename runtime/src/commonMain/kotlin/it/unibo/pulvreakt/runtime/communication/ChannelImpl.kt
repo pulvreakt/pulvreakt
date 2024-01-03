@@ -1,14 +1,16 @@
-package it.unibo.pulvreakt.api.communication
+package it.unibo.pulvreakt.runtime.communication
 
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
-import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.communication.protocol.Entity
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
+import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.errors.communication.CommunicatorError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter

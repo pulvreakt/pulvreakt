@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.component.fixture
+package it.unibo.pulvreakt.runtime.component.fixture
 
 import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.component.ComponentRef

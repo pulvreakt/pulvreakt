@@ -9,7 +9,6 @@ import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.CommunicationPayload
 import it.unibo.pulvreakt.api.component.pulverization.Sensors
-import it.unibo.pulvreakt.core.component.fixture.SimpleTimeDistribution
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.serializer
@@ -52,15 +51,15 @@ class CommTest : Communication<Unit>(serializer()) {
     }
 }
 
-class BehaviourTest : Behaviour<Unit, Unit, Unit, Unit>(
-    SimpleTimeDistribution(),
+class BehaviourTest : Behaviour<Int, Unit, Unit, Unit>(
+    TestScheduler(),
     serializer(),
     serializer(),
     serializer(),
     serializer(),
 ) {
-    override fun invoke(state: Unit?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Unit, Unit, Unit> {
-        TODO("Not yet implemented")
+    override fun invoke(state: Int?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Int, Unit, Unit> {
+        return BehaviourOutput(1, Unit, Unit)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -73,7 +72,7 @@ class BehaviourTest : Behaviour<Unit, Unit, Unit, Unit>(
     }
 }
 
-class TestSensors : Sensors<Unit>(SimpleTimeDistribution(), serializer()) {
+class SensorsTest : Sensors<Unit>(TestScheduler(), serializer()) {
     override suspend fun sense() = Unit
 
     override fun equals(other: Any?): Boolean {
@@ -86,7 +85,7 @@ class TestSensors : Sensors<Unit>(SimpleTimeDistribution(), serializer()) {
     }
 }
 
-class TestActuators : Actuators<Unit>(serializer()) {
+class ActuatorsTest : Actuators<Unit>(serializer()) {
     override suspend fun actuate(actuation: Unit) {
         TODO("Not yet implemented")
     }

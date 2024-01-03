@@ -1,5 +1,6 @@
-package it.unibo.pulvreakt.api.communication
+package it.unibo.pulvreakt.runtime.communication
 
+import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.component.ComponentRef
 import kotlinx.coroutines.flow.MutableSharedFlow
 
