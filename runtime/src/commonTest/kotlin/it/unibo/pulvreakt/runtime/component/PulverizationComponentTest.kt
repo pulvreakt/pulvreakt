@@ -12,7 +12,7 @@ import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.runtime.communication.ChannelImpl
 import it.unibo.pulvreakt.runtime.communication.LocalChannelManager
 import it.unibo.pulvreakt.runtime.component.fixture.TestActuators
-import it.unibo.pulvreakt.runtime.component.fixture.TestBehaviour
+import it.unibo.pulvreakt.runtime.component.fixture.TestBehavior
 import it.unibo.pulvreakt.runtime.component.fixture.TestCommunication
 import it.unibo.pulvreakt.runtime.component.fixture.TestComponentModeReconfigurator
 import it.unibo.pulvreakt.runtime.component.fixture.TestSensors
@@ -43,7 +43,7 @@ class PulverizationComponentTest {
 
     @Test
     fun integrateFivePulverizedComponentTest() = runTest(timeout = 10.seconds) {
-        val behaviour = TestBehaviour().apply { setupInjector(diModule) }
+        val behaviour = TestBehavior().apply { setupInjector(diModule) }
         val state = TestState().apply { setupInjector(diModule) }
         val sensors = TestSensors().apply { setupInjector(diModule) }
         val actuators = TestActuators().apply { setupInjector(diModule) }
@@ -83,7 +83,7 @@ class PulverizationComponentTest {
 
     @Test
     fun partiallyConnectedDeviceTest() = runTest(timeout = 10.seconds) {
-        val behaviour = TestBehaviour().apply { setupInjector(diModule) }
+        val behaviour = TestBehavior().apply { setupInjector(diModule) }
         val sensors = TestSensors().apply { setupInjector(diModule) }
 
         behaviour.setupWiring(sensors.getRef())

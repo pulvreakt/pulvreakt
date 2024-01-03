@@ -11,12 +11,12 @@ val infrastructure = nonEmptySetOf(host)
 
 val configuration = pulverization {
     val dev by logicDevice<Int, Unit, Unit, Unit> {
-        withBehaviour<FixtureBehaviour>() requires cap
+        withBehaviour<FixtureBehavior>() requires cap
         withState<FixtureState>() requires cap
     }
     deployment(infrastructure, TestProtocol()) {
         device(dev) {
-            FixtureBehaviour() startsOn host
+            FixtureBehavior() startsOn host
             FixtureState() startsOn host
         }
     }

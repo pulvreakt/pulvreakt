@@ -5,7 +5,7 @@ import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.communication.protocol.Entity
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Behavior
 import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.GetState
 import it.unibo.pulvreakt.api.component.pulverization.SetState
@@ -24,7 +24,7 @@ class Infinite : ExecutionScheduler {
     override fun timesSequence(): Sequence<Long> = generateSequence { 0L }
 }
 
-class FixtureBehaviour : Behaviour<Int, Unit, Unit, Unit>(
+class FixtureBehavior : Behavior<Int, Unit, Unit, Unit>(
     Infinite(),
     serializer(),
     serializer(),

@@ -11,7 +11,7 @@ import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptySetOrNull
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.component.pulverization.Actuators
-import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Behavior
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.Sensors
 import it.unibo.pulvreakt.api.component.pulverization.State
@@ -43,9 +43,9 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
     }
 
     /**
-     * Register a [Behaviour] component in the device.
+     * Register a [Behavior] component in the device.
      */
-    inline fun <reified B : Behaviour<St, Co, Sens, Act>> withBehaviour(): ComponentRef =
+    inline fun <reified B : Behavior<St, Co, Sens, Act>> withBehaviour(): ComponentRef =
         ComponentRef.create<B>(BehaviourKind).also {
             addComponent("behaviour", it)
         }
