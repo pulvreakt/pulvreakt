@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.communicator
+package it.unibo.pulvreakt.core.communication
 
 import arrow.core.Either
 import arrow.core.raise.either
@@ -9,12 +9,12 @@ import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.communication.ChannelImpl
 import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.communication.Mode
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.AbstractComponent
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
-import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.utils.TestProtocol
 import it.unibo.pulvreakt.dsl.model.Capability
@@ -62,7 +62,7 @@ class C6 : AbstractComponent() {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CommunicatorTest : StringSpec(
+class ChannelTest : StringSpec(
     {
         coroutineTestScope = true
         val deviceId = 1.toId()

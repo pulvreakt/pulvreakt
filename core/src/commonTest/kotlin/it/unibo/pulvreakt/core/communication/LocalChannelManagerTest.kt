@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.communicator
+package it.unibo.pulvreakt.core.communication
 
 import arrow.core.Either
 import arrow.core.raise.either
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LocalCommunicatorManagerTest : StringSpec(
+class LocalChannelManagerTest : StringSpec(
     {
         coroutineTestScope = true
         "The LocalCommunicatorManager should create a communicator between two components" {
