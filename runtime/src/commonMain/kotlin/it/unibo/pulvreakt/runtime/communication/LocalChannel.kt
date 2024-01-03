@@ -1,7 +1,9 @@
-package it.unibo.pulvreakt.api.communication
+package it.unibo.pulvreakt.runtime.communication
 
 import arrow.core.Either
 import arrow.core.right
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.errors.communication.CommunicatorError
 import kotlinx.coroutines.flow.Flow

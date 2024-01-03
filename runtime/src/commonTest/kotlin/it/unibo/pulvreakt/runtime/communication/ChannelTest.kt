@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.core.communication
+package it.unibo.pulvreakt.runtime.communication
 
 import arrow.core.Either
 import arrow.core.raise.either
@@ -6,8 +6,6 @@ import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import it.unibo.pulvreakt.api.communication.Channel
-import it.unibo.pulvreakt.api.communication.ChannelImpl
-import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.AbstractComponent
@@ -16,10 +14,10 @@ import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
-import it.unibo.pulvreakt.core.utils.TestProtocol
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.errors.communication.CommunicatorError
 import it.unibo.pulvreakt.errors.component.ComponentError
+import it.unibo.pulvreakt.runtime.utils.TestProtocol
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
