@@ -8,8 +8,8 @@ import arrow.core.raise.ensure
 import arrow.core.raise.ensureNotNull
 import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptySetOrNull
-import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
+import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.dsl.deployment.DeploymentSpecificationScope
 import it.unibo.pulvreakt.dsl.errors.ConfigurationError
 import it.unibo.pulvreakt.dsl.errors.ConfigurationValidator
