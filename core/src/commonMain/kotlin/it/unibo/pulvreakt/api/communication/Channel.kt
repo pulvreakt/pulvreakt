@@ -11,7 +11,8 @@ import it.unibo.pulvreakt.errors.communication.CommunicatorError
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Models the possible operation modes of a [Channel].<br>
+ * Models the possible operation modes of a [Channel].
+ *
  * The [Local] mode represents the communication between components in the same process.
  * The [Remote] mode represents the communication between components remotely.
  */
@@ -28,7 +29,11 @@ sealed interface Mode {
 }
 
 /**
- * Represents the ability of a [Component] to communicate with another one.
+ * Models a communication channel between two [Component]s.
+ *
+ * With the channel the components can communicate with each other via the [sendToComponent] and [receiveFromComponent] methods.
+ * The channel is set up by the [channelSetup] method and can change its operation mode with the [setMode] method.
+ * The communication [Mode] defines if the communication should occur locally or remotely.
  */
 interface Channel : ManagedResource<Nothing>, InjectAwareResource {
     /**
