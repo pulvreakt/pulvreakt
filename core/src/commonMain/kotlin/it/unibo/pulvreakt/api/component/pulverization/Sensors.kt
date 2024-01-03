@@ -5,7 +5,7 @@ import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind.Behavior
 import it.unibo.pulvreakt.api.component.ComponentKind.Sensor
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.scheduler.TimeDistribution
+import it.unibo.pulvreakt.api.scheduler.ExecutionScheduler
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
@@ -14,10 +14,10 @@ import kotlinx.serialization.KSerializer
  * Represents the Sensors component in the pulverization model.
  * @param SS represents the type handled by the sensors component.
  * This type can be a "compound" type, i.e. a type that contains all the types handled by the sensors.
- * This component is executed according to the given [timeDistribution].
+ * This component is executed according to the given [executionScheduler].
  */
 abstract class Sensors<out SS : Any>(
-    private val timeDistribution: TimeDistribution,
+    private val executionScheduler: ExecutionScheduler,
     private val serializer: KSerializer<SS>,
 ) : AbstractPulverizedComponent() {
     /**
@@ -29,10 +29,10 @@ abstract class Sensors<out SS : Any>(
 
     override suspend fun execute(): Either<ComponentError, Unit> = either {
         val behaviourRef = getComponentByType(Behavior).bind()
-        while (!timeDistribution.isCompleted()) {
+        executionScheduler.timesSequence().forEach {
             val sensedData = sense()
             send(behaviourRef, sensedData, serializer).bind()
-            delay(timeDistribution.nextTimeInstant())
+            delay(it)
         }
     }
 }

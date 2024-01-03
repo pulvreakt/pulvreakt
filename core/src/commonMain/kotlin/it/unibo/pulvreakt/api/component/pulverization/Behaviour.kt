@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.scheduler.TimeDistribution
+import it.unibo.pulvreakt.api.scheduler.ExecutionScheduler
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -18,7 +18,7 @@ import kotlinx.serialization.serializer
  * Represents the Behaviour component in the pulverization model.
  */
 abstract class Behaviour<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
-    private val timeDistribution: TimeDistribution,
+    private val executionScheduler: ExecutionScheduler,
     private val stateSerializer: KSerializer<StateOps<State>> = serializer(),
     private val commSerializer: KSerializer<CommunicationPayload<Comm>> = serializer(),
     private val sensorsSerializer: KSerializer<Sensors>,
@@ -59,8 +59,7 @@ abstract class Behaviour<State : Any, Comm : Any, in Sensors : Any, out Actuator
                 launch { receive(ref, sensorsSerializer).bind().collect { lastSensorsRead = it } }
             }
 
-            // Loop with a user-specific policy
-            while (!timeDistribution.isCompleted()) {
+            executionScheduler.timesSequence().forEach { time ->
                 val stateContent = executeIfNotNull(stateRef) { ref ->
                     send(ref, GetState, stateSerializer).bind()
                     when (val state = receive(ref, stateSerializer).bind().first()) {
@@ -85,7 +84,7 @@ abstract class Behaviour<State : Any, Comm : Any, in Sensors : Any, out Actuator
                     send(ref, actuators, actuatorsSerializer).bind()
                 }
 
-                delay(timeDistribution.nextTimeInstant())
+                delay(time)
             }
             commJob?.cancelAndJoin()
             sensorsJob?.cancelAndJoin()

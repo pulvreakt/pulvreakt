@@ -23,7 +23,7 @@ class TestSensorsComponent : AbstractComponent() {
 }
 
 class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(
-    FiniteShotTimeDistribution(2),
+    FiniteShotExecutionScheduler(2),
     serializer(),
     serializer(),
     serializer(),
@@ -43,7 +43,7 @@ class TestState : State<Int>(serializer()) {
     }
 }
 
-class TestSensors : Sensors<Unit>(FiniteShotTimeDistribution(1), serializer()) {
+class TestSensors : Sensors<Unit>(FiniteShotExecutionScheduler(1), serializer()) {
     override suspend fun sense() = Unit
 }
 
