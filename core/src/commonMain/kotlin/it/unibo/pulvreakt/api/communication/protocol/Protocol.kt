@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.api.protocol
+package it.unibo.pulvreakt.api.communication.protocol
 
 import arrow.core.Either
 import it.unibo.pulvreakt.api.initializable.InjectAwareResource

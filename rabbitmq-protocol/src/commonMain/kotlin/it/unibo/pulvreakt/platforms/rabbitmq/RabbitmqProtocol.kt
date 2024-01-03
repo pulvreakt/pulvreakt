@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.platforms.rabbitmq
 
 import it.unibo.pulvreakt.api.communication.Channel
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 
 /**
  * Implement the [Channel] interface relying on RabbitMQ as a platform for communications.

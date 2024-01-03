@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.errors.communication
 
 import it.unibo.pulvreakt.api.communication.Channel
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
 
 /**
