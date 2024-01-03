@@ -15,8 +15,12 @@ import kotlinx.coroutines.flow.Flow
 data class Entity(val entityName: String, val id: String? = null, val metadata: Map<String, String> = emptyMap())
 
 /**
- * Represents the low-level operations needed to communicate with another entity.
- * The communication is done through a channel that is set up by the [Protocol].
+ * Defines the effective protocol used to communicate between two entities remotely.
+ * The protocol is responsible for setting up the communication channel between the two [Entity] and for sending and receiving messages.
+ *
+ * Generally, this interface is implemented in a separate module leveraging protocol-specific libraries.
+ * The protocol is configured using the configuration DSL and then will be injected into the runtime to establish the communication.
+ * The end-user do not interact directly with this interface.
  */
 interface Protocol : ManagedResource<ProtocolError>, InjectAwareResource {
     /**
