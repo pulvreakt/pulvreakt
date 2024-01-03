@@ -24,17 +24,27 @@ data class Entity(val entityName: String, val id: String? = null, val metadata: 
  */
 interface Protocol : ManagedResource<ProtocolError>, InjectAwareResource {
     /**
-     * Sets up the communication channel with the given [source].
+     * This method configures the protocol to communicate between the given [source] and [destination] entities.
+     *
+     * Multiple call to this method with the same [source] and [destination] should be idempotent.
+     * The runtime call this method to set up the communication between the entities, the end-user should not interact directly with this method.
      */
     suspend fun setupChannel(source: Entity, destination: Entity)
 
     /**
-     * Writes the given [message] to the channel of the given [to] entity.
+     * Sends a [message] [from] an [Entity] [to] another [Entity].
+     *
+     * This method can either succeed or fail with a [ProtocolError].
+     * Fails if the [from] and [to] entities are not registered in the protocol via the [setupChannel] method.
      */
     suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit>
 
     /**
-     * Reads from the channel of the given [from] entity.
+     * Starts listening for messages flowing [from] an [Entity] [to] another [Entity].
+     * The returned [Flow] is a hot stream of messages that can be consumed by the runtime.
+     *
+     * This method can either succeed or fail with a [ProtocolError].
+     * Fails if the [from] and [to] entities are not registered in the protocol via the [setupChannel] method.
      */
     fun readFromChannel(from: Entity, to: Entity): Either<ProtocolError, Flow<ByteArray>>
 }
