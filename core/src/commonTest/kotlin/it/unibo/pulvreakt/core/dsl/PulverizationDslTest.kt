@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldNotBe
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.core.dsl.fixture.ActuatorsTest
-import it.unibo.pulvreakt.core.dsl.fixture.BehaviourTest
+import it.unibo.pulvreakt.core.dsl.fixture.BehaviorTest
 import it.unibo.pulvreakt.core.dsl.fixture.CommTest
 import it.unibo.pulvreakt.core.dsl.fixture.SensorsTest
 import it.unibo.pulvreakt.core.dsl.fixture.TestComponent1
@@ -108,7 +108,7 @@ class PulverizationDslTest : StringSpec(
         "The DSL should produce an error if an unknown component is registered in the deployment" {
             val config = pulverization {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
-                    val component1 = withBehaviour<BehaviourTest>()
+                    val component1 = withBehaviour<BehaviorTest>()
                     component1 requires embeddedDeviceCapability
                 }
                 deployment(testInfrastructure, TestProtocol()) {
@@ -120,7 +120,7 @@ class PulverizationDslTest : StringSpec(
             config.isLeft() shouldBe true
             config shouldBe Either.Left(
                 nonEmptyListOf(
-                    ComponentNotRegistered("myDevice", ComponentRef.create<BehaviourTest>(ComponentKind.Behavior)),
+                    ComponentNotRegistered("myDevice", ComponentRef.create<BehaviorTest>(ComponentKind.Behavior)),
                 ),
             )
         }
@@ -129,12 +129,12 @@ class PulverizationDslTest : StringSpec(
         ) {
             val config = pulverization {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
-                    val component1 = withBehaviour<BehaviourTest>()
+                    val component1 = withBehaviour<BehaviorTest>()
                     component1 requires embeddedDeviceCapability
                 }
                 deployment(testInfrastructure, TestProtocol()) {
                     device(myDevice) {
-                        BehaviourTest() startsOn smartphoneHost
+                        BehaviorTest() startsOn smartphoneHost
                         reconfigurationRules {
                             onDevice {
                                 TestReconfigurationEvent1() reconfigures (ComponentRef.create<TestComponent1>() movesTo serverHost)
@@ -199,18 +199,18 @@ class PulverizationDslTest : StringSpec(
         "The DSL should configure a device with the classical model".config(enabled = false) {
             val configResult = pulverization {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
-                    val component1 = withBehaviour<BehaviourTest>()
+                    val component1 = withBehaviour<BehaviorTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
                     component2 requires embeddedDeviceCapability
                 }
                 deployment(testInfrastructure, TestProtocol()) {
                     device(myDevice) {
-                        BehaviourTest() startsOn smartphoneHost
+                        BehaviorTest() startsOn smartphoneHost
                         CommTest() startsOn smartphoneHost
                         reconfigurationRules {
                             onDevice {
-                                TestReconfigurationEvent1() reconfigures (theBehaviour<BehaviourTest>() movesTo serverHost)
+                                TestReconfigurationEvent1() reconfigures (theBehaviour<BehaviorTest>() movesTo serverHost)
                             }
                         }
                     }
@@ -221,15 +221,15 @@ class PulverizationDslTest : StringSpec(
                 config["my device"] shouldNotBe null
                 config["my device"]!!.let { deviceSpec ->
                     deviceSpec.componentsConfiguration shouldBe mapOf(
-                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to setOf(
+                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior) to setOf(
                             ComponentRef.create<CommTest>(ComponentKind.Communication),
                         ),
                         ComponentRef.create<CommTest>(ComponentKind.Communication) to setOf(
-                            ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
+                            ComponentRef.create<BehaviorTest>(ComponentKind.Behavior),
                         ),
                     )
                     deviceSpec.requiredCapabilities shouldBe mapOf(
-                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to nonEmptySetOf(
+                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior) to nonEmptySetOf(
                             embeddedDeviceCapability,
                             serverCapability,
                         ),
@@ -243,7 +243,7 @@ class PulverizationDslTest : StringSpec(
         "The DSL should admit a mixed configuration with simple device and extended one" {
             val configResult = pulverization {
                 val device1 by logicDevice<Int, Unit, Unit, Unit> {
-                    val component1 = withBehaviour<BehaviourTest>()
+                    val component1 = withBehaviour<BehaviorTest>()
                     val component2 = withCommunication<CommTest>()
                     component1 requires nonEmptySetOf(embeddedDeviceCapability, serverCapability)
                     component2 requires embeddedDeviceCapability
@@ -258,7 +258,7 @@ class PulverizationDslTest : StringSpec(
                 }
                 deployment(testInfrastructure, TestProtocol()) {
                     device(device1) {
-                        BehaviourTest() startsOn smartphoneHost
+                        BehaviorTest() startsOn smartphoneHost
                         CommTest() startsOn smartphoneHost
                     }
                     device(device2) {
@@ -276,13 +276,13 @@ class PulverizationDslTest : StringSpec(
         "Regression test: Behaviour, Sensors and Actuators" {
             val configResult = pulverization {
                 val device by logicDevice<Int, Unit, Unit, Unit> {
-                    withBehaviour<BehaviourTest>() requires serverCapability
+                    withBehaviour<BehaviorTest>() requires serverCapability
                     withSensors<SensorsTest>() requires embeddedDeviceCapability
                     withActuators<ActuatorsTest>() requires embeddedDeviceCapability
                 }
                 deployment(testInfrastructure, TestProtocol()) {
                     device(device) {
-                        BehaviourTest() startsOn serverHost
+                        BehaviorTest() startsOn serverHost
                         SensorsTest() startsOn smartphoneHost
                         ActuatorsTest() startsOn smartphoneHost
                     }
@@ -293,15 +293,15 @@ class PulverizationDslTest : StringSpec(
                 config["device"] shouldNotBe null
                 val deviceSpec = config["device"]!!
                 deviceSpec.componentsConfiguration shouldBe mapOf(
-                    ComponentRef.create<BehaviourTest>(ComponentKind.Behavior) to setOf(
+                    ComponentRef.create<BehaviorTest>(ComponentKind.Behavior) to setOf(
                         ComponentRef.create<SensorsTest>(ComponentKind.Sensor),
                         ComponentRef.create<ActuatorsTest>(ComponentKind.Actuator),
                     ),
                     ComponentRef.create<SensorsTest>(ComponentKind.Sensor) to setOf(
-                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
+                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior),
                     ),
                     ComponentRef.create<ActuatorsTest>(ComponentKind.Actuator) to setOf(
-                        ComponentRef.create<BehaviourTest>(ComponentKind.Behavior),
+                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior),
                     ),
                 )
             }

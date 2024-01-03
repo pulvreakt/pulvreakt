@@ -35,21 +35,14 @@ interface Component : ManagedResource<ComponentError>, InjectAwareResource {
      * Sends a [message] of type [P] [toComponent] by serializing it with the given [serializer].
      * This method can fail with a [ComponentNotRegistered] if the [toComponent] is not registered as link of this component.
      */
-    suspend fun <P : Any> send(
-        toComponent: ComponentRef,
-        message: P,
-        serializer: KSerializer<in P>,
-    ): Either<ComponentError, Unit>
+    suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<in P>): Either<ComponentError, Unit>
 
     /**
      * Receives a message of type [P] [fromComponent] by deserializing it with the given [serializer].
      * If the message pushed in the flow cannot be serialized with the given [serializer] the flow will fail with an exception.
      * This method can fail with a [ComponentNotRegistered] if the [fromComponent] is not registered as link of this component.
      */
-    suspend fun <P : Any> receive(
-        fromComponent: ComponentRef,
-        serializer: KSerializer<out P>,
-    ): Either<ComponentError, Flow<P>>
+    suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<out P>): Either<ComponentError, Flow<P>>
 
     /**
      * Starts the execution of the component logic.

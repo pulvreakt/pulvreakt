@@ -13,7 +13,7 @@ import it.unibo.pulvreakt.api.component.Component
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.component.pulverization.Actuators
-import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Behavior
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.Sensors
 import it.unibo.pulvreakt.api.component.pulverization.State
@@ -37,7 +37,7 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
     /**
      * Specifies which Behaviour component should be reconfigured.
      */
-    inline fun <reified B : Behaviour<*, *, *, *>> theBehaviour(): ComponentRef =
+    inline fun <reified B : Behavior<*, *, *, *>> theBehaviour(): ComponentRef =
         ComponentRef.create<B>(ComponentKind.Behavior)
 
     /**

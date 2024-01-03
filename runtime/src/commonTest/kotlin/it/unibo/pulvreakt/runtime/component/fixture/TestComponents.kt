@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.right
 import it.unibo.pulvreakt.api.component.AbstractComponent
 import it.unibo.pulvreakt.api.component.pulverization.Actuators
-import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Behavior
 import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.CommunicationPayload
@@ -22,7 +22,7 @@ class TestSensorsComponent : AbstractComponent() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class TestBehaviour : Behaviour<Int, Unit, Unit, Unit>(
+class TestBehavior : Behavior<Int, Unit, Unit, Unit>(
     FiniteShotExecutionScheduler(2),
     serializer(),
     serializer(),

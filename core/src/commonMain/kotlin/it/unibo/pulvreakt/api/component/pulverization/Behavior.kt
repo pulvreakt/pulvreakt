@@ -17,7 +17,7 @@ import kotlinx.serialization.serializer
 /**
  * Represents the Behaviour component in the pulverization model.
  */
-abstract class Behaviour<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
+abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
     private val executionScheduler: ExecutionScheduler,
     private val stateSerializer: KSerializer<StateOps<State>> = serializer(),
     private val commSerializer: KSerializer<CommunicationPayload<Comm>> = serializer(),
@@ -106,7 +106,7 @@ abstract class Behaviour<State : Any, Comm : Any, in Sensors : Any, out Actuator
 }
 
 /**
- * Models the output of a [Behaviour] where [state] is the new state of the component,
+ * Models the output of a [Behavior] where [state] is the new state of the component,
  * [comm] is the communication to be sent to the other devices
  * and [actuators] is the prescriptive actions to be performed.
  */

@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.right
 import it.unibo.pulvreakt.api.component.AbstractComponent
 import it.unibo.pulvreakt.api.component.pulverization.Actuators
-import it.unibo.pulvreakt.api.component.pulverization.Behaviour
+import it.unibo.pulvreakt.api.component.pulverization.Behavior
 import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.CommunicationPayload
@@ -51,7 +51,7 @@ class CommTest : Communication<Unit>(serializer()) {
     }
 }
 
-class BehaviourTest : Behaviour<Int, Unit, Unit, Unit>(
+class BehaviorTest : Behavior<Int, Unit, Unit, Unit>(
     TestScheduler(),
     serializer(),
     serializer(),
