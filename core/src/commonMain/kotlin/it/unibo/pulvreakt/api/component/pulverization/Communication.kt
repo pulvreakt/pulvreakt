@@ -14,6 +14,8 @@ import kotlinx.serialization.Serializable
 
 /**
  * Represents the Communication component in the pulverization model.
+ *
+ * The communication component is used to [send] and [receive] messages from the other devices.
  */
 abstract class Communication<Comm : Any>(
     private val serializer: KSerializer<CommunicationPayload<Comm>>,
