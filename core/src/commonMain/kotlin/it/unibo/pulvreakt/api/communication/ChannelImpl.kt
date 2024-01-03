@@ -7,8 +7,8 @@ import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.context.Context
-import it.unibo.pulvreakt.api.protocol.Entity
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Entity
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.errors.communication.CommunicatorError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter

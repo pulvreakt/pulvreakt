@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.dsl.model
 
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 
 typealias DevicesConfiguration = Map<String, DeviceSpecification>
 

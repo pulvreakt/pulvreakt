@@ -1,8 +1,8 @@
 package it.unibo.pulvreakt.mqtt
 
 import arrow.core.Either
-import it.unibo.pulvreakt.api.protocol.Entity
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Entity
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

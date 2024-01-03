@@ -12,7 +12,7 @@ import it.unibo.pulvreakt.api.component.AbstractComponent.Companion.send
 import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.core.component.fixture.TestComponentModeReconfigurator
 import it.unibo.pulvreakt.core.component.fixture.TestSensorsComponent

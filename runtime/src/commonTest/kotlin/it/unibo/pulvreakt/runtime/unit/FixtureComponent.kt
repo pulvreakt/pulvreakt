@@ -9,8 +9,8 @@ import it.unibo.pulvreakt.api.component.pulverization.GetState
 import it.unibo.pulvreakt.api.component.pulverization.SetState
 import it.unibo.pulvreakt.api.component.pulverization.State
 import it.unibo.pulvreakt.api.component.pulverization.StateOps
-import it.unibo.pulvreakt.api.protocol.Entity
-import it.unibo.pulvreakt.api.protocol.Protocol
+import it.unibo.pulvreakt.api.communication.protocol.Entity
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.api.scheduler.TimeDistribution
 import it.unibo.pulvreakt.errors.protocol.ProtocolError

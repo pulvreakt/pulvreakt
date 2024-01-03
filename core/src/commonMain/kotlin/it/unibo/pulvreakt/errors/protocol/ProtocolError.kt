@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.errors.protocol
 
-import it.unibo.pulvreakt.api.protocol.Entity
+import it.unibo.pulvreakt.api.communication.protocol.Entity
 
 /**
  * Represents all the possible errors that a [Protocol] can raise.
