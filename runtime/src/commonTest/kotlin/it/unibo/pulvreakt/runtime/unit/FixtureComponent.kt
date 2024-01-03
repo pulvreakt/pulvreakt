@@ -2,6 +2,8 @@ package it.unibo.pulvreakt.runtime.unit
 
 import arrow.core.Either
 import it.unibo.pulvreakt.api.communication.Mode
+import it.unibo.pulvreakt.api.communication.protocol.Entity
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.component.pulverization.Behaviour
 import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
@@ -9,10 +11,8 @@ import it.unibo.pulvreakt.api.component.pulverization.GetState
 import it.unibo.pulvreakt.api.component.pulverization.SetState
 import it.unibo.pulvreakt.api.component.pulverization.State
 import it.unibo.pulvreakt.api.component.pulverization.StateOps
-import it.unibo.pulvreakt.api.communication.protocol.Entity
-import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
-import it.unibo.pulvreakt.api.scheduler.TimeDistribution
+import it.unibo.pulvreakt.api.scheduler.ExecutionScheduler
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,9 +20,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.serializer
 import org.kodein.di.DI
 
-class Infinite : TimeDistribution {
-    override fun nextTimeInstant(): Long = 0L
-    override fun isCompleted(): Boolean = false
+class Infinite : ExecutionScheduler {
+    override fun timesSequence(): Sequence<Long> = generateSequence { 0L }
 }
 
 class FixtureBehaviour : Behaviour<Int, Unit, Unit, Unit>(
