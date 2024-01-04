@@ -9,13 +9,13 @@ import arrow.core.Either
 interface ManagedResource<out Error> {
     /**
      * Asynchronously initializes the entity.
-     * Returns an [Either] that represents the result of the initialization.
+     * Can [Either] succeed or fail with an [Error].
      */
     suspend fun initialize(): Either<Error, Unit>
 
     /**
      * Asynchronously finalizes the entity.
-     * Returns an [Either] that represents the result of the finalization.
+     * Can [Either] succeed or fail with an [Error].
      */
     suspend fun finalize(): Either<Error, Unit>
 }
