@@ -4,7 +4,6 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.context.Id
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -17,40 +16,43 @@ import kotlinx.serialization.Serializable
  *
  * The communication component is used to [send] and [receive] messages from the other devices.
  */
-abstract class Communication<Comm : Any>(
-    private val serializer: KSerializer<CommunicationPayload<Comm>>,
-) : AbstractPulverizedComponent() {
+abstract class Communication<ID : Any, Comm : Any>(
+    private val serializer: KSerializer<CommunicationPayload<ID, Comm>>,
+) : AbstractPulverizedComponent<ID>() {
     /**
      * Sends to the other linked devices the given [message].
      */
-    abstract suspend fun send(message: CommunicationPayload<Comm>)
+    abstract suspend fun send(message: CommunicationPayload<ID, Comm>)
 
     /**
      * Receives the communication from the other linked devices.
      */
-    abstract suspend fun receive(): Flow<CommunicationPayload<Comm>>
+    abstract suspend fun receive(): Flow<CommunicationPayload<ID, Comm>>
 
     final override fun getRef(): ComponentRef = ComponentRef.create(this, ComponentKind.Communication)
 
-    override suspend fun execute(): Either<ComponentError, Unit> = coroutineScope {
-        either {
-            val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
-            val receiveJob = launch {
-                receive().collect {
-                    send(behaviourRef, it, serializer).bind()
-                }
-            }
+    override suspend fun execute(): Either<ComponentError, Unit> =
+        coroutineScope {
+            either {
+                val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
+                val receiveJob =
+                    launch {
+                        receive().collect {
+                            send(behaviourRef, it, serializer).bind()
+                        }
+                    }
 
-            val sendJob = launch {
-                receive(behaviourRef, serializer).bind().collect {
-                    send(it)
-                }
-            }
+                val sendJob =
+                    launch {
+                        receive(behaviourRef, serializer).bind().collect {
+                            send(it)
+                        }
+                    }
 
-            receiveJob.join()
-            sendJob.join()
+                receiveJob.join()
+                sendJob.join()
+            }
         }
-    }
 }
 
 /**
@@ -60,4 +62,4 @@ abstract class Communication<Comm : Any>(
  * @param payload the payload of the communication.
  */
 @Serializable
-data class CommunicationPayload<Comm : Any>(val deviceId: Id, val payload: Comm)
+data class CommunicationPayload<ID : Any, Comm : Any>(val deviceId: ID, val payload: Comm)

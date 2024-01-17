@@ -24,7 +24,7 @@ class Infinite : ExecutionScheduler {
     override fun timesSequence(): Sequence<Long> = generateSequence { 0L }
 }
 
-class FixtureBehavior : Behavior<Int, Unit, Unit, Unit>(
+class FixtureBehavior : Behavior<Int, Int, Unit, Unit, Unit>(
     Infinite(),
     serializer(),
     serializer(),
@@ -36,7 +36,7 @@ class FixtureBehavior : Behavior<Int, Unit, Unit, Unit>(
     }
 }
 
-class FixtureState : State<Int>(serializer()) {
+class FixtureState : State<Int, Int>(serializer()) {
     override fun queryState(query: StateOps<Int>): Int {
         return when (query) {
             is GetState -> 1

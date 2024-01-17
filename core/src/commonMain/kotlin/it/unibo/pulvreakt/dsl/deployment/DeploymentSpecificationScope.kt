@@ -15,25 +15,30 @@ import it.unibo.pulvreakt.dsl.model.DeviceRuntimeConfiguration
 /**
  * Scope for the deployment DSL configuration.
  */
-class DeploymentSpecificationScope {
+class DeploymentSpecificationScope<ID : Any> {
     private val devicesConfiguration =
-        mutableListOf<Either<Nel<DeploymentConfigurationError>, DeviceRuntimeConfiguration>>()
+        mutableListOf<Either<Nel<DeploymentConfigurationError>, DeviceRuntimeConfiguration<ID>>>()
 
     /**
      * Configures a (logical) device with the given [logicDeviceType].
      * [config] is the configuration scope for configuring the device.
      */
-    fun device(logicDeviceType: LogicDeviceType, config: DeviceDeploymentSpecificationScope.() -> Unit) {
-        val configuration = either {
-            val scope = DeviceDeploymentSpecificationScope(logicDeviceType.name).apply(config)
-            scope.generate().bind()
-        }
+    fun device(
+        logicDeviceType: LogicDeviceType,
+        config: DeviceDeploymentSpecificationScope<ID>.() -> Unit,
+    ) {
+        val configuration =
+            either {
+                val scope = DeviceDeploymentSpecificationScope<ID>(logicDeviceType.name).apply(config)
+                scope.generate().bind()
+            }
         devicesConfiguration += configuration
     }
 
-    internal fun generate(): Either<Nel<DeploymentConfigurationError>, ConfiguredDevicesRuntimeConfiguration> = either {
-        val devicesDeploymentConfig = either { devicesConfiguration.bindAll() }.bind()
-        ensure(devicesDeploymentConfig.isNotEmpty()) { nonEmptyListOf(EmptyDeploymentConfiguration) }
-        devicesDeploymentConfig.toNonEmptySetOrNull()!!
-    }
+    internal fun generate(): Either<Nel<DeploymentConfigurationError>, ConfiguredDevicesRuntimeConfiguration<ID>> =
+        either {
+            val devicesDeploymentConfig = either { devicesConfiguration.bindAll() }.bind()
+            ensure(devicesDeploymentConfig.isNotEmpty()) { nonEmptyListOf(EmptyDeploymentConfiguration) }
+            devicesDeploymentConfig.toNonEmptySetOrNull()!!
+        }
 }

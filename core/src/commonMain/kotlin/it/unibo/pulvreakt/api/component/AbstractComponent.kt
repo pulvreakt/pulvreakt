@@ -44,9 +44,9 @@ import org.kodein.di.provider
  * ```
  * When a pulverization model is adopted, used the component-specific class provided in the `pulverization` package.
  */
-abstract class AbstractComponent : Component {
+abstract class AbstractComponent<ID : Any> : Component<ID> {
     override lateinit var di: DI
-    protected val context by instance<Context>()
+    protected val context by instance<Context<ID>>()
     private val reconfigurator by instance<ComponentModeReconfigurator>()
     private val communicatorFactory: () -> Channel by provider()
     private lateinit var communicators: Map<ComponentRef, Channel>
@@ -57,45 +57,53 @@ abstract class AbstractComponent : Component {
 
     override fun getRef(): ComponentRef = ComponentRef.create(this)
 
-    override suspend fun initialize(): Either<ComponentError, Unit> = coroutineScope {
-        either {
-            ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
-            ensure(links.isNotEmpty()) { ComponentError.WiringNotInitialized }
-            communicators = links.associateWith { component ->
-                val communicator = communicatorFactory()
-                with(communicator) {
-                    setupInjector(this@AbstractComponent.di)
-                    channelSetup(this@AbstractComponent.getRef(), component)
-                        .mapLeft { ComponentError.WrapCommunicatorError(it) }
-                        .bind()
-                }
-                communicator
+    override suspend fun initialize(): Either<ComponentError, Unit> =
+        coroutineScope {
+            either {
+                ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
+                ensure(links.isNotEmpty()) { ComponentError.WiringNotInitialized }
+                communicators =
+                    links.associateWith { component ->
+                        val communicator = communicatorFactory()
+                        with(communicator) {
+                            setupInjector(this@AbstractComponent.di)
+                            channelSetup(this@AbstractComponent.getRef(), component)
+                                .mapLeft { ComponentError.WrapCommunicatorError(it) }
+                                .bind()
+                        }
+                        communicator
+                    }
+                unitManagerJob =
+                    scope.launch {
+                        logger.debug { "Starting collecting new update" }
+                        reconfigurator.receiveModeUpdates().collect { (component, mode) ->
+                            logger.debug { "Received mode update for $component: $mode" }
+                            communicators[component]?.setMode(mode)
+                        }
+                    }
+                logger.debug { "Component [${this@AbstractComponent::class.simpleName}] initialization concluded" }
             }
-            unitManagerJob = scope.launch {
-                logger.debug { "Starting collecting new update" }
-                reconfigurator.receiveModeUpdates().collect { (component, mode) ->
-                    logger.debug { "Received mode update for $component: $mode" }
-                    communicators[component]?.setMode(mode)
-                }
-            }
-            logger.debug { "Component [${this@AbstractComponent::class.simpleName}] initialization concluded" }
         }
-    }
 
-    override suspend fun finalize(): Either<ComponentError, Unit> = either {
-        ensure(::communicators.isInitialized) { ComponentError.FinalizedBeforeInitialization }
-        if (::unitManagerJob.isInitialized) {
-            unitManagerJob.cancel()
+    override suspend fun finalize(): Either<ComponentError, Unit> =
+        either {
+            ensure(::communicators.isInitialized) { ComponentError.FinalizedBeforeInitialization }
+            if (::unitManagerJob.isInitialized) {
+                unitManagerJob.cancel()
+            }
+            scope.coroutineContext.cancelChildren()
+            communicators.forEach { (_, communicator) -> communicator.finalize() }
         }
-        scope.coroutineContext.cancelChildren()
-        communicators.forEach { (_, communicator) -> communicator.finalize() }
-    }
 
     override fun setupWiring(vararg components: ComponentRef) {
         links += components.toSet()
     }
 
-    final override suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<in P>): Either<ComponentError, Unit> =
+    final override suspend fun <P : Any> send(
+        toComponent: ComponentRef,
+        message: P,
+        serializer: KSerializer<in P>,
+    ): Either<ComponentError, Unit> =
         either {
             isDependencyInjectionInitialized().bind()
             ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
@@ -103,7 +111,10 @@ abstract class AbstractComponent : Component {
             communicator.sendToComponent(Json.encodeToString(serializer, message).encodeToByteArray())
         }
 
-    final override suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<out P>): Either<ComponentError, Flow<P>> =
+    final override suspend fun <P : Any> receive(
+        fromComponent: ComponentRef,
+        serializer: KSerializer<out P>,
+    ): Either<ComponentError, Flow<P>> =
         either {
             isDependencyInjectionInitialized().bind()
             ensure(::communicators.isInitialized) { ComponentError.ComponentNotInitialized }
@@ -116,28 +127,30 @@ abstract class AbstractComponent : Component {
         di = kodein
     }
 
-    private fun Map<ComponentRef, Channel>.getCommunicator(
-        component: ComponentRef,
-    ): Either<ComponentError, Channel> = filterKeys { it == component }
-        .values
-        .firstOrNone()
-        .toEither { ComponentError.ComponentNotRegistered(component) }
+    private fun Map<ComponentRef, Channel>.getCommunicator(component: ComponentRef): Either<ComponentError, Channel> =
+        filterKeys { it == component }
+            .values
+            .firstOrNone()
+            .toEither { ComponentError.ComponentNotRegistered(component) }
 
-    private fun isDependencyInjectionInitialized(): Either<ComponentError, Unit> = either {
-        ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
-    }
+    private fun isDependencyInjectionInitialized(): Either<ComponentError, Unit> =
+        either {
+            ensure(::di.isInitialized) { ComponentError.InjectorNotInitialized }
+        }
 
     companion object {
         /**
          * Helper method to send a [message] [toComponent] without specifying the serialization.
          */
-        suspend inline fun <reified P : Any> Component.send(toComponent: ComponentRef, message: P): Either<ComponentError, Unit> =
-            send(toComponent, message, serializer())
+        suspend inline fun <ID : Any, reified P : Any> Component<ID>.send(
+            toComponent: ComponentRef,
+            message: P,
+        ): Either<ComponentError, Unit> = send(toComponent, message, serializer())
 
         /**
          * Helper method to receive messages [fromComponent] without specifying the serialization.
          */
-        suspend inline fun <reified P : Any> Component.receive(fromComponent: ComponentRef): Either<ComponentError, Flow<P>> =
+        suspend inline fun <ID : Any, reified P : Any> Component<ID>.receive(fromComponent: ComponentRef): Either<ComponentError, Flow<P>> =
             receive(fromComponent, serializer())
     }
 }

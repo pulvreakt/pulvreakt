@@ -19,7 +19,7 @@ data class NewConfiguration(val component: ComponentRef, val destinationHost: Ho
 data class DeviceReconfigurationRule(val event: ReconfigurationEvent<*>, val newConfiguration: NewConfiguration)
 typealias OnDeviceRules = Set<DeviceReconfigurationRule>
 
-typealias ComponentStartupHost = Map<Component, Host>
+typealias ComponentStartupHost<ID> = Map<Component<ID>, Host>
 
 /**
  * Models the reconfiguration rules of the device.
@@ -34,10 +34,10 @@ data class ReconfigurationRules(val onDeviceRules: OnDeviceRules?)
  * [componentStartupHost] is the map that associates a component to the host on which it is started.
  * [reconfigurationRules] are the reconfiguration rules of the device.
  */
-data class DeviceRuntimeConfiguration(
+data class DeviceRuntimeConfiguration<ID : Any>(
     val deviceName: String,
-    val componentStartupHost: ComponentStartupHost,
+    val componentStartupHost: ComponentStartupHost<ID>,
     val reconfigurationRules: ReconfigurationRules?,
 )
 
-typealias ConfiguredDevicesRuntimeConfiguration = NonEmptySet<DeviceRuntimeConfiguration>
+typealias ConfiguredDevicesRuntimeConfiguration<ID> = NonEmptySet<DeviceRuntimeConfiguration<ID>>

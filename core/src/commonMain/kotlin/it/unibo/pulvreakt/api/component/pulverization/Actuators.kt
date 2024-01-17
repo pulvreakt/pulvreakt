@@ -12,7 +12,7 @@ import kotlinx.serialization.KSerializer
  * @param AS represents the type handled by the actuators component.
  * This type can be a "compound" type, i.e. a type that contains all the types handled by the actuators.
  */
-abstract class Actuators<in AS : Any>(private val serializer: KSerializer<AS>) : AbstractPulverizedComponent() {
+abstract class Actuators<ID : Any, in AS : Any>(private val serializer: KSerializer<AS>) : AbstractPulverizedComponent<ID>() {
     /**
      * Actuate the actuators with the given [actuation].
      */
@@ -20,8 +20,9 @@ abstract class Actuators<in AS : Any>(private val serializer: KSerializer<AS>) :
 
     final override fun getRef(): ComponentRef = ComponentRef.create(this, ComponentKind.Actuator)
 
-    override suspend fun execute(): Either<ComponentError, Unit> = either {
-        val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
-        receive(behaviourRef, serializer).bind().collect { actuate(it) }
-    }
+    override suspend fun execute(): Either<ComponentError, Unit> =
+        either {
+            val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
+            receive(behaviourRef, serializer).bind().collect { actuate(it) }
+        }
 }

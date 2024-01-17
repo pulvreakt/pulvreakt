@@ -31,44 +31,38 @@ import it.unibo.pulvreakt.dsl.model.OnDeviceRules
 /**
  * Scope for the reconfiguration of a device.
  */
-class OnDeviceScope(private val deviceStructure: DeviceStructure, private val infrastructure: NonEmptySet<Host>) {
+class OnDeviceScope<ID : Any>(private val deviceStructure: DeviceStructure, private val infrastructure: NonEmptySet<Host>) {
     private val rules = mutableListOf<Either<Nel<DeploymentConfigurationError>, DeviceReconfigurationRule>>()
 
     /**
      * Specifies which Behaviour component should be reconfigured.
      */
-    inline fun <reified B : Behavior<*, *, *, *>> theBehaviour(): ComponentRef =
-        ComponentRef.create<B>(ComponentKind.Behavior)
+    inline fun <reified B : Behavior<ID, *, *, *, *>> theBehaviour(): ComponentRef = ComponentRef.create<B>(ComponentKind.Behavior)
 
     /**
      * Specifies which State component should be reconfigured.
      */
-    inline fun <reified S : State<*>> theState(): ComponentRef =
-        ComponentRef.create<S>(ComponentKind.State)
+    inline fun <reified S : State<ID, *>> theState(): ComponentRef = ComponentRef.create<S>(ComponentKind.State)
 
     /**
      * Specifies which Communication component should be reconfigured.
      */
-    inline fun <reified C : Communication<*>> theCommunication(): ComponentRef =
-        ComponentRef.create<C>(ComponentKind.Communication)
+    inline fun <reified C : Communication<ID, *>> theCommunication(): ComponentRef = ComponentRef.create<C>(ComponentKind.Communication)
 
     /**
      * Specifies which Sensors component should be reconfigured.
      */
-    inline fun <reified SS : Sensors<*>> theSensors(): ComponentRef =
-        ComponentRef.create<SS>(ComponentKind.Sensor)
+    inline fun <reified SS : Sensors<ID, *>> theSensors(): ComponentRef = ComponentRef.create<SS>(ComponentKind.Sensor)
 
     /**
      * Specifies which Actuators component should be reconfigured.
      */
-    inline fun <reified AS : Actuators<*>> theActuators(): ComponentRef =
-        ComponentRef.create<AS>(ComponentKind.Actuator)
+    inline fun <reified AS : Actuators<*, *>> theActuators(): ComponentRef = ComponentRef.create<AS>(ComponentKind.Actuator)
 
     /**
      * Specifies which generic component should be reconfigured.
      */
-    inline fun <reified Comp : Component> theComponent(): ComponentRef =
-        ComponentRef.create<Comp>()
+    inline fun <reified Comp : Component<ID>> theComponent(): ComponentRef = ComponentRef.create<Comp>()
 
     /**
      * Specifies the [newConfiguration] associated to the [ReconfigurationEvent].
@@ -77,20 +71,22 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
         val (componentType, host) = newConfiguration
         val components = deviceStructure.componentsGraph.keys + deviceStructure.componentsGraph.values.flatten()
 
-        val result = either<Nel<DeploymentConfigurationError>, DeviceReconfigurationRule> {
-            zipOrAccumulate(
-                { ensure(componentType in components) { UnknownComponent(componentType) } },
-                { ensure(host in infrastructure) { InvalidReconfigurationHost(host) } },
-                { ensure(componentType in deviceStructure.requiredCapabilities.keys) { UnknownComponent(componentType) } },
-                {
-                    val componentCapabilities = deviceStructure.requiredCapabilities[componentType]
-                        ?: raise(nonEmptyListOf(UnknownComponent(componentType)))
-                    val hostCapability = host.capabilities
-                    val isCompatible = componentCapabilities.intersect(hostCapability).isNotEmpty()
-                    ensure(isCompatible) { InvalidReconfiguration(componentType, host) }
-                },
-            ) { _, _, _, _ -> DeviceReconfigurationRule(this@reconfigures, newConfiguration) }
-        }
+        val result =
+            either<Nel<DeploymentConfigurationError>, DeviceReconfigurationRule> {
+                zipOrAccumulate(
+                    { ensure(componentType in components) { UnknownComponent(componentType) } },
+                    { ensure(host in infrastructure) { InvalidReconfigurationHost(host) } },
+                    { ensure(componentType in deviceStructure.requiredCapabilities.keys) { UnknownComponent(componentType) } },
+                    {
+                        val componentCapabilities =
+                            deviceStructure.requiredCapabilities[componentType]
+                                ?: raise(nonEmptyListOf(UnknownComponent(componentType)))
+                        val hostCapability = host.capabilities
+                        val isCompatible = componentCapabilities.intersect(hostCapability).isNotEmpty()
+                        ensure(isCompatible) { InvalidReconfiguration(componentType, host) }
+                    },
+                ) { _, _, _, _ -> DeviceReconfigurationRule(this@reconfigures, newConfiguration) }
+            }
         rules += result
     }
 
@@ -99,10 +95,11 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
      */
     infix fun ComponentRef.movesTo(host: Host): NewConfiguration = NewConfiguration(this, host)
 
-    internal fun generate(): Either<Nel<DeploymentConfigurationError>, OnDeviceRules> = rules.mapOrAccumulate {
-        when (it) {
-            is Either.Right -> it.bind()
-            is Either.Left -> raise(it.value)
-        }
-    }.mapLeft { it.flatten() }.map { it.toSet() }
+    internal fun generate(): Either<Nel<DeploymentConfigurationError>, OnDeviceRules> =
+        rules.mapOrAccumulate {
+            when (it) {
+                is Either.Right -> it.bind()
+                is Either.Left -> raise(it.value)
+            }
+        }.mapLeft { it.flatten() }.map { it.toSet() }
 }

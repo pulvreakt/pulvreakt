@@ -11,23 +11,27 @@ import it.unibo.pulvreakt.dsl.model.ReconfigurationRules
 /**
  * Scope for the reconfiguration rules given the [infrastructure].
  */
-class ReconfigurationRulesScope(@Suppress("UNUSED_PARAMETER") private val infrastructure: NonEmptySet<Host>) {
-
+class ReconfigurationRulesScope<ID : Any>(
+    @Suppress("UNUSED_PARAMETER") private val infrastructure: NonEmptySet<Host>,
+) {
     // private var onDeviceRules: Either<Nel<DeploymentConfigurationError>, OnDeviceRules>? = null
 
     /**
      * Specifies the reconfiguration rules associated to the device.
      */
-    fun onDevice(@Suppress("UNUSED_PARAMETER") config: OnDeviceScope.() -> Unit) {
+    fun onDevice(
+        @Suppress("UNUSED_PARAMETER") config: OnDeviceScope<ID>.() -> Unit,
+    ) {
         TODO("The reconfiguration needs to be rethought")
-//        val scope = OnDeviceScope(deviceStructure, infrastructure).apply(config)
-//        onDeviceRules = scope.generate()
+        //        val scope = OnDeviceScope(deviceStructure, infrastructure).apply(config)
+        //        onDeviceRules = scope.generate()
     }
 
-    internal fun generate(): Either<Nel<DeploymentConfigurationError>, ReconfigurationRules> = either {
-        TODO("The reconfiguration needs to be rethought")
-//        ensureNotNull(onDeviceRules) { nonEmptyListOf(EmptyOnDeviceReconfiguration) }
-//        val deviceRules = onDeviceRules!!.bind()
-//        ReconfigurationRules(deviceRules)
-    }
+    internal fun generate(): Either<Nel<DeploymentConfigurationError>, ReconfigurationRules> =
+        either {
+            TODO("The reconfiguration needs to be rethought")
+            //        ensureNotNull(onDeviceRules) { nonEmptyListOf(EmptyOnDeviceReconfiguration) }
+            //        val deviceRules = onDeviceRules!!.bind()
+            //        ReconfigurationRules(deviceRules)
+        }
 }

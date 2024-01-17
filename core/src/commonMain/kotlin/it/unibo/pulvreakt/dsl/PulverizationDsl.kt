@@ -25,5 +25,5 @@ import it.unibo.pulvreakt.dsl.model.PulvreaktConfiguration
  * }
  * ```
  */
-fun pulverization(config: PulverizationScope.() -> Unit): Either<NonEmptyList<ConfigurationError>, PulvreaktConfiguration> =
-    PulverizationScope().apply(config).generate()
+fun <ID : Any> pulverization(config: PulverizationScope<ID>.() -> Unit): Either<NonEmptyList<ConfigurationError>, PulvreaktConfiguration<ID>> =
+    PulverizationScope<ID>().apply(config).generate()

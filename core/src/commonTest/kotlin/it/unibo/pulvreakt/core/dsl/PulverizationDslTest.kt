@@ -35,11 +35,11 @@ import it.unibo.pulvreakt.dsl.pulverization
 class PulverizationDslTest : StringSpec(
     {
         "The DSL should prevent with an error the creation of an empty system".config(enabled = false) {
-            val config = pulverization {}
+            val config = pulverization<Int> {}
             config shouldBe Either.Left(nonEmptyListOf(EmptyDeploymentConfiguration, EmptySystemConfiguration))
         }
         "The DSL should raise an error if no capability is specified for a component" {
-            val config = pulverization {
+            val config = pulverization<Int> {
                 val myDevice by extendedLogicDevice {
                     withComponent<TestComponent1>()
                 }
@@ -52,7 +52,7 @@ class PulverizationDslTest : StringSpec(
             config shouldBe Either.Left(nonEmptyListOf(UnspecifiedCapabilities(ComponentRef.create<TestComponent1>())))
         }
         "The DSL should raise an error if the deployment do not match the system configuration for the same device" {
-            val config = pulverization {
+            val config = pulverization<Int> {
                 val myDevice by extendedLogicDevice {
                     val component1 = withComponent<TestComponent1>()
                     val component2 = withComponent<TestComponent2>()
@@ -72,10 +72,8 @@ class PulverizationDslTest : StringSpec(
                 ),
             )
         }
-        "The DSL should raise an error if a reconfiguration rule move a component into an invalid host".config(
-            enabled = false,
-        ) {
-            val config = pulverization {
+        "The DSL should raise an error if a reconfiguration rule move a component into an invalid host".config(enabled = false) {
+            val config = pulverization<Int> {
                 val myDevice by extendedLogicDevice {
                     val component1 = withComponent<TestComponent1>()
                     val component2 = withComponent<TestComponent2>()
@@ -106,7 +104,7 @@ class PulverizationDslTest : StringSpec(
             )
         }
         "The DSL should produce an error if an unknown component is registered in the deployment" {
-            val config = pulverization {
+            val config = pulverization<Int> {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviorTest>()
                     component1 requires embeddedDeviceCapability
@@ -127,7 +125,7 @@ class PulverizationDslTest : StringSpec(
         "The DSL should raise an error is an unknown component is moved in a reconfiguration rule".config(
             enabled = false,
         ) {
-            val config = pulverization {
+            val config = pulverization<Int> {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviorTest>()
                     component1 requires embeddedDeviceCapability
@@ -151,7 +149,7 @@ class PulverizationDslTest : StringSpec(
             )
         }
         "The DSL should produce the configuration when properly used".config(enabled = false) {
-            val configResult = pulverization {
+            val configResult = pulverization<Int> {
                 val myDevice by extendedLogicDevice {
                     val component1 = withComponent<TestComponent1>()
                     val component2 = withComponent<TestComponent2>()
@@ -197,7 +195,7 @@ class PulverizationDslTest : StringSpec(
             } ?: error("The configuration should be present")
         }
         "The DSL should configure a device with the classical model".config(enabled = false) {
-            val configResult = pulverization {
+            val configResult = pulverization<Int> {
                 val myDevice by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviorTest>()
                     val component2 = withCommunication<CommTest>()
@@ -229,19 +227,14 @@ class PulverizationDslTest : StringSpec(
                         ),
                     )
                     deviceSpec.requiredCapabilities shouldBe mapOf(
-                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior) to nonEmptySetOf(
-                            embeddedDeviceCapability,
-                            serverCapability,
-                        ),
-                        ComponentRef.create<CommTest>(ComponentKind.Communication) to nonEmptySetOf(
-                            embeddedDeviceCapability,
-                        ),
+                        ComponentRef.create<BehaviorTest>(ComponentKind.Behavior) to nonEmptySetOf(embeddedDeviceCapability, serverCapability),
+                        ComponentRef.create<CommTest>(ComponentKind.Communication) to nonEmptySetOf(embeddedDeviceCapability),
                     )
                 }
             }
         }
         "The DSL should admit a mixed configuration with simple device and extended one" {
-            val configResult = pulverization {
+            val configResult = pulverization<Int> {
                 val device1 by logicDevice<Int, Unit, Unit, Unit> {
                     val component1 = withBehaviour<BehaviorTest>()
                     val component2 = withCommunication<CommTest>()
@@ -274,7 +267,7 @@ class PulverizationDslTest : StringSpec(
             }
         }
         "Regression test: Behaviour, Sensors and Actuators" {
-            val configResult = pulverization {
+            val configResult = pulverization<Int> {
                 val device by logicDevice<Int, Unit, Unit, Unit> {
                     withBehaviour<BehaviorTest>() requires serverCapability
                     withSensors<SensorsTest>() requires embeddedDeviceCapability

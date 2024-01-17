@@ -28,7 +28,7 @@ import it.unibo.pulvreakt.api.component.ComponentKind.State as StateKind
 /**
  * Scope for the system configuration using a canonical pulverization specification.
  */
-class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private val deviceName: String) {
+class CanonicalDeviceScope<ID : Any, St : Any, Co : Any, Sens : Any, Act : Any>(private val deviceName: String) {
     private var behaviourCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var stateCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var commCapability: Pair<ComponentRef, Set<Capability>>? = null
@@ -38,14 +38,15 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
     /**
      * Register a [State] component in the device.
      */
-    inline fun <reified S : State<St>> withState(): ComponentRef = ComponentRef.create<S>(StateKind).also {
-        addComponent("state", it)
-    }
+    inline fun <reified S : State<ID, St>> withState(): ComponentRef =
+        ComponentRef.create<S>(StateKind).also {
+            addComponent("state", it)
+        }
 
     /**
      * Register a [Behavior] component in the device.
      */
-    inline fun <reified B : Behavior<St, Co, Sens, Act>> withBehaviour(): ComponentRef =
+    inline fun <reified B : Behavior<ID, St, Co, Sens, Act>> withBehaviour(): ComponentRef =
         ComponentRef.create<B>(BehaviourKind).also {
             addComponent("behaviour", it)
         }
@@ -53,29 +54,35 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
     /**
      * Register a [Sensors] component in the device.
      */
-    inline fun <reified SS : Sensors<Sens>> withSensors(): ComponentRef = ComponentRef.create<SS>(SensorsKind).also {
-        addComponent("sensors", it)
-    }
+    inline fun <reified SS : Sensors<ID, Sens>> withSensors(): ComponentRef =
+        ComponentRef.create<SS>(SensorsKind).also {
+            addComponent("sensors", it)
+        }
 
     /**
      * Register a [Actuators] component in the device.
      */
-    inline fun <reified AS : Actuators<Act>> withActuators(): ComponentRef = ComponentRef.create<AS>(ActuatorsKind).also {
-        addComponent("actuators", it)
-    }
+    inline fun <reified AS : Actuators<ID, Act>> withActuators(): ComponentRef =
+        ComponentRef.create<AS>(ActuatorsKind).also {
+            addComponent("actuators", it)
+        }
 
     /**
      * Register a [Comm] component in the device.
      */
-    inline fun <reified Comm : Communication<Co>> withCommunication(): ComponentRef = ComponentRef.create<Comm>(
-        CommunicationKind,
-    ).also { addComponent("comm", it) }
+    inline fun <reified Comm : Communication<ID, Co>> withCommunication(): ComponentRef =
+        ComponentRef.create<Comm>(
+            CommunicationKind,
+        ).also { addComponent("comm", it) }
 
     /**
      * Register a new [component] with the given [tag].
      * This method, even if it is public, should not be used directly.
      */
-    fun addComponent(tag: String, component: ComponentRef) {
+    fun addComponent(
+        tag: String,
+        component: ComponentRef,
+    ) {
         when (tag) {
             "behaviour" -> behaviourCapability = component to emptySet()
             "state" -> stateCapability = component to emptySet()
@@ -115,36 +122,44 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
         ) { _, _, _, _, _ -> }
     }
 
-    internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> = either {
-        ensureNonEmptyCapability()
-        val behaviourWiring = behaviourCapability?.let {
-            it.first to setOf(
-                stateCapability?.first,
-                commCapability?.first,
-                sensorsCapability?.first,
-                actuatorsCapability?.first,
-            ).filterNotNull().toSet()
+    internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> =
+        either {
+            ensureNonEmptyCapability()
+            val behaviourWiring =
+                behaviourCapability?.let {
+                    it.first to
+                        setOf(
+                            stateCapability?.first,
+                            commCapability?.first,
+                            sensorsCapability?.first,
+                            actuatorsCapability?.first,
+                        ).filterNotNull().toSet()
+                }
+            val stateWiring =
+                stateCapability?.let {
+                    it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
+                }
+            val commWiring =
+                commCapability?.let {
+                    it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
+                }
+            val sensorsWiring =
+                sensorsCapability?.let {
+                    it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
+                }
+            val actuatorsWiring =
+                actuatorsCapability?.let {
+                    it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
+                }
+            val graph = listOfNotNull(behaviourWiring, stateWiring, commWiring, sensorsWiring, actuatorsWiring).toMap()
+            val requiredCapabilities =
+                setOfNotNull(
+                    behaviourCapability,
+                    stateCapability,
+                    commCapability,
+                    sensorsCapability,
+                    actuatorsCapability,
+                ).associate { it.first to it.second.toNonEmptySetOrNull()!! }
+            DeviceStructure(deviceName, graph, requiredCapabilities)
         }
-        val stateWiring = stateCapability?.let {
-            it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
-        }
-        val commWiring = commCapability?.let {
-            it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
-        }
-        val sensorsWiring = sensorsCapability?.let {
-            it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
-        }
-        val actuatorsWiring = actuatorsCapability?.let {
-            it.first to setOf(behaviourCapability?.first).filterNotNull().toSet()
-        }
-        val graph = listOfNotNull(behaviourWiring, stateWiring, commWiring, sensorsWiring, actuatorsWiring).toMap()
-        val requiredCapabilities = setOfNotNull(
-            behaviourCapability,
-            stateCapability,
-            commCapability,
-            sensorsCapability,
-            actuatorsCapability,
-        ).associate { it.first to it.second.toNonEmptySetOrNull()!! }
-        DeviceStructure(deviceName, graph, requiredCapabilities)
-    }
 }

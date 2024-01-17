@@ -19,14 +19,13 @@ import kotlinx.serialization.serializer
  * The behavior can manage the [State] of the component, the [Communication] with the other devices, the [Sensors] and the [Actuators].
  * The behavior is executed according to the [ExecutionScheduler].
  */
-abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
+abstract class Behavior<ID : Any, State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
     private val executionScheduler: ExecutionScheduler,
     private val stateSerializer: KSerializer<StateOps<State>> = serializer(),
-    private val commSerializer: KSerializer<CommunicationPayload<Comm>> = serializer(),
+    private val commSerializer: KSerializer<CommunicationPayload<ID, Comm>> = serializer(),
     private val sensorsSerializer: KSerializer<Sensors>,
     private val actuatorsSerializer: KSerializer<Actuators>,
-) : AbstractPulverizedComponent() {
-
+) : AbstractPulverizedComponent<ID>() {
     private val deviceId by lazy { context.deviceId }
     private val myRef by lazy { ComponentRef.create(this, ComponentKind.Behavior) }
 
@@ -34,77 +33,94 @@ abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators
      * This method implements the logic of the device taking the [state], [comm] and [sensors].
      * Returns a [BehaviourOutput] containing the new [State], the [Communication] to be sent and the [Actuators] to be performed.
      */
-    abstract operator fun invoke(state: State?, comm: List<Comm>, sensors: Sensors?): BehaviourOutput<State, Comm, Actuators>
+    abstract operator fun invoke(
+        state: State?,
+        comm: List<Comm>,
+        sensors: Sensors?,
+    ): BehaviourOutput<State, Comm, Actuators>
 
     final override fun getRef(): ComponentRef = myRef
 
-    override suspend fun execute(): Either<ComponentError, Unit> = coroutineScope {
-        either {
-            val stateRef = getComponentByTypeOrNull(ComponentKind.State)
-            val commRef = getComponentByTypeOrNull(ComponentKind.Communication)
-            val sensorsRef = getComponentByTypeOrNull(ComponentKind.Sensor)
-            val actuatorsRef = getComponentByTypeOrNull(ComponentKind.Actuator)
+    override suspend fun execute(): Either<ComponentError, Unit> =
+        coroutineScope {
+            either {
+                val stateRef = getComponentByTypeOrNull(ComponentKind.State)
+                val commRef = getComponentByTypeOrNull(ComponentKind.Communication)
+                val sensorsRef = getComponentByTypeOrNull(ComponentKind.Sensor)
+                val actuatorsRef = getComponentByTypeOrNull(ComponentKind.Actuator)
 
-            var receivedNeighboursMessages = listOf<CommunicationPayload<Comm>>()
-            var lastSensorsRead: Sensors? = null
+                var receivedNeighboursMessages = listOf<CommunicationPayload<ID, Comm>>()
+                var lastSensorsRead: Sensors? = null
 
-            val commJob = executeIfNotNull(commRef) { ref ->
-                launch {
-                    val communicationFlow = receive(ref, commSerializer).bind()
-                    communicationFlow.collect {
-                        receivedNeighboursMessages = receivedNeighboursMessages.filter { message -> message.deviceId != message.deviceId } + it
+                val commJob =
+                    executeIfNotNull(commRef) { ref ->
+                        launch {
+                            val communicationFlow = receive(ref, commSerializer).bind()
+                            communicationFlow.collect {
+                                receivedNeighboursMessages = receivedNeighboursMessages.filter { message ->
+                                    message.deviceId != message.deviceId
+                                } + it
+                            }
+                        }
                     }
-                }
-            }
 
-            val sensorsJob = executeIfNotNull(sensorsRef) { ref ->
-                launch { receive(ref, sensorsSerializer).bind().collect { lastSensorsRead = it } }
-            }
-
-            executionScheduler.timesSequence().forEach { time ->
-                val stateContent = executeIfNotNull(stateRef) { ref ->
-                    send(ref, GetState, stateSerializer).bind()
-                    when (val state = receive(ref, stateSerializer).bind().first()) {
-                        is SetState -> state.content
-                        is GetState -> null
+                val sensorsJob =
+                    executeIfNotNull(sensorsRef) { ref ->
+                        launch { receive(ref, sensorsSerializer).bind().collect { lastSensorsRead = it } }
                     }
-                }
 
-                val (newState, newComm, newActuators) = invoke(
-                    stateContent,
-                    receivedNeighboursMessages.map { it.payload },
-                    lastSensorsRead,
-                )
+                executionScheduler.timesSequence().forEach { time ->
+                    val stateContent =
+                        executeIfNotNull(stateRef) { ref ->
+                            send(ref, GetState, stateSerializer).bind()
+                            when (val state = receive(ref, stateSerializer).bind().first()) {
+                                is SetState -> state.content
+                                is GetState -> null
+                            }
+                        }
 
-                executeIfNotNull(newState, stateRef) { state, ref ->
-                    send(ref, SetState(state), stateSerializer).bind()
-                }
-                executeIfNotNull(newComm, commRef) { comm, ref ->
-                    send(ref, CommunicationPayload(deviceId, comm), commSerializer).bind()
-                }
-                executeIfNotNull(newActuators, actuatorsRef) { actuators, ref ->
-                    send(ref, actuators, actuatorsSerializer).bind()
-                }
+                    val (newState, newComm, newActuators) =
+                        invoke(
+                            stateContent,
+                            receivedNeighboursMessages.map { it.payload },
+                            lastSensorsRead,
+                        )
 
-                delay(time)
+                    executeIfNotNull(newState, stateRef) { state, ref ->
+                        send(ref, SetState(state), stateSerializer).bind()
+                    }
+                    executeIfNotNull(newComm, commRef) { comm, ref ->
+                        send(ref, CommunicationPayload(deviceId, comm), commSerializer).bind()
+                    }
+                    executeIfNotNull(newActuators, actuatorsRef) { actuators, ref ->
+                        send(ref, actuators, actuatorsSerializer).bind()
+                    }
+
+                    delay(time)
+                }
+                commJob?.cancelAndJoin()
+                sensorsJob?.cancelAndJoin()
             }
-            commJob?.cancelAndJoin()
-            sensorsJob?.cancelAndJoin()
         }
-    }
 
     /**
      * Executes the given [block] if the given [value] is not null.
      * Returns the result of the block execution or null if the value is null.
      */
-    private suspend fun <T, P> executeIfNotNull(value: T?, block: suspend (T) -> P): P? = value?.let { block(it) }
+    private suspend fun <T, P> executeIfNotNull(
+        value: T?,
+        block: suspend (T) -> P,
+    ): P? = value?.let { block(it) }
 
     /**
      * Executes the given [block] if the given [value1] and [value2] are not null.
      * Returns the result of the block execution or null if one of the values is null.
      */
-    private suspend fun <T, R, P> executeIfNotNull(value1: T?, value2: R?, block: suspend (T, R) -> P): P? =
-        value1?.let { v1 -> value2?.let { v2 -> block(v1, v2) } }
+    private suspend fun <T, R, P> executeIfNotNull(
+        value1: T?,
+        value2: R?,
+        block: suspend (T, R) -> P,
+    ): P? = value1?.let { v1 -> value2?.let { v2 -> block(v1, v2) } }
 }
 
 /**

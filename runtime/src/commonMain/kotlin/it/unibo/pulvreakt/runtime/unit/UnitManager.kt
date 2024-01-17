@@ -24,7 +24,6 @@ interface UnitManager : ManagedResource<UnitManagerError>, InjectAwareResource {
         /**
          * Smart constructor for [UnitManager].
          */
-        operator fun invoke(deviceSpecification: DeviceSpecification): UnitManager =
-            UnitManagerImpl(deviceSpecification)
+        operator fun invoke(deviceSpecification: DeviceSpecification<*>): UnitManager = UnitManagerImpl(deviceSpecification)
     }
 }

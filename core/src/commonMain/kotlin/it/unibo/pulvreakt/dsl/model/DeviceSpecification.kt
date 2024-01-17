@@ -7,9 +7,9 @@ package it.unibo.pulvreakt.dsl.model
  * the [requiredCapabilities] of each component,
  * and the [runtimeConfiguration] of the device.
  */
-data class DeviceSpecification(
+data class DeviceSpecification<ID : Any>(
     val deviceName: String,
     val componentsConfiguration: ComponentsGraph,
     val requiredCapabilities: RequiredCapabilities,
-    val runtimeConfiguration: DeviceRuntimeConfiguration,
+    val runtimeConfiguration: DeviceRuntimeConfiguration<ID>,
 )

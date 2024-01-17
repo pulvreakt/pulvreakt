@@ -58,13 +58,15 @@ interface ComponentRef {
         /**
          * Creates a [ComponentRef] from a [component], with optionally the [type] of the component (by default set to [ComponentKind.Generic]).
          */
-        fun create(component: Component, type: ComponentKind = ComponentKind.Generic): ComponentRef =
-            ComponentRefImpl(component::class.simpleName!!, type)
+        fun create(
+            component: Component<*>,
+            type: ComponentKind = ComponentKind.Generic,
+        ): ComponentRef = ComponentRefImpl(component::class.simpleName!!, type)
 
         /**
          * Creates a [ComponentRef] from a [C] component, with optionally the [type] of the component (by default set to [ComponentKind.Generic]).
          */
-        inline fun <reified C : Component> create(type: ComponentKind = ComponentKind.Generic): ComponentRef =
+        inline fun <reified C : Component<*>> create(type: ComponentKind = ComponentKind.Generic): ComponentRef =
             ComponentRefImpl(C::class.simpleName!!, type)
     }
 }

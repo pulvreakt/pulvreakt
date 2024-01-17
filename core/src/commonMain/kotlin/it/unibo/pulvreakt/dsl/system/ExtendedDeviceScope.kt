@@ -23,15 +23,14 @@ import it.unibo.pulvreakt.dsl.model.RequiredCapabilities
 /**
  * Configure the definition of the logical device with a [deviceName].
  */
-class ExtendedDeviceScope(private val deviceName: String) {
+class ExtendedDeviceScope<ID : Any>(private val deviceName: String) {
     private val componentsGraph = mutableMapOf<ComponentRef, Set<ComponentRef>>()
     private val requiredCapabilities = mutableMapOf<ComponentRef, Set<Capability>>()
 
     /**
      * Register a [Component] in the device and return its [ComponentKind].
      */
-    inline fun <reified C : Component> withComponent(): ComponentRef =
-        ComponentRef.create<C>(ComponentKind.Generic).also { addComponent(it) }
+    inline fun <reified C : Component<ID>> withComponent(): ComponentRef = ComponentRef.create<C>(ComponentKind.Generic).also { addComponent(it) }
 
     /**
      * Links a component to other components.
@@ -76,9 +75,10 @@ class ExtendedDeviceScope(private val deviceName: String) {
         return requiredCapabilities.mapValues { (_, value) -> value.toNonEmptySetOrNull()!! }
     }
 
-    internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> = either {
-        ensure(componentsGraph.isNotEmpty()) { nonEmptyListOf(EmptyDeviceConfiguration) }
-        val capabilities = validateCapabilities()
-        DeviceStructure(deviceName, componentsGraph, capabilities)
-    }
+    internal fun generate(): Either<Nel<SystemConfigurationError>, DeviceStructure> =
+        either {
+            ensure(componentsGraph.isNotEmpty()) { nonEmptyListOf(EmptyDeviceConfiguration) }
+            val capabilities = validateCapabilities()
+            DeviceStructure(deviceName, componentsGraph, capabilities)
+        }
 }

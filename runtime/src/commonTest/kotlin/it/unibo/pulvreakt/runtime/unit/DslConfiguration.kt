@@ -9,7 +9,7 @@ val cap by Capability
 val host = Host("name", cap)
 val infrastructure = nonEmptySetOf(host)
 
-val configuration = pulverization {
+val configuration = pulverization<Int> {
     val dev by logicDevice<Int, Unit, Unit, Unit> {
         withBehaviour<FixtureBehavior>() requires cap
         withState<FixtureState>() requires cap

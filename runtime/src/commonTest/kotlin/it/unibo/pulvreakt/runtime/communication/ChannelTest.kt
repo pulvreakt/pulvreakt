@@ -11,7 +11,6 @@ import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.AbstractComponent
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.context.Context
-import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.Capability
@@ -35,27 +34,27 @@ class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
     override suspend fun setMode(component: ComponentRef, mode: Mode) = Unit
 }
 
-class C1 : AbstractComponent() {
+class C1 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C2 : AbstractComponent() {
+class C2 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C3 : AbstractComponent() {
+class C3 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C4 : AbstractComponent() {
+class C4 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C5 : AbstractComponent() {
+class C5 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class C6 : AbstractComponent() {
+class C6 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
@@ -63,13 +62,13 @@ class C6 : AbstractComponent() {
 class ChannelTest : StringSpec(
     {
         coroutineTestScope = true
-        val deviceId = 1.toId()
+        val deviceId = 1
         val cap by Capability
         val diModule = DI {
             bind { singleton { LocalChannelManager() } }
             bind<Channel> { provider { ChannelImpl() } }
             bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
-            bind<Context> { singleton { Context(deviceId, Host("foo", cap)) } }
+            bind<Context<Int>> { singleton { Context(deviceId, Host("foo", cap)) } }
             bind<Protocol> { singleton { TestProtocol() } }
         }
         "The Communicator should raise an error when the DI injector is not initialized" {

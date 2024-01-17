@@ -26,15 +26,16 @@ interface PulvreaktRuntime : ManagedResource<RuntimeError> {
          * Smart constructor for [PulvreaktRuntime].
          * @return an [Either] with [RuntimeError] on the left side and [PulvreaktRuntime] on the right side.
          */
-        suspend operator fun invoke(
-            config: PulvreaktConfiguration,
+        suspend operator fun <ID : Any> invoke(
+            config: PulvreaktConfiguration<ID>,
             device: String,
-            id: Int,
+            id: ID,
             host: Host,
-        ): Either<RuntimeError, PulvreaktRuntime> = either {
-            val runtime = PulvreaktRuntimeImpl(config, device, id, host)
-            runtime.initialize().bind()
-            runtime
-        }
+        ): Either<RuntimeError, PulvreaktRuntime> =
+            either {
+                val runtime = PulvreaktRuntimeImpl(config, device, id, host)
+                runtime.initialize().bind()
+                runtime
+            }
     }
 }

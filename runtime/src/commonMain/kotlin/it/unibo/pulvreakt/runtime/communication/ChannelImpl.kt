@@ -30,11 +30,14 @@ class ChannelImpl : Channel {
     private val logger = KotlinLogging.logger("AbstractCommunicator")
     private lateinit var localCommunicator: Channel
     private val remoteProtocol by instance<Protocol>()
-    private val context by instance<Context>()
+    private val context by instance<Context<*>>()
     private lateinit var sourceComponent: ComponentRef
     private lateinit var destinationComponent: ComponentRef
 
-    override suspend fun channelSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit> =
+    override suspend fun channelSetup(
+        source: ComponentRef,
+        destination: ComponentRef,
+    ): Either<CommunicatorError, Unit> =
         either {
             isDependencyInjectionInitialized().bind()
             localCommunicator = localCommManager.getLocalCommunicator(source, destination)
@@ -51,30 +54,32 @@ class ChannelImpl : Channel {
         currentMode = mode
     }
 
-    override suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit> = either {
-        isDependencyInjectionInitialized().bind()
-        isLocalCommunicatorInitialized().bind()
-        logger.debug { "Send ${message.decodeToString()} [Mode: $currentMode]" }
-        when (currentMode) {
-            is Mode.Local -> localCommunicator.sendToComponent(message).bind()
-            is Mode.Remote -> sendRemoteToComponent(message).bind()
-        }
-    }
-
-    override suspend fun receiveFromComponent(): Either<CommunicatorError, Flow<ByteArray>> = either {
-        isDependencyInjectionInitialized().bind()
-        isLocalCommunicatorInitialized().bind()
-        val remoteCommunicator = receiveRemoteFromComponent().bind()
-        val localCommunicator = localCommunicator.receiveFromComponent().bind()
-        merge(remoteCommunicator.map { Mode.Remote to it }, localCommunicator.map { Mode.Local to it })
-            .filter { (mode, _) -> mode == currentMode }
-            .map { (_, value) -> value }
-            .onEach {
-                logger.debug {
-                    "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'"
-                }
+    override suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit> =
+        either {
+            isDependencyInjectionInitialized().bind()
+            isLocalCommunicatorInitialized().bind()
+            logger.debug { "Send ${message.decodeToString()} [Mode: $currentMode]" }
+            when (currentMode) {
+                is Mode.Local -> localCommunicator.sendToComponent(message).bind()
+                is Mode.Remote -> sendRemoteToComponent(message).bind()
             }
-    }
+        }
+
+    override suspend fun receiveFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
+        either {
+            isDependencyInjectionInitialized().bind()
+            isLocalCommunicatorInitialized().bind()
+            val remoteCommunicator = receiveRemoteFromComponent().bind()
+            val localCommunicator = localCommunicator.receiveFromComponent().bind()
+            merge(remoteCommunicator.map { Mode.Remote to it }, localCommunicator.map { Mode.Local to it })
+                .filter { (mode, _) -> mode == currentMode }
+                .map { (_, value) -> value }
+                .onEach {
+                    logger.debug {
+                        "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'"
+                    }
+                }
+        }
 
     override suspend fun initialize(): Either<Nothing, Unit> = Unit.right()
 
@@ -88,13 +93,15 @@ class ChannelImpl : Channel {
         remoteProtocol.readFromChannel(destinationComponent.toEntity(), sourceComponent.toEntity())
             .mapLeft { CommunicatorError.WrapProtocolError(it) }
 
-    private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> = either {
-        ensure(::di.isInitialized) { CommunicatorError.InjectorNotInitialized }
-    }
+    private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> =
+        either {
+            ensure(::di.isInitialized) { CommunicatorError.InjectorNotInitialized }
+        }
 
-    private fun isLocalCommunicatorInitialized(): Either<CommunicatorError, Unit> = either {
-        ensure(::localCommunicator.isInitialized) { CommunicatorError.CommunicatorNotInitialized }
-    }
+    private fun isLocalCommunicatorInitialized(): Either<CommunicatorError, Unit> =
+        either {
+            ensure(::localCommunicator.isInitialized) { CommunicatorError.CommunicatorNotInitialized }
+        }
 
     private fun ComponentRef.toEntity(): Entity = Entity(this.name, context.deviceId.toString())
 }

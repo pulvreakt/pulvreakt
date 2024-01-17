@@ -33,9 +33,9 @@ data class SetState<StateRepr : Any>(val content: StateRepr) : StateOps<StateRep
 /**
  * Represents the State component in the pulverization model.
  */
-abstract class State<StateRepr : Any>(
+abstract class State<ID : Any, StateRepr : Any>(
     private val serializer: KSerializer<StateOps<StateRepr>>,
-) : AbstractPulverizedComponent() {
+) : AbstractPulverizedComponent<ID>() {
     /**
      * Queries the state of the component.
      */
@@ -43,22 +43,22 @@ abstract class State<StateRepr : Any>(
 
     final override fun getRef(): ComponentRef = ComponentRef.create(this, ComponentKind.State)
 
-    override suspend fun execute(): Either<ComponentError, Unit> = coroutineScope {
-        either {
-            val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
-            val receivingFlow = receive(behaviourRef, serializer).bind()
-            receivingFlow.collect { ops ->
-                val queryResult = queryState(ops)
-                send(behaviourRef, SetState(queryResult), serializer).bind()
+    override suspend fun execute(): Either<ComponentError, Unit> =
+        coroutineScope {
+            either {
+                val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
+                val receivingFlow = receive(behaviourRef, serializer).bind()
+                receivingFlow.collect { ops ->
+                    val queryResult = queryState(ops)
+                    send(behaviourRef, SetState(queryResult), serializer).bind()
+                }
             }
         }
-    }
 }
 
 internal class StateOpsSerializer<StateRepr : Any>(
     stateSerializer: KSerializer<StateRepr>,
 ) : KSerializer<StateOps<StateRepr>> {
-
     @Serializable
     data class StateOpsRepr<StateRepr : Any>(
         val type: Type,
@@ -85,11 +85,15 @@ internal class StateOpsSerializer<StateRepr : Any>(
 
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    override fun serialize(encoder: Encoder, value: StateOps<StateRepr>) {
-        val surrogate: StateOpsRepr<StateRepr> = when (value) {
-            is GetState -> StateOpsRepr(StateOpsRepr.Type.GetState, null)
-            is SetState -> StateOpsRepr(StateOpsRepr.Type.SetState, value.content)
-        }
+    override fun serialize(
+        encoder: Encoder,
+        value: StateOps<StateRepr>,
+    ) {
+        val surrogate: StateOpsRepr<StateRepr> =
+            when (value) {
+                is GetState -> StateOpsRepr(StateOpsRepr.Type.GetState, null)
+                is SetState -> StateOpsRepr(StateOpsRepr.Type.SetState, value.content)
+            }
         surrogateSerializer.serialize(encoder, surrogate)
     }
 }
