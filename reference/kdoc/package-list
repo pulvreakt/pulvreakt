@@ -3,43 +3,44 @@ $dokka.linkExtension:html
 $dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/di/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]di.html
 $dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/finalize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]finalize.html
 $dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/initialize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]initialize.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/readFromChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]read-from-channel.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/readFromChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]read-from-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-channel.html
 $dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-injector.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/writeToChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]write-to-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/writeToChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]write-to-channel.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/di/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]di.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/finalize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]finalize.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/initialize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]initialize.html
-$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/readFromChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]read-from-channel.html
-$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/setupChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]setup-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/readFromChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]read-from-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/setupChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]setup-channel.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]setup-injector.html
-$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/writeToChannel/#it.unibo.pulvreakt.core.protocol.Entity#it.unibo.pulvreakt.core.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]write-to-channel.html
+$dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/writeToChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]write-to-channel.html
 module:core
-it.unibo.pulvreakt.core.communicator
-it.unibo.pulvreakt.core.communicator.errors
-it.unibo.pulvreakt.core.component
-it.unibo.pulvreakt.core.component.errors
-it.unibo.pulvreakt.core.component.pulverisation
-it.unibo.pulvreakt.core.component.time
-it.unibo.pulvreakt.core.context
-it.unibo.pulvreakt.core.infrastructure
-it.unibo.pulvreakt.core.protocol
-it.unibo.pulvreakt.core.protocol.errors
-it.unibo.pulvreakt.core.reconfiguration
-it.unibo.pulvreakt.core.reconfiguration.component
-it.unibo.pulvreakt.core.reconfiguration.event
-it.unibo.pulvreakt.core.utils
+it.unibo.pulvreakt.api.communication
+it.unibo.pulvreakt.api.communication.protocol
+it.unibo.pulvreakt.api.component
+it.unibo.pulvreakt.api.component.pulverization
+it.unibo.pulvreakt.api.context
+it.unibo.pulvreakt.api.infrastructure
+it.unibo.pulvreakt.api.initializable
+it.unibo.pulvreakt.api.reconfiguration
+it.unibo.pulvreakt.api.reconfiguration.component
+it.unibo.pulvreakt.api.reconfiguration.event
+it.unibo.pulvreakt.api.scheduler
 it.unibo.pulvreakt.dsl
 it.unibo.pulvreakt.dsl.deployment
 it.unibo.pulvreakt.dsl.errors
 it.unibo.pulvreakt.dsl.model
 it.unibo.pulvreakt.dsl.system
+it.unibo.pulvreakt.errors.communication
+it.unibo.pulvreakt.errors.component
+it.unibo.pulvreakt.errors.protocol
 module:mqtt-protocol
 it.unibo.pulvreakt.mqtt
 module:rabbitmq-protocol
 it.unibo.pulvreakt.platforms.rabbitmq
 module:runtime
 it.unibo.pulvreakt.runtime
+it.unibo.pulvreakt.runtime.communication
 it.unibo.pulvreakt.runtime.component.errors
 it.unibo.pulvreakt.runtime.errors
 it.unibo.pulvreakt.runtime.reconfigurator

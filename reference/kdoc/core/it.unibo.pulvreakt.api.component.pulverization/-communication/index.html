@@ -1,0 +1,303 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Communication</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            pulvreakt
+                    </a>            </div>
+            <div class="library-version">0.8.5-dev3x+9013a835e
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="core::it.unibo.pulvreakt.api.component.pulverization/Communication///PointingToDeclaration//-2011752812">
+  <div class="breadcrumbs"><a href="../../index.html">core</a><span class="delimiter">/</span><a href="../index.html">it.unibo.pulvreakt.api.component.pulverization</a><span class="delimiter">/</span><span class="current">Communication</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Communication</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">Communication</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Comm</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-communication-payload/index.html">CommunicationPayload</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Comm</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../-abstract-pulverized-component/index.html">AbstractPulverizedComponent</a></div><p class="paragraph">Represents the Communication component in the pulverization model.</p><p class="paragraph">The communication component is used to <a href="send.html">send</a> and <a href="receive.html">receive</a> messages from the other devices.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1295523966%2FConstructors%2F-2011752812" anchor-label="Communication" id="-1295523966%2FConstructors%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-communication.html"><span><span>Communication</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1295523966%2FConstructors%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-communication-payload/index.html">CommunicationPayload</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Comm</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1057058652%2FProperties%2F-2011752812" anchor-label="di" id="-1057058652%2FProperties%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/di.html"><span><span>di</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1057058652%2FProperties%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit override </span><span class="token keyword">var </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/di.html">di</a><span class="token operator">: </span><span data-unresolved-link="org.kodein.di/DI///PointingToDeclaration/">DI</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1174426375%2FProperties%2F-2011752812" anchor-label="diContext" id="-1174426375%2FProperties%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.reconfiguration/-reconfigurator/index.html#-1174426375%2FProperties%2F-2011752812"><span>di</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1174426375%2FProperties%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../it.unibo.pulvreakt.api.reconfiguration/-reconfigurator/index.html#-1174426375%2FProperties%2F-2011752812">diContext</a><span class="token operator">: </span><span data-unresolved-link="org.kodein.di/DIContext///PointingToDeclaration/">DIContext</span><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2073331440%2FProperties%2F-2011752812" anchor-label="diTrigger" id="-2073331440%2FProperties%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.reconfiguration/-reconfigurator/index.html#-2073331440%2FProperties%2F-2011752812"><span>di</span><wbr><span><span>Trigger</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2073331440%2FProperties%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../it.unibo.pulvreakt.api.reconfiguration/-reconfigurator/index.html#-2073331440%2FProperties%2F-2011752812">diTrigger</a><span class="token operator">: </span><span data-unresolved-link="org.kodein.di/DITrigger///PointingToDeclaration/">DITrigger</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1505924327%2FFunctions%2F-2011752812" anchor-label="execute" id="1505924327%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="execute.html"><span><span>execute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1505924327%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Starts the execution of the component logic. The execution may fail with a <a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a>. Before calling this method the <a href="../../../core/it.unibo.pulvreakt.api.component.pulverization/-communication/setup-wiring.html">setupWiring</a> method MUST be called.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1093679573%2FFunctions%2F-2011752812" anchor-label="finalize" id="-1093679573%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/finalize.html"><span><span>finalize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1093679573%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/finalize.html"><span class="token function">finalize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Asynchronously finalizes the entity. Can <span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span> succeed or fail with an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-error/index.html">Error</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="375432737%2FFunctions%2F-2011752812" anchor-label="getRef" id="375432737%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-ref.html"><span>get</span><wbr><span><span>Ref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="375432737%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-ref.html"><span class="token function">getRef</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a></div><div class="brief "><p class="paragraph">Returns a symbolic reference to this component. This method is used internally by the runtime and should not be called by the user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1241663495%2FFunctions%2F-2011752812" anchor-label="initialize" id="-1241663495%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/initialize.html"><span><span>initialize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1241663495%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/initialize.html"><span class="token function">initialize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Asynchronously initializes the entity. Can <span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span> succeed or fail with an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-error/index.html">Error</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="812782456%2FFunctions%2F-2011752812" anchor-label="receive" id="812782456%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html"><span><span>receive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="812782456%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">suspend override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">P</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html"><span class="token function">receive</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fromComponent<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span></span><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">P</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">P</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Receives a message of type <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">P</a> by deserializing it with the given <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">serializer</a>. If the message pushed in the flow cannot be serialized with the given <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">serializer</a> the flow will fail with an exception. This method can fail with a ComponentNotRegistered if the <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/receive.html">fromComponent</a> is not registered as link of this component.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="receive.html"><span class="token function">receive</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-communication-payload/index.html">CommunicationPayload</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Comm</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Receives the communication from the other linked devices.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1688714881%2FFunctions%2F-2011752812" anchor-label="receive" id="-1688714881%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/receive.html"><span><span>receive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1688714881%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inline suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/receive.html">P</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="../../it.unibo.pulvreakt.api.component/-component/index.html">Component</a><span class="token punctuation">.</span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/receive.html"><span class="token function">receive</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fromComponent<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/receive.html">P</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Helper method to receive messages <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/receive.html">fromComponent</a> without specifying the serialization.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-969355392%2FFunctions%2F-2011752812" anchor-label="send" id="-969355392%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html"><span><span>send</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-969355392%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">suspend override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">P</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html"><span class="token function">send</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">toComponent<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">P</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Sends a <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">message</a> of type <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">P</a> by serializing it with the given <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">serializer</a>. This method can fail with a ComponentNotRegistered if the <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/send.html">toComponent</a> is not registered as link of this component.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="send.html"><span class="token function">send</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="../-communication-payload/index.html">CommunicationPayload</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Comm</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sends to the other linked devices the given <a href="send.html">message</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="896426716%2FFunctions%2F-2011752812" anchor-label="send" id="896426716%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/send.html"><span><span>send</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="896426716%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inline suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/send.html">P</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="../../it.unibo.pulvreakt.api.component/-component/index.html">Component</a><span class="token punctuation">.</span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/send.html"><span class="token function">send</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">toComponent<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/send.html">P</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="arrow.core/Either///PointingToDeclaration/">Either</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../it.unibo.pulvreakt.errors.component/-component-error/index.html">ComponentError</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Helper method to send a <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/-companion/send.html">message</a> without specifying the serialization.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1707570420%2FFunctions%2F-2011752812" anchor-label="setupInjector" id="-1707570420%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-injector.html"><span>setup</span><wbr><span><span>Injector</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1707570420%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-injector.html"><span class="token function">setupInjector</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">kodein<span class="token operator">: </span><span data-unresolved-link="org.kodein.di/DI///PointingToDeclaration/">DI</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures the module of the dependency injection module that the resource will use.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="507099033%2FFunctions%2F-2011752812" anchor-label="setupWiring" id="507099033%2FFunctions%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-wiring.html"><span>setup</span><wbr><span><span>Wiring</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="507099033%2FFunctions%2F-2011752812"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-wiring.html"><span class="token function">setupWiring</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>components<span class="token operator">: </span><a href="../../it.unibo.pulvreakt.api.component/-component-ref/index.html">ComponentRef</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Setup all the other <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-wiring.html">components</a> to which this component will communicate. The <a href="../../it.unibo.pulvreakt.api.component/-abstract-component/setup-wiring.html">components</a> represents the symbolic references to the other components allowing a distributed communication. This method is generally called by the runtime when the pulverization model is adopted. In case of custom <strong>Logical Device</strong> partitioning this method should be called manually.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
