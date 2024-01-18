@@ -25,6 +25,7 @@ kodein = { module = "org.kodein.di:kodein-di", version = "7.21.2" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-assertion-compiler = { module = "io.kotest.extensions:kotest-assertions-compiler", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "6.0.3" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

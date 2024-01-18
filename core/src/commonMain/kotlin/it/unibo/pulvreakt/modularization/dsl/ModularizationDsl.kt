@@ -1,3 +1,5 @@
 package it.unibo.pulvreakt.modularization.dsl
 
-fun modularization(scope: ModularizationScope.() -> Unit): SystemModularized = TODO()
+import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
+
+fun modularization(scope: ModularizationScope.() -> Unit): ModularizedSystem = ModularizationScope().apply(scope).build()
