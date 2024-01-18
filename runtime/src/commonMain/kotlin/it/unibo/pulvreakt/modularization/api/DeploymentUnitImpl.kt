@@ -8,7 +8,8 @@ import org.kodein.di.DI
 internal class DeploymentUnitImpl<C : Capabilities>(
     override val di: DI,
     override val runningHost: Host<C>,
-    override val scheduler: Scheduler,
+    private val scheduler: Scheduler,
+    private val hostDiscover: HostDiscover,
     private val configuration: ModularizedSystem,
 ) : DeploymentUnit<C> {
     override fun <Input : Any, Output : Any> registerModule(

@@ -14,7 +14,6 @@ typealias Outcome = Either<DeploymentUnitError, Unit>
 
 sealed interface DeploymentUnit<C : Capabilities> : DIAware {
     val runningHost: Host<C>
-    val scheduler: Scheduler
 
     fun <Input : Any, Output : Any> registerModule(
         module: Module<*, Input, Output>,
@@ -37,7 +36,7 @@ sealed interface DeploymentUnit<C : Capabilities> : DIAware {
      * This method verifies if the registered modules can be deployed on this [runningHost] or on a neighbour host.
      * If the [runningHost] do not provide the [Capabilities] required by a module, its execution will be delegated to a neighbour host.
      * If no neighbour host can execute the module, it will be paused until a valid neighbour host is available.
-     * The execution of the modules is managed by the [scheduler].
+     * The execution of the modules is managed by the internal scheduler.
      */
     suspend fun start(): Outcome
 
@@ -56,10 +55,11 @@ inline fun <reified C : Capabilities> deploymentUnit(
     configuration: ModularizedSystem,
     host: Host<C>,
     scheduler: Scheduler,
+    hostDiscover: HostDiscover,
     config: DeploymentUnit<C>.() -> Unit,
 ): DeploymentUnit<C> {
     val diModule = DI {
         bind<C> { singleton { host.exposedCapabilities } }
     }
-    return DeploymentUnitImpl(diModule, host, scheduler, configuration).apply(config)
+    return DeploymentUnitImpl(diModule, host, scheduler, hostDiscover, configuration).apply(config)
 }
