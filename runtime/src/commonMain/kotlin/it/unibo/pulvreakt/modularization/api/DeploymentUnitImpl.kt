@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.KSerializer
 import org.kodein.di.DI
-import org.kodein.di.provider
 
 @PublishedApi
 internal class DeploymentUnitImpl<C : Capabilities>(
@@ -17,7 +16,6 @@ internal class DeploymentUnitImpl<C : Capabilities>(
 ) : DeploymentUnit<C> {
     private val registeredModules: MutableMap<Module<*, *, *>, Pair<KSerializer<*>, KSerializer<*>>> = mutableMapOf()
     private val offloadedModules: MutableMap<Module<*, *, *>, Pair<KSerializer<*>, KSerializer<*>>> = mutableMapOf()
-    private val channelProvider by provider<Channel<ByteArray, String>>()
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun <Input : Any, Output : Any> registerModule(

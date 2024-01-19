@@ -3,7 +3,10 @@ package it.unibo.pulvreakt.modularization.api
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
-interface Module<out C : Capabilities, in Input, out Output> : DIAware {
+interface Module<out C : Capabilities, in Input, out Output> : SymbolicModule, DIAware {
+    override val moduleName: String
+        get() = this::class.simpleName!!
+
     val capabilities: C
     operator fun invoke(input: Input): Output
 
