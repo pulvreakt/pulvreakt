@@ -16,10 +16,10 @@ import kotlinx.serialization.KSerializer
  * This type can be a "compound" type, i.e. a type that contains all the types handled by the sensors.
  * This component is executed according to the given [executionScheduler].
  */
-abstract class Sensors<out SS : Any>(
+abstract class Sensors<ID : Any, out SS : Any>(
     private val executionScheduler: ExecutionScheduler,
     private val serializer: KSerializer<SS>,
-) : AbstractPulverizedComponent() {
+) : AbstractPulverizedComponent<ID>() {
     /**
      * Sense the environment and return the sensed data.
      */

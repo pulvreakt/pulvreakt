@@ -24,19 +24,13 @@ class Infinite : ExecutionScheduler {
     override fun timesSequence(): Sequence<Long> = generateSequence { 0L }
 }
 
-class FixtureBehavior : Behavior<Int, Unit, Unit, Unit>(
-    Infinite(),
-    serializer(),
-    serializer(),
-    serializer(),
-    serializer(),
-) {
+class FixtureBehavior : Behavior<Int, Int, Unit, Unit, Unit>(Infinite(), serializer(), serializer(), serializer(), serializer()) {
     override fun invoke(state: Int?, comm: List<Unit>, sensors: Unit?): BehaviourOutput<Int, Unit, Unit> {
         return BehaviourOutput(0, Unit, Unit)
     }
 }
 
-class FixtureState : State<Int>(serializer()) {
+class FixtureState : State<Int, Int>(serializer()) {
     override fun queryState(query: StateOps<Int>): Int {
         return when (query) {
             is GetState -> 1

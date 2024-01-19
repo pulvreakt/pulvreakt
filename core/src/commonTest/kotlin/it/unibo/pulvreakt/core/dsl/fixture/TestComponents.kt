@@ -13,7 +13,7 @@ import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.serializer
 
-class TestComponent1 : AbstractComponent() {
+class TestComponent1 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -25,7 +25,7 @@ class TestComponent1 : AbstractComponent() {
     }
 }
 
-class TestComponent2 : AbstractComponent() {
+class TestComponent2 : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,12 +37,12 @@ class TestComponent2 : AbstractComponent() {
     }
 }
 
-class CommTest : Communication<Unit>(serializer()) {
-    override suspend fun send(message: CommunicationPayload<Unit>) {
+class CommTest : Communication<Int, Unit>(serializer()) {
+    override suspend fun send(message: CommunicationPayload<Int, Unit>) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun receive(): Flow<CommunicationPayload<Unit>> {
+    override suspend fun receive(): Flow<CommunicationPayload<Int, Unit>> {
         TODO("Not yet implemented")
     }
 
@@ -51,7 +51,7 @@ class CommTest : Communication<Unit>(serializer()) {
     }
 }
 
-class BehaviorTest : Behavior<Int, Unit, Unit, Unit>(
+class BehaviorTest : Behavior<Int, Int, Unit, Unit, Unit>(
     TestScheduler(),
     serializer(),
     serializer(),
@@ -72,7 +72,7 @@ class BehaviorTest : Behavior<Int, Unit, Unit, Unit>(
     }
 }
 
-class SensorsTest : Sensors<Unit>(TestScheduler(), serializer()) {
+class SensorsTest : Sensors<Int, Unit>(TestScheduler(), serializer()) {
     override suspend fun sense() = Unit
 
     override fun equals(other: Any?): Boolean {
@@ -85,7 +85,7 @@ class SensorsTest : Sensors<Unit>(TestScheduler(), serializer()) {
     }
 }
 
-class ActuatorsTest : Actuators<Unit>(serializer()) {
+class ActuatorsTest : Actuators<Int, Unit>(serializer()) {
     override suspend fun actuate(actuation: Unit) {
         TODO("Not yet implemented")
     }

@@ -43,7 +43,7 @@ actual class MqttProtocol actual constructor(
 ) : Protocol {
 
     override lateinit var di: DI
-    private val context by instance<Context>()
+    private val context by instance<Context<*>>()
     private val deviceId by lazy { context.deviceId }
     private val logger = KotlinLogging.logger("MqttProtocol")
     private val scope = CoroutineScope(coroutineDispatcher + Job())

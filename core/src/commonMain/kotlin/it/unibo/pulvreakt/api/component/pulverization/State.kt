@@ -22,7 +22,7 @@ sealed interface StateOps<out StateRepr : Any>
  * Represents the operation of querying the state of a [State] component.
  */
 @Serializable
-object GetState : StateOps<Nothing>
+data object GetState : StateOps<Nothing>
 
 /**
  * Represents the operation of setting the state of a [State] component with a new [content].
@@ -33,9 +33,9 @@ data class SetState<StateRepr : Any>(val content: StateRepr) : StateOps<StateRep
 /**
  * Represents the State component in the pulverization model.
  */
-abstract class State<StateRepr : Any>(
+abstract class State<ID : Any, StateRepr : Any>(
     private val serializer: KSerializer<StateOps<StateRepr>>,
-) : AbstractPulverizedComponent() {
+) : AbstractPulverizedComponent<ID>() {
     /**
      * Queries the state of the component.
      */

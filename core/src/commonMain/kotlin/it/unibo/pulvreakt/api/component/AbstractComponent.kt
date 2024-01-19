@@ -44,9 +44,9 @@ import org.kodein.di.provider
  * ```
  * When a pulverization model is adopted, used the component-specific class provided in the `pulverization` package.
  */
-abstract class AbstractComponent : Component {
+abstract class AbstractComponent<ID : Any> : Component {
     override lateinit var di: DI
-    protected val context by instance<Context>()
+    protected val context by instance<Context<ID>>()
     private val reconfigurator by instance<ComponentModeReconfigurator>()
     private val communicatorFactory: () -> Channel by provider()
     private lateinit var communicators: Map<ComponentRef, Channel>

@@ -12,7 +12,7 @@ internal abstract class AbstractUnitManager : UnitManager {
     protected val componentManager by instance<ComponentManager>()
     protected val reconfigurator by instance<Reconfigurator>()
     protected val componentModeReconfigurator by instance<ComponentModeReconfigurator>()
-    protected val context by instance<Context>()
+    protected val context by instance<Context<*>>()
 
     final override fun setupInjector(kodein: DI) {
         di = kodein

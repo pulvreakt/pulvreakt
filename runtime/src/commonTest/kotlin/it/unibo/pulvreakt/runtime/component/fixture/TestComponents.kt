@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.serializer
 
-class TestSensorsComponent : AbstractComponent() {
+class TestSensorsComponent : AbstractComponent<Int>() {
     override suspend fun execute(): Either<ComponentError, Unit> = Unit.right()
 }
 
-class TestBehavior : Behavior<Int, Unit, Unit, Unit>(
+class TestBehavior : Behavior<Int, Int, Unit, Unit, Unit>(
     FiniteShotExecutionScheduler(2),
     serializer(),
     serializer(),
@@ -34,7 +34,7 @@ class TestBehavior : Behavior<Int, Unit, Unit, Unit>(
     }
 }
 
-class TestState : State<Int>(serializer()) {
+class TestState : State<Int, Int>(serializer()) {
     override fun queryState(query: StateOps<Int>): Int {
         return when (query) {
             is GetState -> 1
@@ -43,15 +43,15 @@ class TestState : State<Int>(serializer()) {
     }
 }
 
-class TestSensors : Sensors<Unit>(FiniteShotExecutionScheduler(1), serializer()) {
+class TestSensors : Sensors<Int, Unit>(FiniteShotExecutionScheduler(1), serializer()) {
     override suspend fun sense() = Unit
 }
 
-class TestActuators : Actuators<Unit>(serializer()) {
+class TestActuators : Actuators<Int, Unit>(serializer()) {
     override suspend fun actuate(actuation: Unit) = Unit
 }
 
-class TestCommunication : Communication<Unit>(serializer()) {
-    override suspend fun send(message: CommunicationPayload<Unit>) = Unit
-    override suspend fun receive(): Flow<CommunicationPayload<Unit>> = emptyFlow()
+class TestCommunication : Communication<Int, Unit>(serializer()) {
+    override suspend fun send(message: CommunicationPayload<Int, Unit>) = Unit
+    override suspend fun receive(): Flow<CommunicationPayload<Int, Unit>> = emptyFlow()
 }

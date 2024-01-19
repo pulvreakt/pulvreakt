@@ -37,31 +37,31 @@ class OnDeviceScope(private val deviceStructure: DeviceStructure, private val in
     /**
      * Specifies which Behaviour component should be reconfigured.
      */
-    inline fun <reified B : Behavior<*, *, *, *>> theBehaviour(): ComponentRef =
+    inline fun <reified B : Behavior<*, *, *, *, *>> theBehaviour(): ComponentRef =
         ComponentRef.create<B>(ComponentKind.Behavior)
 
     /**
      * Specifies which State component should be reconfigured.
      */
-    inline fun <reified S : State<*>> theState(): ComponentRef =
+    inline fun <reified S : State<*, *>> theState(): ComponentRef =
         ComponentRef.create<S>(ComponentKind.State)
 
     /**
      * Specifies which Communication component should be reconfigured.
      */
-    inline fun <reified C : Communication<*>> theCommunication(): ComponentRef =
+    inline fun <reified C : Communication<*, *>> theCommunication(): ComponentRef =
         ComponentRef.create<C>(ComponentKind.Communication)
 
     /**
      * Specifies which Sensors component should be reconfigured.
      */
-    inline fun <reified SS : Sensors<*>> theSensors(): ComponentRef =
+    inline fun <reified SS : Sensors<*, *>> theSensors(): ComponentRef =
         ComponentRef.create<SS>(ComponentKind.Sensor)
 
     /**
      * Specifies which Actuators component should be reconfigured.
      */
-    inline fun <reified AS : Actuators<*>> theActuators(): ComponentRef =
+    inline fun <reified AS : Actuators<*, *>> theActuators(): ComponentRef =
         ComponentRef.create<AS>(ComponentKind.Actuator)
 
     /**

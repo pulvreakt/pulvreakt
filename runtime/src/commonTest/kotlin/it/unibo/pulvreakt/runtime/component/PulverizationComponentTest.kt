@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.context.Context
-import it.unibo.pulvreakt.api.context.IntId.Companion.toId
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.Capability
@@ -38,7 +37,7 @@ class PulverizationComponentTest {
         bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
         bind<LocalChannelManager> { singleton { LocalChannelManager() } }
         bind<Protocol> { singleton { TestProtocol() } }
-        bind<Context> { singleton { Context(1.toId(), Host("localhost", cap)) } }
+        bind<Context<Int>> { singleton { Context(1, Host("localhost", cap)) } }
     }
 
     @Test

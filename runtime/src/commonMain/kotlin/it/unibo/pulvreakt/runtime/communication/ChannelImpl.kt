@@ -30,7 +30,7 @@ class ChannelImpl : Channel {
     private val logger = KotlinLogging.logger("AbstractCommunicator")
     private lateinit var localCommunicator: Channel
     private val remoteProtocol by instance<Protocol>()
-    private val context by instance<Context>()
+    private val context by instance<Context<*>>()
     private lateinit var sourceComponent: ComponentRef
     private lateinit var destinationComponent: ComponentRef
 

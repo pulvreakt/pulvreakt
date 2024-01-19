@@ -15,11 +15,11 @@ import it.unibo.pulvreakt.api.infrastructure.Host
  * val invalid: Double? = context["key"] // returns null
  * ```
  */
-interface Context {
+interface Context<ID : Any> {
     /**
      * The [Id] of the _Logical Device_ managed by the instance of the middleware.
      */
-    val deviceId: Id
+    val deviceId: ID
 
     /**
      * The [Host] where the system is running.
@@ -54,9 +54,9 @@ interface Context {
         /**
          * Creates a new [Context] with the given [deviceId] and [host].
          */
-        operator fun invoke(deviceId: Id, host: Host): Context = object : Context {
+        operator fun <ID : Any> invoke(deviceId: ID, host: Host): Context<ID> = object : Context<ID> {
             private val metadata: MutableMap<String, Any> = mutableMapOf()
-            override val deviceId: Id = deviceId
+            override val deviceId: ID = deviceId
             override val host: Host = host
 
             @Suppress("UNCHECKED_CAST")

@@ -37,7 +37,7 @@ value class LogicDeviceType(val name: String)
 /**
  * Configuration DSL scope for configuring the pulverization.
  */
-class PulverizationScope {
+class PulverizationScope<ID : Any> {
     private val systemConfigSpec = mutableSetOf<Either<Nel<SystemConfigurationError>, DeviceStructure>>()
     private var deploymentConfigSpec: Either<Nel<ConfigurationError>, ConfiguredDevicesRuntimeConfiguration>? = null
     private lateinit var protocol: Protocol
@@ -47,9 +47,9 @@ class PulverizationScope {
      * Configure a logic device.
      */
     fun <St : Any, Co : Any, Se : Any, Ac : Any> logicDevice(
-        config: CanonicalDeviceScope<St, Co, Se, Ac>.() -> Unit,
+        config: CanonicalDeviceScope<ID, St, Co, Se, Ac>.() -> Unit,
     ): ReadOnlyProperty<Any?, LogicDeviceType> = ReadOnlyProperty { _, property ->
-        val deviceScope = CanonicalDeviceScope<St, Co, Se, Ac>(property.name).apply(config)
+        val deviceScope = CanonicalDeviceScope<ID, St, Co, Se, Ac>(property.name).apply(config)
         systemConfigSpec.add(deviceScope.generate())
         LogicDeviceType(property.name)
     }

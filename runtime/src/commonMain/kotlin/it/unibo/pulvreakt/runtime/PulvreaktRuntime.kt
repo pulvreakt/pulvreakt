@@ -10,7 +10,7 @@ import it.unibo.pulvreakt.runtime.errors.RuntimeError
 /**
  * The [PulvreaktRuntime] is the main entry point of the runtime.
  */
-interface PulvreaktRuntime : ManagedResource<RuntimeError> {
+interface PulvreaktRuntime<ID : Any> : ManagedResource<RuntimeError> {
     /**
      * Starts the runtime.
      */
@@ -26,12 +26,12 @@ interface PulvreaktRuntime : ManagedResource<RuntimeError> {
          * Smart constructor for [PulvreaktRuntime].
          * @return an [Either] with [RuntimeError] on the left side and [PulvreaktRuntime] on the right side.
          */
-        suspend operator fun invoke(
+        suspend operator fun <ID : Any> invoke(
             config: PulvreaktConfiguration,
             device: String,
-            id: Int,
+            id: ID,
             host: Host,
-        ): Either<RuntimeError, PulvreaktRuntime> = either {
+        ): Either<RuntimeError, PulvreaktRuntime<ID>> = either {
             val runtime = PulvreaktRuntimeImpl(config, device, id, host)
             runtime.initialize().bind()
             runtime

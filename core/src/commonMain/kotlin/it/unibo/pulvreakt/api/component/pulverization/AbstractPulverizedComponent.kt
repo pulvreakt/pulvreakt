@@ -10,7 +10,7 @@ import it.unibo.pulvreakt.errors.component.ComponentError
 /**
  * Abstract class for components that are part of the pulverisation model in the strict setup.
  */
-abstract class AbstractPulverizedComponent : AbstractComponent() {
+abstract class AbstractPulverizedComponent<ID : Any> : AbstractComponent<ID>() {
     protected fun getComponentByType(type: ComponentKind): Either<ComponentError.ExecutionError, ComponentRef> {
         return links.firstOrNull { it.type == type }.toOption().toEither {
             ComponentError.ExecutionError(

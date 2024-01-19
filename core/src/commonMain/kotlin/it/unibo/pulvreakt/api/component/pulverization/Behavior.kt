@@ -19,13 +19,13 @@ import kotlinx.serialization.serializer
  * The behavior can manage the [State] of the component, the [Communication] with the other devices, the [Sensors] and the [Actuators].
  * The behavior is executed according to the [ExecutionScheduler].
  */
-abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
+abstract class Behavior<ID : Any, State : Any, Comm : Any, in Sensors : Any, out Actuators : Any>(
     private val executionScheduler: ExecutionScheduler,
     private val stateSerializer: KSerializer<StateOps<State>> = serializer(),
-    private val commSerializer: KSerializer<CommunicationPayload<Comm>> = serializer(),
+    private val commSerializer: KSerializer<CommunicationPayload<ID, Comm>> = serializer(),
     private val sensorsSerializer: KSerializer<Sensors>,
     private val actuatorsSerializer: KSerializer<Actuators>,
-) : AbstractPulverizedComponent() {
+) : AbstractPulverizedComponent<ID>() {
 
     private val deviceId by lazy { context.deviceId }
     private val myRef by lazy { ComponentRef.create(this, ComponentKind.Behavior) }
@@ -45,7 +45,7 @@ abstract class Behavior<State : Any, Comm : Any, in Sensors : Any, out Actuators
             val sensorsRef = getComponentByTypeOrNull(ComponentKind.Sensor)
             val actuatorsRef = getComponentByTypeOrNull(ComponentKind.Actuator)
 
-            var receivedNeighboursMessages = listOf<CommunicationPayload<Comm>>()
+            var receivedNeighboursMessages = listOf<CommunicationPayload<ID, Comm>>()
             var lastSensorsRead: Sensors? = null
 
             val commJob = executeIfNotNull(commRef) { ref ->

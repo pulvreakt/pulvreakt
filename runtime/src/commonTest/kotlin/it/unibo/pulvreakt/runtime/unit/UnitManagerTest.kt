@@ -2,10 +2,9 @@ package it.unibo.pulvreakt.runtime.unit
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import it.unibo.pulvreakt.api.context.Context
-import it.unibo.pulvreakt.api.context.IntId.Companion.toId
-import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
+import it.unibo.pulvreakt.api.context.Context
+import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.runtime.component.ComponentManager
@@ -20,7 +19,7 @@ class UnitManagerTest : StringSpec(
         val diModule = DI {
             bind<ComponentManager> { singleton { SimpleComponentManager() } }
             bind<Protocol> { singleton { TestProtocol() } }
-            bind<Context> { singleton { Context(1.toId(), Host("foo", cap)) } }
+            bind<Context<Int>> { singleton { Context(1, Host("foo", cap)) } }
             bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
         }
         "The unit manager should not raise an error during initialization if properly configured" {
