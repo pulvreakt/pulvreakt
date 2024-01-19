@@ -13,10 +13,12 @@ sealed interface Id
  * This implementation inherits the [Comparable] interface to allow the comparison between two [IntId].
  */
 @Serializable
-class IntId(val value: Int) : Id, Comparable<IntId> {
+data class IntId(val value: Int) : Id, Comparable<IntId> {
     override fun compareTo(other: IntId): Int {
         return value.compareTo(other.value)
     }
+
+    override fun toString(): String = value.toString()
 
     companion object {
         /**
