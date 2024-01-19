@@ -1,3 +1,21 @@
+## [0.9.1](https://github.com/pulvreakt/pulvreakt/compare/0.9.0...0.9.1) (2024-01-19)
+
+
+### Dependency updates
+
+* **deps:** update plugin kotlin-qa to v0.58.0 ([c1d3d18](https://github.com/pulvreakt/pulvreakt/commit/c1d3d18150ad2c2b5cefcf2bd53c9c3a8bded60e))
+* **deps:** update site/themes/hugo-theme-relearn digest to df39abc ([882410b](https://github.com/pulvreakt/pulvreakt/commit/882410b857c1cfcae6d52d8ff207a8f312d85814))
+
+
+### Bug Fixes
+
+* convert to a data class to have equals and hashCode for free and override toString preventing mangling ([2c59f55](https://github.com/pulvreakt/pulvreakt/commit/2c59f55a92429357ead48f5b7fbe99fe4c935e2c))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.2.14 ([1cc5b0e](https://github.com/pulvreakt/pulvreakt/commit/1cc5b0e33e331048997ae298ec82ee4be7ab6d7b))
+
 ## [0.9.0](https://github.com/pulvreakt/pulvreakt/compare/0.8.4...0.9.0) (2024-01-17)
 
 
