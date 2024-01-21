@@ -1,6 +1,7 @@
 package it.unibo.pulvreakt.modularization.api
 
 import arrow.core.Either
+import it.unibo.pulvreakt.modularization.api.module.Module
 import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
 import it.unibo.pulvreakt.modularization.errors.DeploymentUnitError
 import kotlinx.serialization.KSerializer

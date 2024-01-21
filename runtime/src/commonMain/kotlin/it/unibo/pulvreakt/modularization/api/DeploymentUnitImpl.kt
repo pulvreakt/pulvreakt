@@ -1,5 +1,6 @@
 package it.unibo.pulvreakt.modularization.api
 
+import it.unibo.pulvreakt.modularization.api.module.Module
 import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

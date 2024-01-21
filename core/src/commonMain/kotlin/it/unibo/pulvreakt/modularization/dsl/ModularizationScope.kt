@@ -1,6 +1,6 @@
 package it.unibo.pulvreakt.modularization.dsl
 
-import it.unibo.pulvreakt.modularization.api.Module
+import it.unibo.pulvreakt.modularization.api.module.Module
 import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
 
 class ModularizationScope {
