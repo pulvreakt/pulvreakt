@@ -1,9 +1,11 @@
 package it.unibo.pulvreakt.modularization.api
 
+import it.unibo.pulvreakt.modularization.api.module.Module
+
+/**
+ * Define a host capable of executing one or more [Module]s.
+ * A host [exposedCapabilities] for executing the compatible [Module]s.
+ */
 interface Host<C : Capabilities> {
     val exposedCapabilities: C
-
-    operator fun <V> set(key: String, value: V)
-    operator fun <V> get(key: String): V?
-    fun <V> getOrElse(key: String, defaultValue: () -> V): V
 }
