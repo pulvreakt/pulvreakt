@@ -18,8 +18,8 @@ abstract class AbstractModule<out Cap : Capabilities, Input, Output> : Module<Ca
     override val di: DI by lazy {
         Injection.getModule().getOrNull() ?: error(
             """
-                Tried to access to the Dependency Injection module before it is initialized.
-                Please, initialize the Injection object via the setupModule(DI) method
+            Tried to access to the Dependency Injection module before it is initialized.
+            Please, initialize the Injection object via the setupModule(DI) method.
             """.trimIndent(),
         )
     }
@@ -27,11 +27,14 @@ abstract class AbstractModule<out Cap : Capabilities, Input, Output> : Module<Ca
     override var outputModules: Set<SymbolicModule> = emptySet()
 
     override suspend fun setup(): Either<ModuleError, Unit> = Unit.right()
+
     override suspend fun teardown(): Either<ModuleError, Unit> = Unit.right()
+
     override fun <Type> receive(from: SymbolicModule): ModuleResult<Type> = ReceiveOperationNotSupported.left()
 
-    override fun execute(): ModuleResult<Output> = either {
-        val inputs = buildInput().bind()
-        invoke(inputs)
-    }
+    override fun execute(): ModuleResult<Output> =
+        either {
+            val inputs = buildInput().bind()
+            invoke(inputs)
+        }
 }

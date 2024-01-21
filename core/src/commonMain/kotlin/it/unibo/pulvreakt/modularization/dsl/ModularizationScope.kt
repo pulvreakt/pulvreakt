@@ -60,10 +60,11 @@ class ModularizationScope(private val modules: Set<Module<*, *, *>>) {
             otherModules.symbolicModules.any { !moduleInContext(it, modules) } ->
                 otherModules.symbolicModules.filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
 
-            else -> otherModules.symbolicModules.forEach { module ->
-                modulesAssociation[module]?.let { modulesAssociation[module] = it + symbolicModules }
-                    ?: run { modulesAssociation[module] = symbolicModules }
-            }
+            else ->
+                otherModules.symbolicModules.forEach { module ->
+                    modulesAssociation[module]?.let { modulesAssociation[module] = it + symbolicModules }
+                        ?: run { modulesAssociation[module] = symbolicModules }
+                }
         }
     }
 
@@ -72,10 +73,14 @@ class ModularizationScope(private val modules: Set<Module<*, *, *>>) {
      */
     data class ModuleBuilder(val symbolicModules: Set<SymbolicModule>)
 
-    private fun moduleInContext(module: SymbolicModule, modules: Set<Module<*, *, *>>): Boolean = module in modules.map { module(it) }
+    private fun moduleInContext(
+        module: SymbolicModule,
+        modules: Set<Module<*, *, *>>,
+    ): Boolean = module in modules.map { module(it) }
 
-    internal fun build(): ModularizationResult = when {
-        configurationErrors.isNotEmpty() -> configurationErrors.toNonEmptyListOrNull()!!.left()
-        else -> modulesAssociation.right()
-    }
+    internal fun build(): ModularizationResult =
+        when {
+            configurationErrors.isNotEmpty() -> configurationErrors.toNonEmptyListOrNull()!!.left()
+            else -> modulesAssociation.right()
+        }
 }

@@ -11,5 +11,7 @@ typealias ModularizationResult = Either<Nel<ConfigurationError>, ModularizedSyst
 /**
  * DSL entrypoint for specifying a modularization system.
  */
-fun modularization(vararg modules: Module<*, *, *>, scope: ModularizationScope.() -> Unit): ModularizationResult =
-    ModularizationScope(modules.toSet()).apply(scope).build()
+fun modularization(
+    vararg modules: Module<*, *, *>,
+    scope: ModularizationScope.() -> Unit,
+): ModularizationResult = ModularizationScope(modules.toSet()).apply(scope).build()
