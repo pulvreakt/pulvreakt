@@ -1,6 +1,7 @@
 package it.unibo.pulvreakt.api.component
 
 import arrow.core.Either
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.initializable.InjectAwareResource
 import it.unibo.pulvreakt.api.initializable.ManagedResource
 import it.unibo.pulvreakt.errors.component.ComponentError
@@ -16,7 +17,12 @@ import kotlinx.serialization.KSerializer
  * which starts the execution of the component logic.
  * All the operations are asynchronous and non-blocking and they may fail with a [ComponentError].
  */
-interface Component<ID : Any> : ManagedResource<ComponentError>, InjectAwareResource {
+interface Component<ID : Any> : ManagedResource<ComponentError> {
+    /**
+     * Setup the [context] of the component.
+     */
+    fun setupContext(context: Context<ID>)
+
     /**
      * Setup all the other [components] to which this component will communicate.
      * The [components] represents the symbolic references to the other components allowing a distributed communication.
@@ -35,21 +41,14 @@ interface Component<ID : Any> : ManagedResource<ComponentError>, InjectAwareReso
      * Sends a [message] of type [P] [toComponent] by serializing it with the given [serializer].
      * This method can fail with a [ComponentNotRegistered] if the [toComponent] is not registered as link of this component.
      */
-    suspend fun <P : Any> send(
-        toComponent: ComponentRef,
-        message: P,
-        serializer: KSerializer<in P>,
-    ): Either<ComponentError, Unit>
+    suspend fun <P : Any> send(toComponent: ComponentRef, message: P, serializer: KSerializer<in P>): Either<ComponentError, Unit>
 
     /**
      * Receives a message of type [P] [fromComponent] by deserializing it with the given [serializer].
      * If the message pushed in the flow cannot be serialized with the given [serializer] the flow will fail with an exception.
      * This method can fail with a [ComponentNotRegistered] if the [fromComponent] is not registered as link of this component.
      */
-    suspend fun <P : Any> receive(
-        fromComponent: ComponentRef,
-        serializer: KSerializer<out P>,
-    ): Either<ComponentError, Flow<P>>
+    suspend fun <P : Any> receive(fromComponent: ComponentRef, serializer: KSerializer<out P>): Either<ComponentError, Flow<P>>
 
     /**
      * Starts the execution of the component logic.

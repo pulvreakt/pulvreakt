@@ -6,6 +6,7 @@ import arrow.core.right
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.AbstractComponent
@@ -14,8 +15,11 @@ import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.Capability
-import it.unibo.pulvreakt.errors.communication.CommunicatorError
+import it.unibo.pulvreakt.errors.communication.ChannelError
 import it.unibo.pulvreakt.errors.component.ComponentError
+import it.unibo.pulvreakt.runtime.RuntimeContext
+import it.unibo.pulvreakt.runtime.component.ComponentManager
+import it.unibo.pulvreakt.runtime.component.SimpleComponentManager
 import it.unibo.pulvreakt.runtime.utils.TestProtocol
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,11 +27,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.provider
-import org.kodein.di.singleton
 
 class FakeComponentModeReconfigurator : ComponentModeReconfigurator {
     override fun receiveModeUpdates(): Flow<Pair<ComponentRef, Mode>> = emptyFlow()
@@ -62,57 +61,67 @@ class C6 : AbstractComponent<Int>() {
 class ChannelTest : StringSpec(
     {
         coroutineTestScope = true
-        val deviceId = 1
         val cap by Capability
-        val diModule = DI {
-            bind { singleton { LocalChannelManager() } }
-            bind<Channel> { provider { ChannelImpl() } }
-            bind<ComponentModeReconfigurator> { singleton { FakeComponentModeReconfigurator() } }
-            bind<Context<Int>> { singleton { Context(deviceId, Host("foo", cap)) } }
-            bind<Protocol> { singleton { TestProtocol() } }
+        val runtimeContext = object : RuntimeContext<Int> {
+            override val context: Context<Int> = object : Context<Int> {
+                override val deviceId: Int = 1
+                override val executingHost: Host = Host("foo", cap)
+
+                override fun getChannel(): Channel = ChannelImpl()
+
+                override val channelManager: LocalChannelManager = LocalChannelManager()
+
+                override fun protocolInstance(): Protocol = TestProtocol()
+
+                override fun <T : Any> get(key: String): T? = null
+
+                override fun <T : Any> set(key: String, value: T) { }
+            }
+            override val localChannelManager: LocalChannelManager = LocalChannelManager()
+            override val componentManager: ComponentManager = SimpleComponentManager()
         }
         "The Communicator should raise an error when the DI injector is not initialized" {
-            val communicator by diModule.instance<Channel>()
+            val communicator = runtimeContext.context.getChannel()
             val result = communicator.sendToComponent("fail to send".encodeToByteArray()).leftOrNull()
                 ?: error("The communicator must be initialized with the DI module before its usage")
-            result shouldBe CommunicatorError.InjectorNotInitialized
+            result shouldBe ChannelError.InjectorNotInitialized
         }
         "The Communicator should raise an error when it is not configured and try to send a message" {
             val communicator = ChannelImpl()
-            communicator.setupInjector(diModule)
+            communicator.setupContext(runtimeContext.context)
             val error = communicator.sendToComponent("test".encodeToByteArray()).leftOrNull()
                 ?: error("An error should be raised when used with no setup")
-            error shouldBe CommunicatorError.CommunicatorNotInitialized
+            error shouldBe ChannelError.CommunicatorNotInitialized
         }
         "The Communicator should raise an error when it is not configured and try to receive messages" {
             val communicator = ChannelImpl()
-            communicator.setupInjector(diModule)
+            communicator.setupContext(runtimeContext.context)
             val error = communicator.receiveFromComponent().leftOrNull()
                 ?: error("An error should be raised when used with no setup")
-            error shouldBe CommunicatorError.CommunicatorNotInitialized
+            error shouldBe ChannelError.CommunicatorNotInitialized
         }
         "The Communicator should work in Local mode" {
             val receivedMessages = mutableListOf<String>()
             val c1Ref = C1().getRef()
             val c2Ref = C2().getRef()
-            val c1Communicator by diModule.instance<Channel>()
-            val c2Communicator by diModule.instance<Channel>()
+            val c1Channel = runtimeContext.context.getChannel()
+            val c2Channel = runtimeContext.context.getChannel()
 
-            with(c1Communicator) {
-                setupInjector(diModule)
+            with(c1Channel) {
+                setupContext(runtimeContext.context)
                 channelSetup(c1Ref, c2Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
 
-            with(c2Communicator) {
-                setupInjector(diModule)
+            with(c2Channel) {
+                setupContext(runtimeContext.context)
                 channelSetup(c2Ref, c1Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
 
             val c2ReceiveJob = launch(UnconfinedTestDispatcher()) {
                 val resultCollect = either {
-                    val receiveFlow = c2Communicator.receiveFromComponent().bind()
+                    val receiveFlow = c2Channel.receiveFromComponent().bind()
                     receiveFlow.take(2).collect {
                         receivedMessages.add(it.decodeToString())
                     }
@@ -121,8 +130,8 @@ class ChannelTest : StringSpec(
             }
 
             val resultSend = either {
-                c1Communicator.sendToComponent("test 1".encodeToByteArray()).bind()
-                c1Communicator.sendToComponent("test 2".encodeToByteArray()).bind()
+                c1Channel.sendToComponent("test 1".encodeToByteArray()).bind()
+                c1Channel.sendToComponent("test 2".encodeToByteArray()).bind()
             }
             resultSend shouldBe Either.Right(Unit)
             c2ReceiveJob.join()
@@ -132,17 +141,17 @@ class ChannelTest : StringSpec(
             val receivedMessage = mutableListOf<String>()
             val c3Ref = C3().getRef()
             val c4Ref = C4().getRef()
-            val c3Communicator by diModule.instance<Channel>()
-            val c4Communicator by diModule.instance<Channel>()
+            val c3Communicator = runtimeContext.context.getChannel()
+            val c4Communicator = runtimeContext.context.getChannel()
 
             with(c3Communicator) {
-                setupInjector(diModule)
+                setupContext(runtimeContext.context)
                 channelSetup(c3Ref, c4Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
 
             with(c4Communicator) {
-                setupInjector(diModule)
+                setupContext(runtimeContext.context)
                 channelSetup(c4Ref, c3Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
@@ -188,17 +197,17 @@ class ChannelTest : StringSpec(
             val c5Ref = C5().getRef()
             val c6Ref = C6().getRef()
 
-            val c5Communicator by diModule.instance<Channel>()
-            val c6Communicator by diModule.instance<Channel>()
+            val c5Communicator = runtimeContext.context.getChannel()
+            val c6Communicator = runtimeContext.context.getChannel()
 
             with(c5Communicator) {
-                setupInjector(diModule)
+                setupContext(runtimeContext.context)
                 channelSetup(c5Ref, c6Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }
 
             with(c6Communicator) {
-                setupInjector(diModule)
+                setupContext(runtimeContext.context)
                 channelSetup(c6Ref, c5Ref) shouldBe Either.Right(Unit)
                 setMode(Mode.Local)
             }

@@ -3,6 +3,7 @@ package it.unibo.pulvreakt.platforms.rabbitmq
 import arrow.core.Either
 import it.unibo.pulvreakt.api.communication.protocol.Entity
 import it.unibo.pulvreakt.api.communication.protocol.Protocol
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.DI
@@ -18,10 +19,8 @@ actual class RabbitmqProtocol actual constructor(
     virtualHost: String,
 ) : Protocol {
 
-    override lateinit var di: DI
-
-    override fun setupInjector(kodein: DI) {
-        di = kodein
+    override fun setupContext(context: Context<*>) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun setupChannel(source: Entity, destination: Entity) {

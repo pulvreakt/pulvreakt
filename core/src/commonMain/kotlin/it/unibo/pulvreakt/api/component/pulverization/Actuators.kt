@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.serialization.KSerializer
 
@@ -20,9 +21,8 @@ abstract class Actuators<ID : Any, in AS : Any>(private val serializer: KSeriali
 
     final override fun getRef(): ComponentRef = ComponentRef.create(this, ComponentKind.Actuator)
 
-    override suspend fun execute(): Either<ComponentError, Unit> =
-        either {
-            val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
-            receive(behaviourRef, serializer).bind().collect { actuate(it) }
-        }
+    override suspend fun execute(): Either<ComponentError, Unit> = either {
+        val behaviourRef = getComponentByType(ComponentKind.Behavior).bind()
+        receive(behaviourRef, serializer).bind().collect { actuate(it) }
+    }
 }

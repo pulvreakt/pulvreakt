@@ -1,6 +1,7 @@
 package it.unibo.pulvreakt.api.communication.protocol
 
 import arrow.core.Either
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.initializable.InjectAwareResource
 import it.unibo.pulvreakt.api.initializable.ManagedResource
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
@@ -22,7 +23,12 @@ data class Entity(val entityName: String, val id: String? = null, val metadata: 
  * The protocol is configured using the configuration DSL and then will be injected into the runtime to establish the communication.
  * The end-user do not interact directly with this interface.
  */
-interface Protocol : ManagedResource<ProtocolError>, InjectAwareResource {
+interface Protocol : ManagedResource<ProtocolError> {
+    /**
+     * Setup the [Context]
+     */
+    fun setupContext(context: Context<*>)
+
     /**
      * This method configures the protocol to communicate between the given [source] and [destination] entities.
      *

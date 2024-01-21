@@ -14,7 +14,8 @@ import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigura
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.errors.component.ComponentError
 import it.unibo.pulvreakt.runtime.communication.ChannelImpl
-import it.unibo.pulvreakt.runtime.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
+import it.unibo.pulvreakt.runtime.RuntimeContext
 import it.unibo.pulvreakt.runtime.component.fixture.TestComponentModeReconfigurator
 import it.unibo.pulvreakt.runtime.component.fixture.TestSensorsComponent
 import it.unibo.pulvreakt.runtime.utils.TestProtocol
@@ -32,12 +33,25 @@ class ComponentTest : StringSpec(
     {
         coroutineTestScope = true
         val cap by Capability
-        val diModule = DI {
-            bind<Channel> { provider { ChannelImpl() } }
-            bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
-            bind<LocalChannelManager> { singleton { LocalChannelManager() } }
-            bind<Protocol> { singleton { TestProtocol() } }
-            bind<Context<Int>> { singleton { Context(1, Host("foo", cap)) } }
+//        val diModule = DI {
+//            bind<Channel> { provider { ChannelImpl() } }
+//            bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
+//            bind<LocalChannelManager> { singleton { LocalChannelManager() } }
+//            bind<Protocol> { singleton { TestProtocol() } }
+//            bind<Context<Int>> { singleton { Context(1, Host("foo", cap)) } }
+//        }
+        val runtimeContext = object : RuntimeContext<Int> {
+            override val context: Context<Int> = object : Context<Int> {
+                override val deviceId: Int = 1
+                override val executingHost: Host = Host("foo", cap)
+                override fun getChannel(): Channel = ChannelImpl()
+                override val channelManager: LocalChannelManager = LocalChannelManager()
+                override fun protocolInstance(): Protocol = TestProtocol()
+                override fun <T : Any> get(key: String): T? = null
+                override fun <T : Any> set(key: String, value: T) { }
+            }
+            override val localChannelManager: LocalChannelManager = LocalChannelManager()
+            override val componentManager: ComponentManager = SimpleComponentManager()
         }
 
         "A Component should raise an error if the DI module is not initialized" {
@@ -50,12 +64,12 @@ class ComponentTest : StringSpec(
             }
 
             when (result) {
-                is Either.Left -> result.value shouldBe ComponentError.InjectorNotInitialized
+                is Either.Left -> result.value shouldBe ComponentError.ContextNotInitialized
                 is Either.Right -> error("An error must be raised when no DI is initialised")
             }
         }
         "A component should raise an error if not properly initialized" {
-            val component = TestSensorsComponent().apply { setupInjector(diModule) }
+            val component = TestSensorsComponent().apply { setupContext(runtimeContext.context) }
 
             val sendResult = component.send(component.getRef(), 10).leftOrNull()
                 ?: error("The usage of the `send` method requires the initialization of the component")
@@ -66,8 +80,8 @@ class ComponentTest : StringSpec(
             receiveResult shouldBe ComponentError.ComponentNotInitialized
         }
         "A Component should send/receive messages to/from other linked components" {
-            val myComponent = TestSensorsComponent().apply { setupInjector(diModule) }
-            val otherComponent = TestSensorsComponent().apply { setupInjector(diModule) }
+            val myComponent = TestSensorsComponent().apply { setupContext(runtimeContext.context) }
+            val otherComponent = TestSensorsComponent().apply { setupContext(runtimeContext.context) }
 
             myComponent.setupWiring(otherComponent.getRef())
             otherComponent.setupWiring(myComponent.getRef())

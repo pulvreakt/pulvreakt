@@ -1,5 +1,8 @@
 package it.unibo.pulvreakt.api.context
 
+import it.unibo.pulvreakt.api.communication.Channel
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.infrastructure.Host
 
 /**
@@ -24,7 +27,22 @@ interface Context<ID : Any> {
     /**
      * The [Host] where the system is running.
      */
-    val host: Host
+    val executingHost: Host
+
+    /**
+     * Returns a new [Channel] associated with the context.
+     */
+    fun getChannel(): Channel
+
+    /**
+     * The [LocalChannelManager] used to create local [Channel]s.
+     */
+    val channelManager: LocalChannelManager
+
+    /**
+     * The [Protocol] used to communicate between components.
+     */
+    fun protocolInstance(): Protocol
 
     /**
      * Returns the value associated with the given [key] or `null` if no value is associated with the given [key].
@@ -48,33 +66,33 @@ interface Context<ID : Any> {
      * context["key"] = 1
      * ```
      */
-    operator fun <T : Any> set(
-        key: String,
-        value: T,
-    )
+    operator fun <T : Any> set(key: String, value: T)
 
     companion object {
         /**
          * Creates a new [Context] with the given [deviceId] and [host].
          */
-        operator fun <ID : Any> invoke(
-            deviceId: ID,
-            host: Host,
-        ): Context<ID> =
-            object : Context<ID> {
-                private val metadata: MutableMap<String, Any> = mutableMapOf()
-                override val deviceId: ID = deviceId
-                override val host: Host = host
-
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : Any> get(key: String): T? = metadata[key] as? T
-
-                override fun <T : Any> set(
-                    key: String,
-                    value: T,
-                ) {
-                    metadata[key] = value
-                }
+        operator fun <ID : Any> invoke(deviceId: ID, host: Host, protocol: Protocol): Context<ID> = object : Context<ID> {
+            private val metadata: MutableMap<String, Any> = mutableMapOf()
+            override val deviceId: ID = deviceId
+            override val executingHost: Host = host
+            override fun getChannel(): Channel {
+                TODO("Not yet implemented")
             }
+
+            override fun protocolInstance(): Protocol = protocol
+
+            override val channelManager: LocalChannelManager = LocalChannelManager()
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : Any> get(key: String): T? = metadata[key] as? T
+
+            override fun <T : Any> set(
+                key: String,
+                value: T,
+            ) {
+                metadata[key] = value
+            }
+        }
     }
 }

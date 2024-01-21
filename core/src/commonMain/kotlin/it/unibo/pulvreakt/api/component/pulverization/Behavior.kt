@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.scheduler.ExecutionScheduler
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.cancelAndJoin
@@ -33,11 +34,7 @@ abstract class Behavior<ID : Any, State : Any, Comm : Any, in Sensors : Any, out
      * This method implements the logic of the device taking the [state], [comm] and [sensors].
      * Returns a [BehaviourOutput] containing the new [State], the [Communication] to be sent and the [Actuators] to be performed.
      */
-    abstract operator fun invoke(
-        state: State?,
-        comm: List<Comm>,
-        sensors: Sensors?,
-    ): BehaviourOutput<State, Comm, Actuators>
+    abstract operator fun invoke(state: State?, comm: List<Comm>, sensors: Sensors?): BehaviourOutput<State, Comm, Actuators>
 
     final override fun getRef(): ComponentRef = myRef
 
@@ -107,20 +104,14 @@ abstract class Behavior<ID : Any, State : Any, Comm : Any, in Sensors : Any, out
      * Executes the given [block] if the given [value] is not null.
      * Returns the result of the block execution or null if the value is null.
      */
-    private suspend fun <T, P> executeIfNotNull(
-        value: T?,
-        block: suspend (T) -> P,
-    ): P? = value?.let { block(it) }
+    private suspend fun <T, P> executeIfNotNull(value: T?, block: suspend (T) -> P): P? = value?.let { block(it) }
 
     /**
      * Executes the given [block] if the given [value1] and [value2] are not null.
      * Returns the result of the block execution or null if one of the values is null.
      */
-    private suspend fun <T, R, P> executeIfNotNull(
-        value1: T?,
-        value2: R?,
-        block: suspend (T, R) -> P,
-    ): P? = value1?.let { v1 -> value2?.let { v2 -> block(v1, v2) } }
+    private suspend fun <T, R, P> executeIfNotNull(value1: T?, value2: R?, block: suspend (T, R) -> P): P? =
+        value1?.let { v1 -> value2?.let { v2 -> block(v1, v2) } }
 }
 
 /**

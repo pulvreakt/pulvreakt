@@ -5,9 +5,9 @@ import it.unibo.pulvreakt.api.communication.Mode.Local
 import it.unibo.pulvreakt.api.communication.Mode.Remote
 import it.unibo.pulvreakt.api.component.Component
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.api.initializable.InjectAwareResource
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.initializable.ManagedResource
-import it.unibo.pulvreakt.errors.communication.CommunicatorError
+import it.unibo.pulvreakt.errors.communication.ChannelError
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -35,11 +35,16 @@ sealed interface Mode {
  * The channel is set up by the [channelSetup] method and can change its operation mode with the [setMode] method.
  * The communication [Mode] defines if the communication should occur locally or remotely.
  */
-interface Channel : ManagedResource<Nothing>, InjectAwareResource {
+interface Channel : ManagedResource<Nothing> {
+    /**
+     * Sets up the [Context] of the channel.
+     */
+    fun setupContext(context: Context<*>)
+
     /**
      * Sets up the communication between the given [source] and [destination] components.
      */
-    suspend fun channelSetup(source: ComponentRef, destination: ComponentRef): Either<CommunicatorError, Unit>
+    suspend fun channelSetup(source: ComponentRef, destination: ComponentRef): Either<ChannelError, Unit>
 
     /**
      * Sets the communication mode of the communicator.
@@ -49,10 +54,10 @@ interface Channel : ManagedResource<Nothing>, InjectAwareResource {
     /**
      * Sends a [message] to the component.
      */
-    suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit>
+    suspend fun sendToComponent(message: ByteArray): Either<ChannelError, Unit>
 
     /**
      * Receives messages from the component.
      */
-    suspend fun receiveFromComponent(): Either<CommunicatorError, Flow<ByteArray>>
+    suspend fun receiveFromComponent(): Either<ChannelError, Flow<ByteArray>>
 }

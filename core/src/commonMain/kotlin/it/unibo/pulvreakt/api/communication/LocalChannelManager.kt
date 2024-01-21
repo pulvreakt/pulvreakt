@@ -1,6 +1,5 @@
-package it.unibo.pulvreakt.runtime.communication
+package it.unibo.pulvreakt.api.communication
 
-import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.component.ComponentRef
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -8,8 +7,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  * Manages the creation of [LocalChannel]s.
  */
 class LocalChannelManager {
-    private var sharedFlowRegistry:
-        Map<Pair<ComponentRef, ComponentRef>, Pair<MutableSharedFlow<ByteArray>, MutableSharedFlow<ByteArray>>> = emptyMap()
+    private var sharedFlowRegistry: Map<Pair<ComponentRef, ComponentRef>, Pair<MutableSharedFlow<ByteArray>, MutableSharedFlow<ByteArray>>> =
+        emptyMap()
 
     /**
      * Returns a [LocalChannel] that can be used to communicate between the given components.

@@ -9,6 +9,7 @@ import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.CommunicationPayload
 import it.unibo.pulvreakt.api.component.pulverization.Sensors
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.serializer

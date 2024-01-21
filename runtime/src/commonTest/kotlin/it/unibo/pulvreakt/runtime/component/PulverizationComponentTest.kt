@@ -9,7 +9,8 @@ import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.Capability
 import it.unibo.pulvreakt.runtime.communication.ChannelImpl
-import it.unibo.pulvreakt.runtime.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
+import it.unibo.pulvreakt.runtime.RuntimeContext
 import it.unibo.pulvreakt.runtime.component.fixture.TestActuators
 import it.unibo.pulvreakt.runtime.component.fixture.TestBehavior
 import it.unibo.pulvreakt.runtime.component.fixture.TestCommunication
@@ -32,21 +33,32 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalCoroutinesApi::class)
 class PulverizationComponentTest {
     private val cap by Capability
-    private val diModule = DI {
-        bind<Channel> { provider { ChannelImpl() } }
-        bind<ComponentModeReconfigurator> { singleton { TestComponentModeReconfigurator() } }
-        bind<LocalChannelManager> { singleton { LocalChannelManager() } }
-        bind<Protocol> { singleton { TestProtocol() } }
-        bind<Context<Int>> { singleton { Context(1, Host("localhost", cap)) } }
+    private val runtimeContext = object : RuntimeContext<Int> {
+        override val context: Context<Int> = object : Context<Int> {
+            override val deviceId: Int = 1
+            override val executingHost: Host = Host("foo", cap)
+
+            override fun getChannel(): Channel = ChannelImpl()
+
+            override val channelManager: LocalChannelManager = LocalChannelManager()
+
+            override fun protocolInstance(): Protocol = TestProtocol()
+
+            override fun <T : Any> get(key: String): T? = null
+
+            override fun <T : Any> set(key: String, value: T) { }
+        }
+        override val localChannelManager: LocalChannelManager = LocalChannelManager()
+        override val componentManager: ComponentManager = SimpleComponentManager()
     }
 
     @Test
     fun integrateFivePulverizedComponentTest() = runTest(timeout = 10.seconds) {
-        val behaviour = TestBehavior().apply { setupInjector(diModule) }
-        val state = TestState().apply { setupInjector(diModule) }
-        val sensors = TestSensors().apply { setupInjector(diModule) }
-        val actuators = TestActuators().apply { setupInjector(diModule) }
-        val comm = TestCommunication().apply { setupInjector(diModule) }
+        val behaviour = TestBehavior().apply { setupContext(runtimeContext.context) }
+        val state = TestState().apply { setupContext(runtimeContext.context) }
+        val sensors = TestSensors().apply { setupContext(runtimeContext.context) }
+        val actuators = TestActuators().apply { setupContext(runtimeContext.context) }
+        val comm = TestCommunication().apply { setupContext(runtimeContext.context) }
 
         behaviour.setupWiring(state.getRef(), sensors.getRef(), actuators.getRef(), comm.getRef())
         state.setupWiring(behaviour.getRef())
@@ -82,8 +94,8 @@ class PulverizationComponentTest {
 
     @Test
     fun partiallyConnectedDeviceTest() = runTest(timeout = 10.seconds) {
-        val behaviour = TestBehavior().apply { setupInjector(diModule) }
-        val sensors = TestSensors().apply { setupInjector(diModule) }
+        val behaviour = TestBehavior().apply { setupContext(runtimeContext.context) }
+        val sensors = TestSensors().apply { setupContext(runtimeContext.context) }
 
         behaviour.setupWiring(sensors.getRef())
         sensors.setupWiring(behaviour.getRef())

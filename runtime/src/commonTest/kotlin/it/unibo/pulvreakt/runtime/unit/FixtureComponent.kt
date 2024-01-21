@@ -11,6 +11,7 @@ import it.unibo.pulvreakt.api.component.pulverization.GetState
 import it.unibo.pulvreakt.api.component.pulverization.SetState
 import it.unibo.pulvreakt.api.component.pulverization.State
 import it.unibo.pulvreakt.api.component.pulverization.StateOps
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.api.scheduler.ExecutionScheduler
 import it.unibo.pulvreakt.errors.protocol.ProtocolError
@@ -46,10 +47,8 @@ class FixtureState : State<Int, Int>(serializer()) {
 }
 
 class TestProtocol : Protocol {
-    override lateinit var di: DI
-
-    override fun setupInjector(kodein: DI) {
-        di = kodein
+    override fun setupContext(context: Context<*>) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun setupChannel(source: Entity, destination: Entity) {

@@ -10,10 +10,9 @@ import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.api.infrastructure.Host
 import it.unibo.pulvreakt.api.reconfiguration.Reconfigurator
-import it.unibo.pulvreakt.api.reconfiguration.component.ComponentModeReconfigurator
 import it.unibo.pulvreakt.dsl.model.PulvreaktConfiguration
 import it.unibo.pulvreakt.runtime.communication.ChannelImpl
-import it.unibo.pulvreakt.runtime.communication.LocalChannelManager
+import it.unibo.pulvreakt.api.communication.LocalChannelManager
 import it.unibo.pulvreakt.runtime.component.ComponentManager
 import it.unibo.pulvreakt.runtime.component.SimpleComponentManager
 import it.unibo.pulvreakt.runtime.errors.DeviceConfigurationNotFound
@@ -25,10 +24,10 @@ import it.unibo.pulvreakt.runtime.errors.WrapUnitManagerError
 import it.unibo.pulvreakt.runtime.errors.WrapUnitReconfiguratorError
 import it.unibo.pulvreakt.runtime.reconfigurator.UnitReconfigurator
 import it.unibo.pulvreakt.runtime.unit.UnitManager
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.provider
-import org.kodein.di.singleton
+import org.kodein.di.*
+import org.kodein.type.TypeToken
+import org.kodein.type.erasedComp
+import org.kodein.type.generic
 
 internal class PulvreaktRuntimeImpl<ID : Any>(
     private val config: PulvreaktConfiguration<ID>,
@@ -67,37 +66,11 @@ internal class PulvreaktRuntimeImpl<ID : Any>(
             ensureNotNull(deviceConfiguration) { DeviceConfigurationNotFound(device) }
 
             logger.debug { "Setup dependency injection module" }
-
-            // Setup DI
-            val diModule =
-                DI {
-                    bind<Protocol> { provider { config.protocol } }
-                    bind<Channel> { provider { ChannelImpl() } }
-                    bind<LocalChannelManager> { singleton { LocalChannelManager() } }
-                    bind<Reconfigurator> { singleton { Reconfigurator() } }
-                    bind<ComponentModeReconfigurator> { singleton { ComponentModeReconfigurator() } }
-                    bind<ComponentManager> { singleton { SimpleComponentManager() } }
-                    bind<Context<ID>> { provider { Context(id, host) } }
-                }
-
-            with(config.protocol) {
-                setupInjector(diModule)
-                initialize().mapLeft { WrapProtocolError(it) }.bind()
-            }
-
+            config.protocol.initialize().mapLeft { WrapProtocolError(it) }.bind()
             logger.debug { "Create and setup UnitManager" }
 
-            unitManager = UnitManager(deviceConfiguration)
-            with(unitManager) {
-                setupInjector(diModule)
-                initialize().mapLeft { WrapUnitManagerError(it) }.bind()
-            }
-
-            unitReconfigurator = UnitReconfigurator()
-            with(unitReconfigurator) {
-                setupInjector(diModule)
-                initialize().mapLeft { err -> WrapUnitReconfiguratorError(err) }.bind()
-            }
+            unitManager = UnitManager(deviceConfiguration).apply { initialize().mapLeft { WrapUnitManagerError(it) }.bind() }
+            unitReconfigurator = UnitReconfigurator().apply { initialize().mapLeft { err -> WrapUnitReconfiguratorError(err) }.bind() }
 
             logger.debug { "PulvreaktRuntime initialized" }
         }
@@ -108,4 +81,22 @@ internal class PulvreaktRuntimeImpl<ID : Any>(
             ensure(::unitManager.isInitialized) { UnitManagerNotInitialized }
             unitManager.finalize().mapLeft { WrapUnitManagerError(it) }.bind()
         }
+//    companion object {
+//        inline operator fun <reified ID : Any> invoke(config: PulvreaktConfiguration<ID>, device: String, id: ID, host: Host): PulvreaktRuntime {
+//            val diModule = DI {
+//                bind<Protocol> { provider { config.protocol } }
+//                bind<Channel> { provider { ChannelImpl() } }
+//                bind<LocalChannelManager> { singleton { LocalChannelManager() } }
+//                bind<Reconfigurator> { singleton { Reconfigurator() } }
+//                // bind<ComponentModeReconfigurator> { singleton { ComponentModeReconfigurator() } }
+//                bind<ComponentManager> { singleton { SimpleComponentManager() } }
+//                // Bind generic context with ID
+//                val tt = generic<ID>()
+//                bind<TypeToken<ID>>() with instance(tt)
+//                Bind(erasedComp(Context::class, tt)) with instance(Context(id, host))
+//                // bind<Context<ID>> { provider { Context(instance<ID>(), host) } }
+//            }
+//            return PulvreaktRuntimeImpl(config, device, id, host, diModule)
+//        }
+//    }
 }

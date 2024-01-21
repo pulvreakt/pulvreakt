@@ -31,11 +31,8 @@ interface PulvreaktRuntime : ManagedResource<RuntimeError> {
             device: String,
             id: ID,
             host: Host,
-        ): Either<RuntimeError, PulvreaktRuntime> =
-            either {
-                val runtime = PulvreaktRuntimeImpl(config, device, id, host)
-                runtime.initialize().bind()
-                runtime
-            }
+        ): Either<RuntimeError, PulvreaktRuntime> = either {
+            PulvreaktRuntimeImpl(config, device, id, host).apply { initialize().bind() }
+        }
     }
 }

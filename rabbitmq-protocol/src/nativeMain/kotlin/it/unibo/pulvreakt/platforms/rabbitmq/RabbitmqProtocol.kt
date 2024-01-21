@@ -17,11 +17,6 @@ actual class RabbitmqProtocol actual constructor(
     password: String,
     virtualHost: String,
 ) : Protocol {
-    override lateinit var di: DI
-
-    override fun setupInjector(kodein: DI) {
-        di = kodein
-    }
 
     override suspend fun setupChannel(source: Entity, destination: Entity) {
         TODO("Not yet implemented")

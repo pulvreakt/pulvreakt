@@ -1,7 +1,7 @@
 package it.unibo.pulvreakt.errors.component
 
 import it.unibo.pulvreakt.api.component.ComponentRef
-import it.unibo.pulvreakt.errors.communication.CommunicatorError
+import it.unibo.pulvreakt.errors.communication.ChannelError
 
 /**
  * Represents the possible errors that can occur during the execution of a [Component].
@@ -15,7 +15,7 @@ sealed interface ComponentError {
     /**
      * Represents the error that occurs when the injector is not initialized.
      */
-    data object InjectorNotInitialized : ComponentError
+    data object ContextNotInitialized : ComponentError
 
     /**
      * Represents the error that occurs when the component is finalized before the initialization.
@@ -40,7 +40,7 @@ sealed interface ComponentError {
 
     /**
      * Rethrow the [error] raised by the [Channel] in the context of the [Component].
-     * This is used to propagate the underling [CommunicatorError] to the [Component].
+     * This is used to propagate the underling [ChannelError] to the [Component].
      */
-    data class WrapCommunicatorError(val error: CommunicatorError) : ComponentError
+    data class WrapCommunicatorError(val error: ChannelError) : ComponentError
 }

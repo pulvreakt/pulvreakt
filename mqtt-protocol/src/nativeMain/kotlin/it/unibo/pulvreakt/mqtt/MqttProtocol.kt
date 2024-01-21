@@ -19,11 +19,6 @@ actual class MqttProtocol actual constructor(
     private val password: String?,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
-    override lateinit var di: DI
-
-    override fun setupInjector(kodein: DI) {
-        di = kodein
-    }
 
     override suspend fun setupChannel(source: Entity, destination: Entity) {
         TODO("Not yet implemented")

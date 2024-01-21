@@ -10,10 +10,8 @@ import it.unibo.pulvreakt.runtime.unit.errors.UnitManagerError
 import it.unibo.pulvreakt.runtime.unit.errors.WrapComponentError
 import it.unibo.pulvreakt.runtime.unit.errors.WrapComponentManagerError
 
-internal class UnitManagerImpl(
-    private val deviceSpecification: DeviceSpecification<*>,
-) : AbstractUnitManager() {
-    private val host by lazy { context.host }
+internal class UnitManagerImpl<ID : Any>(private val deviceSpecification: DeviceSpecification<ID>) : AbstractUnitManager() {
+    private val host by lazy { context.context.executingHost }
     private val logger = KotlinLogging.logger("UnitManagerImpl")
 
     override suspend fun start(): Either<UnitManagerError, Unit> =
@@ -44,7 +42,6 @@ internal class UnitManagerImpl(
                 logger.debug { "Components: ${deviceSpecification.componentsConfiguration}" }
                 deviceSpecification.componentsConfiguration[componentRef]?.let { compRefs ->
                     comp.setupWiring(*compRefs.toTypedArray())
-                    comp.setupInjector(di)
                     comp.initialize().mapLeft { err -> WrapComponentError(err) }.bind()
                     // Add the component to the component manager
                     componentManager.register(comp)
@@ -53,12 +50,9 @@ internal class UnitManagerImpl(
             }
 
             // Set up the communicators in the component according to the initial startup
-            remoteComponents.forEach { componentModeReconfigurator.setMode(it.getRef(), Mode.Remote) }
+            remoteComponents.forEach { context.componentModeReconfigurator.setMode(it.getRef(), Mode.Remote) }
             logger.debug { "Unit manager setup concluded" }
         }
 
-    override suspend fun finalize(): Either<UnitManagerError, Unit> =
-        either {
-            componentManager.finalize().bind()
-        }
+    override suspend fun finalize(): Either<UnitManagerError, Unit> = either { componentManager.finalize().bind() }
 }

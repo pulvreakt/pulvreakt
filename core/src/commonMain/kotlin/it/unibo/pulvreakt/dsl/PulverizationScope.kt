@@ -46,11 +46,11 @@ class PulverizationScope<ID : Any> {
     /**
      * Configure a logic device.
      */
-    fun <St : Any, Co : Any, Se : Any, Ac : Any> logicDevice(
-        config: CanonicalDeviceScope<ID, St, Co, Se, Ac>.() -> Unit,
+    fun <State : Any, Communication : Any, Sensors : Any, Actuators : Any> logicDevice(
+        config: CanonicalDeviceScope<ID, State, Communication, Sensors, Actuators>.() -> Unit,
     ): ReadOnlyProperty<Any?, LogicDeviceType> =
         ReadOnlyProperty { _, property ->
-            val deviceScope = CanonicalDeviceScope<ID, St, Co, Se, Ac>(property.name).apply(config)
+            val deviceScope = CanonicalDeviceScope<ID, State, Communication, Sensors, Actuators>(property.name).apply(config)
             systemConfigSpec.add(deviceScope.generate())
             LogicDeviceType(property.name)
         }

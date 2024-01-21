@@ -41,8 +41,7 @@ actual class MqttProtocol actual constructor(
     private val password: String?,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
-    override lateinit var di: DI
-    private val context by instance<Context<*>>()
+    private lateinit var context: Context<*>
     private val deviceId by lazy { context.deviceId }
     private val logger = KotlinLogging.logger("MqttProtocol")
     private val scope = CoroutineScope(coroutineDispatcher + Job())
@@ -58,10 +57,11 @@ actual class MqttProtocol actual constructor(
             password = this@MqttProtocol.password?.encodeToByteArray()
         }
 
-    override suspend fun setupChannel(
-        source: Entity,
-        destination: Entity,
-    ) {
+    override fun setupContext(context: Context<*>) {
+        this.context = context
+    }
+
+    override suspend fun setupChannel(source: Entity, destination: Entity) {
         logger.debug { "Setting up channel for entity $source" }
         registeredTopics += (source to destination) to toTopics(source, destination)
         registeredTopics += (destination to source) to toTopics(destination, source)
@@ -69,11 +69,7 @@ actual class MqttProtocol actual constructor(
         topicChannels += toTopics(destination, source) to MutableSharedFlow(1)
     }
 
-    override suspend fun writeToChannel(
-        from: Entity,
-        to: Entity,
-        message: ByteArray,
-    ): Either<ProtocolError, Unit> =
+    override suspend fun writeToChannel(from: Entity, to: Entity, message: ByteArray): Either<ProtocolError, Unit> =
         coroutineScope {
             either {
                 val topic = registeredTopics[Pair(from, to)]
@@ -105,7 +101,7 @@ actual class MqttProtocol actual constructor(
                     mqttClient =
                         MqttAsyncClient(
                             "tcp://$host:$port",
-                            "PulvreaktMqttProtocol[$deviceId]-${context.host.hostname}",
+                            "PulvreaktMqttProtocol[$deviceId]-${context.executingHost.hostname}",
                             MemoryPersistence(),
                         )
                 }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
@@ -156,10 +152,6 @@ actual class MqttProtocol actual constructor(
         mqttClient.close()
         scope.coroutineContext.cancelChildren()
         return Unit.right()
-    }
-
-    override fun setupInjector(kodein: DI) {
-        di = kodein
     }
 
     /**

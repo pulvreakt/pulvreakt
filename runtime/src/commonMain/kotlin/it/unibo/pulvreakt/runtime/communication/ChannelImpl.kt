@@ -8,100 +8,78 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.pulvreakt.api.communication.Channel
 import it.unibo.pulvreakt.api.communication.Mode
 import it.unibo.pulvreakt.api.communication.protocol.Entity
-import it.unibo.pulvreakt.api.communication.protocol.Protocol
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.context.Context
-import it.unibo.pulvreakt.errors.communication.CommunicatorError
+import it.unibo.pulvreakt.errors.communication.ChannelError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
-import org.kodein.di.DI
-import org.kodein.di.instance
 
 /**
  * Predefined [Channel] which handle out-of-the-box the communication between components in the same process.
  */
 class ChannelImpl : Channel {
-    override lateinit var di: DI
-    private val localCommManager by instance<LocalChannelManager>()
     private var currentMode: Mode = Mode.Local
     private val logger = KotlinLogging.logger("AbstractCommunicator")
+    private val remoteProtocol by lazy { context.protocolInstance() }
+    private val channelManager by lazy { context.channelManager }
+    private lateinit var context: Context<*>
     private lateinit var localCommunicator: Channel
-    private val remoteProtocol by instance<Protocol>()
-    private val context by instance<Context<*>>()
     private lateinit var sourceComponent: ComponentRef
     private lateinit var destinationComponent: ComponentRef
 
-    override suspend fun channelSetup(
-        source: ComponentRef,
-        destination: ComponentRef,
-    ): Either<CommunicatorError, Unit> =
-        either {
-            isDependencyInjectionInitialized().bind()
-            localCommunicator = localCommManager.getLocalCommunicator(source, destination)
-            sourceComponent = source
-            destinationComponent = destination
-            remoteProtocol.setupChannel(source.toEntity(), destination.toEntity())
-        }
+    override fun setupContext(context: Context<*>) {
+        this.context = context
+    }
 
-    override fun setupInjector(kodein: DI) {
-        di = kodein
+    override suspend fun channelSetup(source: ComponentRef, destination: ComponentRef): Either<ChannelError, Unit> = either {
+        ensure(::context.isInitialized) { ChannelError.InjectorNotInitialized }
+        localCommunicator = channelManager.getLocalCommunicator(source, destination)
+        sourceComponent = source
+        destinationComponent = destination
+        remoteProtocol.setupChannel(source.toEntity(), destination.toEntity())
     }
 
     override fun setMode(mode: Mode) {
         currentMode = mode
     }
 
-    override suspend fun sendToComponent(message: ByteArray): Either<CommunicatorError, Unit> =
-        either {
-            isDependencyInjectionInitialized().bind()
-            isLocalCommunicatorInitialized().bind()
-            logger.debug { "Send ${message.decodeToString()} [Mode: $currentMode]" }
-            when (currentMode) {
-                is Mode.Local -> localCommunicator.sendToComponent(message).bind()
-                is Mode.Remote -> sendRemoteToComponent(message).bind()
-            }
+    override suspend fun sendToComponent(message: ByteArray): Either<ChannelError, Unit> = either {
+        ensure(::context.isInitialized) { ChannelError.InjectorNotInitialized }
+        ensure(::localCommunicator.isInitialized) { ChannelError.CommunicatorNotInitialized }
+        logger.debug { "Send ${message.decodeToString()} [Mode: $currentMode]" }
+        when (currentMode) {
+            is Mode.Local -> localCommunicator.sendToComponent(message).bind()
+            is Mode.Remote -> sendRemoteToComponent(message).bind()
         }
+    }
 
-    override suspend fun receiveFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
-        either {
-            isDependencyInjectionInitialized().bind()
-            isLocalCommunicatorInitialized().bind()
-            val remoteCommunicator = receiveRemoteFromComponent().bind()
-            val localCommunicator = localCommunicator.receiveFromComponent().bind()
-            merge(remoteCommunicator.map { Mode.Remote to it }, localCommunicator.map { Mode.Local to it })
-                .filter { (mode, _) -> mode == currentMode }
-                .map { (_, value) -> value }
-                .onEach {
-                    logger.debug {
-                        "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'"
-                    }
-                }
-        }
+    override suspend fun receiveFromComponent(): Either<ChannelError, Flow<ByteArray>> = either {
+        ensure(::context.isInitialized) { ChannelError.InjectorNotInitialized }
+        ensure(::localCommunicator.isInitialized) { ChannelError.CommunicatorNotInitialized }
+        val remoteCommunicator = receiveRemoteFromComponent().bind()
+        val localCommunicator = localCommunicator.receiveFromComponent().bind()
+        merge(remoteCommunicator.map { Mode.Remote to it }, localCommunicator.map { Mode.Local to it })
+            .filter { (mode, _) -> mode == currentMode }
+            .map { (_, value) -> value }
+            .onEach {
+                logger.debug { "Received '${it.decodeToString()}' - operation mode '${if (currentMode == Mode.Remote) "Remote" else "Local"}'" }
+            }
+    }
 
     override suspend fun initialize(): Either<Nothing, Unit> = Unit.right()
 
     override suspend fun finalize(): Either<Nothing, Unit> = Unit.right()
 
-    private suspend fun sendRemoteToComponent(message: ByteArray): Either<CommunicatorError, Unit> =
+    private suspend fun sendRemoteToComponent(message: ByteArray): Either<ChannelError, Unit> =
         remoteProtocol.writeToChannel(sourceComponent.toEntity(), destinationComponent.toEntity(), message)
-            .mapLeft { CommunicatorError.WrapProtocolError(it) }
+            .mapLeft { ChannelError.WrapProtocolError(it) }
 
-    private fun receiveRemoteFromComponent(): Either<CommunicatorError, Flow<ByteArray>> =
+    private fun receiveRemoteFromComponent(): Either<ChannelError, Flow<ByteArray>> =
         remoteProtocol.readFromChannel(destinationComponent.toEntity(), sourceComponent.toEntity())
-            .mapLeft { CommunicatorError.WrapProtocolError(it) }
-
-    private fun isDependencyInjectionInitialized(): Either<CommunicatorError, Unit> =
-        either {
-            ensure(::di.isInitialized) { CommunicatorError.InjectorNotInitialized }
-        }
-
-    private fun isLocalCommunicatorInitialized(): Either<CommunicatorError, Unit> =
-        either {
-            ensure(::localCommunicator.isInitialized) { CommunicatorError.CommunicatorNotInitialized }
-        }
+            .mapLeft { ChannelError.WrapProtocolError(it) }
 
     private fun ComponentRef.toEntity(): Entity = Entity(this.name, context.deviceId.toString())
 }

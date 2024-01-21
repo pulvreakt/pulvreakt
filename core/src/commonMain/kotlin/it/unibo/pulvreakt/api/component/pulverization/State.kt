@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.unibo.pulvreakt.api.component.ComponentKind
 import it.unibo.pulvreakt.api.component.ComponentRef
+import it.unibo.pulvreakt.api.context.Context
 import it.unibo.pulvreakt.errors.component.ComponentError
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.KSerializer
@@ -22,7 +23,7 @@ sealed interface StateOps<out StateRepr : Any>
  * Represents the operation of querying the state of a [State] component.
  */
 @Serializable
-object GetState : StateOps<Nothing>
+data object GetState : StateOps<Nothing>
 
 /**
  * Represents the operation of setting the state of a [State] component with a new [content].
@@ -56,14 +57,9 @@ abstract class State<ID : Any, StateRepr : Any>(
         }
 }
 
-internal class StateOpsSerializer<StateRepr : Any>(
-    stateSerializer: KSerializer<StateRepr>,
-) : KSerializer<StateOps<StateRepr>> {
+internal class StateOpsSerializer<StateRepr : Any>(stateSerializer: KSerializer<StateRepr>) : KSerializer<StateOps<StateRepr>> {
     @Serializable
-    data class StateOpsRepr<StateRepr : Any>(
-        val type: Type,
-        val content: StateRepr?,
-    ) {
+    data class StateOpsRepr<StateRepr : Any>(val type: Type, val content: StateRepr?) {
         enum class Type {
             GetState,
             SetState,
@@ -85,15 +81,11 @@ internal class StateOpsSerializer<StateRepr : Any>(
 
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    override fun serialize(
-        encoder: Encoder,
-        value: StateOps<StateRepr>,
-    ) {
-        val surrogate: StateOpsRepr<StateRepr> =
-            when (value) {
-                is GetState -> StateOpsRepr(StateOpsRepr.Type.GetState, null)
-                is SetState -> StateOpsRepr(StateOpsRepr.Type.SetState, value.content)
-            }
+    override fun serialize(encoder: Encoder, value: StateOps<StateRepr>) {
+        val surrogate: StateOpsRepr<StateRepr> = when (value) {
+            is GetState -> StateOpsRepr(StateOpsRepr.Type.GetState, null)
+            is SetState -> StateOpsRepr(StateOpsRepr.Type.SetState, value.content)
+        }
         surrogateSerializer.serialize(encoder, surrogate)
     }
 }
