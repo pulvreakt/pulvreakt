@@ -2,6 +2,7 @@ package it.unibo.pulvreakt.modularization.api.module
 
 import arrow.core.Either
 import it.unibo.pulvreakt.modularization.api.Capabilities
+import it.unibo.pulvreakt.modularization.api.utils.ManagedResource
 import it.unibo.pulvreakt.modularization.errors.module.ModuleError
 
 typealias ModuleResult<Result> = Either<ModuleError, Result>
@@ -9,21 +10,21 @@ typealias ModuleResult<Result> = Either<ModuleError, Result>
 /**
  * A module requiring [Cap] to be executed, taking [Input] and producing an [Output].
  */
-interface Module<out Cap : Capabilities, Input, Output> {
+interface Module<out Cap : Capabilities, Input, Output> : ManagedResource<ModuleError> {
     /**
      * The required capabilities to execute this module.
      */
-    val capabilities: Cap
+    val capabilities: Cap?
 
     /**
      * The input modules of this module.
      */
-    val inputModules: Set<SymbolicModule>
+    var inputModules: Set<SymbolicModule>
 
     /**
      * The output modules of this module.
      */
-    val outputModules: Set<SymbolicModule>
+    var outputModules: Set<SymbolicModule>
 
     /**
      * Build the input parameters coming from the input modules.

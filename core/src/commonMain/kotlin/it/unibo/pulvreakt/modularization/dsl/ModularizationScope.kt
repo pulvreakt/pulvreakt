@@ -1,55 +1,81 @@
 package it.unibo.pulvreakt.modularization.dsl
 
+import arrow.core.left
+import arrow.core.right
+import arrow.core.toNonEmptyListOrNull
 import it.unibo.pulvreakt.modularization.api.module.Module
-import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
+import it.unibo.pulvreakt.modularization.api.module.SymbolicModule
+import it.unibo.pulvreakt.modularization.api.module.module
+import it.unibo.pulvreakt.modularization.dsl.errors.ConfigurationError
+import it.unibo.pulvreakt.modularization.dsl.errors.ModuleNotAvailable
 
-class ModularizationScope {
-    private val modulesAssociation = mutableMapOf<Module<*, *, *>, Set<Module<*, *, *>>>()
+/**
+ * Configurations scope for modularization system with the available [modules].
+ */
+class ModularizationScope(private val modules: Set<Module<*, *, *>>) {
+    /**
+     * The set of [SymbolicModule]s are inputs of the [Module]s.
+     */
+    private val modulesAssociation = mutableMapOf<SymbolicModule, Set<SymbolicModule>>()
+    private val configurationErrors = mutableListOf<ConfigurationError>()
 
-    infix fun <Output> Module<*, *, Output>.connectedTo(otherModule: Module<*, Output, *>) {
-        modulesAssociation[this]?.let { modulesAssociation[this] = it + otherModule }
-            ?: run { modulesAssociation[this] = setOf(otherModule) }
-    }
+    /**
+     * Builds the input or output of [Module]s.
+     */
+    infix fun SymbolicModule.and(other: SymbolicModule): ModuleBuilder = ModuleBuilder(setOf(this, other))
 
-    infix fun <Output> Module<*, *, Output>.connectedTo(otherModule: ModuleBuilderInput<Output>) {
-        modulesAssociation[this]?.let { modulesAssociation[this] = it + otherModule.inputModules }
-            ?: run { modulesAssociation[this] = otherModule.inputModules }
-    }
+    /**
+     * Builds the input or output of [Module]s.
+     */
+    infix fun ModuleBuilder.and(other: SymbolicModule): ModuleBuilder = ModuleBuilder(symbolicModules + other)
 
-    infix fun <Output> ModuleBuilderOutput<Output>.connectedTo(otherModule: Module<*, Output, *>) {
-        outputModules.forEach { module ->
-            modulesAssociation[module]?.let { modulesAssociation[module] = it + otherModule }
-                ?: run { modulesAssociation[module] = setOf(otherModule) }
+    /**
+     * Builds the input or output of [Module]s.
+     */
+    infix fun ModuleBuilder.and(otherBuilder: ModuleBuilder): ModuleBuilder = ModuleBuilder(symbolicModules + otherBuilder.symbolicModules)
+
+    /**
+     * Connects a [Module] to an[other] [Module].
+     */
+    infix fun SymbolicModule.wiredTo(other: SymbolicModule) = ModuleBuilder(setOf(this)) wiredTo ModuleBuilder(setOf(other))
+
+    /**
+     * Connects multiple [Module]s to an[other] [Module].
+     */
+    infix fun ModuleBuilder.wiredTo(other: SymbolicModule) = wiredTo(ModuleBuilder(setOf(other)))
+
+    /**
+     * Connects multiple [Module]s to an[other] [Module].
+     */
+    infix fun SymbolicModule.wiredTo(other: ModuleBuilder) = ModuleBuilder(setOf(this)) wiredTo other
+
+    /**
+     * Connects multiple [Module]s to [otherModules].
+     */
+    infix fun ModuleBuilder.wiredTo(otherModules: ModuleBuilder) {
+        when {
+            symbolicModules.any { !moduleInContext(it, modules) } ->
+                symbolicModules.filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
+
+            otherModules.symbolicModules.any { !moduleInContext(it, modules) } ->
+                otherModules.symbolicModules.filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
+
+            else -> otherModules.symbolicModules.forEach { module ->
+                modulesAssociation[module]?.let { modulesAssociation[module] = it + symbolicModules }
+                    ?: run { modulesAssociation[module] = symbolicModules }
+            }
         }
     }
 
-    infix fun <Output> ModuleBuilderOutput<Output>.connectedTo(otherModule: ModuleBuilderInput<Output>) {
-        outputModules.forEach { module ->
-            modulesAssociation[module]?.let { modulesAssociation[module] = it + otherModule.inputModules }
-                ?: run { modulesAssociation[module] = otherModule.inputModules }
-        }
+    /**
+     * Aggregates the [symbolicModules] acting as input or outputs of the [Module]s.
+     */
+    data class ModuleBuilder(val symbolicModules: Set<SymbolicModule>)
+
+    private fun moduleInContext(module: SymbolicModule, modules: Set<Module<*, *, *>>): Boolean = module in modules.map { module(it) }
+
+    internal fun build(): ModularizationResult = when {
+        configurationErrors.isNotEmpty() -> configurationErrors.toNonEmptyListOrNull()!!.left()
+        else -> modulesAssociation.right()
     }
-
-    infix fun <Output> Module<*, *, Output>.and(otherModule: Module<*, *, Output>): ModuleBuilderOutput<Output> =
-        ModuleBuilderOutput(setOf(this, otherModule))
-
-    infix fun <Output> ModuleBuilderOutput<Output>.and(otherModule: Module<*, *, Output>): ModuleBuilderOutput<Output> =
-        ModuleBuilderOutput(outputModules + otherModule)
-
-    infix fun <Output> ModuleBuilderOutput<Output>.and(otherModule: ModuleBuilderOutput<Output>): ModuleBuilderOutput<Output> =
-        ModuleBuilderOutput(outputModules + otherModule.outputModules)
-
-    infix fun <Input> Module<*, Input, *>.andIn(otherModule: Module<*, Input, *>): ModuleBuilderInput<Input> =
-        ModuleBuilderInput(setOf(this, otherModule))
-
-    infix fun <Input> ModuleBuilderInput<Input>.andIn(otherModule: Module<*, Input, *>): ModuleBuilderInput<Input> =
-        ModuleBuilderInput(inputModules + otherModule)
-
-    infix fun <Input> ModuleBuilderInput<Input>.andIn(otherModule: ModuleBuilderInput<Input>): ModuleBuilderInput<Input> =
-        ModuleBuilderInput(inputModules + otherModule.inputModules)
-
-    data class ModuleBuilderInput<Input>(val inputModules: Set<Module<*, Input, *>>)
-    data class ModuleBuilderOutput<Output>(val outputModules: Set<Module<*, *, Output>>)
-
-    internal fun build(): ModularizedSystem = modulesAssociation.toMap()
 }
