@@ -41,15 +41,20 @@ value class OffloadRejected(val requestId: Long) : Message
 /**
  * Outbound [message] sent [fromModule] with a [id] from a [sourceHost] at [timestamp].
  */
-data class OutboundMessage<Msg : Any>(
+data class OutboundMessage(
     val sourceHost: Host<*>,
     val fromModule: SymbolicModule,
     val id: Int,
-    val message: Msg,
+    val message: Any,
     val timestamp: Long,
 ) : Message
 
 /**
  * Inbound [message] sent [toModule] a module with a [id].
  */
-data class InboundMessage<Msg : Any>(val toModule: SymbolicModule, val id: Int, val message: Msg) : Message
+data class InboundMessage(val toModule: SymbolicModule, val id: Int, val message: Any) : Message
+
+/**
+ * Service [message] sent [fromHost].
+ */
+data class ServiceMessage(val fromHost: Host<*>, val message: Any) : Message
