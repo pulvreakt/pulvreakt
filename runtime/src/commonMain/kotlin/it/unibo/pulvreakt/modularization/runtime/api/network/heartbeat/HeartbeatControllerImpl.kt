@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.modularization.runtime.api.network
+package it.unibo.pulvreakt.modularization.runtime.api.network.heartbeat
 
 import arrow.core.Either
 import arrow.core.right

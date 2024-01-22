@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.modularization.runtime.api.network
+package it.unibo.pulvreakt.modularization.runtime.api.network.heartbeat
 
 import it.unibo.pulvreakt.modularization.api.Host
 import it.unibo.pulvreakt.modularization.api.utils.ManagedResource

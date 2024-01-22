@@ -1,4 +1,4 @@
-package it.unibo.pulvreakt.modularization.runtime.api
+package it.unibo.pulvreakt.modularization.runtime.api.bootstrap
 
 import arrow.core.Either
 import it.unibo.pulvreakt.modularization.injection.Injection
