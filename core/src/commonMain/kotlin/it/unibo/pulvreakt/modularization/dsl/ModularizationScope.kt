@@ -55,10 +55,13 @@ class ModularizationScope(private val modules: Set<Module<*, *, *>>) {
     infix fun ModuleBuilder.wiredTo(otherModules: ModuleBuilder) {
         when {
             symbolicModules.any { !moduleInContext(it, modules) } ->
-                symbolicModules.filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
+                symbolicModules
+                    .filter { !moduleInContext(it, modules) }
+                    .forEach { configurationErrors.add(ModuleNotAvailable(it)) }
 
             otherModules.symbolicModules.any { !moduleInContext(it, modules) } ->
-                otherModules.symbolicModules.filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
+                otherModules.symbolicModules
+                    .filter { !moduleInContext(it, modules) }.forEach { configurationErrors.add(ModuleNotAvailable(it)) }
 
             else ->
                 otherModules.symbolicModules.forEach { module ->
