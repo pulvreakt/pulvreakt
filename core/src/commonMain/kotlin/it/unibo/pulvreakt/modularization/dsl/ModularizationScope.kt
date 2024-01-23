@@ -6,6 +6,7 @@ import arrow.core.toNonEmptyListOrNull
 import it.unibo.pulvreakt.modularization.api.module.Module
 import it.unibo.pulvreakt.modularization.api.module.SymbolicModule
 import it.unibo.pulvreakt.modularization.api.module.module
+import it.unibo.pulvreakt.modularization.dsl.data.ModularizedSystem
 import it.unibo.pulvreakt.modularization.dsl.errors.ConfigurationError
 import it.unibo.pulvreakt.modularization.dsl.errors.ModuleNotAvailable
 
@@ -84,6 +85,6 @@ class ModularizationScope(private val modules: Set<Module<*, *, *>>) {
     internal fun build(): ModularizationResult =
         when {
             configurationErrors.isNotEmpty() -> configurationErrors.toNonEmptyListOrNull()!!.left()
-            else -> modulesAssociation.right()
+            else -> ModularizedSystem(modules, modulesAssociation).right()
         }
 }

@@ -13,7 +13,7 @@ interface Scheduler : ManagedResource<Nothing> {
     /**
      * Registers the [messages] received from the network.
      */
-    fun registerNewMessages(messages: List<InboundMessage<*>>)
+    fun registerNewMessages(messages: List<InboundMessage>)
 
     /**
      * Returns an asynchronous flow of the modules that should be executed and the associated messages to process.

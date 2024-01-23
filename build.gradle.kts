@@ -264,7 +264,7 @@ koverReport {
     }
 }
 
-val websiteDir = File(buildDir, "website")
+val websiteDir = File(layout.buildDirectory.asFile.get(), "website")
 
 hugo {
     version = Regex("gohugoio/hugo@v([\\.\\-\\+\\w]+)")
