@@ -11,7 +11,7 @@ import org.kodein.di.instance
 /**
  * Abstract implementation of a [Bootstrapper] module that provides a [network] instance.
  */
-abstract class AbstractBootstrapper : Bootstrapper, DIAware {
+abstract class AbstractBootstrapper<ID : Any> : Bootstrapper<ID>, DIAware {
     override val di: DI by lazy {
         Injection.getModule().getOrNull() ?: error(
             """

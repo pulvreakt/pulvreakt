@@ -5,8 +5,12 @@ import it.unibo.pulvreakt.modularization.api.module.SymbolicModule
 import it.unibo.pulvreakt.modularization.api.utils.ManagedResource
 import it.unibo.pulvreakt.modularization.runtime.errors.BootstrapperError
 
-typealias BootstrapperResult = Either<BootstrapperError, Unit>
+typealias BootstrapperResult<Result> = Either<BootstrapperError, Result>
 
-interface Bootstrapper : ManagedResource<BootstrapperError> {
-    suspend fun bootstrap(modules: Set<SymbolicModule>): BootstrapperResult
+interface Bootstrapper<ID : Any> : ManagedResource<BootstrapperError> {
+    /**
+     * Returns the set of modules that must be executed locally.
+     * Can fail with a [BootstrapperError] in case no suitable allocation is found for the modules.
+     */
+    suspend fun bootstrap(modules: Set<Pair<SymbolicModule, ID>>): BootstrapperResult<Set<Pair<SymbolicModule, ID>>>
 }
