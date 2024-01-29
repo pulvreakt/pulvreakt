@@ -21,6 +21,7 @@ kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.57.1"
 [libraries]
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrow-resilience = { module = "io.arrow-kt:arrow-resilience", version.ref = "arrow" }
 kodein = { module = "org.kodein.di:kodein-di", version = "7.21.2" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
@@ -51,4 +52,5 @@ kotest-common = [
 arrow = [
   "arrow-core",
   "arrow-coroutines",
+  "arrow-resilience",
 ]
