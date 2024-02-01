@@ -16,7 +16,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 kover = "org.jetbrains.kotlinx.kover:0.7.5"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.22"
 taskTree = "com.dorongold.task-tree:2.1.1"
-kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.58.0"
+kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.59.0"
 
 [libraries]
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
