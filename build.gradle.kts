@@ -233,7 +233,7 @@ allprojects {
     }
     dependencies {
         detektPlugins("com.wolt.arrow.detekt:rules:0.4.0")
-        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.4")
+        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.5")
     }
     tasks.withType<Detekt>().configureEach { finalizedBy(reportMerge) }
     reportMerge {
