@@ -13,7 +13,7 @@ hugo = "io.github.fstaudt.hugo:0.7.0"
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kover = "org.jetbrains.kotlinx.kover:0.7.5"
+kover = "org.jetbrains.kotlinx.kover:0.7.6"
 publishOnCentral = "org.danilopianini.publish-on-central:5.0.23"
 taskTree = "com.dorongold.task-tree:2.1.1"
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.60.1"
