@@ -48,7 +48,7 @@ var relearn_search_index = [
     "content": "",
     "description": "",
     "tags": null,
-    "title": "Tag :: api docs",
+    "title": "Tag :: Api Docs",
     "uri": "/tags/api-docs/index.html"
   },
   {
@@ -64,7 +64,7 @@ var relearn_search_index = [
     "content": "",
     "description": "",
     "tags": null,
-    "title": "Tag :: dokka",
+    "title": "Tag :: Dokka",
     "uri": "/tags/dokka/index.html"
   },
   {
@@ -72,7 +72,7 @@ var relearn_search_index = [
     "content": "",
     "description": "",
     "tags": null,
-    "title": "Tag :: kdoc",
+    "title": "Tag :: Kdoc",
     "uri": "/tags/kdoc/index.html"
   },
   {
