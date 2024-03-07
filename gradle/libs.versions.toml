@@ -3,7 +3,7 @@ arrow = "1.2.3"
 coroutines = "1.8.0"
 dokka = "1.9.10"
 kotest = "5.8.0"
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 
 [plugins]
 detekt = "io.gitlab.arturbosch.detekt:1.23.5"
