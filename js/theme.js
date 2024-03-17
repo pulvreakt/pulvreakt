@@ -218,10 +218,10 @@ function initMermaid( update, attrs ) {
 
             var graph = serializeGraph( parse );
             var new_element = document.createElement( 'div' );
-            for( var attr of element.attributes ){
+            Array.from( element.attributes ).forEach( function( attr ){
                 new_element.setAttribute( attr.name, attr.value );
                 element.removeAttribute( attr.name );
-            }
+            });
             new_element.classList.add( 'mermaid-container' );
             new_element.classList.remove( 'mermaid' );
             element.classList.add( 'mermaid' );
@@ -323,7 +323,7 @@ function initMermaid( update, attrs ) {
                     var button = parent.querySelector( '.svg-reset-button' );
                     var zoom = d3.zoom().on( 'zoom', function( e ){
                         inner.attr( 'transform', e.transform );
-                        if( e.transform.k == 1 ){
+                        if( e.transform.k == 1 && e.transform.x == 0 && e.transform.y == 0 ){
                             button.classList.remove( 'zoomed' );
                         }
                         else{
@@ -479,7 +479,7 @@ function initOpenapi( update, attrs ){
                             try{
                                 Object.assign( options, { spec: jsyaml.load( oc.dataset.openapiSpec ) });
                             } catch( err ){
-                                console.log( err );
+                                console.error( 'OpenAPI: file "' + oc.dataset.openapiUrl + '" could not be parsed as JSON or YAML');
                             }
                         }
                     }
