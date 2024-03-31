@@ -6,7 +6,7 @@ kotest = "5.8.1"
 kotlin = "1.9.23"
 
 [plugins]
-detekt = "io.gitlab.arturbosch.detekt:1.23.5"
+detekt = "io.gitlab.arturbosch.detekt:1.23.6"
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning:3.1.4"
 hugo = "io.github.fstaudt.hugo:0.7.0"
