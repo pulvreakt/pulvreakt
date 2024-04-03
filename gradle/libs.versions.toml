@@ -1,5 +1,5 @@
 [versions]
-arrow = "1.2.3"
+arrow = "1.2.4"
 coroutines = "1.8.0"
 dokka = "1.9.20"
 kotest = "5.8.1"
