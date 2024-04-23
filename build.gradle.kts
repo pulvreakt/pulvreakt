@@ -92,6 +92,7 @@ allprojects {
                 dependencies {
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
+                    api(rootProject.libs.collektive)
                     api(rootProject.libs.kodein)
                     api(rootProject.libs.kotlin.logging)
                     api(rootProject.libs.bundles.arrow)

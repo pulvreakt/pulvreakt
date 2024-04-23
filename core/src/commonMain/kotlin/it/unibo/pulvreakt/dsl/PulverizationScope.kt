@@ -34,9 +34,13 @@ import kotlin.properties.ReadOnlyProperty
 @JvmInline
 value class LogicDeviceType(val name: String)
 
+@DslMarker
+annotation class PulverizationDsl
+
 /**
  * Configuration DSL scope for configuring the pulverization.
  */
+@PulverizationDsl
 class PulverizationScope {
     private val systemConfigSpec = mutableSetOf<Either<Nel<SystemConfigurationError>, DeviceStructure>>()
     private var deploymentConfigSpec: Either<Nel<ConfigurationError>, ConfiguredDevicesRuntimeConfiguration>? = null

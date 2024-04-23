@@ -9,9 +9,11 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.zipOrAccumulate
 import arrow.core.toNonEmptySetOrNull
+import it.unibo.pulvreakt.api.component.Component
 import it.unibo.pulvreakt.api.component.ComponentRef
 import it.unibo.pulvreakt.api.component.pulverization.Actuators
 import it.unibo.pulvreakt.api.component.pulverization.Behavior
+import it.unibo.pulvreakt.api.component.pulverization.BehaviourOutput
 import it.unibo.pulvreakt.api.component.pulverization.Communication
 import it.unibo.pulvreakt.api.component.pulverization.Sensors
 import it.unibo.pulvreakt.api.component.pulverization.State
@@ -25,6 +27,8 @@ import it.unibo.pulvreakt.api.component.ComponentKind.Communication as Communica
 import it.unibo.pulvreakt.api.component.ComponentKind.Sensor as SensorsKind
 import it.unibo.pulvreakt.api.component.ComponentKind.State as StateKind
 
+data class ConfiguredComponent(val component: Component)
+
 /**
  * Scope for the system configuration using a canonical pulverization specification.
  */
@@ -34,6 +38,16 @@ class CanonicalDeviceScope<St : Any, Co : Any, Sens : Any, Act : Any>(private va
     private var commCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var sensorsCapability: Pair<ComponentRef, Set<Capability>>? = null
     private var actuatorsCapability: Pair<ComponentRef, Set<Capability>>? = null
+
+//    fun withBehavior(behaviorLogic: (St?, List<Co>, Sens?) -> BehaviourOutput<St, Co, Act>): ConfiguredComponent {
+////        val behavior = object : Behavior<St, Co, Sens, Act>(TODO(), TODO(), TODO(), TODO(), TODO()) {
+////            override fun invoke(state: St?, comm: List<Co>, sensors: Sens?): BehaviourOutput<St, Co, Act> {
+////                return behaviorLogic(state, comm, sensors)
+////            }
+////        }
+////        return ConfiguredComponent(behavior)
+//        TODO()
+//    }
 
     /**
      * Register a [State] component in the device.
