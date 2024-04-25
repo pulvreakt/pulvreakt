@@ -2,7 +2,7 @@ var relearn_search_index = [
   {
     "breadcrumb": "Pulverization framework",
     "content": "Contents ",
-    "description": "",
+    "description": "TODO",
     "tags": null,
     "title": "Tutorials",
     "uri": "/tutorials/index.html"
@@ -10,7 +10,7 @@ var relearn_search_index = [
   {
     "breadcrumb": "Pulverization framework",
     "content": "Contents ",
-    "description": "",
+    "description": "TODO",
     "tags": null,
     "title": "How-to Guides",
     "uri": "/how-to-guides/index.html"
@@ -18,7 +18,7 @@ var relearn_search_index = [
   {
     "breadcrumb": "Pulverization framework \u003e Reference",
     "content": "",
-    "description": "",
+    "description": "KDoc API docs",
     "tags": [
       "kdoc",
       "dokka",
@@ -30,7 +30,7 @@ var relearn_search_index = [
   {
     "breadcrumb": "Pulverization framework",
     "content": "Contents ",
-    "description": "",
+    "description": "TODO",
     "tags": null,
     "title": "Explanation",
     "uri": "/explanation/index.html"
@@ -38,7 +38,7 @@ var relearn_search_index = [
   {
     "breadcrumb": "Pulverization framework",
     "content": "Contents KDoc APIKDoc API docs\n",
-    "description": "",
+    "description": "TODO",
     "tags": null,
     "title": "Reference",
     "uri": "/reference/index.html"
