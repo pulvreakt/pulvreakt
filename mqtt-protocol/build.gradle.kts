@@ -10,7 +10,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                api(rootProject.libs.paho.mqtt)
+                implementation(rootProject.libs.bundles.kmqtt)
             }
         }
         val jsMain by getting{

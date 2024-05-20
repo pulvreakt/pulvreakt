@@ -16,7 +16,7 @@ import org.kodein.di.DI
 import kotlin.random.Random
 
 /**
- * Represents the MQTT protocol.
+ * MQTT Protocol implementation on JS side.
  */
 @Suppress("UnusedPrivateProperty")
 actual class MqttProtocol actual constructor(

@@ -29,7 +29,7 @@ import mqtt.packets.mqttv5.SubscriptionOptions
 import org.kodein.di.DI
 
 /**
- * Represents the MQTT protocol used in PulvReAKt.
+ * MQTT Protocol implementation on Native side.
  */
 @Suppress("UnusedPrivateProperty")
 actual class MqttProtocol actual constructor(
