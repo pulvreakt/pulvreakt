@@ -28,6 +28,7 @@ actual class MqttProtocol actual constructor(
 ) : Protocol {
     private val mainTopic = "PulvReAKt"
 
+    override lateinit var di: DI
     private val logger = KotlinLogging.logger("MqttProtocol")
 
     private val registeredTopics = mutableMapOf<Pair<Entity, Entity>, String>()
@@ -127,11 +128,8 @@ actual class MqttProtocol actual constructor(
     }
 
     override fun setupInjector(kodein: DI) {
-        TODO("Not yet implemented")
+        di = kodein
     }
-
-    override val di: DI
-        get() = TODO("Not yet implemented")
 
     override suspend fun finalize(): Either<ProtocolError, Unit> {
         client.end(force = true, options = js("{reasonCode : 0x00}"))
