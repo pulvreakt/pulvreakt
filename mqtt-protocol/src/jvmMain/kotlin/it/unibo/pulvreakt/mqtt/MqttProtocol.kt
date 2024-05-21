@@ -81,7 +81,7 @@ actual class MqttProtocol actual constructor(
                         retainAvailable = 1u,
                     )
                 )
-            }.mapLeft { ProtocolError.ProtocolException(it) }
+            }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
         }
     }
 
@@ -106,7 +106,7 @@ actual class MqttProtocol actual constructor(
                 ) {
                     logger.debug { "New message arrived on topic $it.topicName" }
                     requireNotNull(it.payload) { "Message cannot be null" }
-                    topicChannels[it.topicName]?.tryEmit(it.payload!!.toByteArray())
+                    it.payload?.toByteArray()?.let { msg -> topicChannels[it.topicName]?.tryEmit(msg) }
                 }
 
                 client.subscribe(
