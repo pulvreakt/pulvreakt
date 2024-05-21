@@ -31,7 +31,8 @@ import org.kodein.di.DI
 /**
  * MQTT Protocol implementation on Native side.
  */
-@Suppress("UnusedPrivateProperty")
+@OptIn(ExperimentalUnsignedTypes::class)
+@Suppress("ExperimentalUnsignedTypes")
 actual class MqttProtocol actual constructor(
     private val host: String,
     private val port: Int,
@@ -80,7 +81,7 @@ actual class MqttProtocol actual constructor(
                         retainAvailable = 1u,
                     )
                 )
-            }.mapLeft { ProtocolError.ProtocolException(it) }
+            }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
         }
     }
 
