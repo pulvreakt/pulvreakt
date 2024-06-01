@@ -93,7 +93,7 @@ actual class MqttProtocol actual constructor(
             options.password = this@MqttProtocol.password
             options.clientId = Random.nextInt()
             logger.debug { "-attempting to connect" }
-            client = connect("mqtt://$host:$port", options = options)
+            client = connect("ws://$host:$port/mqtt", options = options)
 
             logger.debug { "-waiting to connect" }
 

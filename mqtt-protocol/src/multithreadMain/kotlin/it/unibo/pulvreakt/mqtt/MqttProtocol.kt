@@ -1,4 +1,4 @@
-@file:Suppress("detekt:ImportOrdering") // todo fix
+@file:Suppress("detekt:ImportOrdering")
 
 package it.unibo.pulvreakt.mqtt
 
@@ -27,9 +27,10 @@ import mqtt.packets.mqttv5.MQTT5Properties
 import mqtt.packets.mqttv5.ReasonCode
 import mqtt.packets.mqttv5.SubscriptionOptions
 import org.kodein.di.DI
+import socket.IOException
 
 /**
- * MQTT Protocol implementation on Native side.
+ * MQTT Protocol implementation on Native and JVM side.
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 @Suppress("ExperimentalUnsignedTypes")
@@ -103,10 +104,15 @@ actual class MqttProtocol actual constructor(
                     userName = username,
                     password = password?.encodeToByteArray()?.toUByteArray(),
                     cleanStart = false,
+                    webSocket = "/mqtt",
                 ) {
                     logger.debug { "New message arrived on topic $it.topicName" }
-                    requireNotNull(it.payload) { "Message cannot be null" }
-                    topicChannels[it.topicName]?.tryEmit(it.payload!!.toByteArray())
+                    try {
+                        requireNotNull(it.payload) { "Message cannot be null" }
+                        topicChannels[it.topicName]?.tryEmit(it.payload!!.toByteArray())
+                    } catch (e: IllegalArgumentException) {
+                        logger.debug(e) { "Payload was null for message on topic ${it.topicName}" }
+                    }
                 }
 
                 client.subscribe(
@@ -117,11 +123,18 @@ actual class MqttProtocol actual constructor(
                         )
                     )
                 )
-            }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
+            }.mapLeft {
+                logger.debug(it) { "MQTT Client initialization failed" }
+                ProtocolError.ProtocolException(it)
+            }.bind()
 
             listenerJob = scope.launch {
-                logger.debug { "client setup" }
-                client.run()
+                try {
+                    logger.debug { "Client setup started" }
+                    client.run()
+                } catch (e: IOException) {
+                    logger.debug(e) { "IO error running MQTT client, Caused by: '${e.message}'" }
+                }
             }
         }
     }
