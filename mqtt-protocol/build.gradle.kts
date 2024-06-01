@@ -42,6 +42,13 @@ kotlin {
             }
         }
 
+        val linuxArm64Main by getting {
+            dependencies {
+                dependsOn(nativeMain)
+                implementation(files("native-libs/openssl-linux-arm64.klib"))
+            }
+        }
+
         val tvosSimulatorArm64Main by getting {
             dependencies {
                 dependsOn(nativeMain)
@@ -119,6 +126,10 @@ kotlin {
 
     linuxX64 {
         nativeSetup("linuxX64")
+    }
+
+    linuxArm64 {
+        nativeSetup("linuxArm64")
     }
 
     mingwX64 {
