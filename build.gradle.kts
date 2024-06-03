@@ -82,7 +82,7 @@ allprojects {
         }
 
         js(IR) {
-            browser()
+//            browser()
             nodejs()
             binaries.library()
         }
