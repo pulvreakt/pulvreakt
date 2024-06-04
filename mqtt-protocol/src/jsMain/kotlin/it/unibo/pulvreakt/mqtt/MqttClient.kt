@@ -10,11 +10,7 @@ package it.unibo.pulvreakt.mqtt
 external class MqttClient {
 
     /**
-     * Publishes a message on the given topic.
-     * @param topic The topic.
-     * @param message The message.
-     * @param options The message options (qos, retain, ...).
-     * @param callback The function to be called upon completion.
+     * Publishes the [message] on the given [topic] with the given [options] and executing the [callback] function after ending.
      */
     fun publish(
         topic: String,
@@ -24,10 +20,7 @@ external class MqttClient {
     )
 
     /**
-     * Subscribes to the given topic.
-     * @param topic The topic.
-     * @param options The message options (qos, retain, ...).
-     * @param callback The function to be executed upon completion.
+     * Subscribes to the given [topic] with the given [options] and executing the [callback] function after ending.
      */
     fun subscribe(
         topic: String,
@@ -36,24 +29,18 @@ external class MqttClient {
     )
 
     /**
-     * Sets up what to do on certain events; this is to be used for the message event.
-     * @param event The trigger for the callback function (message, connect, ...).
-     * @param callback The function to be executed after the given event.
+     * Sets up to execute the [callback] function after the trigger of the given [event]
      */
     fun on(event: String, callback: (String, dynamic, dynamic) -> Unit)
 
     /**
-     * Sets up what to do on certain events; this is to be used for other events.
-     * @param event The trigger for the callback function (message, connect, ...).
-     * @param callback The function to be executed after the given event.
+     * Sets up to execute the [callback] function after the trigger of the given [event]
      */
     fun on(event: String, callback: (dynamic) -> Unit)
 
     /**
-     * Closes the client.
-     * @param force The end needs to be forced or not.
-     * @param options Additional options.
-     * @param callback The function to be called upon completion.
+     * Closes the client with the given [options] and executing the [callback] function after ending.
+     * can be forced by setting the [force] flag to true.
      */
     fun end(
         force: Boolean? = definedExternally,
@@ -64,6 +51,6 @@ external class MqttClient {
 
 /**
  * Connects to the broker.
- * @return The client [MqttClient].
+ * @return The [MqttClient].
  */
 external fun connect(brokerUrl: String, options: dynamic? = definedExternally): MqttClient
