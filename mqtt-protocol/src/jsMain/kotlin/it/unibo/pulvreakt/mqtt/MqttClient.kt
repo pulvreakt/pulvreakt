@@ -1,4 +1,3 @@
-@file:Suppress("REDUNDANT_NULLABLE")
 @file:JsModule("mqtt")
 @file:JsNonModule
 
@@ -15,7 +14,7 @@ external class MqttClient {
     fun publish(
         topic: String,
         message: dynamic,
-        options: dynamic? = definedExternally,
+        options: dynamic = definedExternally,
         callback: ((err: dynamic) -> Unit)? = definedExternally
     )
 
@@ -24,7 +23,7 @@ external class MqttClient {
      */
     fun subscribe(
         topic: String,
-        options: dynamic? = definedExternally,
+        options: dynamic = definedExternally,
         callback: ((err: dynamic, granted: dynamic) -> Unit)? = definedExternally
     )
 
@@ -44,7 +43,7 @@ external class MqttClient {
      */
     fun end(
         force: Boolean? = definedExternally,
-        options: dynamic? = definedExternally,
+        options: dynamic = definedExternally,
         callback: (() -> Unit)? = definedExternally
     )
 }
@@ -53,4 +52,4 @@ external class MqttClient {
  * Connects to the broker.
  * @return The [MqttClient].
  */
-external fun connect(brokerUrl: String, options: dynamic? = definedExternally): MqttClient
+external fun connect(brokerUrl: String, options: dynamic = definedExternally): MqttClient
