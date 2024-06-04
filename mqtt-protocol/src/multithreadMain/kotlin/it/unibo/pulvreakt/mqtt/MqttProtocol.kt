@@ -1,11 +1,9 @@
-@file:Suppress("detekt:ImportOrdering")
-
 package it.unibo.pulvreakt.mqtt
 
 import MQTTClient
 import arrow.core.Either
-import arrow.core.raise.ensureNotNull
 import arrow.core.raise.either
+import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.pulvreakt.api.communication.protocol.Entity
