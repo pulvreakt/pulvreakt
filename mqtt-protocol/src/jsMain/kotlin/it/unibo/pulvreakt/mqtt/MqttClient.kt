@@ -28,12 +28,12 @@ external class MqttClient {
     )
 
     /**
-     * Sets up to execute the [callback] function after the trigger of the given [event]
+     * Sets up to execute the [callback] function after the trigger of the given [event].
      */
     fun on(event: String, callback: (String, dynamic, dynamic) -> Unit)
 
     /**
-     * Sets up to execute the [callback] function after the trigger of the given [event]
+     * Sets up to execute the [callback] function after the trigger of the given [event].
      */
     fun on(event: String, callback: (dynamic) -> Unit)
 
