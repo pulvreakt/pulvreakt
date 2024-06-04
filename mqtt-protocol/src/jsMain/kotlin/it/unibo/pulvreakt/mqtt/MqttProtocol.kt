@@ -18,13 +18,12 @@ import kotlin.random.Random
 /**
  * MQTT Protocol implementation on JS side.
  */
-@Suppress("UnusedPrivateProperty")
 actual class MqttProtocol actual constructor(
     private val host: String,
     private val port: Int,
     private val username: String?,
     private val password: String?,
-    private val coroutineDispatcher: CoroutineDispatcher,
+    coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
     private val mainTopic = "PulvReAKt"
 
