@@ -37,7 +37,7 @@ actual class MqttProtocol actual constructor(
     private val port: Int,
     private val username: String?,
     private val password: String?,
-    private val coroutineDispatcher: CoroutineDispatcher,
+    coroutineDispatcher: CoroutineDispatcher,
 ) : Protocol {
     override lateinit var di: DI
 
