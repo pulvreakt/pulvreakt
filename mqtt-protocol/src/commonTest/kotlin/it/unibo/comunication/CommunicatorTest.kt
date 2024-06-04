@@ -27,7 +27,7 @@ class CommunicatorTest : StringSpec({
     val sourceEntity = Entity("source")
     val destinationEntity = Entity("destination")
 
-    "should initialize and finalize correctly" {
+    "the mqtt protocol should initialize and finalize correctly" {
         val mqttProtocol = MqttProtocol(
             host = host,
             port = port,
@@ -41,7 +41,7 @@ class CommunicatorTest : StringSpec({
         finalizeResult shouldBe Either.Right(Unit)
     }
 
-    "should fail to write to channel when entities are not registered" {
+    "the mqtt protocol should fail to write to channel when entities are not registered" {
         val mqttProtocol = MqttProtocol(
             host = host,
             port = port,
@@ -51,14 +51,16 @@ class CommunicatorTest : StringSpec({
         val invalidSourceEntity = Entity("invalidSource")
         val invalidDestinationEntity = Entity("invalidDestination")
         val result = mqttProtocol.writeToChannel(
-            invalidSourceEntity, invalidDestinationEntity, "error Test".encodeToByteArray())
+            invalidSourceEntity,
+            invalidDestinationEntity,
+            "error Test".encodeToByteArray())
 
         result shouldBe Either.Left(ProtocolError.EntityNotRegistered(invalidDestinationEntity))
         val finalizeResult = mqttProtocol.finalize()
         finalizeResult shouldBe Either.Right(Unit)
     }
 
-    "should fail to read from channel when entities are not registered" {
+    "the mqtt protocol should fail to read from channel when entities are not registered" {
         val mqttProtocol = MqttProtocol(
             host = host,
             port = port,
@@ -68,14 +70,16 @@ class CommunicatorTest : StringSpec({
         val invalidSourceEntity = Entity("invalidSource")
         val invalidDestinationEntity = Entity("invalidDestination")
         val flowResult = mqttProtocol.readFromChannel(
-            invalidSourceEntity, invalidDestinationEntity)
+            invalidSourceEntity,
+            invalidDestinationEntity
+        )
 
         flowResult shouldBe Either.Left(ProtocolError.EntityNotRegistered(invalidSourceEntity))
         val finalizeResult = mqttProtocol.finalize()
         finalizeResult shouldBe Either.Right(Unit)
     }
 
-    "should work correctly" {
+    "the mqtt protocol should work without errors when used correctly" {
         val mqttProtocol = MqttProtocol(
             host = host,
             port = port,
