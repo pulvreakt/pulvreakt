@@ -108,7 +108,10 @@ class CommunicatorTest : StringSpec({
         }
 
         val result = mqttProtocol.writeToChannel(
-            sourceEntity, destinationEntity, message.encodeToByteArray())
+            sourceEntity,
+            destinationEntity,
+            message.encodeToByteArray()
+        )
 
         result shouldBe Either.Right(Unit)
         receiveJob.join()
