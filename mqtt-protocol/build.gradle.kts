@@ -8,7 +8,7 @@ kotlin {
                 implementation(project(":core"))
             }
         }
-        val multithreadMain by creating{
+        val jvmNativeMain by creating{
             dependencies{
                 dependsOn(commonMain)
                 implementation(libs.bundles.kmqtt)
@@ -17,14 +17,14 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                dependsOn(multithreadMain)
+                dependsOn(jvmNativeMain)
                 api(libs.slf4j.simple)
             }
         }
 
         val nativeMain by getting {
             dependencies {
-                dependsOn(multithreadMain)
+                dependsOn(jvmNativeMain)
             }
         }
 
