@@ -13,4 +13,7 @@ expect class MqttProtocol(
     username: String? = null,
     password: String? = null,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    serverKeepAlive: Int = 10,
+    retain: Boolean = true,
+    qos: Int = 2,
 ) : Protocol

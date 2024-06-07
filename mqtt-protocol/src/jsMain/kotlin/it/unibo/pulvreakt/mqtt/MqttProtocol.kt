@@ -24,6 +24,9 @@ actual class MqttProtocol actual constructor(
     private val username: String?,
     private val password: String?,
     coroutineDispatcher: CoroutineDispatcher,
+    private val serverKeepAlive: Int,
+    private val retain: Boolean,
+    private val qos: Int,
 ) : Protocol {
     private val mainTopic = "PulvReAKt"
 
@@ -55,11 +58,16 @@ actual class MqttProtocol actual constructor(
 
         ensureNotNull(topic) { ProtocolError.EntityNotRegistered(to) }
 
+        val writeOptions = js("{}")
+        writeOptions.qos = qos
+        writeOptions.retain = retain
+        writeOptions.keepalive = serverKeepAlive
+
         Either.catch {
             client.publish(
                 topic,
                 message.decodeToString(),
-                options = js("{ qos: 2, retain: true }")
+                options = writeOptions
             )
         }.mapLeft { ProtocolError.ProtocolException(it) }
     }
@@ -81,26 +89,29 @@ actual class MqttProtocol actual constructor(
     override suspend fun initialize(): Either<ProtocolError, Unit> = either {
         Either.catch {
             logger.debug { "entering init" }
-            val options = js(
+            val connectOptions = js(
                 "{" +
                     "  protocolId: 'MQTT'," +
                     "  protocolVersion: 5," +
                     "  clean: false," +
                     "}"
             )
-            options.username = this@MqttProtocol.username
-            options.password = this@MqttProtocol.password
-            options.clientId = Random.nextInt()
+            connectOptions.username = this@MqttProtocol.username
+            connectOptions.password = this@MqttProtocol.password
+            connectOptions.clientId = Random.nextInt()
             logger.debug { "attempting to connect" }
-            client = connect("ws://$host:$port/mqtt", options = options)
+            client = connect("ws://$host:$port/mqtt", options = connectOptions)
 
             logger.debug { "waiting to connect" }
+
+            val subOptions = js("{}")
+            subOptions.qos = qos
 
             client.on("connect") { _, _, _ ->
                 logger.debug { "client initialized" }
                 client.subscribe(
                     "$mainTopic/#",
-                    options = js("{ qos: 2 }")
+                    options = subOptions
                 ) { err: dynamic, granted: dynamic ->
                     if (!err as Boolean) {
                         logger.debug { "Subscribed to topic: ${granted.topic}" }

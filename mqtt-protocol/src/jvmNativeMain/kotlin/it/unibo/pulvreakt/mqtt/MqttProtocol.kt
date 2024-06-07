@@ -38,6 +38,9 @@ actual class MqttProtocol actual constructor(
     private val username: String?,
     private val password: String?,
     coroutineDispatcher: CoroutineDispatcher,
+    private val serverKeepAlive: Int,
+    private val retain: Boolean,
+    private val qos: Int,
 ) : Protocol {
     override lateinit var di: DI
 
@@ -72,12 +75,12 @@ actual class MqttProtocol actual constructor(
             Either.catch {
                 client.publish(
                     retain = true,
-                    Qos.EXACTLY_ONCE,
+                    qos = if (qos <= 0) Qos.AT_MOST_ONCE else if (qos >= 2) Qos.EXACTLY_ONCE else Qos.AT_LEAST_ONCE,
                     topic,
                     message.toUByteArray(),
                     MQTT5Properties(
-                        serverKeepAlive = 5000u,
-                        retainAvailable = 1u,
+                        serverKeepAlive = serverKeepAlive.toUInt(),
+                        retainAvailable = if (retain) 1U else 0U,
                     )
                 )
             }.mapLeft { ProtocolError.ProtocolException(it) }.bind()
@@ -117,7 +120,7 @@ actual class MqttProtocol actual constructor(
                     listOf(
                         Subscription(
                             "$mainTopic/#",
-                            SubscriptionOptions(qos = Qos.EXACTLY_ONCE)
+                            SubscriptionOptions(qos = if (qos <= 0) Qos.AT_MOST_ONCE else if (qos >= 2) Qos.EXACTLY_ONCE else Qos.AT_MOST_ONCE)
                         )
                     )
                 )
