@@ -38,7 +38,7 @@ actual class MqttProtocol actual constructor(
         source: Entity,
         destination: Entity
     ) {
-        logger.debug { "-Setting up channel for entity $source to $destination" }
+        logger.debug { "Setting up channel for entity $source to $destination" }
         registeredTopics += (source to destination) to toTopics(source, destination)
         registeredTopics += (destination to source) to toTopics(destination, source)
         topicChannels += toTopics(source, destination) to MutableSharedFlow(1)
@@ -51,7 +51,7 @@ actual class MqttProtocol actual constructor(
         message: ByteArray
     ): Either<ProtocolError, Unit> = either {
         val topic = registeredTopics[Pair(from, to)]
-        logger.debug { "-Writing message $message to topic $topic" }
+        logger.debug { "Writing message $message to topic $topic" }
 
         ensureNotNull(topic) { ProtocolError.EntityNotRegistered(to) }
 
@@ -74,13 +74,13 @@ actual class MqttProtocol actual constructor(
         val channel = ensureNotNull(topicChannels[candidateTopic]) {
             ProtocolError.EntityNotRegistered(from)
         }
-        logger.debug { "-Reading from topic $candidateTopic" }
+        logger.debug { "Reading from topic $candidateTopic" }
         channel.asSharedFlow()
     }
 
     override suspend fun initialize(): Either<ProtocolError, Unit> = either {
         Either.catch {
-            logger.debug { "-entering init" }
+            logger.debug { "entering init" }
             val options = js(
                 "{" +
                     "  protocolId: 'MQTT'," +
@@ -91,27 +91,27 @@ actual class MqttProtocol actual constructor(
             options.username = this@MqttProtocol.username
             options.password = this@MqttProtocol.password
             options.clientId = Random.nextInt()
-            logger.debug { "-attempting to connect" }
+            logger.debug { "attempting to connect" }
             client = connect("ws://$host:$port/mqtt", options = options)
 
-            logger.debug { "-waiting to connect" }
+            logger.debug { "waiting to connect" }
 
             client.on("connect") { _, _, _ ->
-                logger.debug { "-client initialized" }
+                logger.debug { "client initialized" }
                 client.subscribe(
                     "$mainTopic/#",
                     options = js("{ qos: 2 }")
                 ) { err: dynamic, granted: dynamic ->
                     if (!err as Boolean) {
-                        logger.debug { "-Subscribed to topic: ${granted.topic}" }
+                        logger.debug { "Subscribed to topic: ${granted.topic}" }
                     } else {
-                        logger.debug { "-Subscribe did not work: ${err.message}" }
+                        logger.debug { "Subscribe did not work: ${err.message}" }
                     }
                 }
             }
 
             client.on("error") { error: dynamic ->
-                logger.debug { "-Error connecting to MQTT broker: ${error.message}" }
+                logger.debug { "Error connecting to MQTT broker: ${error.message}" }
             }
             client.on("message") { topic: String, payload: dynamic, _ ->
                 // payload is a js buffer, so it needs to be converted
@@ -120,7 +120,7 @@ actual class MqttProtocol actual constructor(
                     msg[i] = payload[i] as Byte
                 }
 
-                logger.debug { "-Received message on topic $topic: ${msg.decodeToString()}" }
+                logger.debug { "Received message on topic $topic: ${msg.decodeToString()}" }
                 topicChannels[topic]?.tryEmit(msg)
             }
         }
@@ -132,7 +132,7 @@ actual class MqttProtocol actual constructor(
 
     override suspend fun finalize(): Either<ProtocolError, Unit> {
         client.end(force = true, options = js("{reasonCode : 0x00}"))
-        logger.debug { "-client finalized" }
+        logger.debug { "client finalized" }
         return Unit.right()
     }
 
