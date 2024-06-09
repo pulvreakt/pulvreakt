@@ -90,11 +90,13 @@ actual class MqttProtocol actual constructor(
         Either.catch {
             logger.debug { "entering init" }
             val connectOptions = js(
-                "{" +
-                    "  protocolId: 'MQTT'," +
-                    "  protocolVersion: 5," +
-                    "  clean: false," +
-                    "}"
+                """
+                    {
+                        protocolId: 'MQTT',
+                        protocolVersion: 5,
+                        clean: false,"
+                    }
+                """.trimIndent()
             )
             connectOptions.username = this@MqttProtocol.username
             connectOptions.password = this@MqttProtocol.password
