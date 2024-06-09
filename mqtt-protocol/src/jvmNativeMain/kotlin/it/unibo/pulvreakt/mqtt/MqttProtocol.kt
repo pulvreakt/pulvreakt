@@ -57,6 +57,12 @@ actual class MqttProtocol actual constructor(
     private lateinit var client: MQTTClient
     private val mainTopic = "PulvReAKt"
 
+    private val qosValue = when {
+        qos <= 0 -> Qos.AT_MOST_ONCE
+        qos == 1 -> Qos.AT_LEAST_ONCE
+        else -> Qos.EXACTLY_ONCE
+    }
+
     override suspend fun setupChannel(source: Entity, destination: Entity) {
         logger.debug { "Setting up channel for entity $source" }
         registeredTopics += (source to destination) to toTopics(source, destination)
@@ -75,7 +81,7 @@ actual class MqttProtocol actual constructor(
             Either.catch {
                 client.publish(
                     retain = true,
-                    qos = if (qos <= 0) Qos.AT_MOST_ONCE else if (qos >= 2) Qos.EXACTLY_ONCE else Qos.AT_LEAST_ONCE,
+                    qos = qosValue,
                     topic,
                     message.toUByteArray(),
                     MQTT5Properties(
@@ -120,7 +126,7 @@ actual class MqttProtocol actual constructor(
                     listOf(
                         Subscription(
                             "$mainTopic/#",
-                            SubscriptionOptions(qos = if (qos <= 0) Qos.AT_MOST_ONCE else if (qos >= 2) Qos.EXACTLY_ONCE else Qos.AT_MOST_ONCE)
+                            SubscriptionOptions(qos = qosValue)
                         )
                     )
                 )
