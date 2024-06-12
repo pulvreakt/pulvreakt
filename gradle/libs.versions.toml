@@ -4,6 +4,7 @@ coroutines = "1.8.1"
 dokka = "1.9.20"
 kotest = "5.9.1"
 kotlin = "1.9.24"
+kmqtt = "0.4.7"
 
 [plugins]
 detekt = "io.gitlab.arturbosch.detekt:1.23.6"
@@ -36,6 +37,10 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 rabbitmq-reactor = { module = "io.projectreactor.rabbitmq:reactor-rabbitmq", version = "1.5.6" }
 paho-mqtt = { module = "org.eclipse.paho:org.eclipse.paho.mqttv5.client", version = "1.2.5" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.13" }
+kmqtt-common = { module = "io.github.davidepianca98:kmqtt-common", version.ref = "kmqtt" }
+kmqtt-client = { module = "io.github.davidepianca98:kmqtt-client", version.ref = "kmqtt" }
+kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version = "1.9.24" }
+
 
 [bundles]
 kotest-common = [
@@ -49,4 +54,8 @@ kotest-common = [
 arrow = [
   "arrow-core",
   "arrow-coroutines",
+]
+kmqtt = [
+  "kmqtt-common",
+  "kmqtt-client"
 ]
