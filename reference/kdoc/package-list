@@ -1,12 +1,12 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/di/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]di.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/finalize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]finalize.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/initialize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]initialize.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/readFromChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]read-from-channel.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-channel.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]setup-injector.html
-$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/writeToChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[native]write-to-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/di/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]di.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/finalize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]finalize.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/initialize/#/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]initialize.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/readFromChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]read-from-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]setup-channel.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/setupInjector/#org.kodein.di.DI/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]setup-injector.html
+$dokka.location:it.unibo.pulvreakt.mqtt/MqttProtocol/writeToChannel/#it.unibo.pulvreakt.api.communication.protocol.Entity#it.unibo.pulvreakt.api.communication.protocol.Entity#kotlin.ByteArray/PointingToDeclaration/mqtt-protocol/it.unibo.pulvreakt.mqtt/-mqtt-protocol/[jvm-native]write-to-channel.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/di/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]di.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/finalize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]finalize.html
 $dokka.location:it.unibo.pulvreakt.platforms.rabbitmq/RabbitmqProtocol/initialize/#/PointingToDeclaration/rabbitmq-protocol/it.unibo.pulvreakt.platforms.rabbitmq/-rabbitmq-protocol/[native]initialize.html
