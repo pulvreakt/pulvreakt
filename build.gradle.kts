@@ -90,6 +90,7 @@ allprojects {
         sourceSets {
             val commonMain by getting {
                 dependencies {
+                    implementation(kotlin("reflect"))
                     implementation(rootProject.libs.kotlinx.coroutines.core)
                     implementation(rootProject.libs.kotlinx.serialization.json)
                     api(rootProject.libs.collektive)
@@ -255,7 +256,6 @@ allprojects {
 dependencies {
     kover(project(":core"))
     kover(project(":runtime"))
-    kover(project(":rabbitmq-protocol"))
 }
 
 koverReport {
@@ -265,7 +265,7 @@ koverReport {
     }
 }
 
-val websiteDir = File(buildDir, "website")
+val websiteDir = File(layout.buildDirectory.asFile.get(), "website")
 
 hugo {
     version = Regex("gohugoio/hugo@v([\\.\\-\\+\\w]+)")

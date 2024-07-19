@@ -1,22 +1,15 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
-
 plugins {
-    id("com.gradle.enterprise") version "3.17.1"
+    id("com.gradle.develocity") version "3.17.2"
     id("org.danilopianini.gradle-pre-commit-git-hooks") version "2.0.4"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishOnFailure()
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        uploadInBackground = !System.getenv("CI").toBoolean()
+        publishing.onlyIf { it.buildResult.failures.isNotEmpty() }
     }
 }
 
@@ -32,5 +25,3 @@ rootProject.name = "pulvreakt"
 
 include(":core")
 include(":runtime")
-include(":rabbitmq-protocol")
-include(":mqtt-protocol")
