@@ -1,7 +1,7 @@
-var relearn_search_index = [
+var relearn_searchindex = [
   {
     "breadcrumb": "Pulverization framework",
-    "content": "Contents ",
+    "content": "Contents",
     "description": "TODO",
     "tags": [],
     "title": "Tutorials",
@@ -9,7 +9,7 @@ var relearn_search_index = [
   },
   {
     "breadcrumb": "Pulverization framework",
-    "content": "Contents ",
+    "content": "Contents",
     "description": "TODO",
     "tags": [],
     "title": "How-to Guides",
@@ -29,7 +29,7 @@ var relearn_search_index = [
   },
   {
     "breadcrumb": "Pulverization framework",
-    "content": "Contents ",
+    "content": "Contents",
     "description": "TODO",
     "tags": [],
     "title": "Explanation",
