@@ -2,6 +2,7 @@ window.relearn = window.relearn || {};
 
 var theme = true;
 var isPrint = document.querySelector('body').classList.contains('print');
+var isPrintPreview = false;
 
 var isRtl = document.querySelector('html').getAttribute('dir') == 'rtl';
 var lang = document.querySelector('html').getAttribute('lang');
@@ -59,6 +60,17 @@ function adjustContentWidth() {
     end = Math.max(0, start - scrollbarSize);
   }
   elc.style[dir_padding_end] = '' + end + 'px';
+}
+
+function throttle(func, limit) {
+  let inThrottle;
+  return function (...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
 }
 
 function fixCodeTabs() {
@@ -285,9 +297,6 @@ function initMermaid(update, attrs) {
   if (update && !state.is_initialized) {
     return;
   }
-  if (typeof variants == 'undefined') {
-    return;
-  }
   if (typeof mermaid == 'undefined' || typeof mermaid.mermaidAPI == 'undefined') {
     return;
   }
@@ -297,21 +306,23 @@ function initMermaid(update, attrs) {
     window.addEventListener(
       'beforeprint',
       function () {
+        isPrintPreview = true;
         initMermaid(true, {
-          'theme': variants.getColorValue('PRINT-MERMAID-theme'),
+          theme: getColorValue('PRINT-MERMAID-theme'),
         });
       }.bind(this)
     );
     window.addEventListener(
       'afterprint',
       function () {
+        isPrintPreview = false;
         initMermaid(true);
       }.bind(this)
     );
   }
 
   attrs = attrs || {
-    'theme': variants.getColorValue('MERMAID-theme'),
+    theme: getColorValue('MERMAID-theme'),
   };
 
   var search;
@@ -321,7 +332,7 @@ function initMermaid(update, attrs) {
   }
   var is_initialized = update ? update_func(attrs) : init_func(attrs);
   if (is_initialized) {
-    mermaid.initialize(Object.assign({ 'securityLevel': 'antiscript', 'startOnLoad': false }, window.relearn.mermaidConfig, { theme: attrs.theme }));
+    mermaid.initialize(Object.assign({ securityLevel: 'antiscript', startOnLoad: false }, window.relearn.mermaidConfig, { theme: attrs.theme }));
     mermaid.run({
       postRenderCallback: function (id) {
         // zoom for Mermaid
@@ -336,7 +347,7 @@ function initMermaid(update, attrs) {
           var svg = d3.select(this);
           svg.html('<g>' + svg.html() + '</g>');
           var inner = svg.select('*:scope > g');
-          parent.insertAdjacentHTML('beforeend', '<span class="svg-reset-button" title="' + window.T_Reset_view + '"><i class="fas fa-undo-alt"></i></span>');
+          parent.insertAdjacentHTML('beforeend', '<button class="svg-reset-button" title="' + window.T_Reset_view + '"><i class="fas fa-undo-alt"></i></button>');
           var button = parent.querySelector('.svg-reset-button');
           var zoom = d3.zoom().on('zoom', function (e) {
             inner.attr('transform', e.transform);
@@ -375,39 +386,39 @@ function initOpenapi(update, attrs) {
   if (update && !state.is_initialized) {
     return;
   }
-  if (typeof variants == 'undefined') {
-    return;
-  }
 
   if (!state.is_initialized) {
     state.is_initialized = true;
     window.addEventListener(
       'beforeprint',
       function () {
-        initOpenapi(true, { isPrintPreview: true });
+        isPrintPreview = true;
+        initOpenapi(true);
       }.bind(this)
     );
     window.addEventListener(
       'afterprint',
       function () {
-        initOpenapi(true, { isPrintPreview: false });
+        isPrintPreview = false;
+        initOpenapi(true);
       }.bind(this)
     );
   }
 
-  attrs = attrs || {
-    isPrintPreview: false,
-  };
+  attrs = attrs || {};
 
   function addFunctionToResizeEvent() {}
   function getFirstAncestorByClass() {}
   function renderOpenAPI(oc) {
     var relBasePath = window.relearn.relBasePath;
     var assetBuster = window.themeUseOpenapi.assetsBuster;
-    var print = isPrint || attrs.isPrintPreview ? 'PRINT-' : '';
-    var theme = print ? `${relBasePath}/css/theme-relearn-light.css${assetBuster}` : document.querySelector('#R-variant-style').attributes.href.value;
-    var swagger_theme = variants.getColorValue(print + 'OPENAPI-theme');
-    var swagger_code_theme = variants.getColorValue(print + 'OPENAPI-CODE-theme');
+    var print = isPrint || isPrintPreview ? 'PRINT-' : '';
+    var format = print ? `print` : `html`;
+    var min = window.relearn.min;
+    var theme = `${relBasePath}/css/format-${format}${min}.css${assetBuster}`;
+    var variant = document.documentElement.dataset.rThemeVariant;
+    var swagger_theme = getColorValue(print + 'OPENAPI-theme');
+    var swagger_code_theme = getColorValue(print + 'OPENAPI-CODE-theme');
 
     const openapiId = 'relearn-swagger-ui';
     const openapiIframeId = openapiId + '-iframe';
@@ -423,7 +434,7 @@ function initOpenapi(update, attrs) {
     const oi = document.createElement('iframe');
     oi.id = openapiIframeId;
     oi.classList.toggle('sc-openapi-iframe', true);
-    oi.srcdoc = '<!doctype html>' + '<html lang="' + lang + '" dir="' + (isRtl ? 'rtl' : 'ltr') + '">' + '<head>' + '<link rel="stylesheet" href="' + window.themeUseOpenapi.css + '">' + '<link rel="stylesheet" href="' + relBasePath + '/css/swagger.css' + assetBuster + '">' + '<link rel="stylesheet" href="' + relBasePath + '/css/swagger-' + swagger_theme + '.css' + assetBuster + '">' + '<link rel="stylesheet" href="' + theme + '">' + '</head>' + '<body>' + '<a class="relearn-expander" href="" onclick="return relearn_collapse_all()">Collapse all</a>' + '<a class="relearn-expander" href="" onclick="return relearn_expand_all()">Expand all</a>' + '<div id="relearn-swagger-ui"></div>' + '<script>' + 'function relearn_expand_all(){' + 'document.querySelectorAll( ".opblock-summary-control[aria-expanded=false]" ).forEach( btn => btn.click() );' + 'document.querySelectorAll( ".model-container > .model-box > button[aria-expanded=false]" ).forEach( btn => btn.click() );' + 'return false;' + '}' + 'function relearn_collapse_all(){' + 'document.querySelectorAll( ".opblock-summary-control[aria-expanded=true]" ).forEach( btn => btn.click() );' + 'document.querySelectorAll( ".model-container > .model-box > .model-box > .model > span > button[aria-expanded=true]" ).forEach( btn => btn.click() );' + 'return false;' + '}' + '</script>' + '</body>' + '</html>';
+    oi.srcdoc = '<!doctype html>' + '<html lang="' + lang + '" dir="' + (isRtl ? 'rtl' : 'ltr') + '" data-r-output-format="' + format + '" data-r-theme-variant="' + variant + '">' + '<head>' + '<link rel="stylesheet" href="' + window.themeUseOpenapi.css + '">' + '<link rel="stylesheet" href="' + relBasePath + `/css/swagger${min}.css` + assetBuster + '">' + '<link rel="stylesheet" href="' + relBasePath + '/css/swagger-' + swagger_theme + '.css' + assetBuster + '">' + '<link rel="stylesheet" href="' + theme + '">' + '</head>' + '<body>' + '<a class="relearn-expander" href="" onclick="return relearn_collapse_all()">Collapse all</a>' + '<a class="relearn-expander" href="" onclick="return relearn_expand_all()">Expand all</a>' + '<div id="relearn-swagger-ui"></div>' + '<script>' + 'function relearn_expand_all(){' + 'document.querySelectorAll( ".opblock-summary-control[aria-expanded=false]" ).forEach( btn => btn.click() );' + 'document.querySelectorAll( ".model-container > .model-box > button[aria-expanded=false]" ).forEach( btn => btn.click() );' + 'return false;' + '}' + 'function relearn_collapse_all(){' + 'document.querySelectorAll( ".opblock-summary-control[aria-expanded=true]" ).forEach( btn => btn.click() );' + 'document.querySelectorAll( ".model-container > .model-box > .model-box > .model > span > button[aria-expanded=true]" ).forEach( btn => btn.click() );' + 'return false;' + '}' + '</script>' + '</body>' + '</html>';
     oi.height = '100%';
     oi.width = '100%';
     oi.onload = function () {
@@ -436,12 +447,12 @@ function initOpenapi(update, attrs) {
           var options = {
             defaultModelsExpandDepth: 2,
             defaultModelExpandDepth: 2,
-            docExpansion: isPrint || attrs.isPrintPreview ? 'full' : 'list',
+            docExpansion: isPrint || isPrintPreview ? 'full' : 'list',
             domNode: oi.contentWindow.document.getElementById(openapiId),
-            filter: !(isPrint || attrs.isPrintPreview),
+            filter: !(isPrint || isPrintPreview),
             layout: 'BaseLayout',
             onComplete: function () {
-              if (isPrint || attrs.isPrintPreview) {
+              if (isPrint || isPrintPreview) {
                 oi.contentWindow.document.querySelectorAll('.model-container > .model-box > button[aria-expanded=false]').forEach(function (btn) {
                   btn.click();
                 });
@@ -505,7 +516,7 @@ function initOpenapi(update, attrs) {
   }
   function setOpenAPIHeight(oi) {
     // add empirical offset if in print preview (GC 103)
-    oi.style.height = oi.contentWindow.document.documentElement.getBoundingClientRect().height + (attrs.isPrintPreview ? 200 : 0) + 'px';
+    oi.style.height = oi.contentWindow.document.documentElement.getBoundingClientRect().height + (isPrintPreview ? 200 : 0) + 'px';
   }
   function resizeOpenAPI() {
     let divi = document.getElementsByClassName('sc-openapi-iframe');
@@ -527,10 +538,10 @@ function initAnchorClipboard() {
     return;
   }
 
-  document.querySelectorAll('h1~h2,h1~h3,h1~h4,h1~h5,h1~h6').forEach(function (element) {
+  document.querySelectorAll(':has(h1) :is(h2,h3,h4,h5,h6').forEach(function (element) {
     var url = encodeURI((document.location.origin == 'null' ? document.location.protocol + '//' + document.location.host : document.location.origin) + document.location.pathname);
     var link = url + '#' + element.id;
-    var new_element = document.createElement('span');
+    var new_element = document.createElement('button');
     new_element.classList.add('anchor');
     if (!window.relearn.disableAnchorCopy) {
       new_element.setAttribute('title', window.T_Copy_link_to_clipboard);
@@ -614,7 +625,7 @@ function initCodeClipboard() {
       for (var i = 0; i < selection.rangeCount; i++) {
         var range = selection.getRangeAt(i);
         var fragment = range.cloneContents();
-        if (fragment.querySelector('.ln')) {
+        if (fragment.querySelector('.ln') || fragment.querySelector('[id]')) {
           return true;
         }
       }
@@ -660,7 +671,7 @@ function initCodeClipboard() {
         code.parentNode.replaceChild(span, code);
         code = clone;
       }
-      var button = document.createElement('span');
+      var button = document.createElement('button');
       button.classList.add('copy-to-clipboard-button');
       button.setAttribute('title', window.T_Copy_to_clipboard);
       button.innerHTML = '<i class="far fa-copy"></i>';
@@ -688,6 +699,20 @@ function initCodeClipboard() {
           pre.parentNode.replaceChild(div, pre);
           pre = clone;
         }
+        // we have to make sure, the button is visible while
+        // Clipboard.js is doing its magic
+        button.addEventListener('focus', function (ev) {
+          setTimeout(function () {
+            ev.target.classList.add('force-display');
+          }, 0);
+        });
+        button.addEventListener('blur', function (ev) {
+          this.removeAttribute('aria-label');
+          this.classList.remove('tooltipped', 'tooltipped-w', 'tooltipped-se', 'tooltipped-sw');
+          setTimeout(function () {
+            ev.target.classList.remove('force-display');
+          }, 0);
+        });
         pre.parentNode.insertBefore(button, pre.nextSibling);
       } else {
         code.dataset.code = text;
@@ -727,14 +752,6 @@ function initCodeClipboard() {
     };
     document.addEventListener('copy', f);
   });
-}
-
-function initChroma(update) {
-  var chroma = variants.getColorValue('CODE-theme');
-  var link = document.querySelector('#R-variant-chroma-style');
-  var old_path = link.getAttribute('href');
-  var new_path = old_path.replace(/^(.*\/chroma-).*?(\.css.*)$/, '$1' + chroma + '$2');
-  link.setAttribute('href', new_path);
 }
 
 function initArrowVerticalNav() {
@@ -1290,6 +1307,11 @@ function initHistory() {
 
 function initScrollPositionSaver() {
   function savePosition(event) {
+    // #959 if we fiddle around with the history during print preview
+    // GC will close the preview immediatley
+    if (isPrintPreview) {
+      return;
+    }
     var state = window.history.state || {};
     state = Object.assign({}, typeof state === 'object' ? state : {});
     state.contentScrollTop = +elc.scrollTop;
@@ -1300,7 +1322,8 @@ function initScrollPositionSaver() {
   elc.addEventListener('scroll', function (event) {
     if (!ticking) {
       window.requestAnimationFrame(function () {
-        savePosition();
+        // #996 GC is so damn slow that we need further throttling
+        throttle(savePosition, 250);
         ticking = false;
       });
       ticking = true;
@@ -1627,38 +1650,32 @@ function initSearch() {
   window.relearn.runInitialSearch && window.relearn.runInitialSearch();
 }
 
-function updateTheme(detail) {
-  if (window.relearn.lastVariant == detail.variant) {
+document.addEventListener('themeVariantLoaded', function (ev) {
+  updateTheme(ev);
+});
+
+function updateTheme(ev) {
+  if (window.relearn.lastVariant == ev.detail.variant) {
     return;
   }
-  window.relearn.lastVariant = detail.variant;
+  window.relearn.lastVariant = ev.detail.variant;
 
-  initChroma(true);
   initMermaid(true);
   initOpenapi(true);
-  document.dispatchEvent(
-    new CustomEvent('themeVariantLoaded', {
-      detail: detail,
-    })
-  );
 }
 
 (function () {
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-    initChroma(true);
     initMermaid(true);
     initOpenapi(true);
   });
 })();
 
 function useMermaid(config) {
+  delete config.theme;
   window.relearn.mermaidConfig = config;
   if (typeof mermaid != 'undefined' && typeof mermaid.mermaidAPI != 'undefined') {
-    mermaid.initialize(Object.assign({ 'securityLevel': 'antiscript', 'startOnLoad': false }, config));
-    if (config.theme && variants) {
-      var write_style = variants.findLoadedStylesheet('R-variant-style');
-      write_style.setProperty('--CONFIG-MERMAID-theme', config.theme);
-    }
+    mermaid.initialize(Object.assign({ securityLevel: 'antiscript', startOnLoad: false }, config));
   }
 }
 if (window.themeUseMermaid) {
@@ -1672,6 +1689,14 @@ function useOpenapi(config) {
 }
 if (window.themeUseOpenapi) {
   useOpenapi(window.themeUseOpenapi);
+}
+
+function ready(fn) {
+  if (document.readyState == 'complete') {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
 }
 
 ready(function () {
@@ -1846,8 +1871,25 @@ ready(function () {
   function onWidthChange(setWidth, e) {
     setWidth(e);
   }
-  var width = variants.getColorValue('MAIN-WIDTH-MAX');
+  var width = getColorValue('MAIN-WIDTH-MAX');
   var mqm = window.matchMedia('screen and ( min-width: ' + width + ')');
   mqm.addEventListener('change', onWidthChange.bind(null, setWidth));
   setWidth(mqm);
 })();
+
+function getColorValue(c) {
+  return this.normalizeColor(getComputedStyle(document.documentElement).getPropertyValue('--INTERNAL-' + c));
+}
+
+function normalizeColor(c) {
+  if (!c || !c.trim) {
+    return c;
+  }
+  c = c.trim();
+  c = c.replace(/\s*\(\s*/g, '( ');
+  c = c.replace(/\s*\)\s*/g, ' )');
+  c = c.replace(/\s*,\s*/g, ', ');
+  c = c.replace(/0*\./g, '.');
+  c = c.replace(/ +/g, ' ');
+  return c;
+}
