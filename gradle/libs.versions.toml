@@ -16,7 +16,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = "org.jetbrains.kotlinx.kover:0.7.6"
 publishOnCentral = "org.danilopianini.publish-on-central:5.1.2"
-taskTree = "com.dorongold.task-tree:3.0.0"
+taskTree = "com.dorongold.task-tree:4.0.0"
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.62.2"
 
 [libraries]
