@@ -3,7 +3,7 @@ arrow = "1.2.4"
 coroutines = "1.9.0"
 dokka = "2.0.0"
 kotest = "5.9.1"
-kotlin = "1.9.25"
+kotlin = "2.1.10"
 kmqtt = "0.4.8"
 
 [plugins]
@@ -39,7 +39,7 @@ paho-mqtt = { module = "org.eclipse.paho:org.eclipse.paho.mqttv5.client", versio
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.16" }
 kmqtt-common = { module = "io.github.davidepianca98:kmqtt-common", version.ref = "kmqtt" }
 kmqtt-client = { module = "io.github.davidepianca98:kmqtt-client", version.ref = "kmqtt" }
-kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version = "1.9.25" }
+kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version = "2.1.10" }
 
 
 [bundles]
